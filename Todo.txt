@@ -1,0 +1,18 @@
+- port and fix armor message
+- chams minor change
+- auto city ready progress and enum switcher
+- double burrow
+- custom burrow
+- warnings?
+- surround web protect
+- auto tnt trap
+- anti crystal
+- put all the other features in sniper in
+- rgb logo
+- auto build
+- auto trap hitbox check
+- whois protection (for website)
+- monke totem (hold totem ticks & min health required to unlock the locked stated)
+- use a mixin for criticals instead
+
+
