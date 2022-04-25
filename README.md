@@ -14,5 +14,5 @@ This started off as a passion project just for me and necro and I think it’s i
 
 B+ on top, All love <3  -ben
 
-#### B+ Discord: https://discord.gg/H9PdQfuAG3
+#### B+ Discord: cope
 
