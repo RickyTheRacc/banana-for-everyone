@@ -1,6 +1,6 @@
 # Banana+ addon for Meteor Client
 
-By: Bennooo and Necro.
+By: Bennooo.
 
 ### How to use:  
 - Build the jar file.
