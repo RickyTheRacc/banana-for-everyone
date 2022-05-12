@@ -6,16 +6,17 @@
   "description": "Banana+ addon for the Meteor Addon API.",
   "authors": [
     "Bennooo",
-    "Necro"
+    "Necro",
+    "RickyTheRacc"
   ],
   "contact": {
-    "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "repo": "https://github.com/Bennooo/banana-for-everyone"
   },
-  "icon": "assets/template/logo.png",
+  "icon": "assets/bananaplus/logo.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "bplusdevelopment.modules.AddModule"
+      "bananaplus.modules.AddModule"
     ]
   },
   "mixins": [
