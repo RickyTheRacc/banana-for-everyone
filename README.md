@@ -5,7 +5,7 @@
 <h1 align="center">Banana+</h1>
 
 <p align="center">Run from it, dread it... Banana arrives just the same.</p>
-<p align="center"><i>By Bennooo, Necropho, and RickyTheRacc</i></p>
+<p align="center"><i>By Bennooo, Necro, and RickyTheRacc</i></p>
 
 # How to use:
 - Download and open with GitHub Desktop
