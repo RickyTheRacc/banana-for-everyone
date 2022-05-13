@@ -1,12 +1,11 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/bananaplus/logo.png" alt="meteor-client-logo" width="40%"/>
+<img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/bananaplus/logo.png" alt="meteor-client-logo" width="35%"/>
 </p>
+
 <h1 align="center">Banana+</h1>
-<p align="center">A Minecraft Fabric Utility Mod for the latest Minecraft release.</p>
 
-# Banana+ Addon for Meteor Client
-
-By Bennooo and RickyTheRacc
+<p align="center">Run from it, dread it... Banana arrives just the same.</p>
+<p align="center"><i>By Bennooo and RickyTheRacc</i></p>
 
 ### How to use:
 - Download and open with GitHub Desktop
