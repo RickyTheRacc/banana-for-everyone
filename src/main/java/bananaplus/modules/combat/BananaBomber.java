@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.*;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.*;
@@ -84,7 +84,7 @@ public class BananaBomber extends Module {
 
     public enum DamageIgnore {
         Always,
-        SurroundedorBurrowed,
+        WhileSafe,
         Never
     }
 
@@ -122,137 +122,126 @@ public class BananaBomber extends Module {
     private final SettingGroup sgPause = settings.createGroup("Pause");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    // General
 
+    // General
     public final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug-mode")
-            .description("Informs you about what the CA is doing.")
+            .description("Informs you what the CA is doing.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("Range in which to target players.")
             .defaultValue(10)
             .min(0)
-            .sliderRange(0,18)
-            .build());
-
-    private final Setting<Boolean> predictMovement = sgGeneral.add(new BoolSetting.Builder()
-            .name("predict-movement")
-            .description("Predicts target movement.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> ignoreTerrain = sgGeneral.add(new BoolSetting.Builder()
-            .name("ignore-terrain")
-            .description("Completely ignores terrain if it can be blown up by end crystals.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> fullAnvil = sgGeneral.add(new BoolSetting.Builder()
-            .name("full-anvil")
-            .description("Completely ignores gaps between anvil blocks for damage calc.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> fullEchest = sgGeneral.add(new BoolSetting.Builder()
-            .name("full-E-Chest")
-            .description("Completely ignores gaps between E-chest blocks for damage calc.")
-            .defaultValue(false)
-            .build());
+            .sliderRange(0,20)
+            .build()
+    );
 
     public final Setting<Double> explosionRadiusToTarget = sgGeneral.add(new DoubleSetting.Builder()
-            .name("explosion-radius-to-target")
-            .description("Max crystal explosion radius to target.")
+            .name("place-radius")
+            .description("How far crystals can be placed from the target.")
             .defaultValue(12)
             .range(1,12)
             .sliderRange(1,12)
-            .build());
+            .build()
+    );
 
-    private final Setting<Integer> waiting = sgGeneral.add(new IntSetting.Builder()
-            .name("min-explosion-time")
-            .description("Min tick duration for crystal explosion")
-            .defaultValue(3)
-            .min(0)
-            .sliderRange(0,6)
-            .build());
+    private final Setting<Boolean> predictMovement = sgGeneral.add(new BoolSetting.Builder()
+            .name("predict-movement")
+            .description("Predict the target's movement.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> ignoreTerrain = sgGeneral.add(new BoolSetting.Builder()
+            .name("ignore-terrain")
+            .description("Ignore blocks if they can be blown up by crystals.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> fullBlocks = sgGeneral.add(new BoolSetting.Builder()
+            .name("full-blocks")
+            .description("Treat anvils and ender chests as full blocks.")
+            .defaultValue(false)
+            .build()
+    );
+
+    public final Setting<Boolean> hideSwings = sgGeneral.add(new BoolSetting.Builder()
+            .name("hide-swings")
+            .description("Whether to send hand swing packets to the server.")
+            .defaultValue(false)
+            .build()
+    );
 
     private final Setting<AutoSwitchMode> autoSwitch = sgGeneral.add(new EnumSetting.Builder<AutoSwitchMode>()
             .name("auto-switch")
             .description("Switches to crystals in your hotbar once a target is found.")
             .defaultValue(AutoSwitchMode.Normal)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> noGapSwitch = sgGeneral.add(new BoolSetting.Builder()
             .name("No Gap Switch")
             .description("Disables normal auto switch when you are holding a gap.")
             .defaultValue(true)
             .visible(() -> autoSwitch.get() == AutoSwitchMode.Normal)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Rotates server-side towards the crystals being hit/placed.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<YawStepMode> yawStepMode = sgGeneral.add(new EnumSetting.Builder<YawStepMode>()
             .name("yaw-steps-mode")
             .description("When to run the yaw steps check.")
             .defaultValue(YawStepMode.Break)
             .visible(rotate::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> yawSteps = sgGeneral.add(new DoubleSetting.Builder()
             .name("yaw-steps")
-            .description("Maximum number of degrees its allowed to rotate in one tick.")
+            .description("Maximum degrees to rotate in one tick.")
             .defaultValue(180)
             .range(1,180)
             .sliderRange(1,180)
             .visible(rotate::get)
-            .build());
+            .build()
+    );
+
 
     // Place
-
     private final Setting<Boolean> doPlace = sgPlace.add(new BoolSetting.Builder()
             .name("place")
             .description("If the CA should place crystals.")
             .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> placeSwing = sgPlace.add(new BoolSetting.Builder()
-            .name("place-swing")
-            .description("Renders place hand swings.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> ghostPlace = sgPlace.add(new BoolSetting.Builder()
-            .name("ghost-place")
-            .description("Hides hand swing for placing crystals.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Double> selfPlaceExplosionRadius = sgPlace.add(new DoubleSetting.Builder()
-            .name("self-place-explosion-radius")
-            .description("Max crystal explosion radius to self to calculate when placing.")
-            .defaultValue(12)
-            .range(1,12)
-            .sliderRange(1,12)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> PminDamage = sgPlace.add(new DoubleSetting.Builder()
             .name("min-place-damage")
             .description("Minimum place damage the crystal needs to deal to your target.")
             .defaultValue(6)
             .min(0)
-            .build());
+            .visible(doPlace::get)
+            .build()
+    );
 
     public final Setting<DamageIgnore> PDamageIgnore = sgPlace.add(new EnumSetting.Builder<DamageIgnore>()
-            .name("ignore-self-place-damage")
-            .description("When to ignore self damage when placing crystal.")
+            .name("ignore-self-damage")
+            .description("Whether to ignore damage to yourself.")
             .defaultValue(DamageIgnore.Never)
-            .build());
+            .visible(doPlace::get)
+            .build()
+    );
 
     private final Setting<Double> PmaxDamage = sgPlace.add(new DoubleSetting.Builder()
             .name("max-place-damage")
@@ -260,256 +249,289 @@ public class BananaBomber extends Module {
             .defaultValue(6)
             .range(0,36)
             .sliderRange(0,36)
-            .visible(() -> PDamageIgnore.get() != DamageIgnore.Always)
-            .build());
+            .visible(() -> PDamageIgnore.get() != DamageIgnore.Always && doPlace.get())
+            .build()
+    );
 
     private final Setting<Boolean> PantiSuicide = sgPlace.add(new BoolSetting.Builder()
             .name("anti-suicide-place")
             .description("Will not place crystals if they will pop / kill you.")
             .defaultValue(true)
-            .visible(() -> PDamageIgnore.get() != DamageIgnore.Always)
-            .build());
+            .visible(() -> PDamageIgnore.get() != DamageIgnore.Always && doPlace.get())
+            .build()
+    );
 
     public final Setting<Integer> placeDelay = sgPlace.add(new IntSetting.Builder()
             .name("place-delay")
             .description("The delay in ticks to wait to place a crystal after it's exploded.")
             .defaultValue(0)
-            .min(0)
+            .range(0,20)
             .sliderRange(0,20)
-            .build());
+            .visible(doPlace::get)
+            .build()
+    );
 
     private final Setting<Double> placeRange = sgPlace.add(new DoubleSetting.Builder()
             .name("place-range")
-            .description("Range in which to place crystals.")
-            .defaultValue(4.5)
-            .min(0)
-            .sliderMax(6)
-            .build());
+            .description("How far away you can place crystals.")
+            .defaultValue(4)
+            .range(0,6)
+            .sliderRange(0,6)
+            .visible(doPlace::get)
+            .build()
+    );
 
     private final Setting<Double> placeWallsRange = sgPlace.add(new DoubleSetting.Builder()
             .name("place-walls-range")
-            .description("Range in which to place crystals when behind blocks.")
-            .defaultValue(4.5)
-            .min(0)
-            .sliderMax(6)
-            .build());
-
-    private final Setting<Double> placeVerticalRange = sgPlace.add(new DoubleSetting.Builder()
-            .name("place-vertical-range")
-            .description("Vertical range in which to place crystals.")
+            .description("How far away you can place crystals through blocks.")
             .defaultValue(4)
-            .min(0)
-            .sliderMax(6)
-            .build());
+            .range(0,6)
+            .sliderRange(0,6)
+            .visible(doPlace::get)
+            .build()
+    );
 
     private final Setting<Boolean> placement112 = sgPlace.add(new BoolSetting.Builder()
             .name("1.12-placement")
             .description("Uses 1.12 crystal placement.")
             .defaultValue(false)
-            .build());
+            .visible(doPlace::get)
+            .build()
+    );
 
     private final Setting<Boolean> smallBox = sgPlace.add(new BoolSetting.Builder()
             .name("small-box")
             .description("Allows you to place in 1x1x1 box instead of 1x2x1 boxes.")
             .defaultValue(false)
-            .build());
+            .visible(doPlace::get)
+            .build()
+    );
 
     private final Setting<SupportMode> support = sgPlace.add(new EnumSetting.Builder<SupportMode>()
             .name("support")
             .description("Places a support block in air if no other position have been found.")
             .defaultValue(SupportMode.Disabled)
-            .build());
+            .visible(doPlace::get)
+            .build()
+    );
 
     private final Setting<Integer> supportDelay = sgPlace.add(new IntSetting.Builder()
             .name("support-delay")
             .description("Delay in ticks after placing support block.")
             .defaultValue(1)
             .min(0)
-            .visible(() -> support.get() != SupportMode.Disabled)
-            .build());
+            .visible(() -> support.get() != SupportMode.Disabled && doPlace.get())
+            .build()
+    );
+
 
     // Face place
-
     public final Setting<Boolean> facePlace = sgFacePlace.add(new BoolSetting.Builder()
             .name("face-place")
-            .description("Will face-place when target is below a certain health or armor durability threshold.")
+            .description("Will place crystals against the enemy's face.")
             .defaultValue(true)
-            .build());
-
-    public final Setting<Boolean> slowFacePlace = sgFacePlace.add(new BoolSetting.Builder()
-            .name("slow-face-place")
-            .description("Will slow down face-place to save crystals.")
-            .defaultValue(false)
-            .build());
-
-    public final Setting<SlowMode> slowFPMode = sgFacePlace.add(new EnumSetting.Builder<SlowMode>()
-            .name("slow-FP-mode")
-            .description("Timing to use for slow faceplace.")
-            .defaultValue(SlowMode.Both)
-            .visible(slowFacePlace::get)
-            .build());
-
-    public final Setting<Integer> slowFPDelay = sgFacePlace.add(new IntSetting.Builder()
-            .name("slow-FP-delay")
-            .description("The delay in ticks to wait to break a crystal for slow FP.")
-            .defaultValue(10)
-            .min(0)
-            .sliderRange(0,15)
-            .visible(() -> slowFacePlace.get() && slowFPMode.get() != SlowMode.Age)
-            .build());
-
-    public final Setting<Integer> slowFPAge = sgFacePlace.add(new IntSetting.Builder()
-            .name("slow-FP-age")
-            .description("Crystal age for slow faceplace (to prevent unnecessary attacks when people are around.")
-            .defaultValue(3)
-            .min(0)
-            .sliderRange(0,15)
-            .visible(() -> slowFacePlace.get() && slowFPMode.get() != SlowMode.Delay)
-            .build());
-
-    public final Setting<Boolean> surrHoldPause = sgFacePlace.add(new BoolSetting.Builder()
-            .name("Pause-on-surround-hold")
-            .description("Will pause face placing when surround hold is active.")
-            .defaultValue(true)
-            .build());
-
-    public final Setting<Boolean> KAPause = sgFacePlace.add(new BoolSetting.Builder()
-            .name("Pause-on-KA")
-            .description("Will pause face placing when KA is active.")
-            .defaultValue(true)
-            .build());
-
-    public final Setting<Boolean> CevPause = sgFacePlace.add(new BoolSetting.Builder()
-            .name("Pause-on-Cev-Break")
-            .description("Will pause face placing when Cev Breaker is active.")
-            .defaultValue(true)
-            .build());
-
-    public final Setting<Boolean> greenHolers = sgFacePlace.add(new BoolSetting.Builder()
-            .name("Green-holers")
-            .description("Will automatically face-place when target's is in greenhole.")
-            .defaultValue(false)
-            .build());
-
-    public final Setting<Boolean> faceSurrounded = sgFacePlace.add(new BoolSetting.Builder()
-            .name("face-surrounded")
-            .description("Will face-place even when target's face is surrounded.")
-            .defaultValue(false)
-            .build());
-
-    public final Setting<Double> facePlaceHealth = sgFacePlace.add(new DoubleSetting.Builder()
-            .name("face-place-health")
-            .description("The health the target has to be at to start face placing.")
-            .defaultValue(8)
-            .min(0)
-            .sliderRange(0,36)
-            .build());
-
-    public final Setting<Double> facePlaceDurability = sgFacePlace.add(new DoubleSetting.Builder()
-            .name("face-place-durability")
-            .description("The durability threshold percentage to be able to face-place.")
-            .defaultValue(2)
-            .min(0)
-            .sliderRange(0,100)
-            .build());
-
-    public final Setting<Boolean> facePlaceArmor = sgFacePlace.add(new BoolSetting.Builder()
-            .name("face-place-missing-armor")
-            .description("Automatically starts face placing when a target misses a piece of armor.")
-            .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Keybind> forceFacePlace = sgFacePlace.add(new KeybindSetting.Builder()
             .name("force-face-place")
             .description("Starts face place when this button is pressed.")
             .defaultValue(Keybind.none())
-            .build());
+            .build()
+    );
+
+    public final Setting<Boolean> slowFacePlace = sgFacePlace.add(new BoolSetting.Builder()
+            .name("slow-place")
+            .description("Place slower while face placing to reserve crystals.")
+            .defaultValue(false)
+            .visible(facePlace::get)
+            .build()
+    );
+
+    public final Setting<SlowMode> slowFPMode = sgFacePlace.add(new EnumSetting.Builder<SlowMode>()
+            .name("slow-FP-mode")
+            .description("How to measure the delay for slow face place.")
+            .defaultValue(SlowMode.Delay)
+            .visible(() -> facePlace.get() && slowFacePlace.get())
+            .build()
+    );
+
+    public final Setting<Integer> slowFPDelay = sgFacePlace.add(new IntSetting.Builder()
+            .name("slow-FP-delay")
+            .description("How long in ticks to wait to break a crystal.")
+            .defaultValue(10)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(() -> facePlace.get() && slowFacePlace.get() && slowFPMode.get() != SlowMode.Age)
+            .build()
+    );
+
+    public final Setting<Integer> slowFPAge = sgFacePlace.add(new IntSetting.Builder()
+            .name("slow-FP-age")
+            .description("How old a crystal must be server-side in ticks to be broken.")
+            .defaultValue(3)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(() -> facePlace.get() && slowFacePlace.get() && slowFPMode.get() != SlowMode.Delay)
+            .build()
+    );
+
+    public final Setting<Boolean> surrHoldPause = sgFacePlace.add(new BoolSetting.Builder()
+            .name("pause-on-hold")
+            .description("Will pause face placing while surround hold is active.")
+            .defaultValue(true)
+            .visible(facePlace::get)
+            .build()
+    );
+
+    public final Setting<Boolean> KAPause = sgFacePlace.add(new BoolSetting.Builder()
+            .name("pause-on-KA")
+            .description("Will pause face placing when KA is active.")
+            .defaultValue(true)
+            .visible(facePlace::get)
+            .build()
+    );
+
+    public final Setting<Boolean> CevPause = sgFacePlace.add(new BoolSetting.Builder()
+            .name("pause-on-cev")
+            .description("Will pause face placing when Cev Breaker is active.")
+            .defaultValue(true)
+            .visible(facePlace::get)
+            .build()
+    );
+
+    public final Setting<Double> facePlaceHealth = sgFacePlace.add(new DoubleSetting.Builder()
+            .name("face-place-health")
+            .description("The health the target has to be at to start face placing.")
+            .defaultValue(6)
+            .range(0,36)
+            .sliderRange(0,36)
+            .visible(facePlace::get)
+            .build()
+    );
+
+    public final Setting<Double> facePlaceDurability = sgFacePlace.add(new DoubleSetting.Builder()
+            .name("face-place-durability")
+            .description("The durability threshold percentage to be able to face-place.")
+            .defaultValue(10)
+            .range(1,100)
+            .sliderRange(1,100)
+            .visible(facePlace::get)
+            .build()
+    );
+
+    public final Setting<Boolean> facePlaceArmor = sgFacePlace.add(new BoolSetting.Builder()
+            .name("missing-armor")
+            .description("Automatically starts face placing when a target misses a piece of armor.")
+            .defaultValue(false)
+            .visible(facePlace::get)
+            .build()
+    );
+
 
     // Surround
-
     public final Setting<Boolean> burrowBreak = sgSurround.add(new BoolSetting.Builder()
             .name("burrow-break")
             .description("Will try to break target's burrow.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Keybind> forceBurrowBreak = sgSurround.add(new KeybindSetting.Builder()
-            .name("force-burrow-break")
+            .name("force-break")
             .description("Starts burrow breaking when this button is pressed.")
             .defaultValue(Keybind.none())
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> burrowBreakDelay = sgSurround.add(new IntSetting.Builder()
             .name("burrow-break-delay")
             .description("Place delay in ticks for burrow break.")
-            .defaultValue(0)
-            .min(0)
+            .defaultValue(10)
+            .range(0,20)
             .sliderRange(0,20)
-            .build());
+            .visible(burrowBreak::get)
+            .build()
+    );
 
     public final Setting<ConTypeInclAlways> burrowBWhen = sgSurround.add(new EnumSetting.Builder<ConTypeInclAlways>()
             .name("burrow-break-when")
             .description("When to start burrow breaking.")
             .defaultValue(ConTypeInclAlways.Always)
-            .build());
+            .visible(burrowBreak::get)
+            .build()
+    );
 
     public final Setting<Boolean> surroundBreak = sgSurround.add(new BoolSetting.Builder()
             .name("surround-break")
             .description("Will automatically places a crystal next to target's surround.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Keybind> forceSurroundBreak = sgSurround.add(new KeybindSetting.Builder()
-            .name("force-surround-break")
+            .name("force-break")
             .description("Starts surround breaking when this button is pressed.")
             .defaultValue(Keybind.none())
-            .build());
+            .build()
+    );
 
     public final Setting<ConTypeInclAlways> surroundBWhen = sgSurround.add(new EnumSetting.Builder<ConTypeInclAlways>()
             .name("surround-break-when")
             .description("When to start surround breaking.")
             .defaultValue(ConTypeInclAlways.FaceTrapped)
-            .build());
+            .visible(surroundBreak::get)
+            .build()
+    );
 
     public final Setting<Integer> surroundBreakDelay = sgSurround.add(new IntSetting.Builder()
             .name("surround-break-delay")
             .description("Place delay in ticks for surround break.")
-            .defaultValue(0)
-            .min(0)
+            .defaultValue(10)
+            .range(0,20)
             .sliderRange(0,20)
-            .build());
+            .visible(surroundBreak::get)
+            .build()
+    );
 
     public final Setting<Boolean> surroundBHorse = sgSurround.add(new BoolSetting.Builder()
             .name("horse")
             .description("Allow horse sides of the target's surround to be surround broken.")
             .defaultValue(false)
-            .build());
+            .visible(surroundBreak::get)
+            .build()
+    );
 
     public final Setting<Boolean> surroundBDiagonal = sgSurround.add(new BoolSetting.Builder()
             .name("diagonal")
             .description("Allow diagonal sides of the target's surround to be surround broken.")
             .defaultValue(false)
-            .build());
+            .visible(surroundBreak::get)
+            .build()
+    );
 
     public final Setting<Boolean> surroundHold = sgSurround.add(new BoolSetting.Builder()
             .name("surround-hold")
-            .description("Break crystals slower to hold on to their surround when their surround is broken.")
+            .description("Break crystals slower to make them harder to surround over.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<ConTypeInclAlways> surroundHWhen = sgSurround.add(new EnumSetting.Builder<ConTypeInclAlways>()
             .name("surround-hold-when")
             .description("When to start surround holding.")
             .defaultValue(ConTypeInclAlways.AnyTrapped)
             .visible(surroundHold::get)
-            .build());
+            .build()
+    );
 
     public final Setting<SlowMode> surroundHoldMode = sgSurround.add(new EnumSetting.Builder<SlowMode>()
             .name("surround-hold-mode")
             .description("Timing to use for surround hold.")
             .defaultValue(SlowMode.Both)
             .visible(surroundHold::get)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> surroundHoldDelay = sgSurround.add(new IntSetting.Builder()
             .name("surround-hold-delay")
@@ -518,7 +540,8 @@ public class BananaBomber extends Module {
             .min(0)
             .sliderRange(0,15)
             .visible(() -> surroundHold.get() && surroundHoldMode.get() != SlowMode.Age)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> surroundHoldAge = sgSurround.add(new IntSetting.Builder()
             .name("surround-hold-age")
@@ -527,48 +550,51 @@ public class BananaBomber extends Module {
             .min(0)
             .sliderRange(0,15)
             .visible(() -> surroundHold.get() && surroundHoldMode.get() != SlowMode.Delay)
-            .build());
+            .build()
+    );
+
 
     // Break
-
     private final Setting<Boolean> doBreak = sgBreak.add(new BoolSetting.Builder()
             .name("break")
             .description("If the CA should break crystals.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
-    public final Setting<Boolean> breakSwing = sgBreak.add(new BoolSetting.Builder()
-            .name("break-swing")
-            .description("Renders break hand swings.")
-            .defaultValue(true)
-            .build());
-
-    public final Setting<Boolean> ghostBreak = sgBreak.add(new BoolSetting.Builder()
-            .name("ghost-break")
-            .description("Hide hand swings for breaking crystals.")
+    private final Setting<Boolean> onlyBreakOwn = sgBreak.add(new BoolSetting.Builder()
+            .name("only-own")
+            .description("Only break crystals that you placed.")
             .defaultValue(false)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
 
-    private final Setting<Double> selfBreakExplosionRadius = sgBreak.add(new DoubleSetting.Builder()
-            .name("self-break-explosion-radius")
-            .description("Max crystal explosion radius to self to calculate when breaking.")
-            .defaultValue(12)
-            .range(1,12)
-            .sliderRange(1,12)
-            .build());
+    private final Setting<Boolean> antiWeakness = sgBreak.add(new BoolSetting.Builder()
+            .name("anti-weakness")
+            .description("Switches to tools with high enough damage to explode the crystal with weakness effect.")
+            .defaultValue(true)
+            .visible(doBreak::get)
+            .build()
+    );
 
     public final Setting<Double> BminDamage = sgBreak.add(new DoubleSetting.Builder()
             .name("min-break-damage")
             .description("Minimum break damage the crystal needs to deal to your target.")
             .defaultValue(6)
-            .min(0)
-            .build());
+            .range(0,36)
+            .sliderRange(0,36)
+            .visible(doBreak::get)
+            .build()
+    );
 
     public final Setting<DamageIgnore> BDamageIgnore = sgBreak.add(new EnumSetting.Builder<DamageIgnore>()
-            .name("ignore-self-break-damage")
-            .description("When to ignore self damage when breaking crystal.")
+            .name("ignore-break-damage")
+            .description("Whether to ignore self damage when breaking crystals.")
             .defaultValue(DamageIgnore.Never)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Double> BmaxDamage = sgBreak.add(new DoubleSetting.Builder()
             .name("max-break-damage")
@@ -576,27 +602,45 @@ public class BananaBomber extends Module {
             .defaultValue(6)
             .range(0,36)
             .sliderRange(0,36)
-            .visible(() -> BDamageIgnore.get() != DamageIgnore.Always)
-            .build());
+            .visible(() -> doBreak.get() && BDamageIgnore.get() != DamageIgnore.Always)
+            .build()
+    );
+
+    private final Setting<Integer> attackFrequency = sgBreak.add(new IntSetting.Builder()
+            .name("attack-frequency")
+            .description("Maximum hits to do per second.")
+            .defaultValue(25)
+            .range(1,30)
+            .sliderRange(1,30)
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Boolean> BantiSuicide = sgBreak.add(new BoolSetting.Builder()
             .name("anti-suicide-break")
-            .description("Will not break crystals if they will pop / kill you.")
+            .description("Will not break crystals if they will pop or kill you.")
             .defaultValue(true)
-            .visible(() -> BDamageIgnore.get() != DamageIgnore.Always)
-            .build());
-
-    public final Setting<Boolean> sneak = sgBreak.add(new BoolSetting.Builder()
-            .name("sneak")
-            .description("Should it do sneak while attacking crystals.")
-            .defaultValue(false)
-            .build());
+            .visible(() -> doBreak.get() && BDamageIgnore.get() != DamageIgnore.Always)
+            .build()
+    );
 
     private final Setting<CancelCrystalMode> cancelCrystalMode = sgBreak.add(new EnumSetting.Builder<CancelCrystalMode>()
             .name("cancel-mode")
             .description("Mode to use for the crystals to be removed from the world.")
             .defaultValue(CancelCrystalMode.NoDesync)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
+
+    private final Setting<Integer> cancelTicks = sgBreak.add(new IntSetting.Builder()
+            .name("cancel-ticks")
+            .description("How long a tick should exist before being canceled.")
+            .defaultValue(3)
+            .range(1,5)
+            .sliderRange(1,5)
+            .visible(doBreak::get)
+            .build()
+    );
 
     public final Setting<Integer> breakDelay = sgBreak.add(new IntSetting.Builder()
             .name("break-delay")
@@ -604,13 +648,17 @@ public class BananaBomber extends Module {
             .defaultValue(0)
             .min(0)
             .sliderRange(0,20)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Boolean> smartDelay = sgBreak.add(new BoolSetting.Builder()
             .name("smart-delay")
             .description("Only breaks crystals when the target can receive damage.")
             .defaultValue(false)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Integer> switchDelay = sgBreak.add(new IntSetting.Builder()
             .name("switch-delay")
@@ -618,107 +666,105 @@ public class BananaBomber extends Module {
             .defaultValue(0)
             .min(0)
             .sliderMax(10)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Double> breakRange = sgBreak.add(new DoubleSetting.Builder()
             .name("break-range")
             .description("Range in which to break crystals.")
-            .defaultValue(4.5)
-            .min(0)
-            .sliderMax(6)
-            .build());
+            .defaultValue(4)
+            .range(0,6)
+            .sliderRange(0,6)
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Double> breakWallsRange = sgBreak.add(new DoubleSetting.Builder()
             .name("break-walls-range")
             .description("Range in which to break crystals when behind blocks.")
-            .defaultValue(4.5)
-            .min(0)
-            .sliderMax(6)
-            .build());
-
-    private final Setting<Boolean> onlyBreakOwn = sgBreak.add(new BoolSetting.Builder()
-            .name("only-own")
-            .description("Only breaks own crystals.")
-            .defaultValue(false)
-            .build());
+            .defaultValue(4)
+            .range(0,6)
+            .sliderRange(0,6)
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Boolean> attemptCheck = sgBreak.add(new BoolSetting.Builder()
             .name("break-attempt-check")
-            .description("To pair break attempt with damage calc or not.")
+            .description("Whether to account for how many times you try to hit a crystal.")
             .defaultValue(false)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Integer> breakAttempts = sgBreak.add(new IntSetting.Builder()
             .name("break-attempts")
-            .description("How many times to hit a crystal before stopping to target it.")
+            .description("How many times to hit a crystal before finding a new placement.")
             .defaultValue(2)
             .sliderRange(0,5)
-            .build());
+            .visible(() -> doBreak.get() && attemptCheck.get())
+            .build()
+    );
 
     private final Setting<Boolean> ageCheck = sgBreak.add(new BoolSetting.Builder()
-            .name("age-check")
-            .description("To check crystal age or not.")
+            .name("crystal-age-check")
+            .description("To check how old a crystal is server-side.")
             .defaultValue(true)
-            .build());
+            .visible(doBreak::get)
+            .build()
+    );
 
     private final Setting<Integer> ticksExisted = sgBreak.add(new IntSetting.Builder()
             .name("ticks-existed")
-            .description("Amount of ticks a crystal needs to have lived for it to be attacked by CrystalAura.")
+            .description("Amount of ticks a crystal needs to have existed for it to be attacked.")
             .defaultValue(1)
             .min(1)
-            .visible(ageCheck::get)
-            .build());
+            .visible(() -> doBreak.get() && ageCheck.get())
+            .build()
+    );
 
-    private final Setting<Integer> attackFrequency = sgBreak.add(new IntSetting.Builder()
-            .name("attack-frequency")
-            .description("Maximum hits to do per second.")
-            .defaultValue(25)
-            .min(1)
-            .sliderMax(30)
-            .build());
-
-    private final Setting<Boolean> antiWeakness = sgBreak.add(new BoolSetting.Builder()
-            .name("anti-weakness")
-            .description("Switches to tools with high enough damage to explode the crystal with weakness effect.")
-            .defaultValue(true)
-            .build());
 
     // Fast break
-
     private final Setting<Boolean> fastBreak = sgFastBreak.add(new BoolSetting.Builder()
             .name("fast-break")
             .description("Ignores break delay and tries to break the crystal as soon as it's spawned in the world.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> freqCheck = sgFastBreak.add(new BoolSetting.Builder()
-            .name("attack-frequency-check")
+            .name("frequency-check")
             .description("Will not try to fast break if your attack exceeds the attack frequency.")
             .defaultValue(true)
             .visible(fastBreak::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> smartCheck = sgFastBreak.add(new BoolSetting.Builder()
             .name("smart-check")
             .description("Will not try to fast break for slow face place / surround hold.")
             .defaultValue(true)
             .visible(fastBreak::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> minDcheck = sgFastBreak.add(new BoolSetting.Builder()
-            .name("min-damage-check")
+            .name("damage-check")
             .description("Check if the crystal meets min damage first.")
             .defaultValue(true)
             .visible(fastBreak::get)
-            .build());
+            .build()
+    );
+
 
     // Chain Pop
-
     public final Setting<Boolean> selfPopInvincibility = sgChainPop.add(new BoolSetting.Builder()
             .name("self-pop-invincibility")
             .description("Ignores self damage if you just popped.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> selfPopInvincibilityTime = sgChainPop.add(new IntSetting.Builder()
             .name("self-pop-time")
@@ -726,20 +772,23 @@ public class BananaBomber extends Module {
             .defaultValue(300)
             .sliderRange(1,2000)
             .visible(selfPopInvincibility::get)
-            .build());
+            .build()
+    );
 
     public final Setting<SelfPopIgnore> selfPopIgnore = sgChainPop.add(new EnumSetting.Builder<SelfPopIgnore>()
             .name("self-pop-ignore")
             .description("What to ignore when you just popped.")
             .defaultValue(SelfPopIgnore.Break)
             .visible(selfPopInvincibility::get)
-            .build());
+            .build()
+    );
 
     public final Setting<Boolean> targetPopInvincibility = sgChainPop.add(new BoolSetting.Builder()
             .name("target-pop-invincibility")
             .description("Tries to pause certain actions when your enemy just popped.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> targetPopInvincibilityTime = sgChainPop.add(new IntSetting.Builder()
             .name("target-pop-time")
@@ -747,76 +796,105 @@ public class BananaBomber extends Module {
             .defaultValue(500)
             .sliderRange(1,2000)
             .visible(targetPopInvincibility::get)
-            .build());
+            .build()
+    );
 
     public final Setting<PopPause> popPause = sgChainPop.add(new EnumSetting.Builder<PopPause>()
             .name("pop-pause-mode")
             .description("What to pause when your enemy just popped.")
             .defaultValue(PopPause.Break)
             .visible(targetPopInvincibility::get)
-            .build());
+            .build()
+    );
+
 
     // Pause
-
     private final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
             .name("pause-health")
             .description("Pauses when you go below a certain health.")
             .defaultValue(5)
             .min(0)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> eatPause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-eat")
             .description("Pauses Crystal Aura when eating.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> drinkPause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-drink")
             .description("Pauses Crystal Aura when drinking.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> minePause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-mine")
             .description("Pauses Crystal Aura when mining.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
 
     // Render
+    public final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
+            .name("render-swing")
+            .description("Whether to swing your hand client side")
+            .defaultValue(true)
+            .build()
+    );
+
     private final Setting<RenderMode> mode = sgRender.add(new EnumSetting.Builder<RenderMode>()
             .name("render-mode")
             .description("The mode to render in.")
             .defaultValue(RenderMode.Normal)
-            .build());
+            .build()
+    );
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
-            .build());
+            .visible(() -> mode.get() != RenderMode.None)
+            .build()
+    );
+
+    private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
+            .name("place-time")
+            .description("How long to render placements for.")
+            .defaultValue(10)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(() -> mode.get() == RenderMode.Normal)
+            .build()
+    );
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 45))
             .visible(() -> mode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Lines)
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The line color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> mode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Sides)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> renderDamageText = sgRender.add(new BoolSetting.Builder()
             .name("damage")
             .description("Renders crystal damage text in the block overlay.")
             .defaultValue(true)
             .visible(() -> mode.get() != RenderMode.None)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> damageTextScale = sgRender.add(new DoubleSetting.Builder()
             .name("damage-scale")
@@ -825,72 +903,76 @@ public class BananaBomber extends Module {
             .min(1)
             .sliderMax(4)
             .visible(() -> mode.get() != RenderMode.None && renderDamageText.get())
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> damageTextColor = sgRender.add(new ColorSetting.Builder()
             .name("damage-color")
             .description("What the color of the damage text should be.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> mode.get() != RenderMode.None && renderDamageText.get())
-            .build());
-
-    private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
-            .name("place-time")
-            .description("How long to render for.")
-            .defaultValue(10)
-            .min(0)
-            .sliderMax(20)
-            .visible(() -> mode.get() == RenderMode.Normal)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> renderBreak = sgRender.add(new BoolSetting.Builder()
             .name("break")
             .description("Renders a block overlay over the block the crystals are broken on.")
             .defaultValue(false)
-            .build());
+            .visible(() -> mode.get() != RenderMode.None)
+            .build()
+    );
 
     private final Setting<SettingColor> sideColorB = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 45))
-            .visible(() -> renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
-            .build());
+            .visible(() -> mode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
+            .build()
+    );
 
     private final Setting<SettingColor> lineColorB = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The line color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
-            .visible(() -> renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
-            .build());
+            .visible(() -> mode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
+            .build()
+    );
 
     private final Setting<Integer> renderBreakTime = sgRender.add(new IntSetting.Builder()
             .name("break-time")
             .description("How long to render breaking for.")
-            .defaultValue(13)
-            .min(0)
-            .sliderMax(20)
-            .visible(()-> renderBreak.get() && mode.get() == RenderMode.Normal)
-            .build());
+            .defaultValue(7)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(()-> mode.get() != RenderMode.None && renderBreak.get() && mode.get() == RenderMode.Normal)
+            .build()
+    );
 
     private final Setting<Integer> fadeTime = sgRender.add(new IntSetting.Builder()
             .name("fade-time")
             .description("Tick duration for rendering placing.")
             .defaultValue(8)
-            .range(0, 40)
-            .sliderRange(0, 40)
-            .visible(()-> (renderBreak.get() ||  mode.get() == RenderMode.Fade))
-            .build());
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(()-> (mode.get() == RenderMode.Fade))
+            .build()
+    );
 
     private final Setting<Integer> fadeAmount = sgRender.add(new IntSetting.Builder()
             .name("fade-amount")
             .description("How strong the fade should be.")
             .defaultValue(8)
-            .range(0, 100)
-            .sliderRange(0, 100)
-            .visible(()-> (renderBreak.get() || mode.get() == RenderMode.Fade))
-            .build());
+            .range(0,100)
+            .sliderRange(0,100)
+            .visible(()-> (mode.get() == RenderMode.Fade))
+            .build()
+    );
 
-    // Fields
+
+    public BananaBomber() {
+        super(BananaPlus.COMBAT, "banana-bomber", "Automatically places and attacks crystals.");
+    }
+
 
     public int breakTimer;
     private int placeTimer;
@@ -944,9 +1026,6 @@ public class BananaBomber extends Module {
 
     private double renderDamage;
 
-    public BananaBomber() {
-        super(AddModule.COMBAT, "banana-bomber", "Automatically places and attacks crystals.");
-    }
 
     @Override
     public void onActivate() {
@@ -1038,7 +1117,7 @@ public class BananaBomber extends Module {
             int id = it.nextInt();
             int ticks = waitingToExplode.get(id);
 
-            if (ticks >= waiting.get()) {
+            if (ticks >= cancelTicks.get()) {
                 it.remove();
                 removed.remove(id);
             }
@@ -1191,7 +1270,7 @@ public class BananaBomber extends Module {
         blockPos.set(entity.getBlockPos()).move(0, -1, 0);
 
         if (!CrystalUtil.shouldIgnoreSelfBreakDamage()) {
-            float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, entity.getPos(), predictMovement.get(), selfBreakExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+            float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, entity.getPos(), predictMovement.get(), breakRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
             if (selfDamage > BmaxDamage.get() || (BantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                 return 0;
         } else if (debug.get()) warning("Ignoring self break dmg");
@@ -1292,7 +1371,7 @@ public class BananaBomber extends Module {
         AtomicBoolean isSupport = new AtomicBoolean(support.get() != SupportMode.Disabled);
 
         // Find best position to place the crystal on
-        BlockIterator.register((int) Math.ceil(placeRange.get()), (int) Math.ceil(placeVerticalRange.get()), (bp, blockState) -> {
+        BlockIterator.register((int) Math.ceil(placeRange.get()), (int) Math.ceil(placeRange.get()), (bp, blockState) -> {
             // Todo : implement a method to check more efficiently instead of using the blockstate check, maybe another check can come in before them to see if they're a solid block or not since it takes too much resources (maybe a fullcube check?)
 
             // Check if its bedrock or obsidian and return if isSupport is false
@@ -1330,7 +1409,7 @@ public class BananaBomber extends Module {
 
             // Check damage to self and anti suicide
             if (!CrystalUtil.shouldIgnoreSelfPlaceDamage()) {
-                float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, vec3d, predictMovement.get(), selfPlaceExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+                float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, vec3d, predictMovement.get(), placeRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
                 if (selfDamage > PmaxDamage.get() || (PantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                     return;
             } else if (debug.get()) warning("Ignoring self place dmg");
@@ -1427,8 +1506,8 @@ public class BananaBomber extends Module {
             // Place crystal
             mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result));
 
-            if (placeSwing.get()) mc.player.swingHand(hand);
-            if (!ghostPlace.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));
+            if (renderSwing.get()) mc.player.swingHand(hand);
+            if (!hideSwings.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));
 
             if (debug.get()) warning("Placing");
 
@@ -1447,7 +1526,7 @@ public class BananaBomber extends Module {
         }
         else {
             // Place support block
-            BlockUtils.place(supportBlock, item, false, 0, placeSwing.get(), true, false);
+            BlockUtils.place(supportBlock, item, false, 0, renderSwing.get(), true, false);
             placeTimer += supportDelay.get();
 
             if (supportDelay.get() == 0) placeCrystal(result, damage, null);
@@ -1534,13 +1613,13 @@ public class BananaBomber extends Module {
 
         if (fast) {
             PlayerEntity target = getNearestTarget();
-            if (!(smartDelay.get() && breaking && target.hurtTime > 0)) damage = BPlusDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+            if (!(smartDelay.get() && breaking && target.hurtTime > 0)) damage = BPlusDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
         }
         else {
             for (PlayerEntity target : targets) {
                 if (smartDelay.get() && breaking && target.hurtTime > 0) continue;
 
-                float dmg = BPlusDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+                float dmg = BPlusDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
 
                 // Update best target
                 if (dmg > bestTargetDamage) {
@@ -1581,9 +1660,8 @@ public class BananaBomber extends Module {
 
     @EventHandler
     private void onReceivePacket(PacketEvent.Receive event) {
-        if (!(event.packet instanceof EntityStatusS2CPacket)) return;
+        if (!(event.packet instanceof EntityStatusS2CPacket p)) return;
 
-        EntityStatusS2CPacket p = (EntityStatusS2CPacket) event.packet;
         if (p.getStatus() != 35) return;
 
         Entity entity = p.getEntity(mc.world);
@@ -1629,14 +1707,17 @@ public class BananaBomber extends Module {
             }
 
             if (breakRenderTimer > 0 && renderBreak.get() && !mc.world.getBlockState(breakRenderPos).isAir()) {
-                int preSideA = sideColor.get().a;
-                sideColor.get().a -= 20;
-                sideColor.get().validate();
+                int preSideA = 0;
+                int preLineA = 0;
+                if (mode.get() == RenderMode.Fade) {
+                    preSideA = sideColor.get().a;
+                    sideColor.get().a -= 20;
+                    sideColor.get().validate();
 
-                int preLineA = lineColorB.get().a;
-                lineColorB.get().a -= 20;
-                lineColorB.get().validate();
-
+                    preLineA = lineColorB.get().a;
+                    lineColorB.get().a -= 20;
+                    lineColorB.get().validate();
+                }
                 event.renderer.box(breakRenderPos, sideColorB.get(), lineColorB.get(), shapeMode.get(), 0);
 
                 sideColorB.get().a = preSideA;

@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
 import bananaplus.utils.ServerUtils.BPlusServerUtils;
@@ -266,7 +266,7 @@ public class StrafePlus extends Module {
             .build());
 
     public StrafePlus() {
-        super(AddModule.COMBAT, "strafe+", "Increase speed and control.");
+        super(BananaPlus.COMBAT, "strafe+", "Increase speed and control.");
     }
 
     // Fields

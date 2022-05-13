@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
 import bananaplus.utils.ConType;
@@ -34,43 +34,46 @@ public class AntiTrap extends Module {
         Down
     }
 
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
-            .name("debug")
-            .defaultValue(false)
-            .build());
 
+    // General
     private final Setting<ConType> trappedWhen = sgGeneral.add(new EnumSetting.Builder<ConType>()
-            .name("trapped-when")
-            .description("When to qualify yourself as trapped.")
-            .defaultValue(ConType.TopTrapped)
-            .build());
+            .name("activate-on")
+            .description("How you must be trapped in order to activate.")
+            .defaultValue(ConType.BothTrapped)
+            .build()
+    );
 
     private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
-            .description("Only tries to Anti Trap when you are on ground.")
+            .description("Only activates when you are on the ground.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyInHole = sgGeneral.add(new BoolSetting.Builder()
             .name("only-in-hole")
-            .description("Only tries to Anti Trap when you are in a hole.")
+            .description("Only activates when you are in a hole.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .defaultValue(Mode.Chorus)
             .description("What to do when you are trapped.")
-            .build());
+            .build()
+    );
 
     private final Setting<VClipDirection> vClipDirection = sgGeneral.add(new EnumSetting.Builder<VClipDirection>()
             .name("v-clip-direction")
             .description("Direction to VClip towards.")
             .defaultValue(VClipDirection.Up)
             .visible(() -> mode.get() == Mode.VClip)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> minVClipHeight = sgGeneral.add(new IntSetting.Builder()
             .name("min-height")
@@ -79,7 +82,8 @@ public class AntiTrap extends Module {
             .min(3)
             .defaultValue(3)
             .visible(() -> mode.get() == Mode.VClip)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> maxVClipHeight = sgGeneral.add(new IntSetting.Builder()
             .name("max-height")
@@ -88,46 +92,61 @@ public class AntiTrap extends Module {
             .min(3)
             .defaultValue(4)
             .visible(() -> mode.get() == Mode.VClip)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoMove = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-move")
             .description("Puts a chorus into a selected slot if you don't have one in your hotbar")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Chorus)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> autoMoveSlot = sgGeneral.add(new IntSetting.Builder()
             .name("auto-move-slot")
             .description("The slot auto move moves chorus to.")
             .defaultValue(9)
-            .range(1, 9)
-            .sliderRange(1, 9)
+            .range(1,9)
+            .sliderRange(1,9)
             .visible(() -> mode.get() == Mode.Chorus && autoMove.get())
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoSwitch = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-switch")
             .description("Switches to chorus automatically.")
             .visible(() -> mode.get() == Mode.Chorus)
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoEat = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-eat")
             .description("Eats the chorus automatically.")
             .visible(() -> mode.get() == Mode.Chorus)
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
+    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
+            .name("debug")
+            .description("Show the module's processes in chat.")
+            .defaultValue(false)
+            .build()
+    );
+
 
     public AntiTrap() {
-        super(AddModule.COMBAT, "anti-trap", "Tries to save you after getting trapped.");
+        super(BananaPlus.COMBAT, "anti-trap", "Tries to save you after getting trapped.");
     }
+
 
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
     private boolean eating;
     private boolean swapped;
+
 
     @EventHandler
     private void onTick(TickEvent.Post event) {

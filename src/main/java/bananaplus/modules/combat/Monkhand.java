@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -150,7 +150,7 @@ public class Monkhand extends Module {
     private Item currentItem;
 
     public Monkhand() {
-        super(AddModule.COMBAT, "monkhand", "[B+ Modified] Allows you to hold specified items in your offhand.");
+        super(BananaPlus.COMBAT, "monkhand", "[B+ Modified] Allows you to hold specified items in your offhand.");
     }
 
     @Override
@@ -177,7 +177,7 @@ public class Monkhand extends Module {
                 || modules.isActive(CevBreaker.class) && crystalCev.get()) currentItem = Item.Crystal;
 
         // Xp
-        else if (modules.isActive(AutoXP.class) && modules.get(AutoXP.class).isStandbying && modules.get(AutoXP.class).isRepairing && AutoXP.get()) currentItem = Item.Exp;
+        else if (modules.isActive(AutoXP.class) && modules.get(AutoXP.class).isOnStandby && modules.get(AutoXP.class).isRepairing && AutoXP.get()) currentItem = Item.Exp;
         // Rocket
         else if ((mc.player.getMainHandStack().getItem() instanceof CrossbowItem) && RocketBow.get()) currentItem = Item.Firework;
         // Web

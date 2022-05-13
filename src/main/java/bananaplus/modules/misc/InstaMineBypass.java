@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.entity.player.StartBreakingBlockEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -120,7 +120,7 @@ public class InstaMineBypass extends Module {
     private Direction direction;
 
     public InstaMineBypass() {
-        super(AddModule.MISC, "insta-mine-bypass", "Attempts to bypass instant mine.");
+        super(BananaPlus.MISC, "insta-mine-bypass", "Attempts to bypass instant mine.");
     }
 
     @Override

@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -21,7 +21,7 @@ public class TimeAnimator extends Module {
             .build());
 
     public TimeAnimator() {
-        super(AddModule.MISC, "time-animator", "Speeds up the day and night cycle.");
+        super(BananaPlus.MISC, "time-animator", "Speeds up the day and night cycle.");
     }
 
     private long timer;

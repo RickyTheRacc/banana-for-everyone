@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.EnumSetting;
@@ -48,7 +48,7 @@ public class StepPlus extends Module {
             .build());
 
     public StepPlus() {
-        super(AddModule.COMBAT, "step+", "Allows you to walk up full blocks.");
+        super(BananaPlus.COMBAT, "step+", "Allows you to walk up full blocks.");
     }
 
     private boolean flag;

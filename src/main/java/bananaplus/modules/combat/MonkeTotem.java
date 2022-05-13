@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusDamageUtils;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.Timer;
@@ -199,7 +199,7 @@ public class MonkeTotem extends Module {
             .build());
 
     public MonkeTotem() {
-        super(AddModule.COMBAT, "monke-totem", "Automatically puts a totem in your offhand. (If issues occur with normal offhand, use monkhand)");
+        super(BananaPlus.COMBAT, "monke-totem", "Automatically puts a totem in your offhand. (If issues occur with normal offhand, use monkhand)");
     }
 
     // Fields

@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -45,7 +45,7 @@ public class QuiverPlus extends Module {
     private final List<Integer> arrowSlots = new ArrayList<>();
 
     public QuiverPlus() {
-        super(AddModule.COMBAT, "quiver+", "Shoots arrows at yourself.");
+        super(BananaPlus.COMBAT, "quiver+", "Shoots arrows at yourself.");
     }
 
     @Override

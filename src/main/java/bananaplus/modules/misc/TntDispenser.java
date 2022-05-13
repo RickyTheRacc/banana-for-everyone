@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -95,7 +95,7 @@ public class TntDispenser extends Module {
             .build()
     );
 
-    private final Setting<Integer> TNTstacks = sgDispensing.add(new IntSetting.Builder()
+    private final Setting<Integer> tntStacks = sgDispensing.add(new IntSetting.Builder()
             .name("TNT-stacks")
             .description("How many stacks of TNT to put in the dispenser.")
             .defaultValue(1)
@@ -321,7 +321,7 @@ public class TntDispenser extends Module {
     private int timer;
 
     public TntDispenser() {
-        super(AddModule.COMBAT, "tnt-dispenser", "Traps people in an obsidian and perform mass amount of TNT trolling on them.");
+        super(BananaPlus.COMBAT, "tnt-dispenser", "Traps people in an obsidian and perform mass amount of TNT trolling on them.");
     }
 
     @Override

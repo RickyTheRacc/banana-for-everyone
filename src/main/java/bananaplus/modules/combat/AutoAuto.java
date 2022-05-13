@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.modules.misc.AntiGhostBlock;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -21,38 +21,46 @@ public class AutoAuto extends Module {
     private final SettingGroup sgAutoCity = settings.createGroup("Auto City+");
     private final SettingGroup sgBurrowMiner = settings.createGroup("Burrow Miner");
 
+
     // Anti Ghost
     private final Setting<Boolean> antiGhost = sgAntiGhost.add(new BoolSetting.Builder()
             .name("anti-ghost-surround")
             .description("Automatically turns on Anti Ghost Block if Surround+ is on and you are surrounded.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Surround
     private final Setting<Boolean> surroundPlus = sgSurround.add(new BoolSetting.Builder()
             .name("surround+")
             .description("Automatically turns on surround+ once you are in a hole.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyGround = sgSurround.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .defaultValue(true)
             .visible(surroundPlus::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> allowDouble = sgSurround.add(new BoolSetting.Builder()
-            .name("allow-double-holes")
+            .name("allow-doubles")
             .defaultValue(false)
             .visible(surroundPlus::get)
-            .build());
+            .build()
+    );
+
 
     // Auto City
     private final Setting<Boolean> autoCity = sgAutoCity.add(new BoolSetting.Builder()
             .name("auto-city+")
             .description("Automatically turns on Auto City+ if the closest target to you is burrowed / surrounded.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> ACtargetRange = sgAutoCity.add(new DoubleSetting.Builder()
             .name("target-range")
@@ -60,26 +68,31 @@ public class AutoAuto extends Module {
             .defaultValue(5)
             .sliderRange(0,7)
             .visible(autoCity::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> AConlyinHole = sgAutoCity.add(new BoolSetting.Builder()
             .name("only-in-hole")
             .defaultValue(false)
             .visible(autoCity::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> ACallowDoubleHole = sgAutoCity.add(new BoolSetting.Builder()
-            .name("allow-double-holes")
+            .name("allow-doubles")
             .defaultValue(false)
             .visible(() -> autoCity.get() && AConlyinHole.get())
-            .build());
+            .build()
+    );
+
 
     // Burrow Miner
     private final Setting<Boolean> burrowMiner = sgBurrowMiner.add(new BoolSetting.Builder()
             .name("burrow-miner")
             .description("Automatically turns on Burrow Miner if the closest target to you is burrowed.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> BMtargetRange = sgBurrowMiner.add(new DoubleSetting.Builder()
             .name("target-range")
@@ -87,26 +100,32 @@ public class AutoAuto extends Module {
             .defaultValue(5)
             .sliderRange(0,7)
             .visible(burrowMiner::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> BMonlyinHole = sgBurrowMiner.add(new BoolSetting.Builder()
             .name("only-in-hole")
             .defaultValue(false)
             .visible(burrowMiner::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> BMallowDoubleHole = sgBurrowMiner.add(new BoolSetting.Builder()
-            .name("allow-double-holes")
+            .name("allow-doubles")
             .defaultValue(false)
             .visible(() -> burrowMiner.get() && BMonlyinHole.get())
-            .build());
+            .build()
+    );
+
 
     public AutoAuto() {
-        super(AddModule.COMBAT, "auto-auto", "Automates automation");
+        super(BananaPlus.COMBAT, "auto-auto", "Automates automation");
     }
+
 
     private boolean shouldAntiGhost;
     private boolean didAntiGhost;
+
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {

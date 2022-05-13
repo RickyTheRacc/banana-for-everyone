@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -38,7 +38,7 @@ public class MonkeDetector extends Module {
         .build());
 
     public MonkeDetector() {
-        super(AddModule.COMBAT, "monke-detector", "Checks if the CA target is not burrowed, and isn't surrounded. (To be paired with Banana Bomber)");
+        super(BananaPlus.COMBAT, "monke-detector", "Checks if the CA target is not burrowed, and isn't surrounded. (To be paired with Banana Bomber)");
     }
 
     private PlayerEntity target;

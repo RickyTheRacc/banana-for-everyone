@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -40,7 +40,7 @@ public class AntiInvisBlock extends Module {
             .build());
 
     public AntiInvisBlock() {
-        super(AddModule.MISC, "anti-invis-block", "Tries to add nearby invisible blocks.");
+        super(BananaPlus.MISC, "anti-invis-block", "Tries to add nearby invisible blocks.");
     }
 
     private static final BlockPos.Mutable blockPos = new BlockPos.Mutable();

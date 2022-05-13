@@ -27,11 +27,11 @@ public class CrystalUtil {
 
     public static void attackCrystal(Entity entity) {
         // Attack
-        mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(entity, BBomber.sneak.get()));
+        mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(entity, mc.player.isSneaking()));
 
         Hand hand = Hand.MAIN_HAND;
-        if (BBomber.breakSwing.get()) mc.player.swingHand(hand);
-        if (!BBomber.ghostBreak.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));
+        if (BBomber.renderSwing.get()) mc.player.swingHand(hand);
+        if (!BBomber.hideSwings.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));
         BBomber.attacks++;
 
         getBreakDelay();
@@ -51,13 +51,13 @@ public class CrystalUtil {
 
     public static boolean shouldIgnoreSelfPlaceDamage() {
         return (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.Always
-                || (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.SurroundedorBurrowed && (BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any) || BPlusEntityUtils.isBurrowed(mc.player, BPlusEntityUtils.BlastResistantType.Any)))
+                || (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any) || BPlusEntityUtils.isBurrowed(mc.player, BPlusEntityUtils.BlastResistantType.Any)))
                 || (BBomber.selfPopInvincibility.get() && BBomber.selfPopIgnore.get() != BananaBomber.SelfPopIgnore.Break && !BBomber.selfPoppedTimer.passedMillis(BBomber.selfPopInvincibilityTime.get())));
     }
 
     public static boolean shouldIgnoreSelfBreakDamage() {
         return (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.Always
-                || (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.SurroundedorBurrowed && (BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any) || BPlusEntityUtils.isBurrowed(mc.player, BPlusEntityUtils.BlastResistantType.Any)))
+                || (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any) || BPlusEntityUtils.isBurrowed(mc.player, BPlusEntityUtils.BlastResistantType.Any)))
                 || (BBomber.selfPopInvincibility.get() && BBomber.selfPopIgnore.get() != BananaBomber.SelfPopIgnore.Place && !BBomber.selfPoppedTimer.passedMillis(BBomber.selfPopInvincibilityTime.get())));
     }
 
@@ -76,11 +76,10 @@ public class CrystalUtil {
             BlockPos pos = target.getBlockPos();
             if (BBomber.CevPause.get() && Modules.get().isActive(CevBreaker.class)) return false;
             if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class) || Modules.get().isActive(PostTickKA.class))) return false;
-            if (!BBomber.faceSurrounded.get() && BPlusEntityUtils.isFaceSurrounded(target, BPlusEntityUtils.BlastResistantType.Any)) return false;
+            if (BPlusEntityUtils.isFaceSurrounded(target, BPlusEntityUtils.BlastResistantType.Any)) return false;
             if (BBomber.surrHoldPause.get() && isSurroundHolding()) return false;
 
             if (crystal.getY() == pos.getY() + 1 && Math.abs(pos.getX() - crystal.getX()) <= 1 && Math.abs(pos.getZ() - crystal.getZ()) <= 1) {
-                if (BBomber.greenHolers.get() && BPlusEntityUtils.isSurrounded(target, BPlusEntityUtils.BlastResistantType.Unbreakable)) return true;
                 if (EntityUtils.getTotalHealth(target) <= BBomber.facePlaceHealth.get()) return true;
 
                 for (ItemStack itemStack : target.getArmorItems()) {
@@ -173,12 +172,12 @@ public class CrystalUtil {
                         || (BBomber.surroundBDiagonal.get() && (crystal.equals(pos.east().north()) || crystal.equals(pos.east().south())))
                 ));
 
-        // I tried this one below and it doesnt work very well, still i think there's a better way of doing this tho, this takes so much computing power
+        // I tried this one below and it doesn't work very well, still I think there's a better way of doing this tho, this takes so much computing power
         /*
         BlockPos targetSurround = EntityUtils.getCityBlock(playerTarget);
 
             if (targetSurround != null) {
-                // Checking arround targets city block
+                // Checking around targets city block
                 for (Direction direction : Direction.values()) {
                     if (direction == Direction.DOWN || direction == Direction.UP) continue;
 

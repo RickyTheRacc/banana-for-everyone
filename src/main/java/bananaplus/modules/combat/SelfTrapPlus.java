@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
 import bananaplus.utils.PositionHelper;
@@ -380,7 +380,7 @@ public class SelfTrapPlus extends Module {
             .build());
 
     public SelfTrapPlus() {
-        super(AddModule.COMBAT, "self-trap+", "Surrounds your head in blocks to prevent you from taking lots of damage.");
+        super(BananaPlus.COMBAT, "self-trap+", "Surrounds your head in blocks to prevent you from taking lots of damage.");
     }
 
     // Fields

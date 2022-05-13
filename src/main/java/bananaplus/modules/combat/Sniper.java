@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -101,7 +101,7 @@ public class Sniper extends Module {
             .build());
 
     public Sniper() {
-        super(AddModule.COMBAT, "sniper", "They used this on harambe... very sad.");
+        super(BananaPlus.COMBAT, "sniper", "They used this on harambe... very sad.");
     }
 
     private long lastShootTime;

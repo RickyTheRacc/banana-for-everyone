@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -62,7 +62,7 @@ public class AntiGhostBlock extends Module {
             .build());
 
     public AntiGhostBlock() {
-        super(AddModule.MISC, "anti-ghost-block", "Tries to remove nearby ghost blocks.");
+        super(BananaPlus.MISC, "anti-ghost-block", "Tries to remove nearby ghost blocks.");
     }
 
     private static final BlockPos.Mutable blockPos = new BlockPos.Mutable();

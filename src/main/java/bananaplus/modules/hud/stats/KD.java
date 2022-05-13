@@ -1,6 +1,6 @@
 package bananaplus.modules.hud.stats;
 
-import bananaplus.utils.EzUtil;
+import bananaplus.utils.StatsUtils;
 import meteordevelopment.meteorclient.systems.hud.HUD;
 import meteordevelopment.meteorclient.systems.hud.modules.DoubleTextHudElement;
 
@@ -11,7 +11,7 @@ public class KD extends DoubleTextHudElement {
 
     @Override
     protected String getRight() {
-        return (isInEditor() ? "0.00" : EzUtil.stringKD());
+        return (isInEditor() ? "0.00" : StatsUtils.KD());
     }
 
 }

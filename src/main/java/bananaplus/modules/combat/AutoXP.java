@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -17,87 +17,105 @@ import net.minecraft.util.Hand;
 public class AutoXP extends Module {
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+    private final SettingGroup sgSafety = settings.createGroup("Safety");
 
+
+    // General
     private final Setting<Boolean> replenish = sgGeneral.add(new BoolSetting.Builder()
             .name("replenish")
-            .description("Automatically replenishes exp into a selected hotbar slot.")
+            .description("Automatically move XP to a selected hotbar slot.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> slot = sgGeneral.add(new IntSetting.Builder()
             .name("exp-slot")
-            .description("The slot to replenish exp into.")
+            .description("The slot to replenish XP into.")
             .visible(replenish::get)
-            .defaultValue(6)
-            .range(1, 9)
-            .sliderRange(1, 9)
-            .build());
+            .defaultValue(5)
+            .range(1,9)
+            .sliderRange(1,9)
+            .build()
+    );
 
     private final Setting<Integer> maxThreshold = sgGeneral.add(new IntSetting.Builder()
-            .name("max-threshold")
-            .description("The maximum durability percentage to repair items to.")
-            .defaultValue(90)
-            .range(1, 100)
-            .sliderRange(1, 100)
-            .build());
+            .name("threshold")
+            .description("The maximum durability to repair items to.")
+            .defaultValue(80)
+            .range(1,100)
+            .sliderRange(1,100)
+            .build()
+    );
 
     private final Setting<Boolean> lookDown = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
-            .description("Forces you to rotate downwards when throwing bottles.")
+            .description("Forces you to rotate downwards when throwing XP.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyOnKey = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-key")
             .description("Only allows Auto XP to throw xp when a key is held.")
-            .defaultValue(false)
-            .build());
+            .defaultValue(true)
+            .build()
+    );
 
     private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
             .name("force-keybind")
-            .description("What key to press in order to allow Auto XP.")
+            .description("What key to press in order to throw Auto XP.")
             .defaultValue(Keybind.none())
             .visible(onlyOnKey::get)
-            .build());
-
-    private final Setting<Double> minHealth = sgGeneral.add(new DoubleSetting.Builder()
-            .name("min-health")
-            .description("Minimum health for Auto XP.")
-            .defaultValue(10)
-            .min(0)
-            .sliderMax(20)
-            .build());
-
-    private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
-            .name("only-on-ground")
-            .description("Only allows when you are on the ground.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> onlyInHole = sgGeneral.add(new BoolSetting.Builder()
-            .name("only-in-hole")
-            .description("Only allows when you are in a hole.")
-            .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoToggle = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-toggle")
-            .description("Toggles off when your armor is repaired / no xp is found.")
-            .defaultValue(true)
-            .build());
+            .description("Toggles off when your armor is repaired / No XP is found.")
+            .defaultValue(false)
+            .build()
+    );
 
-    public boolean isStandbying;
+
+    // Safety
+    private final Setting<Double> minHealth = sgSafety.add(new DoubleSetting.Builder()
+            .name("min-health")
+            .description("Minimum health for Auto XP.")
+            .defaultValue(10)
+            .range(0,20)
+            .sliderRange(0,20)
+            .build()
+    );
+
+    private final Setting<Boolean> onlyOnGround = sgSafety.add(new BoolSetting.Builder()
+            .name("only-on-ground")
+            .description("Only allows when you are on the ground.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> onlyInHole = sgSafety.add(new BoolSetting.Builder()
+            .name("only-in-hole")
+            .description("Only allows when you are in a hole.")
+            .defaultValue(false)
+            .build()
+    );
+
+
+    public AutoXP() {
+        super(BananaPlus.COMBAT, "auto-XP", "Automatically repairs your armor and tools in pvp.");
+    }
+
+
+    public boolean isOnStandby;
     private boolean isKey, isHealth, isGround, isHole;
     public boolean isRepairing;
 
-    public AutoXP() {
-        super(AddModule.COMBAT, "auto-XP", "Automatically repairs your armor and tools in pvp.");
-    }
 
     @Override
     public void onDeactivate() {
         isRepairing = false;
-        isStandbying = false;
+        isOnStandby = false;
     }
 
     @EventHandler
@@ -107,9 +125,9 @@ public class AutoXP extends Module {
         isGround = (onlyOnGround.get() && mc.player.isOnGround()) || !onlyOnGround.get();
         isHole = (onlyInHole.get() && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)) || !onlyInHole.get();
 
-        isStandbying = isKey && isHealth && isGround && isHole;
+        isOnStandby = isKey && isHealth && isGround && isHole;
 
-        if (!isStandbying) return;
+        if (!isOnStandby) return;
 
         if (repaired()) {
             if (autoToggle.get()) {

@@ -1,7 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
-import bananaplus.utils.EzUtil;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.StatsUtils;
 import meteordevelopment.discordipc.DiscordIPC;
 import meteordevelopment.discordipc.RichPresence;
@@ -107,7 +106,7 @@ public class BDiscordPresence extends Module {
     private int line2Ticks, line2I;
 
     public BDiscordPresence() {
-        super(AddModule.MISC, "B+-discord-presence", "Displays Banana+ as your presence on Discord. U can use these: (killCount) = killStreak, (enemy) = player u killed, (KD) = kills/deaths, u can also use starscript {} see doc down below");
+        super(BananaPlus.MISC, "B+-discord-presence", "Displays Banana+ as your presence on Discord. U can use these: (killCount) = killStreak, (enemy) = player u killed, (KD) = kills/deaths, u can also use starscript {} see doc down below");
 
         runInMainMenu = true;
     }
@@ -189,7 +188,7 @@ public class BDiscordPresence extends Module {
                     }
 
                     try {
-                        rpc.setDetails(MeteorStarscript.ss.run(line1Scripts.get(i)).replace("(killCount)", StatsUtils.killStreak.toString()).replace("(KD)", EzUtil.stringKD()).replace("(kills)", StatsUtils.kills.toString()).replace("(deaths)", StatsUtils.deaths.toString()));
+                        rpc.setDetails(MeteorStarscript.ss.run(line1Scripts.get(i)).replace("(killCount)", StatsUtils.killStreak.toString()).replace("(KD)", StatsUtils.KD()).replace("(kills)", StatsUtils.kills.toString()).replace("(deaths)", StatsUtils.deaths.toString()));
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
@@ -209,7 +208,7 @@ public class BDiscordPresence extends Module {
                     }
 
                     try {
-                        rpc.setState(MeteorStarscript.ss.run(line2Scripts.get(i)).replace("(killCount)", StatsUtils.killStreak.toString()).replace("(KD)", EzUtil.stringKD()).replace("(kills)", StatsUtils.kills.toString()).replace("(deaths)", StatsUtils.deaths.toString()));
+                        rpc.setState(MeteorStarscript.ss.run(line2Scripts.get(i)).replace("(killCount)", StatsUtils.killStreak.toString()).replace("(KD)", StatsUtils.KD()).replace("(kills)", StatsUtils.kills.toString()).replace("(deaths)", StatsUtils.deaths.toString()));
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
@@ -232,7 +231,7 @@ public class BDiscordPresence extends Module {
                 else if (mc.currentScreen instanceof MultiplayerScreen) rpc.setState("Selecting server");
                 else if (mc.currentScreen instanceof AddServerScreen) rpc.setState("Adding server");
                 else if (mc.currentScreen instanceof ConnectScreen || mc.currentScreen instanceof DirectConnectScreen) rpc.setState("Connecting to server");
-                else if (mc.currentScreen instanceof WidgetScreen) rpc.setState("Browsing Banana+'s GUI");
+                else if (mc.currentScreen instanceof WidgetScreen) rpc.setState("Browsing the GUI");
                 else if (mc.currentScreen instanceof OptionsScreen || mc.currentScreen instanceof SkinOptionsScreen || mc.currentScreen instanceof SoundOptionsScreen || mc.currentScreen instanceof VideoOptionsScreen || mc.currentScreen instanceof ControlsOptionsScreen || mc.currentScreen instanceof LanguageOptionsScreen || mc.currentScreen instanceof ChatOptionsScreen || mc.currentScreen instanceof PackScreen || mc.currentScreen instanceof AccessibilityOptionsScreen) rpc.setState("Changing options");
                 else if (mc.currentScreen instanceof CreditsScreen) rpc.setState("Reading credits");
                 else if (mc.currentScreen instanceof RealmsScreen) rpc.setState("Browsing Realms");

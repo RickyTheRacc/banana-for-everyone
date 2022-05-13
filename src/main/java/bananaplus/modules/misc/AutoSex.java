@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -25,7 +25,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 public class AutoSex extends Module{
 
     public AutoSex() {
-        super(AddModule.MISC, "auto-Sex", "Tries to have sex whit the player in different ways.");
+        super(BananaPlus.MISC, "auto-Sex", "Tries to have sex whit the player in different ways.");
     }
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();

@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.modules.combat.StrafePlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
@@ -258,7 +258,7 @@ public class Platform extends Module {
             .build());
 
     public Platform() {
-        super(AddModule.MISC, "platform", "Platforms around your feet to make building easier.");
+        super(BananaPlus.MISC, "platform", "Platforms around your feet to make building easier.");
     }
 
     // Fields

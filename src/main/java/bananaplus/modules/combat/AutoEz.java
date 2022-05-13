@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.EzUtil;
 import bananaplus.utils.ServerUtils.BPlusPacketUtils;
 import bananaplus.utils.StatsUtils;
@@ -33,7 +33,7 @@ import java.util.UUID;
 public class AutoEz extends Module {
 
     public AutoEz() {
-        super(AddModule.COMBAT, "auto-monke", "(kills) = kill count, (KS) = killstreak, (enemy) = player u killed, (KD) = kills/deaths, u can also use starscript {} see doc down below");
+        super(BananaPlus.COMBAT, "auto-monke", "(kills) = kill count, (KS) = killstreak, (enemy) = player u killed, (KD) = kills/deaths, u can also use starscript {} see doc down below");
     }
 
     private final SettingGroup sgAutoEz = settings.createGroup("Auto Ez");

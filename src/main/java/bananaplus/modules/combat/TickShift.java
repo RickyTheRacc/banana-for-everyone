@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.meteor.KeyEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -132,7 +132,7 @@ public class TickShift extends Module {
             .build());
 
     public TickShift() {
-        super(AddModule.COMBAT, "tick-shift", "Allows you to charge up movement packets and move swiftly.");
+        super(BananaPlus.COMBAT, "tick-shift", "Allows you to charge up movement packets and move swiftly.");
     }
 
     // Fields

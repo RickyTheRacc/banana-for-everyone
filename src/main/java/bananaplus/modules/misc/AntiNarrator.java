@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.meteor.KeyEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
@@ -34,7 +34,7 @@ public class AntiNarrator extends Module {
             .build());
 
     public AntiNarrator() {
-        super(AddModule.MISC, "anti-narrator", "Stops the annoying narrator from popping up. Cancel = Cancel event when you press Ctrl+B, Disable = Automatically disables narrator when you turn it on.");
+        super(BananaPlus.MISC, "anti-narrator", "Stops the annoying narrator from popping up. Cancel = Cancel event when you press Ctrl+B, Disable = Automatically disables narrator when you turn it on.");
     }
 
     @EventHandler

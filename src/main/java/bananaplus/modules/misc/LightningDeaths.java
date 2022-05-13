@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusWorldUtils;
 import bananaplus.utils.ServerUtils.BPlusPacketUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -30,7 +30,7 @@ public class LightningDeaths extends Module {
             .build());
 
     public LightningDeaths() {
-        super(AddModule.MISC, "lightning-deaths", "Spawns a lightning where a player dies.");
+        super(BananaPlus.MISC, "lightning-deaths", "Spawns a lightning where a player dies.");
     }
 
     @EventHandler

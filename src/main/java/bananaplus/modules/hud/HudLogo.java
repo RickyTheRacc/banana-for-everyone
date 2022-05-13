@@ -23,16 +23,16 @@ public class HudLogo extends HudElement {
 
     public enum Mode {Event, Basic, Circled}
 
-    private static final Identifier LOGO = new Identifier("bananaplus", "logo.png");
-    private static final Identifier LOGOC = new Identifier("bananaplus", "circle.png");
-    private static final Identifier LOGOCHRIS = new Identifier("bananaplus", "xmas.png");
-    private static final Identifier LOGOHALLO = new Identifier("bananaplus", "ween.png");
-    private static final Identifier SWEDEN = new Identifier("bananaplus", "sweden.png");
-    private static final Identifier PRIDE = new Identifier("bananaplus", "pride.png");
-    private static final Identifier BRI = new Identifier("bananaplus", "bri.png");
-    private static final Identifier MEX = new Identifier("bananaplus", "mex.png");
-    private static final Identifier USA = new Identifier("bananaplus", "usa.png");
-    private static final Identifier PAT = new Identifier("bananaplus", "patrick.png");
+    private static final Identifier LOGO = new Identifier("textures", "logo.png");
+    private static final Identifier LOGOC = new Identifier("textures", "circle.png");
+    private static final Identifier LOGOCHRIS = new Identifier("textures", "xmas.png");
+    private static final Identifier LOGOHALLO = new Identifier("textures", "ween.png");
+    private static final Identifier SWEDEN = new Identifier("textures", "sweden.png");
+    private static final Identifier PRIDE = new Identifier("textures", "pride.png");
+    private static final Identifier BRI = new Identifier("textures", "bri.png");
+    private static final Identifier MEX = new Identifier("textures", "mex.png");
+    private static final Identifier USA = new Identifier("textures", "usa.png");
+    private static final Identifier PAT = new Identifier("textures", "patrick.png");
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final Setting<Mode> logo = sgGeneral.add(new EnumSetting.Builder<Mode>()

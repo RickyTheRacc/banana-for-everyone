@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -139,7 +139,7 @@ public class HoleESPPlus extends Module {
     private final byte NULL = 0;
 
     public HoleESPPlus() {
-        super(AddModule.COMBAT, "hole-esp+", "Displays holes that you will take less damage in.");
+        super(BananaPlus.COMBAT, "hole-esp+", "Displays holes that you will take less damage in.");
     }
     
     // A way to improve this to not cause fps drops would be to use the searching for hole method from void esp, but we'll do that when fps issue is real

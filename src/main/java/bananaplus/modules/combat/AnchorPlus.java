@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.Timer;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
@@ -21,59 +21,69 @@ public class AnchorPlus extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgToggle = settings.createGroup("Toggles");
 
+
+    // General
     private final Setting<Integer> maxHeight = sgGeneral.add(new IntSetting.Builder()
             .name("max-height")
             .description("The maximum height Anchor will work at.")
             .defaultValue(10)
             .range(-64, 318)
             .sliderRange(-64, 318)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> minPitch = sgGeneral.add(new IntSetting.Builder()
             .name("min-pitch")
             .description("The minimum pitch at which anchor will work.")
-            .defaultValue(-90)
+            .defaultValue(75)
             .range(-90, 90)
             .sliderRange(-90, 90)
-            .build());
+            .build()
+    );
 
-    private final Setting<Boolean> cancelMove = sgGeneral.add(new BoolSetting.Builder()
-            .name("cancel-jump-in-hole")
+    private final Setting<Boolean> cancel = sgGeneral.add(new BoolSetting.Builder()
+            .name("cancel-jump")
             .description("Prevents you from jumping when Anchor is active and Min Pitch is met.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> pull = sgGeneral.add(new BoolSetting.Builder()
             .name("pull")
-            .description("The pull strength of Anchor.")
+            .description("Whether Anchor should pull you into a hole.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> pullSpeed = sgGeneral.add(new DoubleSetting.Builder()
             .name("pull-speed")
-            .description("How fast to pull towards the hole in blocks per second.")
+            .description("How fast Anchor should pull you into holes.")
             .defaultValue(0.3)
             .min(0)
             .sliderMax(5)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> webs = sgGeneral.add(new BoolSetting.Builder()
             .name("Pull into webs")
             .description("Will also pull into webs.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> whileForward = sgGeneral.add(new BoolSetting.Builder()
             .name("while-forward")
             .description("Should anchor+ be active forward key is held.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> whileJumping = sgGeneral.add(new BoolSetting.Builder()
             .name("while-jumping")
             .description("Should anchor be active while jump key held.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> pullDelay = sgGeneral.add(new IntSetting.Builder()
             .name("Pull-Delay")
@@ -82,34 +92,45 @@ public class AnchorPlus extends Module {
             .min(1)
             .sliderMax(60)
             .visible(() -> !whileJumping.get())
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onGround = sgGeneral.add(new BoolSetting.Builder()
             .name("Pull-On-Ground")
             .description("If the pull delay should be reset when u land on the ground.")
             .defaultValue(true)
             .visible(() -> !whileJumping.get())
-            .build());
+            .build()
+    );
+
 
     //Toggles
-
     private final Setting<Boolean> turnOffStep = sgToggle.add(new BoolSetting.Builder()
-            .name("Turn-off-Step")
+            .name("toggle-step")
             .description("Turns off Step on activation.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> turnOffStrafe = sgToggle.add(new BoolSetting.Builder()
-            .name("Turn-off-strafe+")
-            .description("Turns off strafe+ on activation.")
+            .name("toggle-strafe")
+            .description("Turns off Strafe on activation.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> turnOffSpeed = sgToggle.add(new BoolSetting.Builder()
-            .name("Turn-off-Speed")
+            .name("toggle-speed")
             .description("Turns off Speed on activation.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
+
+    public AnchorPlus() {
+        super(BananaPlus.COMBAT, "anchor+", "Helps you get into holes by stopping your movement completely over a hole.");
+    }
+
 
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
     private boolean wasInHole;
@@ -121,13 +142,10 @@ public class AnchorPlus extends Module {
     public boolean controlMovement;
     public double deltaX, deltaZ;
 
-    private Timer inAirTime = new Timer();
+    private final Timer inAirTime = new Timer();
     boolean didJump = false;
     boolean pausing = false;
 
-    public AnchorPlus() {
-        super(AddModule.COMBAT, "anchor+", "Helps you get into holes by stopping your movement completely over a hole.");
-    }
 
     @Override
     public void onActivate() {
@@ -138,7 +156,7 @@ public class AnchorPlus extends Module {
 
     @EventHandler
     private void onPreTick(TickEvent.Pre event) {
-        cancelJump = foundHole && cancelMove.get() && mc.player.getPitch() >= minPitch.get();
+        cancelJump = foundHole && cancel.get() && mc.player.getPitch() >= minPitch.get();
         Modules modules = Modules.get();
         if (turnOffStep.get() && modules.get(Step.class).isActive()) modules.get(Step.class).toggle();
         if (turnOffStrafe.get() && modules.get(StrafePlus.class).isActive()) modules.get(StrafePlus.class).toggle();
@@ -160,9 +178,7 @@ public class AnchorPlus extends Module {
         }
 
         if (!whileForward.get()) {
-            if (mc.options.forwardKey.isPressed()) {
-                pausing = true;
-            } else pausing = false;
+            pausing = mc.options.forwardKey.isPressed();
         } else pausing = false;
 
         if (didJump || pausing) return;

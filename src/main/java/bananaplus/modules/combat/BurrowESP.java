@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class BurrowESP extends Module {
 
-    public BurrowESP() { super(AddModule.COMBAT, "Burrow-ESP", "Displays if the closest target to you is burrowed / webbed."); }
+    public BurrowESP() { super(BananaPlus.COMBAT, "Burrow-ESP", "Displays if the closest target to you is burrowed / webbed."); }
 
     private final SettingGroup sgRender = settings.createGroup("Render");
 

@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.entity.player.StoppedUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -32,7 +32,7 @@ import java.util.List;
 public class OneClickEat extends Module {
 
     public OneClickEat() {
-        super(AddModule.MISC, "one-click-eat", "Allows you to eat a consumable with one click");
+        super(BananaPlus.MISC, "one-click-eat", "Allows you to eat a consumable with one click");
     }
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();

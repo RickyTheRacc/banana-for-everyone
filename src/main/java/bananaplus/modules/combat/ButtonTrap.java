@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusPlayerUtils;
 import bananaplus.utils.ConTypeInclAlways;
@@ -131,7 +131,7 @@ public class ButtonTrap extends Module {
     private int delay;
 
     public ButtonTrap() {
-        super(AddModule.COMBAT, "button-trap", "Anti Surround.");
+        super(BananaPlus.COMBAT, "button-trap", "Anti Surround.");
     }
 
     @Override

@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.settings.ColorSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -40,12 +40,12 @@ public class BPrefix extends Module {
             .build());
 
     public BPrefix() {
-        super(AddModule.MISC, "B+-prefix", "Allows Banana+ prefix for Chat Utils.");
+        super(BananaPlus.MISC, "B+-prefix", "Allows Banana+ prefix for Chat Utils.");
     }
 
     @Override
     public void onActivate() {
-        ChatUtils.registerCustomPrefix("bananaplus.modules", this::getPrefix);
+        ChatUtils.registerCustomPrefix("bplusdevelopment.modules", this::getPrefix);
     }
 
     public LiteralText getPrefix() {

@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusPlayerUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -123,7 +123,7 @@ public class BurrowMiner extends Module {
     private int ticksPassed;
 
     public BurrowMiner() {
-        super(AddModule.COMBAT, "burrow-miner", "Automatically mines enemy's burrow block.");
+        super(BananaPlus.COMBAT, "burrow-miner", "Automatically mines enemy's burrow block.");
     }
 
     @Override

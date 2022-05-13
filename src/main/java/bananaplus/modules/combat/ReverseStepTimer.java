@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -48,7 +48,7 @@ public class ReverseStepTimer extends Module {
             .build());
 
     public ReverseStepTimer() {
-        super(AddModule.COMBAT, "reverse-step-timer", "Tries to bypass strict server for reverse step.");
+        super(BananaPlus.COMBAT, "reverse-step-timer", "Tries to bypass strict server for reverse step.");
     }
 
     private int fallTicks;

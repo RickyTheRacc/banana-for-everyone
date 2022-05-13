@@ -20,8 +20,8 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-// The whole reason why this module still exist is cuz it uses the accesswidener, cuz i'm experimenting some stuff with predict break in
-// the ca and i think its that accesswidener is necessary so i still wanna experiment around with it, after i actually got it figured out
+// The whole reason why this module still exist is cuz it uses the accesswidener, cuz I'm experimenting some stuff with predict break in
+// the CA and I think it's that accesswidener is necessary, so I still wanna experiment around with it, after I actually got it figured out
 // this thing should be handled as a mixin into the meteor criticals module to be compatible with post tick ka
 
 public class Criticals extends Module {

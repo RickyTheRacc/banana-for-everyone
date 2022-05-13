@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
@@ -31,7 +31,7 @@ public class SmartHoleFill extends Module {
 
     // This is so ass i know -ben
     public SmartHoleFill() {
-        super(AddModule.COMBAT, "smort-hole-fill", "Prevents players from going into holes");
+        super(BananaPlus.COMBAT, "smort-hole-fill", "Prevents players from going into holes");
     }
 
     private final Setting<Integer> horizontalRadius = sgGeneral.add(new IntSetting.Builder()

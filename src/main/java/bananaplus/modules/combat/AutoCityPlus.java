@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusPlayerUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -28,179 +28,217 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class AutoCityPlus extends Module {
-    private final SettingGroup sgMode = settings.createGroup("Mode");
-    private final SettingGroup sgTarget = settings.createGroup("Targeting");
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+    private final SettingGroup sgTarget = settings.createGroup("Targeting");
+    private final SettingGroup sgToggles = settings.createGroup("Module Toggles");
     private final SettingGroup sgRender = settings.createGroup("Render");
+
 
     public enum Mode {
         Normal,
         Instant
     }
 
-    private final Setting<Mode> mode = sgMode.add(new EnumSetting.Builder<Mode>()
+
+    // General
+    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
-            .description("Method of citying target's surround")
+            .description("How AutoCity should try and mine blocks.")
             .defaultValue(Mode.Normal)
-            .build());
+            .build()
+    );
+
+    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
+            .name("instamine-delay")
+            .description("Delay between mining a block in ticks.")
+            .defaultValue(1)
+            .min(0)
+            .sliderMax(50)
+            .visible(() -> mode.get() == Mode.Instant)
+            .build()
+    );
+
+    private final Setting<Integer> amount = sgGeneral.add(new IntSetting.Builder()
+            .name("mining-packets")
+            .description("The amount of mining packets to be sent in a bundle.")
+            .defaultValue(1)
+            .range(1,5)
+            .sliderRange(1,5)
+            .visible(() -> mode.get() == Mode.Normal)
+            .build()
+    );
+
+    private final Setting<Boolean> autoSwitch = sgGeneral.add(new BoolSetting.Builder()
+            .name("auto-switch")
+            .description("Switch to a pickaxe when AutoCity is enabled.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> support = sgGeneral.add(new BoolSetting.Builder()
+            .name("support")
+            .description("Place a block below a cityable positions.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Double> supportRange = sgGeneral.add(new DoubleSetting.Builder()
+            .name("support-range")
+            .description("The range for placing support block.")
+            .defaultValue(4.5)
+            .range(0,6)
+            .sliderRange(0,6)
+            .visible(support::get)
+            .build()
+    );
+
+    private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
+            .name("rotate")
+            .description("Automatically rotates you towards the city block.")
+            .defaultValue(true)
+            .build()
+    );
+
+
+
+    private final Setting<Boolean> selfToggle = sgGeneral.add(new BoolSetting.Builder()
+            .name("self-toggle")
+            .description("Automatically toggles off after activation.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
+            .name("chat-info")
+            .description("Sends a message when it is trying to city someone.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Integer> instaToggle = sgGeneral.add(new IntSetting.Builder()
+            .name("toggle-delay")
+            .description("Amount of ticks the city block has to be air to auto toggle off.")
+            .defaultValue(40)
+            .min(0)
+            .sliderMax(100)
+            .visible(() -> mode.get() == Mode.Instant && selfToggle.get())
+            .build()
+    );
+
+
+    // Toggles
+    private final Setting<Boolean> turnOnBBomber = sgToggles.add(new BoolSetting.Builder()
+            .name("turn-on-auto-crystal")
+            .description("Automatically toggles Banana Bomber on if a block target is found.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> turnOnButtonTrap = sgToggles.add(new BoolSetting.Builder()
+            .name("turn-on-button-trap")
+            .description("Automatically toggles Button Trap on if a block target is found.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> turnOffInstaMine = sgToggles.add(new BoolSetting.Builder()
+            .name("turn-off-instamine")
+            .description("Automatically toggles Instamine off if a block target is found.")
+            .defaultValue(false)
+            .build()
+    );
+
 
     // Targeting
     private final Setting<Double> targetRange = sgTarget.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("The radius in which players get targeted.")
             .defaultValue(5)
-            .min(0)
-            .sliderMax(6)
-            .build());
+            .range(0,6)
+            .sliderRange(0,6)
+            .build()
+    );
 
     private final Setting<Double> mineRange = sgTarget.add(new DoubleSetting.Builder()
             .name("mining-range")
             .description("The radius which you can mine at.")
-            .defaultValue(5)
-            .min(0)
-            .sliderMax(7)
-            .build());
+            .defaultValue(4)
+            .range(0,6)
+            .sliderRange(0,6)
+            .build()
+    );
 
     private final Setting<Boolean> prioBurrowed = sgTarget.add(new BoolSetting.Builder()
-            .name("prioritise-burrow")
-            .description("Will prioritise targeting the burrow block.")
+            .name("mine-burrows")
+            .description("Will mine a target's burrow before citying them.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> noCitySurrounded = sgTarget.add(new BoolSetting.Builder()
             .name("not-surrounded")
-            .description("Will not city if the target is not surrounded.")
+            .description("Will not city a target if they aren't surrounded.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> avoidSelf = sgTarget.add(new BoolSetting.Builder()
             .name("avoid-self")
-            .description("Will avoid targeting self surround.")
+            .description("Will avoid targeting your own surround.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> lastResort = sgTarget.add(new BoolSetting.Builder()
             .name("last-resort")
-            .description("Will try to target your own surround as final option.")
+            .description("Will try to target your own surround if there are no other options.")
             .defaultValue(true)
             .visible(avoidSelf::get)
-            .build());
+            .build()
+    );
 
-    // General
-    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
-            .name("instamine-delay")
-            .description("Delay between instamine in ticks.")
-            .defaultValue(1)
-            .min(0)
-            .sliderMax(50)
-            .visible(() -> mode.get() == Mode.Instant)
-            .build());
-
-    private final Setting<Integer> amount = sgGeneral.add(new IntSetting.Builder()
-            .name("mining-packets")
-            .description("The amount of mining packets to be sent in a bundle.")
-            .defaultValue(1)
-            .range(1, 5)
-            .sliderRange(1, 5)
-            .visible(() -> mode.get() == Mode.Normal)
-            .build());
-
-    private final Setting<Boolean> autoSwitch = sgGeneral.add(new BoolSetting.Builder()
-            .name("auto-switch")
-            .description("Auto switches to a pickaxe when AutoCity is enabled.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> support = sgGeneral.add(new BoolSetting.Builder()
-            .name("support")
-            .description("If there is no block below a city block it will place one before mining.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Double> supportRange = sgGeneral.add(new DoubleSetting.Builder()
-            .name("support-range")
-            .description("The range for placing support block.")
-            .defaultValue(4.5)
-            .min(0)
-            .sliderMax(6)
-            .visible(support::get)
-            .build());
-
-    private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
-            .name("rotate")
-            .description("Automatically rotates you towards the city block.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> swing = sgGeneral.add(new BoolSetting.Builder()
-            .name("swing")
-            .description("Renders your swing client-side.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> selfToggle = sgGeneral.add(new BoolSetting.Builder()
-            .name("self-toggle")
-            .description("Automatically toggles off after activation.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
-            .name("chat-info")
-            .description("Sends a message when it is trying to city someone.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Integer> instaToggle = sgGeneral.add(new IntSetting.Builder()
-            .name("auto-toggle-delay")
-            .description("Amount of ticks the city block has to be air to auto toggle off.")
-            .defaultValue(40)
-            .min(0)
-            .sliderMax(100)
-            .visible(() -> mode.get() == Mode.Instant && selfToggle.get())
-            .build());
-
-    private final Setting<Boolean> turnOnBBomber = sgGeneral.add(new BoolSetting.Builder()
-            .name("Turn-on-Banana-Bomber")
-            .description("Automatically toggles Banana Bomber on if a block target is found.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> turnOnButtonTrap = sgGeneral.add(new BoolSetting.Builder()
-            .name("Turn-on-Button-Trap")
-            .description("Automatically toggles Button Trap on if a block target is found.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> turnOffInstaMine = sgGeneral.add(new BoolSetting.Builder()
-            .name("Turn-off-Instamine")
-            .description("Automatically toggles Instamine off if a block target is found.")
-            .defaultValue(false)
-            .build());
 
     // Rendering
+    private final Setting<Boolean> swing = sgRender.add(new BoolSetting.Builder()
+            .name("render-swing")
+            .description("Renders your swing client-side.")
+            .defaultValue(false)
+            .build()
+    );
+
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
-            .name("render")
-            .description("Renders a block overlay where the obsidian will be placed.")
+            .name("render-break")
+            .description("Renders the block being broken.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The color of the sides of the blocks being rendered.")
             .defaultValue(new SettingColor(230, 75, 100, 10))
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The color of the lines of the blocks being rendered.")
             .defaultValue(new SettingColor(230, 75, 100, 255))
-            .build());
+            .build()
+    );
+
+
+    public AutoCityPlus() {
+        super(BananaPlus.COMBAT, "auto-city+", "Automatically mine a target's surround.");
+    }
+
 
     private PlayerEntity target;
     private BlockPos blockPosTarget;
@@ -208,15 +246,11 @@ public class AutoCityPlus extends Module {
     private boolean supportMessage;
     private boolean burrowMessage;
 
-    // for insta
     private int delayLeft;
     private boolean mining;
     private int count;
     private Direction direction;
 
-    public AutoCityPlus() {
-        super(AddModule.COMBAT, "auto-city+", "Automatically cities a target by mining the nearest obsidian next to them.");
-    }
 
     @Override
     public void onActivate() {
@@ -379,8 +413,8 @@ public class AutoCityPlus extends Module {
         for (int packets = 0; packets < amount.get(); packets++) {
             if (!mining) {
                 mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, blockPos, Direction.UP));
-                if (!swing.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
-                else mc.player.swingHand(Hand.MAIN_HAND);
+                mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+                if (swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
                 mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, blockPos, Direction.UP));
                 mining = true;
             }
@@ -392,8 +426,8 @@ public class AutoCityPlus extends Module {
         --delayLeft;
         if (!mining) {
             if (rotate.get()) Rotations.rotate(Rotations.getYaw(blockPosTarget), Rotations.getPitch(blockPosTarget));
-            if (!swing.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
-            else mc.player.swingHand(Hand.MAIN_HAND);
+            mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+            if (swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
             mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, blockPos, direction));
             mining = true;
         }

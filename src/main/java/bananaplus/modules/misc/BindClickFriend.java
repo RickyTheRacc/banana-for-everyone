@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -28,7 +28,7 @@ public class BindClickFriend extends Module{
     private final Setting<Boolean> message = sgGeneral.add(new BoolSetting.Builder().name("message").description("Sends a message to the player when you add them as a friend.").defaultValue(false).build());
 
     public BindClickFriend() {
-        super(AddModule.MISC, "bind-click-friend", "Adds or removes a player as a friend when the bound key is pressed.");
+        super(BananaPlus.MISC, "bind-click-friend", "Adds or removes a player as a friend when the bound key is pressed.");
     }
 
     boolean pressed = false;

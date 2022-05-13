@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -156,7 +156,7 @@ public class SkinBlinker extends Module {
             .build());
 
     public SkinBlinker() {
-        super(AddModule.MISC, "skin-blinker", "Blinks different parts of your skin :)");
+        super(BananaPlus.MISC, "skin-blinker", "Blinks different parts of your skin :)");
     }
 
 

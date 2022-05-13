@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -59,7 +59,7 @@ public class AfkLog extends Module {
             .build());
 
     public AfkLog() {
-        super(AddModule.MISC, "afk-log", "Logs out when you are at a certain coords for afk travelling.");
+        super(BananaPlus.MISC, "afk-log", "Logs out when you are at a certain coords for afk travelling.");
     }
 
     @EventHandler

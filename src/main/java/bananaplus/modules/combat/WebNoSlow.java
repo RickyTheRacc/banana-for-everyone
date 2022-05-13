@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.entity.player.CobwebEntityCollisionEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -44,7 +44,7 @@ public class WebNoSlow extends Module {
     private boolean sentMessage;
 
     public WebNoSlow() {
-        super(AddModule.COMBAT, "web-no-slow", "A better version of the No Slow for webs.");
+        super(BananaPlus.COMBAT, "web-no-slow", "A better version of the No Slow for webs.");
     }
 
     @Override

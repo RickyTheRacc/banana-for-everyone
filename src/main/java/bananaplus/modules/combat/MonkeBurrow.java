@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
 import meteordevelopment.meteorclient.events.meteor.KeyEvent;
@@ -131,7 +131,7 @@ public class MonkeBurrow extends Module {
     private boolean shouldBurrow;
 
     public MonkeBurrow() {
-        super(AddModule.COMBAT, "monke-burrow", "Attempts to clip you into a block.");
+        super(BananaPlus.COMBAT, "monke-burrow", "Attempts to clip you into a block.");
     }
 
     @Override

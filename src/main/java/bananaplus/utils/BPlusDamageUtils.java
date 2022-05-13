@@ -59,9 +59,9 @@ public class BPlusDamageUtils {
         raycastContext = new RaycastContext(null, null, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.ANY, mc.player);
     }
 
-    // Crystal damage
 
-    public static float crystalDamage(PlayerEntity player, Vec3d crystal, boolean predictMovement, double explosionRadius, boolean ignoreTerrain, boolean fullAnvil, boolean fullEchest) {
+    // Crystal Damage
+    public static float crystalDamage(PlayerEntity player, Vec3d crystal, boolean predictMovement, double explosionRadius, boolean ignoreTerrain, boolean fullBlocks) {
         if (player == null) return 0;
         if (EntityUtils.getGameMode(player) == GameMode.CREATIVE && !(player instanceof FakePlayerEntity)) return 0;
 
@@ -71,7 +71,7 @@ public class BPlusDamageUtils {
         float modDistance = (float) Math.sqrt(vec3d.squaredDistanceTo(crystal));
         if (modDistance > explosionRadius) return 0;
 
-        float exposure = getExposure(crystal, player, predictMovement, raycastContext, ignoreTerrain, fullAnvil, fullEchest);
+        float exposure = getExposure(crystal, player, predictMovement, raycastContext, ignoreTerrain, fullBlocks);
         float impact = (1 - (modDistance / 12)) * exposure;
         float damage = (impact * impact + impact) * 42 + 1;
 
@@ -89,10 +89,10 @@ public class BPlusDamageUtils {
     }
 
     public static float crystalDamage(PlayerEntity player, Vec3d crystal, double explosionRadius) {
-        return crystalDamage(player, crystal, false, explosionRadius, false, false, false);
+        return crystalDamage(player, crystal, false, explosionRadius, false, false);
     }
 
-    // Bed damage
+    // Bed Damage
 
     public static float bedDamage(PlayerEntity player, Vec3d bed, boolean predictMovement, double explosionRadius, boolean ignoreTerrain, boolean fullAnvil, boolean fullEchest) {
         if (EntityUtils.getGameMode(player) == GameMode.CREATIVE && !(player instanceof FakePlayerEntity)) return 0;
@@ -103,7 +103,7 @@ public class BPlusDamageUtils {
         float modDistance = (float) Math.sqrt(player.squaredDistanceTo(bed));
         if (modDistance > explosionRadius) return 0;
 
-        float exposure = getExposure(bed, player, predictMovement, raycastContext, ignoreTerrain, fullAnvil, fullEchest);
+        float exposure = getExposure(bed, player, predictMovement, raycastContext, ignoreTerrain, false);
         float impact = (1 - (modDistance * 0.1f)) * exposure;
         float damage = (impact * impact + impact) * 35 + 1;
 
@@ -219,7 +219,7 @@ public class BPlusDamageUtils {
         return damage < 0 ? 0 : damage;
     }
 
-    private static float getExposure(Vec3d source, Entity entity, boolean predictMovement, RaycastContext raycastContext, boolean ignoreTerrain, boolean fullAnvil, boolean fullEchest) {
+    private static float getExposure(Vec3d source, Entity entity, boolean predictMovement, RaycastContext raycastContext, boolean ignoreTerrain, boolean fullBlocks) {
         Box box = entity.getBoundingBox();
         if (predictMovement) {
             Vec3d v = entity.getVelocity();
@@ -246,7 +246,7 @@ public class BPlusDamageUtils {
                         ((IVec3d) vec3d).set(n + g, o, p + h);
                         ((IRaycastContext) raycastContext).set(vec3d, source, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, entity);
 
-                        if (raycast(raycastContext, ignoreTerrain, fullAnvil, fullEchest).getType() == HitResult.Type.MISS) i++;
+                        if (raycast(raycastContext, ignoreTerrain, fullBlocks).getType() == HitResult.Type.MISS) i++;
 
                         j++;
                     }
@@ -259,13 +259,13 @@ public class BPlusDamageUtils {
         return 0;
     }
 
-    private static BlockHitResult raycast(RaycastContext context, boolean ignoreTerrain, boolean fullAnvil, boolean fullEchest) {
+    private static BlockHitResult raycast(RaycastContext context, boolean ignoreTerrain, boolean fullBlocks) {
         return BlockView.raycast(context.getStart(), context.getEnd(), context, (raycastContext, blockPos) -> {
             BlockState blockState;
 
             blockState = mc.world.getBlockState(blockPos);
-            if (blockState.getBlock() instanceof AnvilBlock && fullAnvil) blockState = Blocks.OBSIDIAN.getDefaultState();
-            else if (blockState.getBlock() instanceof EnderChestBlock && fullEchest) blockState = Blocks.OBSIDIAN.getDefaultState();
+            if (blockState.getBlock() instanceof AnvilBlock && fullBlocks) blockState = Blocks.OBSIDIAN.getDefaultState();
+            else if (blockState.getBlock() instanceof EnderChestBlock && fullBlocks) blockState = Blocks.OBSIDIAN.getDefaultState();
             else if (blockState.getBlock().getBlastResistance() < 600 && ignoreTerrain) blockState = Blocks.AIR.getDefaultState();
 
             Vec3d vec3d = raycastContext.getStart();

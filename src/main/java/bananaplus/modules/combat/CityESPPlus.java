@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class CityESPPlus extends Module {
 
-    public CityESPPlus() { super(AddModule.COMBAT, "city-esp+", "Displays more blocks that can be broken in order to city another player."); }
+    public CityESPPlus() { super(BananaPlus.COMBAT, "city-esp+", "Displays more blocks that can be broken in order to city another player."); }
 
     private final SettingGroup sgRender = settings.createGroup("Render");
 

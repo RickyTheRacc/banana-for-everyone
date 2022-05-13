@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
+import bananaplus.modules.BananaPlus;
 import baritone.api.BaritoneAPI;
-import bananaplus.modules.AddModule;
 import bananaplus.utils.BPlusPlayerUtils;
 import bananaplus.utils.ServerUtils.BPlusServerUtils;
 import bananaplus.utils.Timer;
@@ -226,7 +226,7 @@ public class PostTickKA extends Module {
     private boolean wasPathing;
 
     public PostTickKA() {
-        super(AddModule.COMBAT, "post-tick-KA", "Kill Aura but its post-tick instead of pre-tick.");
+        super(BananaPlus.COMBAT, "post-tick-KA", "Kill Aura but its post-tick instead of pre-tick.");
     }
 
     @Override

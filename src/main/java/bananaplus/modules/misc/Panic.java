@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 
@@ -10,7 +10,7 @@ public class Panic extends Module {
 
     // Made this module cuz sometimes when u crash u can't rejoin and type .panic fast enough so doing it at the main menu
     public Panic() {
-        super(AddModule.MISC, "panic", "Turns off all modules that are active.");
+        super(BananaPlus.MISC, "panic", "Turns off all modules that are active.");
     }
 
     @Override

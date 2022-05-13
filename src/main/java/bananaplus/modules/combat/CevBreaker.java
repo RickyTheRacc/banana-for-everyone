@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -45,7 +45,7 @@ public class CevBreaker extends Module {
     private final Setting<Integer> switchDelay = sgGeneral.add(new IntSetting.Builder().name("switch-delay").description("How many ticks to wait before hitting an entity after switching hotbar slots.").defaultValue(1).min(0).sliderMax(10).visible(() -> mode.get() == Mode.Packet).build());
 
 
-    public CevBreaker() { super(AddModule.COMBAT, "cev-breaker", "Automatically places an obsidian block and a crystal on top of the target and breaks the obby and crystal to deal massive damage."); }
+    public CevBreaker() { super(BananaPlus.COMBAT, "cev-breaker", "Automatically places an obsidian block and a crystal on top of the target and breaks the obby and crystal to deal massive damage."); }
 
     private PlayerEntity closestTarget;
     private boolean startedYet;

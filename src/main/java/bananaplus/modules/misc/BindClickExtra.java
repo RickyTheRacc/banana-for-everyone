@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.entity.player.StoppedUsingItemEvent;
 import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
@@ -76,7 +76,7 @@ public class BindClickExtra extends Module {
     private boolean isUsing;
 
     public BindClickExtra() {
-        super(AddModule.MISC, "bind-click-extra", "Lets you use items when you press the bound key.");
+        super(BananaPlus.MISC, "bind-click-extra", "Lets you use items when you press the bound key.");
     }
 
     @Override
