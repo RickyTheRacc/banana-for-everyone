@@ -3,7 +3,7 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.PositionHelper;
+import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -520,7 +520,7 @@ public class SurroundPlus extends Module {
         }
 
         if (toggleOnComplete.get()) {
-            if (PositionHelper.allPlaced(placePos())) {
+            if (PositionUtils.allPlaced(placePos())) {
                 toggle();
                 return;
             }
@@ -585,14 +585,14 @@ public class SurroundPlus extends Module {
             add(pos, playerPos.west());
         } else {
             // Bottom positions
-            for (BlockPos dynamicBottomPos : PositionHelper.dynamicBottomPos(mc.player, false)) {
-                if (PositionHelper.dynamicBottomPos(mc.player, false).contains(dynamicBottomPos)) pos.remove(dynamicBottomPos);
+            for (BlockPos dynamicBottomPos : PositionUtils.dynamicBottomPos(mc.player, false)) {
+                if (PositionUtils.dynamicBottomPos(mc.player, false).contains(dynamicBottomPos)) pos.remove(dynamicBottomPos);
                 add(pos, dynamicBottomPos);
             }
 
             // Surround positions
-            for (BlockPos dynamicFeetPos : PositionHelper.dynamicFeetPos(mc.player, false)) {
-                if (PositionHelper.dynamicFeetPos(mc.player, false).contains(dynamicFeetPos)) pos.remove(dynamicFeetPos);
+            for (BlockPos dynamicFeetPos : PositionUtils.dynamicFeetPos(mc.player, false)) {
+                if (PositionUtils.dynamicFeetPos(mc.player, false).contains(dynamicFeetPos)) pos.remove(dynamicFeetPos);
                 add(pos, dynamicFeetPos);
             }
         }
@@ -616,7 +616,7 @@ public class SurroundPlus extends Module {
             if (mc.world.getBlockState(playerPos.north()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) add(pos, playerPos.north(2));
                 else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianNorth(mc.player, false)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianNorth(mc.player, false)) add(pos, plusPos);
                 }
             }
         }
@@ -626,7 +626,7 @@ public class SurroundPlus extends Module {
                     add(pos, playerPos.north().west());
                     add(pos, playerPos.north().east());
                 } else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianNorth(mc.player, true)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianNorth(mc.player, true)) add(pos, plusPos);
                 }
             }
         }
@@ -636,7 +636,7 @@ public class SurroundPlus extends Module {
             if (mc.world.getBlockState(playerPos.east()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) add(pos, playerPos.east(2));
                 else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianEast(mc.player, false)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianEast(mc.player, false)) add(pos, plusPos);
                 }
             }
         }
@@ -646,7 +646,7 @@ public class SurroundPlus extends Module {
                     add(pos, playerPos.east().north());
                     add(pos, playerPos.east().south());
                 } else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianEast(mc.player, true)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianEast(mc.player, true)) add(pos, plusPos);
                 }
             }
         }
@@ -656,7 +656,7 @@ public class SurroundPlus extends Module {
             if (mc.world.getBlockState(playerPos.south()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) add(pos, playerPos.south(2));
                 else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianSouth(mc.player, false)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianSouth(mc.player, false)) add(pos, plusPos);
                 }
             }
         }
@@ -666,7 +666,7 @@ public class SurroundPlus extends Module {
                     add(pos, playerPos.south().east());
                     add(pos, playerPos.south().west());
                 } else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianSouth(mc.player, true)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianSouth(mc.player, true)) add(pos, plusPos);
                 }
             }
         }
@@ -676,7 +676,7 @@ public class SurroundPlus extends Module {
             if (mc.world.getBlockState(playerPos.west()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) add(pos, playerPos.west(2));
                 else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianWest(mc.player, false)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianWest(mc.player, false)) add(pos, plusPos);
                 }
             }
         }
@@ -686,7 +686,7 @@ public class SurroundPlus extends Module {
                     add(pos, playerPos.west().south());
                     add(pos, playerPos.west().north());
                 } else {
-                    for (BlockPos plusPos : PositionHelper.dynamicRussianWest(mc.player, true)) add(pos, plusPos);
+                    for (BlockPos plusPos : PositionUtils.dynamicRussianWest(mc.player, true)) add(pos, plusPos);
                 }
             }
         }

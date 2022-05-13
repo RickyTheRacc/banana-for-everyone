@@ -3,7 +3,7 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusPlayerUtils;
-import bananaplus.utils.ConTypeInclAlways;
+import bananaplus.utils.CommonEnums;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ButtonTrap extends Module {
+public class AntiSurround extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
@@ -54,10 +54,10 @@ public class ButtonTrap extends Module {
             .build()
     );
 
-    private final Setting<ConTypeInclAlways> when = sgGeneral.add(new EnumSetting.Builder<ConTypeInclAlways>()
+    private final Setting<CommonEnums.ConTypeInclAlways> when = sgGeneral.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
             .name("when")
             .description("When to start button trapping.")
-            .defaultValue(ConTypeInclAlways.Always)
+            .defaultValue(CommonEnums.ConTypeInclAlways.Always)
             .build()
     );
 
@@ -132,7 +132,7 @@ public class ButtonTrap extends Module {
     private final List<BlockPos> placePositions = new ArrayList<>();
     private int delay;
 
-    public ButtonTrap() {
+    public AntiSurround() {
         super(BananaPlus.COMBAT, "anti-surround", "Place items inside the enemy's surround to break it.");
     }
 

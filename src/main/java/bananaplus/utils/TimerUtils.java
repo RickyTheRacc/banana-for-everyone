@@ -1,7 +1,7 @@
 package bananaplus.utils;
 
 //only thing left from ares, cus I liked using it COPE -ben
-public class Timer {
+public class TimerUtils {
 
     private long nanoTime = -1L;
 

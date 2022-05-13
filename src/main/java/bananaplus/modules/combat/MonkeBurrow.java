@@ -165,7 +165,7 @@ public class MonkeBurrow extends Module {
     @Override
     public void onActivate() {
         if (onlyOnGround.get() && !mc.player.isOnGround()) {
-            error("Not on the ground, disabling.")
+            error("Not on the ground, disabling.");
             toggle();
             return;
         }
@@ -176,7 +176,7 @@ public class MonkeBurrow extends Module {
             return;
         }
 
-        if (!BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any) && onlyOnGround.get()) {
+        if (!BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any) && onlyInHole.get()) {
             error("Not in a hole, disabling.");
             toggle();
             return;
@@ -222,12 +222,6 @@ public class MonkeBurrow extends Module {
         if (!shouldBurrow && instant.get()) blockPos.set(BPlusWorldUtils.roundBlockPos(mc.player.getPos()));
 
         if (shouldBurrow) {
-            //When automatic was on (and instant was off), this would just always toggle off without trying to burrow.
-/*            if (!mc.player.isOnGround()) {
-                toggle();
-                return;
-            }*/
-
             if (rotate.get())
                 Rotations.rotate(Rotations.getYaw(BPlusWorldUtils.roundBlockPos(mc.player.getPos())), Rotations.getPitch(BPlusWorldUtils.roundBlockPos(mc.player.getPos())), 50, this::burrow);
             else burrow();

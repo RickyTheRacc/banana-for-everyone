@@ -342,8 +342,8 @@ public class AutoCityPlus extends Module {
         Modules modules = Modules.get();
         if (turnOnBBomber.get() && blockPosTarget != null && !modules.get(BananaBomber.class).isActive())
             modules.get(BananaBomber.class).toggle();
-        if (turnOnButtonTrap.get() && blockPosTarget != null && !modules.get(ButtonTrap.class).isActive())
-            modules.get(ButtonTrap.class).toggle();
+        if (turnOnButtonTrap.get() && blockPosTarget != null && !modules.get(AntiSurround.class).isActive())
+            modules.get(AntiSurround.class).toggle();
         if (turnOffInstaMine.get() && blockPosTarget != null && modules.get(InstaMine.class).isActive())
             modules.get(InstaMine.class).toggle();
 

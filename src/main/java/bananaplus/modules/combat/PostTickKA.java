@@ -4,7 +4,7 @@ import bananaplus.modules.BananaPlus;
 import baritone.api.BaritoneAPI;
 import bananaplus.utils.BPlusPlayerUtils;
 import bananaplus.utils.ServerUtils.BPlusServerUtils;
-import bananaplus.utils.Timer;
+import bananaplus.utils.TimerUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -25,8 +25,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Tameable;
 import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -232,7 +230,7 @@ public class PostTickKA extends Module {
 
     private final List<Entity> targets = new ArrayList<>();
     private int hitDelayTimer, switchTimer;
-    private final Timer fixedHitTimer = new Timer();
+    private final TimerUtils fixedHitTimer = new TimerUtils();
     private boolean wasPathing;
 
 

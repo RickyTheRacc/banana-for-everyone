@@ -10,7 +10,7 @@ import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-public class PositionHelper {
+public class PositionUtils {
     public static boolean allPlaced(List<BlockPos> posList) {
         for (BlockPos pos : posList) {
             if (mc.world.getBlockState(pos).getMaterial().isReplaceable()) return false;

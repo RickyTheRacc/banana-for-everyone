@@ -3,7 +3,7 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusDamageUtils;
 import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.Timer;
+import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -227,8 +227,8 @@ public class MonkeTotem extends Module {
     }
 
 
-    private final Timer offhandTimer = new Timer();
-    private final Timer poppedTimer = new Timer();
+    private final TimerUtils offhandTimer = new TimerUtils();
+    private final TimerUtils poppedTimer = new TimerUtils();
     private boolean locked;
 
     private float helmetModifier;

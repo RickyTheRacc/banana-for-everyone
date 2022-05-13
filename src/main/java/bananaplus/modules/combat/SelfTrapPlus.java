@@ -3,7 +3,7 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.PositionHelper;
+import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -14,7 +14,6 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.movement.Step;
 import meteordevelopment.meteorclient.systems.modules.movement.speed.Speed;
-import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.Pool;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
@@ -54,30 +53,34 @@ public class SelfTrapPlus extends Module {
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgCenter = settings.createGroup("Center");
     private final SettingGroup sgAntiCity = settings.createGroup("Anti City");
-    private final SettingGroup sgForce = settings.createGroup("Force Keybinds");
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
     private final SettingGroup sgModules = settings.createGroup("Other Module Toggles");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
+
+    // General
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("blocks")
             .description("What blocks to use for Self Trap+")
             .defaultValue(Blocks.OBSIDIAN)
             .filter(this::blockFilter)
-            .build());
+            .build()
+    );
 
     private final Setting<List<Block>> fallbackBlocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("fallback-blocks")
             .description("What blocks to use for Self Trap+ if no target block is found.")
             .defaultValue(Blocks.ENDER_CHEST)
             .filter(this::blockFilter)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
             .description("Tick delay between block placements.")
             .defaultValue(0)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> blocksPerTick = sgGeneral.add(new IntSetting.Builder()
             .name("blocks-per-interval")
@@ -86,7 +89,8 @@ public class SelfTrapPlus extends Module {
             .min(1)
             .sliderMin(1)
             .sliderMax(20)
-            .build());
+            .build()
+    );
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
@@ -98,76 +102,82 @@ public class SelfTrapPlus extends Module {
             .name("dynamic")
             .description("Will check for your hitbox to find placing positions.")
             .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> doubleHeight = sgGeneral.add(new BoolSetting.Builder()
-            .name("double-height")
-            .description("Places on top of the original self trap blocks.")
-            .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> antiCev = sgGeneral.add(new BoolSetting.Builder()
             .name("anti-cev")
             .description("Places on 2 blocks on top of your head.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Will only try to place if you are on the ground.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Placing
     private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
             .defaultValue(BPlusWorldUtils.SwitchMode.Both)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> switchBack = sgPlacing.add(new BoolSetting.Builder()
             .name("switch-back")
             .description("Switches back to your original slot after placing.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<BPlusWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.PlaceMode>()
             .name("place-mode")
             .description("How to switch to your target block.")
             .defaultValue(BPlusWorldUtils.PlaceMode.Both)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> ignoreEntity = sgPlacing.add(new BoolSetting.Builder()
             .name("ignore-entities")
             .description("Will try to place even if there is an entity in the way.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> airPlace = sgPlacing.add(new BoolSetting.Builder()
             .name("air-place")
             .description("Whether to place blocks mid air or not.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyAirPlace = sgPlacing.add(new BoolSetting.Builder()
             .name("only-air-place")
             .description("Forces you to only airplace to help with stricter rotations.")
             .defaultValue(false)
             .visible(airPlace::get)
-            .build());
+            .build()
+    );
 
     private final Setting<BPlusWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.AirPlaceDirection>()
             .name("air-place-direction")
             .description("Side to try to place at when you are trying to air place.")
             .defaultValue(BPlusWorldUtils.AirPlaceDirection.Down)
             .visible(airPlace::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> rotate = sgPlacing.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Whether to face towards the block you are placing or not.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> rotationPrio = sgPlacing.add(new IntSetting.Builder()
             .name("rotation-priority")
@@ -175,228 +185,232 @@ public class SelfTrapPlus extends Module {
             .defaultValue(99)
             .sliderRange(0, 200)
             .visible(rotate::get)
-            .build());
+            .build()
+    );
+
 
     // Center
     private final Setting<Boolean> center = sgCenter.add(new BoolSetting.Builder()
             .name("center")
             .description("Will align you to the center of the hole when turning on Self Trap+.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<CenterMode> centerMode = sgCenter.add(new EnumSetting.Builder<CenterMode>()
             .name("center-mode")
             .description("How Self Trap+ should center you.")
             .defaultValue(CenterMode.Snap)
-            .build());
+            .build()
+    );
+
 
     // Anti City
     private final Setting<Boolean> notifyBreak = sgAntiCity.add(new BoolSetting.Builder()
             .name("notify-break")
             .description("Notifies you when someone is mining your self trap.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoAntiCev = sgAntiCity.add(new BoolSetting.Builder()
             .name("auto-anti-cev")
             .description("Automatically enables Anti Cev if your top block is being mined.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
-    // Force keybinds
-    private final Setting<Keybind> doubleHeightKeybind = sgForce.add(new KeybindSetting.Builder()
-            .name("double-height-keybind")
-            .description("Turns on double height.")
-            .defaultValue(Keybind.none())
-            .build());
-
-    private final Setting<Keybind> antiCevKeybind = sgForce.add(new KeybindSetting.Builder()
-            .name("anti-cev-keybind")
-            .description("Turns on Anti Cev when held")
-            .defaultValue(Keybind.none())
-            .build());
-
-    private final Setting<Keybind> centerKeybind = sgForce.add(new KeybindSetting.Builder()
-            .name("center-keybind")
-            .description("Re-center you when held")
-            .defaultValue(Keybind.none())
-            .build());
 
     // Toggles
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-y-change")
-            .description("Automatically disables when your y level (step, jumping, etc).")
+            .description("Automatically disables when your Y level changes.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> toggleOnComplete = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-complete")
             .description("Automatically disables when all blocks are placed.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onPearl = sgToggle.add(new BoolSetting.Builder()
-            .name("disable-on-pearl")
-            .description("Automatically disables when you throw a pearl (work if u use middle/bind click extra).")
+            .name("toggle-on-pearl")
+            .description("Automatically disables when you throw a pearl.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onChorus = sgToggle.add(new BoolSetting.Builder()
-            .name("disable-on-chorus")
+            .name("toggle-on-chorus")
             .description("Automatically disables after you eat a chorus.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
+
 
     // Modules
     private final Setting<Boolean> toggleStep = sgModules.add(new BoolSetting.Builder()
             .name("toggle-step")
             .description("Toggles off step when activating Self Trap+.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> toggleSpeed = sgModules.add(new BoolSetting.Builder()
             .name("toggle-speed")
             .description("Toggles off speed when activating Self Trap+.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> toggleStrafe = sgModules.add(new BoolSetting.Builder()
             .name("toggle-strafe+")
             .description("Toggles off strafe+ when activating Self Trap+.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> toggleBack = sgModules.add(new BoolSetting.Builder()
             .name("toggle-back")
             .description("Toggles the modules above back on if it was on previously when turning Self Trap+.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Render
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders hand swing when trying to place a block.")
             .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
-            .name("render")
-            .description("Renders a block overlay where the block will be placed.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> alwaysRender = sgRender.add(new BoolSetting.Builder()
-            .name("always")
-            .description("Render the self trap blocks after they are placed.")
-            .defaultValue(true)
-            .visible(render::get)
-            .build());
-
-    private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
-            .name("shape-mode")
-            .description("How the shapes are rendered.")
-            .defaultValue(ShapeMode.Both)
-            .visible(render::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> renderPlace = sgRender.add(new BoolSetting.Builder()
             .name("render-place")
             .description("Will render where it is trying to place.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
-    private final Setting<SettingColor> placeColor = sgRender.add(new ColorSetting.Builder()
-            .name("place-box-color")
+    private final Setting<SettingColor> placeSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("place-side-color")
             .description("The color of placing blocks.")
             .defaultValue(new SettingColor(255, 255, 255, 25))
-            .visible(() -> render.get() && renderPlace.get())
-            .build());
+            .visible(renderPlace::get)
+            .build()
+    );
 
     private final Setting<SettingColor> placeLineColor = sgRender.add(new ColorSetting.Builder()
             .name("place-line-color")
             .description("The color of placing line.")
             .defaultValue(new SettingColor(255, 255, 255, 150))
-            .visible(() -> render.get() && renderPlace.get())
-            .build());
+            .visible(renderPlace::get)
+            .build()
+    );
 
     private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
             .name("render-time")
             .description("Tick duration for rendering placing.")
             .defaultValue(8)
-            .range(0, 40)
-            .sliderRange(0, 40)
-            .visible(render::get)
-            .build());
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(renderPlace::get)
+            .build()
+    );
 
     private final Setting<Integer> fadeAmount = sgRender.add(new IntSetting.Builder()
             .name("fade-amount")
-            .description("How strong the fade should be.")
+            .description("How long in ticks to fade out.")
             .defaultValue(8)
-            .range(0, 100)
-            .sliderRange(0, 100)
-            .visible(render::get)
-            .build());
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(renderPlace::get)
+            .build()
+    );
 
-    private final Setting<SettingColor> safeColor = sgRender.add(new ColorSetting.Builder()
-            .name("safe-box-color")
-            .description("The color of safe blocks.")
+    private final Setting<Boolean> renderActive = sgRender.add(new BoolSetting.Builder()
+            .name("render-active")
+            .description("Renders blocks that are being surrounded.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
+            .name("shape-mode")
+            .description("How the shapes are rendered.")
+            .defaultValue(ShapeMode.Sides)
+            .visible(renderActive::get)
+            .build()
+    );
+
+    private final Setting<SettingColor> safeSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("safe-side-color")
+            .description("The side color for safe blocks.")
             .defaultValue(new SettingColor(13, 255, 0, 15))
-            .visible(render::get)
-            .build());
+            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Sides)
+            .build()
+    );
 
-    private final Setting<SettingColor> safeLine = sgRender.add(new ColorSetting.Builder()
+    private final Setting<SettingColor> safeLineColor = sgRender.add(new ColorSetting.Builder()
             .name("safe-line-color")
-            .description("The color of safe line.")
-            .defaultValue(new SettingColor(13, 255, 0, 125))
-            .visible(render::get)
-            .build());
+            .description("The line color for safe blocks.")
+            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Lines)
+            .build()
+    );
 
-    private final Setting<SettingColor> normalColor = sgRender.add(new ColorSetting.Builder()
-            .name("normal-box-color")
-            .description("The color of the normal self trap blocks.")
+    private final Setting<SettingColor> normalSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("normal-side-color")
+            .description("The side color for normal blocks.")
             .defaultValue(new SettingColor(0, 255, 238, 15))
-            .visible(render::get)
-            .build());
+            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Sides)
+            .build()
+    );
 
-    private final Setting<SettingColor> normalLine = sgRender.add(new ColorSetting.Builder()
+    private final Setting<SettingColor> normalLineColor = sgRender.add(new ColorSetting.Builder()
             .name("normal-line-color")
-            .description("The color of safe line.")
+            .description("The line color for normal blocks.")
             .defaultValue(new SettingColor(0, 255, 238, 125))
-            .visible(render::get)
-            .build());
+            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Lines)
+            .build()
+    );
 
-    private final Setting<SettingColor> unSafeColor = sgRender.add(new ColorSetting.Builder()
-            .name("unsafe-box-color")
-            .description("The color of unsafe blocks.")
+    private final Setting<SettingColor> unsafeSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("unsafe-side-color")
+            .description("The side color for unsafe blocks.")
             .defaultValue(new SettingColor(204, 0, 0, 15))
-            .visible(render::get)
-            .build());
+            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Sides)
+            .build()
+    );
 
-    private final Setting<SettingColor> unsafeLine = sgRender.add(new ColorSetting.Builder()
+    private final Setting<SettingColor> unsafeLineColor = sgRender.add(new ColorSetting.Builder()
             .name("unsafe-line-color")
-            .description("The color of safe line.")
+            .description("The line color for unsafe blocks.")
             .defaultValue(new SettingColor(204, 0, 0, 125))
-            .visible(render::get)
-            .build());
+            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Lines)
+            .build()
+    );
+
 
     public SelfTrapPlus() {
         super(BananaPlus.COMBAT, "self-trap+", "Surrounds your head in blocks to prevent you from taking lots of damage.");
     }
 
-    // Fields
+
     private BlockPos playerPos;
     private int ticksPassed;
     private int blocksPlaced;
 
     private boolean centered;
 
-    // Anti City
     private BlockPos prevBreakPos;
     PlayerEntity prevBreakingPlayer = null;
 
     private boolean shouldAntiCev;
 
-    // Modules
     Modules modules = Modules.get();
     Step step = modules.get(Step.class);
     Speed speed = modules.get(Speed.class);
@@ -485,7 +499,7 @@ public class SelfTrapPlus extends Module {
         }
 
         if (toggleOnComplete.get()) {
-            if (PositionHelper.allPlaced(placePos())) {
+            if (PositionUtils.allPlaced(placePos())) {
                 toggle();
                 return;
             }
@@ -516,14 +530,6 @@ public class SelfTrapPlus extends Module {
         // Ticking fade animation
         renderBlocks.forEach(RenderBlock::tick);
         renderBlocks.removeIf(renderBlock -> renderBlock.ticks <= 0);
-    }
-
-    @EventHandler
-    public void onTick(TickEvent.Post event) {
-        if (centerKeybind.get().isPressed()) {
-            if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
-            else PlayerUtils.centerPlayer();
-        }
     }
 
     // This is to return both centerPos and extraPos
@@ -557,16 +563,16 @@ public class SelfTrapPlus extends Module {
 
             if (mode.get() != Mode.Side) {
                 // Positions above
-                for (BlockPos dynatmicTopPos : PositionHelper.dynamicTopPos(mc.player, false)) {
-                    if (PositionHelper.dynamicTopPos(mc.player, false).contains(dynatmicTopPos)) pos.remove(dynatmicTopPos);
+                for (BlockPos dynatmicTopPos : PositionUtils.dynamicTopPos(mc.player, false)) {
+                    if (PositionUtils.dynamicTopPos(mc.player, false).contains(dynatmicTopPos)) pos.remove(dynatmicTopPos);
                     add(pos, dynatmicTopPos);
                 }
             }
 
             if (mode.get() != Mode.Top) {
                 // Positions around
-                for (BlockPos dynamicHeadPos : PositionHelper.dynamicHeadPos(mc.player, false)) {
-                    if (PositionHelper.dynamicHeadPos(mc.player, false).contains(dynamicHeadPos)) pos.remove(dynamicHeadPos);
+                for (BlockPos dynamicHeadPos : PositionUtils.dynamicHeadPos(mc.player, false)) {
+                    if (PositionUtils.dynamicHeadPos(mc.player, false).contains(dynamicHeadPos)) pos.remove(dynamicHeadPos);
                     add(pos, dynamicHeadPos);
                 }
 
@@ -580,14 +586,7 @@ public class SelfTrapPlus extends Module {
     private List<BlockPos> extraPos() {
         List<BlockPos> pos = new ArrayList<>();
 
-        // Double Height
-        if (doubleHeight.get() || doubleHeightKeybind.get().isPressed()) {
-            for (BlockPos centerPos : centerPos()) {
-                add(pos, centerPos.up());
-            }
-        }
-
-        if (antiCev.get() || antiCevKeybind.get().isPressed() || shouldAntiCev) {
+        if (antiCev.get() || shouldAntiCev) {
             if (mc.world.getBlockState(playerPos.up(2)).getBlock() != Blocks.BEDROCK) {
                 add(pos, playerPos.up(3));
             }
@@ -635,8 +634,7 @@ public class SelfTrapPlus extends Module {
 
     @EventHandler
     public void onBreakPacket(PacketEvent.Receive event) {
-        if(!(event.packet instanceof BlockBreakingProgressS2CPacket)) return;
-        BlockBreakingProgressS2CPacket bbpp = (BlockBreakingProgressS2CPacket) event.packet;
+        if(!(event.packet instanceof BlockBreakingProgressS2CPacket bbpp)) return;
         BlockPos bbp = bbpp.getPos();
 
         PlayerEntity breakingPlayer = (PlayerEntity) mc.world.getEntityById(bbpp.getEntityId());
@@ -644,8 +642,6 @@ public class SelfTrapPlus extends Module {
 
         if (bbpp.getProgress() > 0) return;
         if (bbp.equals(prevBreakPos)) return;
-        // if (breakingPlayer == prevBreakingPlayer) return;
-        // if u use this statement above, if the person that tries to mine your self trap is the same again, it won't try to protect and alert you
         if (breakingPlayer.equals(mc.player)) return;
 
         if (bbp.equals(playerPos.up(2)) && !mc.world.getBlockState(playerPos.up(2)).getBlock().equals(Blocks.BEDROCK)) {
@@ -702,16 +698,16 @@ public class SelfTrapPlus extends Module {
     // Render
     @EventHandler
     private void onRender(Render3DEvent event) {
-        if (render.get()) {
+        if (renderActive.get()) {
             for (BlockPos pos : placePos()) {
                 renderPos.set(pos);
-                Color color = getBlockColor(renderPos);
+                Color color = getSideColor(renderPos);
                 Color lineColor = getLineColor(renderPos);
-                if (alwaysRender.get()) event.renderer.box(renderPos, color, lineColor, shapeMode.get(), 0);
+                event.renderer.box(renderPos, color, lineColor, shapeMode.get(), 0);
 
                 if (renderPlace.get()) {
                     renderBlocks.sort(Comparator.comparingInt(o -> -o.ticks));
-                    renderBlocks.forEach(renderBlock -> renderBlock.render(event, placeColor.get(), placeLineColor.get(), shapeMode.get()));
+                    renderBlocks.forEach(renderBlock -> renderBlock.render(event, placeSideColor.get(), placeLineColor.get(), shapeMode.get()));
                 }
             }
         }
@@ -759,17 +755,17 @@ public class SelfTrapPlus extends Module {
 
     private Color getLineColor(BlockPos pos) {
         return switch (getBlockType(pos)) {
-            case Safe -> safeLine.get();
-            case Normal -> normalLine.get();
-            case Unsafe -> unsafeLine.get();
+            case Safe -> safeLineColor.get();
+            case Normal -> normalLineColor.get();
+            case Unsafe -> unsafeLineColor.get();
         };
     }
 
-    private Color getBlockColor(BlockPos pos) {
+    private Color getSideColor(BlockPos pos) {
         return switch (getBlockType(pos)) {
-            case Safe -> safeColor.get();
-            case Normal -> normalColor.get();
-            case Unsafe -> unSafeColor.get();
+            case Safe -> safeSideColor.get();
+            case Normal -> normalSideColor.get();
+            case Unsafe -> unsafeSideColor.get();
         };
     }
 

@@ -3,7 +3,7 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.PositionHelper;
+import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -48,8 +48,6 @@ public class AutoTrapPlus extends Module {
     private final SettingGroup sgTargeting = settings.createGroup("Targeting");
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
-    private final SettingGroup sgForce = settings.createGroup("Force Keybinds");
-    private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
 
@@ -151,6 +149,13 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
+    private final Setting<Boolean> toggleOnComplete = sgGeneral.add(new BoolSetting.Builder()
+            .name("auto-toggle")
+            .description("Automatically disables when all blocks are placed.")
+            .defaultValue(false)
+            .build()
+    );
+
 
     // Placing
     private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
@@ -221,15 +226,6 @@ public class AutoTrapPlus extends Module {
     );
 
 
-    // Toggles
-    private final Setting<Boolean> toggleOnComplete = sgToggle.add(new BoolSetting.Builder()
-            .name("toggle-on-complete")
-            .description("Automatically disables when all blocks are placed.")
-            .defaultValue(false)
-            .build()
-    );
-
-
     // Render
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
@@ -245,8 +241,8 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-    private final Setting<SettingColor> placeColor = sgRender.add(new ColorSetting.Builder()
-            .name("place-box-color")
+    private final Setting<SettingColor> placeSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("place-side-color")
             .description("The color of placing blocks.")
             .defaultValue(new SettingColor(255, 255, 255, 25))
             .visible(renderPlace::get)
@@ -394,7 +390,7 @@ public class AutoTrapPlus extends Module {
         playerPos = BPlusEntityUtils.playerPos(target);
 
         if (toggleOnComplete.get()) {
-            if (PositionHelper.allPlaced(placePos())) {
+            if (PositionUtils.allPlaced(placePos())) {
                 toggle();
                 return;
             }
@@ -474,32 +470,32 @@ public class AutoTrapPlus extends Module {
 
             if (topMode.get() == TopMode.Full || topMode.get() == TopMode.Top) {
                 // Top positions above
-                for (BlockPos dynatmicTopPos : PositionHelper.dynamicTopPos(target, predictMovement.get())) {
-                    if (PositionHelper.dynamicTopPos(target, predictMovement.get()).contains(dynatmicTopPos)) pos.remove(dynatmicTopPos);
+                for (BlockPos dynatmicTopPos : PositionUtils.dynamicTopPos(target, predictMovement.get())) {
+                    if (PositionUtils.dynamicTopPos(target, predictMovement.get()).contains(dynatmicTopPos)) pos.remove(dynatmicTopPos);
                     add(pos, dynatmicTopPos);
                 }
             }
 
             if (topMode.get() == TopMode.Full || topMode.get() == TopMode.Side) {
                 // Top positions around
-                for (BlockPos dynamicHeadPos : PositionHelper.dynamicHeadPos(target, predictMovement.get())) {
-                    if (PositionHelper.dynamicHeadPos(target, predictMovement.get()).contains(dynamicHeadPos)) pos.remove(dynamicHeadPos);
+                for (BlockPos dynamicHeadPos : PositionUtils.dynamicHeadPos(target, predictMovement.get())) {
+                    if (PositionUtils.dynamicHeadPos(target, predictMovement.get()).contains(dynamicHeadPos)) pos.remove(dynamicHeadPos);
                     add(pos, dynamicHeadPos);
                 }
             }
 
             if (bottomMode.get() == BottomMode.Full) {
                 // Bottom positions around
-                for (BlockPos dynamicFeetPos : PositionHelper.dynamicFeetPos(target, predictMovement.get())) {
-                    if (PositionHelper.dynamicFeetPos(target, predictMovement.get()).contains(dynamicFeetPos)) pos.remove(dynamicFeetPos);
+                for (BlockPos dynamicFeetPos : PositionUtils.dynamicFeetPos(target, predictMovement.get())) {
+                    if (PositionUtils.dynamicFeetPos(target, predictMovement.get()).contains(dynamicFeetPos)) pos.remove(dynamicFeetPos);
                     add(pos, dynamicFeetPos);
                 }
             }
 
             if (bottomMode.get() != BottomMode.None) {
                 // Bottom positions below
-                for (BlockPos dynamicBottomPos : PositionHelper.dynamicBottomPos(target, predictMovement.get())) {
-                    if (PositionHelper.dynamicBottomPos(target, predictMovement.get()).contains(dynamicBottomPos)) pos.remove(dynamicBottomPos);
+                for (BlockPos dynamicBottomPos : PositionUtils.dynamicBottomPos(target, predictMovement.get())) {
+                    if (PositionUtils.dynamicBottomPos(target, predictMovement.get()).contains(dynamicBottomPos)) pos.remove(dynamicBottomPos);
                     add(pos, dynamicBottomPos);
                 }
             }
@@ -566,13 +562,13 @@ public class AutoTrapPlus extends Module {
         if (renderActive.get() && target != null) {
             for (BlockPos pos : placePos()) {
                 renderPos.set(pos);
-                Color color = getBlockColor(renderPos);
+                Color color = getSideColor(renderPos);
                 Color lineColor = getLineColor(renderPos);
                 event.renderer.box(renderPos, color, lineColor, shapeMode.get(), 0);
 
                 if (renderPlace.get()) {
                     renderBlocks.sort(Comparator.comparingInt(o -> -o.ticks));
-                    renderBlocks.forEach(renderBlock -> renderBlock.render(event, placeColor.get(), placeLineColor.get(), shapeMode.get()));
+                    renderBlocks.forEach(renderBlock -> renderBlock.render(event, placeSideColor.get(), placeLineColor.get(), shapeMode.get()));
                 }
             }
         }
@@ -625,7 +621,7 @@ public class AutoTrapPlus extends Module {
         };
     }
 
-    private Color getBlockColor(BlockPos pos) {
+    private Color getSideColor(BlockPos pos) {
         return switch (getBlockType(pos)) {
             case Safe -> safeSideColor.get();
             case Normal -> normalSideColor.get();

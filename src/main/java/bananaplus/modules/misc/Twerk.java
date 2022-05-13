@@ -1,7 +1,7 @@
 package bananaplus.modules.misc;
 
 import bananaplus.modules.BananaPlus;
-import bananaplus.utils.Timer;
+import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -27,7 +27,7 @@ public class Twerk extends Module {
         super(BananaPlus.MISC, "twerk", "Twerk like the true queen Miley Cyrus");
     }
 
-    private Timer onTwerk = new Timer();
+    private TimerUtils onTwerk = new TimerUtils();
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {

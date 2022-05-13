@@ -1,6 +1,6 @@
 package bananaplus.utils.ServerUtils;
 
-import bananaplus.utils.Timer;
+import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.utils.world.TickRate;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
@@ -20,7 +20,7 @@ public class BPlusServerUtils {
         return PingSync ? (auto ? mc.getNetworkHandler().getPlayerListEntry(mc.player.getUuid()).getLatency() : latency) : 0;
     }
 
-    private static Timer pingTimer = new Timer();
+    private static TimerUtils pingTimer = new TimerUtils();
 
     public static boolean passedPingMatch(boolean PingSync, boolean auto, int latency) {
         return pingTimer.passedMillis(getPingMatch(PingSync, auto, latency));

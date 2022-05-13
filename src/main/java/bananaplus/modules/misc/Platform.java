@@ -4,7 +4,7 @@ import bananaplus.modules.BananaPlus;
 import bananaplus.modules.combat.StrafePlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.PositionHelper;
+import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -338,7 +338,7 @@ public class Platform extends Module {
         }
 
         if (toggleOnComplete.get()) {
-            if (PositionHelper.allPlaced(placePos())) {
+            if (PositionUtils.allPlaced(placePos())) {
                 toggle();
                 return;
             }

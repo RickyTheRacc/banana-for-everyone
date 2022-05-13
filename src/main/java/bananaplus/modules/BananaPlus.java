@@ -59,7 +59,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AntiTrap());
 		Modules.get().add(new BurrowESP());
 		Modules.get().add(new BurrowMiner());
-		Modules.get().add(new ButtonTrap());
+		Modules.get().add(new AntiSurround());
 		Modules.get().add(new BananaBomber());
 		Modules.get().add(new CevBreaker());
 		Modules.get().add(new CityESPPlus());
@@ -72,6 +72,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new QuiverPlus());
 		Modules.get().add(new SelfTrapPlus());
 		Modules.get().add(new SmartHoleFill());
+		Modules.get().add(new StepPlus());
 		Modules.get().add(new StrafePlus());
 		Modules.get().add(new SurroundPlus());
 		Modules.get().add(new ReverseStepTimer());

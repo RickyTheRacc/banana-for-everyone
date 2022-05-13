@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.modules.BananaPlus;
-import bananaplus.utils.Timer;
+import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
@@ -142,7 +142,7 @@ public class AnchorPlus extends Module {
     public boolean controlMovement;
     public double deltaX, deltaZ;
 
-    private final Timer inAirTime = new Timer();
+    private final TimerUtils inAirTime = new TimerUtils();
     boolean didJump = false;
     boolean pausing = false;
 

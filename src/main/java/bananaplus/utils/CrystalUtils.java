@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-public class CrystalUtil {
+public class CrystalUtils {
     static BananaBomber BBomber = Modules.get().get(BananaBomber.class);
 
     public static int getPlaceDelay() {

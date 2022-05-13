@@ -51,6 +51,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
+import org.apache.http.cookie.CommonCookieAttributeHandler;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -454,10 +455,10 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    public final Setting<ConTypeInclAlways> burrowBWhen = sgSurround.add(new EnumSetting.Builder<ConTypeInclAlways>()
+    public final Setting<CommonEnums.ConTypeInclAlways> burrowBWhen = sgSurround.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
             .name("burrow-break-when")
             .description("When to start burrow breaking.")
-            .defaultValue(ConTypeInclAlways.Always)
+            .defaultValue(CommonEnums.ConTypeInclAlways.Always)
             .visible(burrowBreak::get)
             .build()
     );
@@ -476,10 +477,10 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    public final Setting<ConTypeInclAlways> surroundBWhen = sgSurround.add(new EnumSetting.Builder<ConTypeInclAlways>()
+    public final Setting<CommonEnums.ConTypeInclAlways> surroundBWhen = sgSurround.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
             .name("surround-break-when")
             .description("When to start surround breaking.")
-            .defaultValue(ConTypeInclAlways.FaceTrapped)
+            .defaultValue(CommonEnums.ConTypeInclAlways.FaceTrapped)
             .visible(surroundBreak::get)
             .build()
     );
@@ -517,10 +518,10 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    public final Setting<ConTypeInclAlways> surroundHWhen = sgSurround.add(new EnumSetting.Builder<ConTypeInclAlways>()
+    public final Setting<CommonEnums.ConTypeInclAlways> surroundHWhen = sgSurround.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
             .name("surround-hold-when")
             .description("When to start surround holding.")
-            .defaultValue(ConTypeInclAlways.AnyTrapped)
+            .defaultValue(CommonEnums.ConTypeInclAlways.AnyTrapped)
             .visible(surroundHold::get)
             .build()
     );
@@ -1011,8 +1012,8 @@ public class BananaBomber extends Module {
     private double lastYaw, lastPitch;
     private int lastRotationTimer;
 
-    public Timer selfPoppedTimer = new Timer();
-    public Timer targetPoppedTimer = new Timer();
+    public TimerUtils selfPoppedTimer = new TimerUtils();
+    public TimerUtils targetPoppedTimer = new TimerUtils();
 
     private int renderTimer, breakRenderTimer;
     private final BlockPos.Mutable renderPos = new BlockPos.Mutable();
@@ -1180,7 +1181,7 @@ public class BananaBomber extends Module {
             }
 
             if (smartCheck.get()) {
-                if (CrystalUtil.isSurroundHolding() || (slowFacePlace.get() && CrystalUtil.isFacePlacing() || (targetPopInvincibility.get() && CrystalUtil.targetJustPopped()))) return;
+                if (CrystalUtils.isSurroundHolding() || (slowFacePlace.get() && CrystalUtils.isFacePlacing() || (targetPopInvincibility.get() && CrystalUtils.targetJustPopped()))) return;
             }
 
             float damage = getBreakDamage(event.entity, false);
@@ -1217,7 +1218,7 @@ public class BananaBomber extends Module {
     // Break
 
     private void doBreak() {
-        if (!doBreak.get() || breakTimer > 0 || switchTimer > 0 || attacks >= attackFrequency.get() || (popPause.get() != PopPause.Place && CrystalUtil.targetJustPopped())) return;
+        if (!doBreak.get() || breakTimer > 0 || switchTimer > 0 || attacks >= attackFrequency.get() || (popPause.get() != PopPause.Place && CrystalUtils.targetJustPopped())) return;
 
         float bestDamage = 0;
         Entity crystal = null;
@@ -1255,11 +1256,11 @@ public class BananaBomber extends Module {
             if (checkCrystalAge && entity.age < ticksExisted.get()) return 0;
         }
 
-        if (CrystalUtil.isSurroundHolding() && surroundHoldMode.get() != SlowMode.Delay) {
+        if (CrystalUtils.isSurroundHolding() && surroundHoldMode.get() != SlowMode.Delay) {
             if (checkCrystalAge && entity.age < surroundHoldAge.get()) return 0;
         }
 
-        if (slowFacePlace.get() && slowFPMode.get() != SlowMode.Delay && CrystalUtil.isFacePlacing() && bestTarget != null && bestTarget.getY() < placingCrystalBlockPos.getY()) {
+        if (slowFacePlace.get() && slowFPMode.get() != SlowMode.Delay && CrystalUtils.isFacePlacing() && bestTarget != null && bestTarget.getY() < placingCrystalBlockPos.getY()) {
             if (checkCrystalAge && entity.age < slowFPAge.get()) return 0;
         }
 
@@ -1269,7 +1270,7 @@ public class BananaBomber extends Module {
         // Check damage to self and anti suicide
         blockPos.set(entity.getBlockPos()).move(0, -1, 0);
 
-        if (!CrystalUtil.shouldIgnoreSelfBreakDamage()) {
+        if (!CrystalUtils.shouldIgnoreSelfBreakDamage()) {
             float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, entity.getPos(), predictMovement.get(), breakRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
             if (selfDamage > BmaxDamage.get() || (BantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                 return 0;
@@ -1277,7 +1278,7 @@ public class BananaBomber extends Module {
 
         // Check damage to targets and face place
         float damage = getDamageToTargets(entity.getPos(), true, false);
-        boolean facePlaced = (facePlace.get() && CrystalUtil.shouldFacePlace(blockPos) || forceFacePlace.get().isPressed());
+        boolean facePlaced = (facePlace.get() && CrystalUtils.shouldFacePlace(blockPos) || forceFacePlace.get().isPressed());
 
         if (!facePlaced && damage < BminDamage.get()) return 0;
 
@@ -1307,7 +1308,7 @@ public class BananaBomber extends Module {
         boolean attacked = true;
 
         if (!rotate.get()) {
-            CrystalUtil.attackCrystal(crystal);
+            CrystalUtils.attackCrystal(crystal);
         }
         else {
             double yaw = Rotations.getYaw(crystal);
@@ -1315,7 +1316,7 @@ public class BananaBomber extends Module {
 
             if (doYawSteps(yaw, pitch)) {
                 setRotation(true, crystal.getPos(), 0, 0);
-                Rotations.rotate(yaw, pitch, 50, () -> CrystalUtil.attackCrystal(crystal));
+                Rotations.rotate(yaw, pitch, 50, () -> CrystalUtils.attackCrystal(crystal));
             }
             else {
                 attacked = false;
@@ -1352,7 +1353,7 @@ public class BananaBomber extends Module {
     // Place
 
     private void doPlace() {
-        if (!doPlace.get() || placeTimer > 0 || (popPause.get() != PopPause.Break && CrystalUtil.targetJustPopped())) return;
+        if (!doPlace.get() || placeTimer > 0 || (popPause.get() != PopPause.Break && CrystalUtils.targetJustPopped())) return;
 
         // Return if there are no crystals in hotbar or offhand
         if (!InvUtils.findInHotbar(Items.END_CRYSTAL).found()) return;
@@ -1408,7 +1409,7 @@ public class BananaBomber extends Module {
             if (intersectsWithEntities(box)) return;
 
             // Check damage to self and anti suicide
-            if (!CrystalUtil.shouldIgnoreSelfPlaceDamage()) {
+            if (!CrystalUtils.shouldIgnoreSelfPlaceDamage()) {
                 float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, vec3d, predictMovement.get(), placeRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
                 if (selfDamage > PmaxDamage.get() || (PantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                     return;
@@ -1417,11 +1418,11 @@ public class BananaBomber extends Module {
             // Check damage to targets and face place
             float damage = getDamageToTargets(vec3d, false, !hasBlock && support.get() == SupportMode.Fast);
 
-            boolean facePlaced = (facePlace.get() && CrystalUtil.shouldFacePlace(blockPos) || forceFacePlace.get().isPressed());
+            boolean facePlaced = (facePlace.get() && CrystalUtils.shouldFacePlace(blockPos) || forceFacePlace.get().isPressed());
 
-            boolean burrowBreaking = (CrystalUtil.isBurrowBreaking() && CrystalUtil.shouldBurrowBreak(blockPos));
+            boolean burrowBreaking = (CrystalUtils.isBurrowBreaking() && CrystalUtils.shouldBurrowBreak(blockPos));
 
-            boolean surroundBreaking = (CrystalUtil.isSurroundBreaking() && CrystalUtil.shouldSurroundBreak(blockPos));
+            boolean surroundBreaking = (CrystalUtils.isSurroundBreaking() && CrystalUtils.shouldSurroundBreak(blockPos));
 
             if ((!facePlaced && !surroundBreaking && !burrowBreaking) && damage < PminDamage.get()) return;
 
@@ -1454,12 +1455,12 @@ public class BananaBomber extends Module {
                     setRotation(true, vec3d, 0, 0);
                     Rotations.rotate(yaw, pitch, 50, () -> placeCrystal(result, bestDamage.get(), isSupport.get() ? bestBlockPos.get() : null));
 
-                    placeTimer += CrystalUtil.getPlaceDelay();
+                    placeTimer += CrystalUtils.getPlaceDelay();
                 }
             }
             else {
                 placeCrystal(result, bestDamage.get(), isSupport.get() ? bestBlockPos.get() : null);
-                placeTimer += CrystalUtil.getPlaceDelay();
+                placeTimer += CrystalUtils.getPlaceDelay();
             }
         });
     }
@@ -1677,16 +1678,16 @@ public class BananaBomber extends Module {
     @EventHandler(priority = EventPriority.LOWEST - 1000)
     private void onTick(TickEvent.Post event) {
         if (debug.get()) {
-            if (CrystalUtil.isFacePlacing() && bestTarget != null && bestTarget.getY() < placingCrystalBlockPos.getY()) {
+            if (CrystalUtils.isFacePlacing() && bestTarget != null && bestTarget.getY() < placingCrystalBlockPos.getY()) {
                 if (slowFacePlace.get()) warning("Slow faceplacing");
                 else warning("Faceplacing");
             }
 
-            if (CrystalUtil.isBurrowBreaking()) warning("Burrow breaking");
+            if (CrystalUtils.isBurrowBreaking()) warning("Burrow breaking");
 
-            if (CrystalUtil.isSurroundHolding()) warning("Surround holding");
+            if (CrystalUtils.isSurroundHolding()) warning("Surround holding");
 
-            if (CrystalUtil.isSurroundBreaking()) warning("Surround breaking");
+            if (CrystalUtils.isSurroundBreaking()) warning("Surround breaking");
         }
     }
 

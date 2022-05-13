@@ -2,6 +2,7 @@ package bananaplus.modules.combat;
 
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -60,7 +61,7 @@ public class ReverseStepTimer extends Module {
 
 
     private int fallTicks;
-    private final bananaplus.utils.Timer strictTimer = new bananaplus.utils.Timer();
+    private final TimerUtils strictTimer = new TimerUtils();
 
 
     @EventHandler
