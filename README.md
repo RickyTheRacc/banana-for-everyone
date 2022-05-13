@@ -1,4 +1,4 @@
-# Banana++ Addon for Meteor Client
+# Banana+ Addon for Meteor Client
 
 By Bennooo and RickyTheRacc
 
