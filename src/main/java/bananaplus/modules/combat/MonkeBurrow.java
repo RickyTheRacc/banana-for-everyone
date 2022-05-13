@@ -164,7 +164,11 @@ public class MonkeBurrow extends Module {
 
     @Override
     public void onActivate() {
-        if (onlyOnGround.get() && !mc.player.isOnGround()) return;
+        if (onlyOnGround.get() && !mc.player.isOnGround()) {
+            error("Not on the ground, disabling.")
+            toggle();
+            return;
+        }
 
         if (!mc.world.getBlockState(BPlusWorldUtils.roundBlockPos(mc.player.getPos())).getMaterial().isReplaceable()) {
             error("Already burrowed, disabling.");
