@@ -7,19 +7,17 @@
 <p align="center">Run from it, dread it... Banana arrives just the same.</p>
 <p align="center"><i>By Bennooo and RickyTheRacc</i></p>
 
-### How to use:
+# How to use:
 - Download and open with GitHub Desktop
 - Open the project through IntelliJ
 - Run the gradle `build` task and wait
 - Use the jar from the `build/libs` folder
 
-### Will this get updates?
-Probably! Ricky is currently working on fixing bugs and learning Java, Ben is maybe working on new modules entirely? But those will be added at his leisure since this is no longer a necessity :pray:
+## Will this get updates?
+For the foreseeable future, yes! Ricky is currently working on learning Java and is starting by fixing bugs. Bennooo has some feature planned, but they will be added at his leisure as this is more of a passion project than a responsibility. If you have a cool idea or a module you wrote, feel free to open a Pull Request!
 
-### Personal Note From Ben: 
+## Personal Note From Ben: 
 This started off as a passion project just for me and necro, and I think it’s insane how far this actually went. From a meteor prefix to a skid to finally a masterpiece. Thank you all for supporting this project, shits unreal! Sad that this shit happened tho.
 
 B+ on top, All love <3  -ben
-
-#### B+ Discord: :heheheha:
 
