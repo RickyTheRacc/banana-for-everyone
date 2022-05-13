@@ -34,72 +34,74 @@ public class ButtonTrap extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    // General
 
+    // General
     private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("The radius players can be in to be targeted.")
             .defaultValue(5)
-            .sliderMin(0)
-            .sliderMax(10)
-            .build());
+            .range(0,7)
+            .sliderRange(0,7)
+            .build()
+    );
+
+    private final Setting<Double> placeRange = sgGeneral.add(new DoubleSetting.Builder()
+            .name("place-range")
+            .description("The radius buttons can be placed.")
+            .defaultValue(4)
+            .range(0,6)
+            .sliderRange(0,6)
+            .build()
+    );
 
     private final Setting<ConTypeInclAlways> when = sgGeneral.add(new EnumSetting.Builder<ConTypeInclAlways>()
             .name("when")
             .description("When to start button trapping.")
             .defaultValue(ConTypeInclAlways.Always)
-            .build());
-
-    private final Setting<Double> placeRange = sgGeneral.add(new DoubleSetting.Builder()
-            .name("place-range")
-            .description("The radius buttons can be placed.")
-            .defaultValue(5)
-            .sliderMin(0)
-            .sliderMax(10)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> delaySetting = sgGeneral.add(new IntSetting.Builder()
             .name("place-delay")
             .description("How many ticks between block placements.")
             .defaultValue(1)
-            .sliderMin(0)
-            .sliderMax(10)
-            .build());
+            .range(0,20)
+            .sliderRange(0,20)
+            .build()
+    );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Sends rotation packets to the server when placing.")
             .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> swing = sgGeneral.add(new BoolSetting.Builder()
-            .name("swing")
-            .description("Renders your swing client-side.")
-            .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> checkEntity = sgGeneral.add(new BoolSetting.Builder()
             .name("Check Entity")
             .description("Check if placing intersects with entities.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> swapBack = sgGeneral.add(new BoolSetting.Builder()
             .name("Swap Back")
             .description("Swaps back to your previous slot after placing.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
-    private final Setting<Boolean> selfToggle = sgGeneral.add(new BoolSetting.Builder()
-            .name("self-toggle")
-            .description("Automatically toggles off if no target is found.")
-            .defaultValue(true)
-            .build());
 
     // Render
+    private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
+            .name("render-swing")
+            .description("Renders your swing client-side.")
+            .defaultValue(true)
+            .build()
+    );
 
-    private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
-            .name("render")
+    private final Setting<Boolean> renderTrap = sgRender.add(new BoolSetting.Builder()
+            .name("render-trap")
             .description("Renders a block overlay where the button will be placed.")
             .defaultValue(true)
             .build()
@@ -127,11 +129,11 @@ public class ButtonTrap extends Module {
     );
 
     private PlayerEntity target;
-    private List<BlockPos> placePositions = new ArrayList<>();
+    private final List<BlockPos> placePositions = new ArrayList<>();
     private int delay;
 
     public ButtonTrap() {
-        super(BananaPlus.COMBAT, "button-trap", "Anti Surround.");
+        super(BananaPlus.COMBAT, "anti-surround", "Place items inside the enemy's surround to break it.");
     }
 
     @Override
@@ -147,10 +149,8 @@ public class ButtonTrap extends Module {
         target = TargetUtils.getPlayerTarget(targetRange.get(), SortPriority.LowestDistance);
 
         if (target == null || Objects.requireNonNull(mc.player).distanceTo(target) > targetRange.get()) {
-            if (selfToggle.get()) {
-                error("No target found, disabling...");
-                toggle();
-            }
+            error("No target found, disabling...");
+            toggle();
             return;
         } else {
             if (!isTrapped(target)) return;
@@ -174,7 +174,7 @@ public class ButtonTrap extends Module {
                 BlockPos blockPos = placePositions.get(placePositions.size() - 1);
                 if (BPlusPlayerUtils.distanceFromEye(blockPos) > placeRange.get()) return;
 
-                if (BlockUtils.place(blockPos, button, rotate.get(), 50, swing.get(), checkEntity.get(), swapBack.get()))
+                if (BlockUtils.place(blockPos, button, rotate.get(), 50, renderSwing.get(), checkEntity.get(), swapBack.get()))
                     placePositions.remove(blockPos);
 
                 delay = 0;
@@ -184,7 +184,7 @@ public class ButtonTrap extends Module {
 
     @EventHandler
     private void onRender(Render3DEvent event) {
-        if (!render.get() || placePositions.isEmpty()) return;
+        if (!renderTrap.get() || placePositions.isEmpty()) return;
         for (BlockPos pos : placePositions)
             event.renderer.box(pos, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
     }

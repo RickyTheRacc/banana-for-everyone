@@ -95,16 +95,7 @@ public class AutoCityPlus extends Module {
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Automatically rotates you towards the city block.")
-            .defaultValue(true)
-            .build()
-    );
-
-
-
-    private final Setting<Boolean> selfToggle = sgGeneral.add(new BoolSetting.Builder()
-            .name("self-toggle")
-            .description("Automatically toggles off after activation.")
-            .defaultValue(true)
+            .defaultValue(false)
             .build()
     );
 
@@ -121,7 +112,7 @@ public class AutoCityPlus extends Module {
             .defaultValue(40)
             .min(0)
             .sliderMax(100)
-            .visible(() -> mode.get() == Mode.Instant && selfToggle.get())
+            .visible(() -> mode.get() == Mode.Instant)
             .build()
     );
 
@@ -178,7 +169,7 @@ public class AutoCityPlus extends Module {
     private final Setting<Boolean> noCitySurrounded = sgTarget.add(new BoolSetting.Builder()
             .name("not-surrounded")
             .description("Will not city a target if they aren't surrounded.")
-            .defaultValue(true)
+            .defaultValue(false)
             .build()
     );
 
@@ -216,21 +207,21 @@ public class AutoCityPlus extends Module {
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
-            .defaultValue(ShapeMode.Both)
+            .defaultValue(ShapeMode.Lines)
             .build()
     );
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The color of the sides of the blocks being rendered.")
-            .defaultValue(new SettingColor(230, 75, 100, 10))
+            .defaultValue(new SettingColor(255, 0, 0, 25))
             .build()
     );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The color of the lines of the blocks being rendered.")
-            .defaultValue(new SettingColor(230, 75, 100, 255))
+            .defaultValue(new SettingColor(255, 0, 0, 255))
             .build()
     );
 
@@ -272,7 +263,7 @@ public class AutoCityPlus extends Module {
             if (TargetUtils.isBadTarget(target, targetRange.get())) {
                 target = null;
                 blockPosTarget = null;
-                if (selfToggle.get()) toggle();
+                toggle();
                 return;
             }
 
@@ -311,7 +302,7 @@ public class AutoCityPlus extends Module {
             if (TargetUtils.isBadTarget(target, targetRange.get())) {
                 target = null;
                 blockPosTarget = null;
-                if (selfToggle.get()) toggle();
+                toggle();
                 return;
             }
 
@@ -333,10 +324,8 @@ public class AutoCityPlus extends Module {
         }
 
         if (blockPosTarget == null) {
-            if (selfToggle.get()) {
-                error("No target block found... disabling.");
-                toggle();
-            }
+            error("No target block found... disabling.");
+            toggle();
             target = null;
             return;
         } else if (!sentMessage && chatInfo.get() && blockPosTarget != target.getBlockPos()) {
@@ -344,7 +333,7 @@ public class AutoCityPlus extends Module {
             sentMessage = true;
         }
 
-        if (BPlusPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get() && selfToggle.get()) {
+        if (BPlusPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get()) {
             error("Target block out of reach... disabling.");
             toggle();
             return;
@@ -361,10 +350,8 @@ public class AutoCityPlus extends Module {
         FindItemResult pickaxe = InvUtils.find(itemStack -> itemStack.getItem() == Items.DIAMOND_PICKAXE || itemStack.getItem() == Items.NETHERITE_PICKAXE);
 
         if (!pickaxe.isHotbar()) {
-            if (selfToggle.get()) {
-                error("No pickaxe found... disabling.");
-                toggle();
-            }
+            error("No pickaxe found... disabling.");
+            toggle();
             return;
         }
 
@@ -385,28 +372,15 @@ public class AutoCityPlus extends Module {
         }
 
         if (mode.get() == Mode.Instant) {
-            if (selfToggle.get()) {
-                direction = BPlusEntityUtils.rayTraceCheck(blockPosTarget, true);
-                if (!mc.world.isAir(blockPosTarget)) {
-                    instamine(blockPosTarget);
-                } else ++count;
-
-                if (target == null || !target.isAlive() || count >= instaToggle.get()) {
-                    toggle();
-                }
-            } else {
-                if (target == null) return;
-                direction = BPlusEntityUtils.rayTraceCheck(blockPosTarget, true);
-                if (!mc.world.isAir(blockPosTarget)) {
-                    instamine(blockPosTarget);
-                }
-                if (target == null || !target.isAlive()) {
-                    toggle();
-                }
+            if (target == null || !target.isAlive() || count >= instaToggle.get()) {
+                toggle();
             }
+
+            direction = BPlusEntityUtils.rayTraceCheck(blockPosTarget, true);
+            if (!mc.world.isAir(blockPosTarget)) {
+                instamine(blockPosTarget);
+            } else ++count;
         }
-
-
     }
 
     private void mine(BlockPos blockPos) {

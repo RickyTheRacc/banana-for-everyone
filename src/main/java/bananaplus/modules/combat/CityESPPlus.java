@@ -15,63 +15,77 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class CityESPPlus extends Module {
-
-    public CityESPPlus() { super(BananaPlus.COMBAT, "city-esp+", "Displays more blocks that can be broken in order to city another player."); }
-
     private final SettingGroup sgRender = settings.createGroup("Render");
+
 
     // Render
     private final Setting<Double> range = sgRender.add(new DoubleSetting.Builder()
             .name("range")
             .description("The distance which to find the enemy.")
             .defaultValue(6)
-            .min(0)
-            .build());
+            .range(0,20)
+            .sliderRange(0,20)
+            .build()
+    );
 
     private final Setting<Boolean> prioBurrowed = sgRender.add(new BoolSetting.Builder()
             .name("prioritise-burrow")
             .description("Will prioritise rendering the burrow block.")
-            .defaultValue(true)
-            .build());
+            .defaultValue(false)
+            .build()
+    );
 
     private final Setting<Boolean> noRenderSurrounded = sgRender.add(new BoolSetting.Builder()
             .name("not-surrounded")
             .description("Will not render if the target is not surrounded.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> avoidSelf = sgRender.add(new BoolSetting.Builder()
             .name("avoid-self")
             .description("Will avoid targeting self surround.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> lastResort = sgRender.add(new BoolSetting.Builder()
             .name("last-resort")
             .description("Will try to target your own surround as final option.")
             .defaultValue(true)
             .visible(avoidSelf::get)
-            .build());
+            .build()
+    );
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
-            .defaultValue(ShapeMode.Both)
-            .build());
+            .defaultValue(ShapeMode.Sides)
+            .build()
+    );
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the rendering.")
-            .defaultValue(new SettingColor(230, 0, 255, 5))
-            .build());
+            .defaultValue(new SettingColor(255, 0, 0, 25))
+            .build()
+    );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The line color of the rendering.")
-            .defaultValue(new SettingColor(250, 0, 255, 255))
-            .build());
+            .defaultValue(new SettingColor(255, 0, 0, 25))
+            .build()
+    );
+
+
+    public CityESPPlus() {
+        super(BananaPlus.COMBAT, "city-esp+", "Display blocks that can be citied around your target.");
+    }
+
 
     public BlockPos target;
+
 
     @EventHandler
     private void onTick(TickEvent.Post event) {

@@ -27,18 +27,16 @@ public class BurrowMiner extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
-            .name("debug")
-            .defaultValue(false)
-            .build());
 
+    // General
     private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("The radius in which players get targeted.")
             .defaultValue(5)
             .min(0)
             .sliderMax(7)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> mineRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("mine-range")
@@ -46,25 +44,29 @@ public class BurrowMiner extends Module {
             .defaultValue(4.5)
             .min(0)
             .sliderMax(7)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoSwitch = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-switch")
             .description("Auto switches to a pickaxe when enabled.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Automatically rotates you towards the city block.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> retry = sgGeneral.add(new BoolSetting.Builder()
             .name("retry")
             .description("Retry mining the block after a certain ticks if there is still a block.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> retryTicks = sgGeneral.add(new IntSetting.Builder()
             .name("retry-ticks")
@@ -73,19 +75,22 @@ public class BurrowMiner extends Module {
             .min(1)
             .sliderRange(1,100)
             .visible(retry::get)
-            .build());
-
-    private final Setting<Boolean> selfToggle = sgGeneral.add(new BoolSetting.Builder()
-            .name("self-toggle")
-            .description("Automatically toggles off after activation.")
-            .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
             .name("chat-info")
             .description("Sends a message when it is trying to burrow mine someone.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
+
+    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
+            .name("debug")
+            .defaultValue(false)
+            .build()
+    );
+
 
     // Rendering
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
@@ -116,15 +121,18 @@ public class BurrowMiner extends Module {
             .build()
     );
 
+
+    public BurrowMiner() {
+        super(BananaPlus.COMBAT, "burrow-miner", "Automatically mines enemy's burrow block.");
+    }
+
+
     private PlayerEntity target;
     private BlockPos blockPosTarget;
     private boolean mining;
     private boolean sentMessage;
     private int ticksPassed;
 
-    public BurrowMiner() {
-        super(BananaPlus.COMBAT, "burrow-miner", "Automatically mines enemy's burrow block.");
-    }
 
     @Override
     public void onActivate() {
@@ -143,7 +151,7 @@ public class BurrowMiner extends Module {
         if (TargetUtils.isBadTarget(target, targetRange.get())) {
             target = null;
             blockPosTarget = null;
-            if (selfToggle.get()) toggle();
+            toggle();
             return;
         }
 
@@ -152,16 +160,14 @@ public class BurrowMiner extends Module {
         } else blockPosTarget = null;
 
         if (blockPosTarget == null) {
-            if (selfToggle.get()) {
-                error("No target block found... disabling.");
-                toggle();
-            }
+            error("No target block found... disabling.");
+            toggle();
             mining = false;
             target = null;
             return;
         }
 
-        if (BPlusPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get() && selfToggle.get()) {
+        if (BPlusPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get()) {
             error("Target block out of reach... disabling.");
             toggle();
             return;
@@ -170,10 +176,8 @@ public class BurrowMiner extends Module {
         FindItemResult pickaxe = InvUtils.find(itemStack -> itemStack.getItem() == Items.DIAMOND_PICKAXE || itemStack.getItem() == Items.NETHERITE_PICKAXE);
 
         if (!pickaxe.isHotbar()) {
-            if (selfToggle.get()) {
-                error("No pickaxe found... disabling.");
-                toggle();
-            }
+            error("No pickaxe found... disabling.");
+            toggle();
             return;
         }
 

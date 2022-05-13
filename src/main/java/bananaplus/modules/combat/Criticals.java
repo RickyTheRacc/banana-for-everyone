@@ -25,7 +25,6 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 // this thing should be handled as a mixin into the meteor criticals module to be compatible with post tick ka
 
 public class Criticals extends Module {
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
@@ -42,14 +41,17 @@ public class Criticals extends Module {
             .build()
     );
 
+
+    public Criticals() {
+        super(Categories.Combat, "criticals", "Performs critical attacks when you hit your target.");
+    }
+
+
     private PlayerInteractEntityC2SPacket attackPacket;
     private HandSwingC2SPacket swingPacket;
     private boolean sendPackets;
     private int sendTimer;
 
-    public Criticals() {
-        super(Categories.Combat, "criticals", "Performs critical attacks when you hit your target.");
-    }
 
     @Override
     public void onActivate() {

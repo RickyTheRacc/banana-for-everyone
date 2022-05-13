@@ -98,7 +98,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new TPSSync());
 		Modules.get().add(new Twerk());
 		Modules.get().add(new WebNoSlow());
-
+2
 
 		// Bruh Moment
 		Modules.get().add(new Criticals());

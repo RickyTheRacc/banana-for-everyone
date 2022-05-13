@@ -27,131 +27,147 @@ public class Monkhand extends Module {
     private final SettingGroup sgCrystal = settings.createGroup("Crystal");
     private final SettingGroup sgMisc = settings.createGroup("Misc");
 
+
+    // General
     private final Setting<Item> item = sgGeneral.add(new EnumSetting.Builder<Item>()
             .name("item")
             .description("Which item to hold in your offhand.")
             .defaultValue(Item.Crystal)
-            .build());
+            .build()
+    );
 
     private final Setting<Item> fallbackItem = sgGeneral.add(new EnumSetting.Builder<Item>()
             .name("fallback-item")
             .description("Which item to hold if main item is not found.")
             .defaultValue(Item.EGap)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> hotbar = sgGeneral.add(new BoolSetting.Builder()
             .name("hotbar")
             .description("Whether to use items from your hotbar.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> rightClick = sgGeneral.add(new BoolSetting.Builder()
             .name("right-click")
             .description("Only holds the item in your offhand when you are holding right click.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Gap
-
     private final Setting<Boolean> allowCrapples = sgGap.add(new BoolSetting.Builder()
             .name("allow-crapples")
             .description("Holds a crapple instead of an EGap when no Egap is found.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> swordGap = sgGap.add(new BoolSetting.Builder()
             .name("sword-gap")
             .description("Holds an Enchanted Golden Apple when you are holding a sword.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> axeGap = sgGap.add(new BoolSetting.Builder()
             .name("axe-gap")
             .description("Holds an Enchanted Golden Apple when you are holding an axe.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> smartGap = sgGap.add(new BoolSetting.Builder()
             .name("smart-gap")
             .description("Only allows to hold a gap if you are in a hole.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> inSingleHole = sgGap.add(new BoolSetting.Builder()
             .name("in-single-hole")
             .description("Allow gap in a single hole.")
             .defaultValue(true)
             .visible(smartGap::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> inSingleBedrock = sgGap.add(new BoolSetting.Builder()
             .name("in-single-bedrock")
             .description("Allow gap in a single bedrock hole.")
             .defaultValue(true)
             .visible(smartGap::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> inDoubleHole = sgGap.add(new BoolSetting.Builder()
             .name("in-double-hole")
             .description("Allow gap in a double hole.")
             .defaultValue(true)
             .visible(smartGap::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> inDoubleBedrock = sgGap.add(new BoolSetting.Builder()
             .name("in-double-bedrock")
             .description("Allow gap in a double bedrock hole.")
             .defaultValue(true)
             .visible(smartGap::get)
-            .build());
+            .build()
+    );
+
 
     // Crystal
-
     private final Setting<Boolean> crystalCa = sgCrystal.add(new BoolSetting.Builder()
             .name("crystal-on-ca")
             .description("Holds a crystal when you have Crystal Aura enabled.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> crystalCev = sgCrystal.add(new BoolSetting.Builder()
             .name("crystal-on-cev-breaker")
             .description("Holds a crystal when you have Cev Breaker enabled.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> crystalMine = sgCrystal.add(new BoolSetting.Builder()
             .name("crystal-on-mine")
             .description("Holds a crystal when you are mining.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Misc
-
-    private final Setting<Boolean> web = sgMisc.add(new BoolSetting.Builder()
-            .name("Web-on-AutoWeb")
-            .description("Holds webs when AutoWeb is on.")
-            .defaultValue(false)
-            .build());
-
     private final Setting<Boolean> AutoXP = sgMisc.add(new BoolSetting.Builder()
             .name("Xp-on-Auto-XP")
             .description("Holds Bottles of Enchanting when Auto XP is on.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> RocketBow = sgMisc.add(new BoolSetting.Builder()
             .name("Crossbow-rocket")
             .description("Holds a rocket if you are holding a crossbow.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
+
+    public Monkhand() {
+        super(BananaPlus.COMBAT, "monkhand", "Allows you to hold specified items in your offhand.");
+    }
+
 
     private boolean isClicking;
     private boolean sentMessage;
     private Item currentItem;
 
-    public Monkhand() {
-        super(BananaPlus.COMBAT, "monkhand", "[B+ Modified] Allows you to hold specified items in your offhand.");
-    }
 
     @Override
     public void onActivate() {
@@ -172,7 +188,7 @@ public class Monkhand extends Module {
         else if (mainHand instanceof  AxeItem && axeGap.get() && allowGap()) currentItem = Item.EGap;
 
         // Ca, mining, cev
-        else if ((modules.isActive(CrystalAura.class) || modules.isActive(BananaBomber.class) && crystalCa.get())
+        else if ((modules.isActive(CrystalAura.class) && crystalCa.get() || modules.isActive(BananaBomber.class) && crystalCa.get())
                 || mc.interactionManager.isBreakingBlock() && crystalMine.get()
                 || modules.isActive(CevBreaker.class) && crystalCev.get()) currentItem = Item.Crystal;
 
@@ -180,8 +196,6 @@ public class Monkhand extends Module {
         else if (modules.isActive(AutoXP.class) && modules.get(AutoXP.class).isOnStandby && modules.get(AutoXP.class).isRepairing && AutoXP.get()) currentItem = Item.Exp;
         // Rocket
         else if ((mc.player.getMainHandStack().getItem() instanceof CrossbowItem) && RocketBow.get()) currentItem = Item.Firework;
-        // Web
-        else if (modules.isActive(AutoWeb.class) && web.get()) currentItem = Item.Web;
         else currentItem = item.get();
 
         // Checking offhand item

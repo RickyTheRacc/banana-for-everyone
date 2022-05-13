@@ -40,109 +40,139 @@ public class MonkeBurrow extends Module {
         None
     }
 
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+    private final SettingGroup sgPlacing = settings.createGroup("Placing");
 
-    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
-            .name("debug")
-            .defaultValue(false)
-            .build());
-
+    // General
     private final Setting<Block> block = sgGeneral.add(new EnumSetting.Builder<Block>()
             .name("block")
             .description("The block to use for Burrow.")
-            .defaultValue(Block.EChest)
-            .build());
+            .defaultValue(Block.Anvil)
+            .build()
+    );
 
     private final Setting<Block> fallbackBlock = sgGeneral.add(new EnumSetting.Builder<Block>()
             .name("fallback-block")
             .description("The fallback block to use for Burrow.")
-            .defaultValue(Block.Anvil)
-            .build());
-
-    private final Setting<Boolean> instant = sgGeneral.add(new BoolSetting.Builder()
-            .name("instant")
-            .description("Jumps with packets rather than vanilla jump.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Boolean> automatic = sgGeneral.add(new BoolSetting.Builder()
-            .name("automatic")
-            .description("Automatically burrows on activate rather than waiting for jump.")
-            .defaultValue(true)
-            .build());
-
-    private final Setting<Double> triggerHeight = sgGeneral.add(new DoubleSetting.Builder()
-            .name("trigger-height")
-            .description("How high you have to jump before a rubberband is triggered.")
-            .defaultValue(1.12)
-            .range(0.01, 1.4)
-            .sliderRange(0.01, 1.4)
-            .build());
-
-    private final Setting<RubberbandDirection> rubberbandDirection = sgGeneral.add(new EnumSetting.Builder<RubberbandDirection>()
-            .name("rubberband-direction")
-            .description("Which direction to rubberband you when your are burrowing.")
-            .defaultValue(RubberbandDirection.Up)
-            .build());
-
-    private final Setting<Integer> minRubberbandHeight = sgGeneral.add(new IntSetting.Builder()
-            .name("min-height")
-            .description("Min height to rubberband.")
-            .defaultValue(3)
-            .min(2)
-            .sliderRange(2,30)
-            .build());
-
-    private final Setting<Integer> maxRubberbandHeight = sgGeneral.add(new IntSetting.Builder()
-            .name("max-height")
-            .description("Max height to rubberband.")
-            .defaultValue(7)
-            .min(2)
-            .sliderRange(2,30)
-            .build());
-
-    private final Setting<Double> timer = sgGeneral.add(new DoubleSetting.Builder()
-            .name("timer")
-            .description("Timer override.")
-            .defaultValue(1)
-            .min(0.01)
-            .sliderRange(0.01, 10)
-            .build());
+            .defaultValue(Block.EChest)
+            .build()
+    );
 
     private final Setting<Boolean> onlyInHole = sgGeneral.add(new BoolSetting.Builder()
             .name("only-in-holes")
             .description("Stops you from burrowing when not in a hole.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
-    private final Setting<CenterMode> centerMode = sgGeneral.add(new EnumSetting.Builder<CenterMode>()
-            .name("center")
-            .description("How it should center you before burrowing.")
-            .defaultValue(CenterMode.Snap)
-            .build());
+    private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
+            .name("only-on-ground")
+            .description("Stops you from burrowing when not in a hole.")
+            .defaultValue(false)
+            .build()
+    );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Faces the block you place server-side.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
-    private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
-    private boolean shouldBurrow;
+    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
+            .name("debug")
+            .defaultValue(false)
+            .build()
+    );
+
+
+    // Placing
+    private final Setting<CenterMode> centerMode = sgPlacing.add(new EnumSetting.Builder<CenterMode>()
+            .name("center")
+            .description("How it should center you before burrowing.")
+            .defaultValue(CenterMode.Center)
+            .build()
+    );
+
+    private final Setting<Boolean> instant = sgPlacing.add(new BoolSetting.Builder()
+            .name("instant")
+            .description("Jumps with packets rather than vanilla jump.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> automatic = sgPlacing.add(new BoolSetting.Builder()
+            .name("automatic")
+            .description("Automatically burrows on activate rather than waiting for jump.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Double> triggerHeight = sgPlacing.add(new DoubleSetting.Builder()
+            .name("trigger-height")
+            .description("How high you have to jump before a rubberband is triggered.")
+            .defaultValue(1.12)
+            .range(0.01, 1.4)
+            .sliderRange(0.01, 1.4)
+            .build()
+    );
+
+    private final Setting<RubberbandDirection> rubberbandDirection = sgPlacing.add(new EnumSetting.Builder<RubberbandDirection>()
+            .name("rubberband-direction")
+            .description("Which direction to rubberband you when your are burrowing.")
+            .defaultValue(RubberbandDirection.Up)
+            .build()
+    );
+
+    private final Setting<Integer> minRubberbandHeight = sgPlacing.add(new IntSetting.Builder()
+            .name("min-height")
+            .description("Min height to rubberband.")
+            .defaultValue(3)
+            .min(2)
+            .sliderRange(2,30)
+            .build()
+    );
+
+    private final Setting<Integer> maxRubberbandHeight = sgPlacing.add(new IntSetting.Builder()
+            .name("max-height")
+            .description("Max height to rubberband.")
+            .defaultValue(7)
+            .min(2)
+            .sliderRange(2,30)
+            .build()
+    );
+
+    private final Setting<Double> timer = sgPlacing.add(new DoubleSetting.Builder()
+            .name("timer")
+            .description("Timer override.")
+            .defaultValue(1)
+            .min(0.01)
+            .sliderRange(0.01, 10)
+            .build()
+    );
+
 
     public MonkeBurrow() {
         super(BananaPlus.COMBAT, "monke-burrow", "Attempts to clip you into a block.");
     }
 
+
+    private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
+    private boolean shouldBurrow;
+
+
     @Override
     public void onActivate() {
+        if (onlyOnGround.get() && !mc.player.isOnGround()) return;
+
         if (!mc.world.getBlockState(BPlusWorldUtils.roundBlockPos(mc.player.getPos())).getMaterial().isReplaceable()) {
             error("Already burrowed, disabling.");
             toggle();
             return;
         }
 
-        if (!BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any) && onlyInHole.get()) {
+        if (!BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any) && onlyOnGround.get()) {
             error("Not in a hole, disabling.");
             toggle();
             return;

@@ -34,24 +34,64 @@ import java.util.List;
 
 public class CevBreaker extends Module {
 
-    public enum Mode {Normal, Packet, Instant};
+    public enum Mode {
+        Normal,
+        Packet,
+        Instant
+    };
 
     private final SettingGroup sgGeneral = settings.createGroup("general");
-    private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder().name("rotate").description("Whether to rotate or not.").defaultValue(false).build());
-    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>().name("mode").description("Which mode to use for breaking the obsidian.").defaultValue(Mode.Packet).build());
-    private final Setting<Boolean> smartDelay = sgGeneral.add(new BoolSetting.Builder().name("smart-delay").description("Waits until the target can get damaged again with breaking the block.").visible(() -> mode.get() == Mode.Instant).defaultValue(true).build());
-    private final Setting<Boolean> swing = sgGeneral.add(new BoolSetting.Builder().name("swing").description("Renders your swing client-side.").defaultValue(true).build());
-    //old private final Setting<Integer> switchDelay = sgGeneral.add(new IntSetting.Builder().name("switch-delay").description("How many ticks to wait before after switching hotbar slots.").defaultValue(1).min(0).sliderMax(10).build());
-    private final Setting<Integer> switchDelay = sgGeneral.add(new IntSetting.Builder().name("switch-delay").description("How many ticks to wait before hitting an entity after switching hotbar slots.").defaultValue(1).min(0).sliderMax(10).visible(() -> mode.get() == Mode.Packet).build());
+
+    private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
+            .name("rotate")
+            .description("Whether to rotate or not.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
+            .name("mode")
+            .description("Which mode to use for breaking the obsidian.")
+            .defaultValue(Mode.Packet)
+            .build()
+    );
+
+    private final Setting<Boolean> smartDelay = sgGeneral.add(new BoolSetting.Builder()
+            .name("smart-delay")
+            .description("Waits until the target can get damaged again with breaking the block.")
+            .defaultValue(true)
+            .visible(() -> mode.get() == Mode.Instant)
+            .build()
+    );
+
+    private final Setting<Boolean> swing = sgGeneral.add(new BoolSetting.Builder()
+            .name("swing")
+            .description("Renders your swing client-side.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Integer> switchDelay = sgGeneral.add(new IntSetting.Builder()
+            .name("switch-delay")
+            .description("How many ticks to wait before hitting an entity after switching hotbar slots.")
+            .defaultValue(1)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(() -> mode.get() == Mode.Packet)
+            .build()
+    );
 
 
-    public CevBreaker() { super(BananaPlus.COMBAT, "cev-breaker", "Automatically places an obsidian block and a crystal on top of the target and breaks the obby and crystal to deal massive damage."); }
+    public CevBreaker() {
+        super(BananaPlus.COMBAT, "cev-breaker", "Break crystals over a holefag's head to deal massive damage!");
+    }
+
 
     private PlayerEntity closestTarget;
     private boolean startedYet;
     private int switchDelayLeft, timer, breakDelayLeft;
-    private List<PlayerEntity> blacklisted = new ArrayList<>();
-    private List<EndCrystalEntity> crystals = new ArrayList<>();
+    private final List<PlayerEntity> blacklisted = new ArrayList<>();
+    private final List<EndCrystalEntity> crystals = new ArrayList<>();
 
     @EventHandler
     public void onActivate() {

@@ -1,6 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.AddModule;
+import bananaplus.modules.BananaPlus;
 import bananaplus.modules.hud.stats.CrystalsPs;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -22,12 +22,12 @@ public class Mystery extends Module {
 
     // The rat o-o scary
     public Mystery() {
-        super(AddModule.MISC, "mystery", "I wonder what this does...");
+        super(BananaPlus.MISC, "mystery", "I wonder what this does...");
 
         MeteorClient.EVENT_BUS.subscribe(new Listener());
     }
 
-    // Crystal per Second
+    // Crystal Per Second
 
     private int ticksPassed;
     private int first;

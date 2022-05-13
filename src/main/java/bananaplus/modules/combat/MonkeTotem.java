@@ -30,64 +30,73 @@ public class MonkeTotem extends Module {
     private final SettingGroup sgArmor = settings.createGroup("Armor Modifier");
     private final SettingGroup sgHole = settings.createGroup("In Hole Modifier");
 
-    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
-            .name("debug")
-            .defaultValue(false)
-            .build());
-
+    // General
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Determines when to hold a totem, strict will always hold.")
             .defaultValue(Mode.Strict)
-            .build());
+            .build()
+    );
+
+    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
+            .name("debug")
+            .defaultValue(false)
+            .build()
+    );
 
     private final Setting<Boolean> allowHotbarPickup = sgGeneral.add(new BoolSetting.Builder()
             .name("allow-hotbar-pickup")
             .description("Allow totems to be picked up from hotbar.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
-            .description("The miliseconds between slot movements.")
+            .description("The milliseconds between slot movements.")
             .defaultValue(0)
             .min(0)
-            .sliderRange(0, 300)
-            .build());
+            .sliderRange(0,300)
+            .build()
+    );
 
     private final Setting<Double> redHealth = sgGeneral.add(new DoubleSetting.Builder()
             .name("red-health")
             .description("The maximum red health to be considered.")
             .defaultValue(10)
-            .range(0, 20)
+            .range(0,20)
             .sliderMax(20)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> yellowHealth = sgGeneral.add(new DoubleSetting.Builder()
             .name("yellow-health")
             .description("The maximum yellow health to be considered.")
             .defaultValue(10)
-            .range(0, 16)
+            .range(0,16)
             .sliderMax(16)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> minHealth = sgGeneral.add(new DoubleSetting.Builder()
             .name("min-health")
             .description("The minimum total health to hold a totem at.")
             .defaultValue(14)
-            .range(0, 36)
+            .range(0,36)
             .sliderMax(36)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> crystals = sgGeneral.add(new BoolSetting.Builder()
             .name("crystals")
             .description("Will hold a totem when a crystal damage could kill you.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> explosionRadius = sgGeneral.add(new DoubleSetting.Builder()
             .name("explosion-radius")
@@ -96,14 +105,16 @@ public class MonkeTotem extends Module {
             .sliderRange(1,12)
             .range(1,12)
             .visible(() -> mode.get() == Mode.Smart && crystals.get())
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> swords = sgGeneral.add(new BoolSetting.Builder()
             .name("swords")
             .description("Will hold a totem when a player sword damage could kill you.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> swordsRadius = sgGeneral.add(new DoubleSetting.Builder()
             .name("swords")
@@ -112,111 +123,119 @@ public class MonkeTotem extends Module {
             .sliderRange(1, 6.5)
             .range(1, 6.5)
             .visible(() -> mode.get() == Mode.Smart && swords.get())
-            .build());
+            .build()
+    );
+
 
     // Cursor
-
     private final Setting<Boolean> antiCursorStack = sgCursor.add(new BoolSetting.Builder()
             .name("anti-cursor-stack")
             .description("Puts back items on your cursor back to your inventory after popping.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
-    private final Setting<Integer> antiCursorstackMargin = sgCursor.add(new IntSetting.Builder()
-            .name("anti-cursor-stack-margin")
+    private final Setting<Integer> antiCursorStackMargin = sgCursor.add(new IntSetting.Builder()
+            .name("stack-margin")
             .description("The milliseconds margin after you pop to allow putting an item to your cursor to your inventory.")
             .defaultValue(500)
             .min(0)
-            .sliderRange(0, 500)
+            .sliderRange(0,500)
             .visible(antiCursorStack::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> allowHotbarReturn = sgCursor.add(new BoolSetting.Builder()
             .name("allow-hotbar-return")
             .description("Allow items to be moved back to hotbar.")
             .defaultValue(false)
             .visible(antiCursorStack::get)
-            .build());
+            .build()
+    );
+
 
     // Armor
-
     private final Setting<Double> missingHelmet = sgArmor.add(new DoubleSetting.Builder()
             .name("missing-helmet")
             .description("The minimum total health to increase by if your helmet is missing.")
             .defaultValue(2)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> missingChestplate = sgArmor.add(new DoubleSetting.Builder()
             .name("missing-chestplate")
             .description("The minimum total health to increase by if your chestplate is missing.")
             .defaultValue(3)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> missingLeggings = sgArmor.add(new DoubleSetting.Builder()
             .name("missing-leggings")
             .description("The minimum total health to increase by if your leggings are missing.")
             .defaultValue(3)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> missingBoots = sgArmor.add(new DoubleSetting.Builder()
             .name("missing-boots")
             .description("The minimum total health to increase by if your boots are missing.")
             .defaultValue(2)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
+
 
     // Hole
-
     private final Setting<Double> inSingleHole = sgHole.add(new DoubleSetting.Builder()
             .name("in-single-hole")
             .description("The minimum total health to decrease by if your are in a surround.")
             .defaultValue(1)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> inSingleBedrock = sgHole.add(new DoubleSetting.Builder()
             .name("in-single-bedrock")
             .description("The minimum total health to decrease by if your are in a bedrock hole.")
             .defaultValue(2)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> inDoubleHole = sgHole.add(new DoubleSetting.Builder()
             .name("in-double-hole")
             .description("The minimum total health to decrease by if your are in a double hole.")
             .defaultValue(0.5)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> inDoubleBedrock = sgHole.add(new DoubleSetting.Builder()
             .name("in-double-bedrock")
             .description("The minimum total health to decrease by if your are in a double bedrock hole.")
             .defaultValue(1)
             .visible(() -> mode.get() == Mode.Smart)
-            .build());
+            .build()
+    );
+
 
     public MonkeTotem() {
-        super(BananaPlus.COMBAT, "monke-totem", "Automatically puts a totem in your offhand. (If issues occur with normal offhand, use monkhand)");
+        super(BananaPlus.COMBAT, "monke-totem", "Automatically puts a totem in your offhand.");
     }
 
-    // Fields
-    private Timer offhandTimer = new Timer();
-    private Timer poppedTimer = new Timer();
-    private int totemSlot, returnSlot;
-    private boolean locked;
-    private boolean moving;
 
-    // Modifiers
-    // Armor
+    private final Timer offhandTimer = new Timer();
+    private final Timer poppedTimer = new Timer();
+    private boolean locked;
+
     private float helmetModifier;
     private float chestplateModifier;
     private float leggingsModifier;
     private float bootsModifier;
 
-    // Hole
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onTick(TickEvent.Pre event) {
@@ -230,8 +249,8 @@ public class MonkeTotem extends Module {
         boolean low = Math.min(mc.player.getHealth(), redHealth.get()) + Math.min(mc.player.getAbsorptionAmount(), yellowHealth.get()) - BPlusDamageUtils.possibleHealthReductions(crystals.get(), explosionRadius.get().floatValue(), swords.get(), swordsRadius.get().floatValue()) <= minHealth.get() + armorModifier() - holeModifier();
         locked = (mode.get() == Mode.Strict || (mode.get() == Mode.Smart && low) && totemCount > 0);
 
-        // We find a totem from the inventory not only if our health is low so we know exactly where to pickup another totem immediately
-        totemSlot = -1;
+        // We find a totem from the inventory not only if our health is low, so we know exactly where to pick up another totem immediately
+        int totemSlot = -1;
         for (int i = allowHotbarPickup.get() ? 0 : 9; i <= 35; i++) {
             if (mc.player.getInventory().getStack(i).getItem().equals(Items.TOTEM_OF_UNDYING)) {
                 totemSlot = i;
@@ -242,22 +261,16 @@ public class MonkeTotem extends Module {
 
         // Being the process if above condition is true, delay is met, and offhand is not a totem
         if (locked && offhandTimer.passedMillis(delay.get()) && mc.player.getOffHandStack().getItem() != Items.TOTEM_OF_UNDYING) {
-
-            moving = true;
-
             // Move the totem to offhand
             if (totemSlot != -1) {
                 InvUtils.move().from(totemSlot).to(45);
                 offhandTimer.reset();
             }
-
         }
-
-        moving = false;
 
         if (antiCursorStack.get()) {
             // We need to find an empty slot in our inventory first otherwise we will just pick up another item, also finding this outside of the condition
-            returnSlot = -1;
+            int returnSlot = -1;
             for (int i = allowHotbarReturn.get() ? 0 : 9; i <= 35; i++) {
                 if (mc.player.getInventory().getStack(i).isEmpty()) {
                     returnSlot = i;
@@ -266,9 +279,9 @@ public class MonkeTotem extends Module {
                 }
             }
 
-            // Now we need to put an item back to our inventory if there was a item on our cursor slot so when we chain pop we don't totem fail
+            // Now we need to put an item back to our inventory if there was an item on our cursor slot so when we chain pop we don't totem fail
             // Because meteor's inv utils of moving the item will check first whether the cursor slot is empty or not and return
-            if (!mc.player.currentScreenHandler.getCursorStack().isEmpty() && !moving && !poppedTimer.passedMillis(antiCursorstackMargin.get())) {
+            if (!mc.player.currentScreenHandler.getCursorStack().isEmpty() && !poppedTimer.passedMillis(antiCursorStackMargin.get())) {
 
                 // Putting the original item back to our inventory
                 if (returnSlot != -1)

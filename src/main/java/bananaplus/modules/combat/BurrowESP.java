@@ -15,50 +15,59 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class BurrowESP extends Module {
-
-    public BurrowESP() { super(BananaPlus.COMBAT, "Burrow-ESP", "Displays if the closest target to you is burrowed / webbed."); }
-
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    // Render
 
+    // Render
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the rendering.")
             .defaultValue(new SettingColor(230, 0, 255, 5))
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The line color of the rendering.")
             .defaultValue(new SettingColor(250, 0, 255, 255))
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> renderWebbed = sgRender.add(new BoolSetting.Builder()
             .name("Render webbed")
             .description("Will render if the target is webbed")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
-    private final Setting<SettingColor> WebsideColor = sgRender.add(new ColorSetting.Builder()
+    private final Setting<SettingColor> webSideColor = sgRender.add(new ColorSetting.Builder()
             .name("web-side-color")
             .description("The side color of the rendering for webs.")
             .defaultValue(new SettingColor(240, 250, 65, 35))
             .visible(renderWebbed::get)
-            .build());
+            .build()
+    );
 
-    private final Setting<SettingColor> WeblineColor = sgRender.add(new ColorSetting.Builder()
+    private final Setting<SettingColor> webLineColor = sgRender.add(new ColorSetting.Builder()
             .name("web-line-color")
             .description("The line color of the rendering for webs.")
             .defaultValue(new SettingColor(0, 0, 0, 0))
             .visible(renderWebbed::get)
-            .build());
+            .build()
+    );
+
+
+    public BurrowESP() {
+        super(BananaPlus.COMBAT, "Burrow-ESP", "Displays if the closest target to you is burrowed / webbed.");
+    }
+
 
     public BlockPos target;
     public boolean isTargetWebbed;
@@ -83,7 +92,7 @@ public class BurrowESP extends Module {
     @EventHandler
     private void onRender(Render3DEvent event) {
         if (target == null) return;
-        if (isTargetWebbed) event.renderer.box(target, WebsideColor.get(), WeblineColor.get(), shapeMode.get(), 0);
+        if (isTargetWebbed) event.renderer.box(target, webSideColor.get(), webLineColor.get(), shapeMode.get(), 0);
         else if (isTargetBurrowed) event.renderer.box(target, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
     }
 }

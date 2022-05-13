@@ -1,7 +1,6 @@
 package bananaplus.utils;
 
 import bananaplus.modules.hud.stats.*;
-import bananaplus.modules.combat.AutoEz;
 import bananaplus.utils.ServerUtils.BPlusPacketUtils;
 import meteordevelopment.meteorclient.systems.hud.HUD;
 import meteordevelopment.meteorclient.systems.hud.modules.HudElement;

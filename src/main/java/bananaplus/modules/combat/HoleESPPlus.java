@@ -27,122 +27,138 @@ public class HoleESPPlus extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    // General
 
+    // General
     private final Setting<Integer> horizontalRadius = sgGeneral.add(new IntSetting.Builder()
             .name("horizontal-radius")
             .description("Horizontal radius in which to search for holes.")
-            .defaultValue(10)
-            .min(0)
-            .sliderMax(32)
-            .build());
+            .defaultValue(5)
+            .range(0,32)
+            .sliderRange(0,32)
+            .build()
+    );
 
     private final Setting<Integer> verticalRadius = sgGeneral.add(new IntSetting.Builder()
             .name("vertical-radius")
             .description("Vertical radius in which to search for holes.")
             .defaultValue(5)
-            .min(0)
-            .sliderMax(32)
-            .build());
+            .range(0,32)
+            .sliderRange(0,32)
+            .build()
+    );
 
     private final Setting<Integer> holeHeight = sgGeneral.add(new IntSetting.Builder()
             .name("min-height")
             .description("Minimum hole height required to be rendered.")
-            .defaultValue(2)
+            .defaultValue(3)
             .min(1)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> doubles = sgGeneral.add(new BoolSetting.Builder()
             .name("doubles")
             .description("Highlights double holes that can be stood across.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> ignoreOwn = sgGeneral.add(new BoolSetting.Builder()
             .name("ignore-own")
             .description("Ignores rendering the hole you are currently standing in.")
-            .defaultValue(false)
-            .build());
+            .defaultValue(true)
+            .build()
+    );
 
     private final Setting<Boolean> webs = sgGeneral.add(new BoolSetting.Builder()
             .name("webs")
             .description("Whether to show holes that have webs inside of them.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Render
-
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
-            .defaultValue(ShapeMode.Lines)
-            .build());
+            .defaultValue(ShapeMode.Sides)
+            .build()
+    );
 
     private final Setting<Double> height = sgRender.add(new DoubleSetting.Builder()
             .name("height")
             .description("The height of rendering.")
-            .defaultValue(0.25)
+            .defaultValue(0.2)
             .min(0)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> topQuad = sgRender.add(new BoolSetting.Builder()
             .name("top-quad")
             .description("Whether to render a quad at the top of the hole.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> bottomQuad = sgRender.add(new BoolSetting.Builder()
             .name("bottom-quad")
             .description("Whether to render a quad at the bottom of the hole.")
-            .defaultValue(false)
-            .build());
+            .defaultValue(true)
+            .build()
+    );
 
     private final Setting<SettingColor> bedrockColorTop = sgRender.add(new ColorSetting.Builder()
             .name("bedrock-top")
             .description("The top color for holes that are completely bedrock.")
             .defaultValue(new SettingColor(100, 255, 0, 0))
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> bedrockColorBottom = sgRender.add(new ColorSetting.Builder()
             .name("bedrock-bottom")
             .description("The bottom color for holes that are completely bedrock.")
-            .defaultValue(new SettingColor(100, 255, 0, 200))
-            .build());
+            .defaultValue(new SettingColor(100, 255, 0, 75))
+            .build()
+    );
 
     private final Setting<SettingColor> otherColorTop = sgRender.add(new ColorSetting.Builder()
             .name("other-top")
             .description("The top color for holes that are completely blastproof.")
             .defaultValue(new SettingColor(255, 0, 0, 0))
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> otherColorBottom = sgRender.add(new ColorSetting.Builder()
             .name("other-bottom")
             .description("The bottom color for holes that are completely blastproof.")
-            .defaultValue(new SettingColor(255, 0, 0, 200))
-            .build());
+            .defaultValue(new SettingColor(255, 0, 0, 75))
+            .build()
+    );
 
     private final Setting<SettingColor> mixedColorTop = sgRender.add(new ColorSetting.Builder()
             .name("mixed-top")
             .description("The top color for holes that have mixed bedrock and blastproof.")
             .defaultValue(new SettingColor(255, 127, 0, 0))
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> mixedColorBottom = sgRender.add(new ColorSetting.Builder()
             .name("mixed-bottom")
             .description("The bottom color for holes that have mixed bedrock and blastproof.")
-            .defaultValue(new SettingColor(255, 127, 0, 200))
-            .build());
+            .defaultValue(new SettingColor(255, 127, 0, 75))
+            .build()
+    );
 
-    private final Pool<Hole> holePool = new Pool<>(Hole::new);
-    private final List<Hole> holes = new ArrayList<>();
-
-    private final byte NULL = 0;
 
     public HoleESPPlus() {
         super(BananaPlus.COMBAT, "hole-esp+", "Displays holes that you will take less damage in.");
     }
-    
-    // A way to improve this to not cause fps drops would be to use the searching for hole method from void esp, but we'll do that when fps issue is real
+
+
+    private final Pool<Hole> holePool = new Pool<>(Hole::new);
+    private final List<Hole> holes = new ArrayList<>();
+    private final byte NULL = 0;
+
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
@@ -240,7 +256,7 @@ public class HoleESPPlus extends Module {
             Color bottom = getBottomColor();
 
             int originalTopA = top.a;
-            int originalBottompA = bottom.a;
+            int originalBottomA = bottom.a;
 
             if (mode.lines()) {
                 if (Dir.isNot(exclude, Dir.WEST) && Dir.isNot(exclude, Dir.NORTH)) renderer.line(x, y, z, x, y + height, z, bottom, top);
@@ -261,7 +277,7 @@ public class HoleESPPlus extends Module {
 
             if (mode.sides()) {
                 top.a = originalTopA * 2;
-                bottom.a = originalBottompA / 2;
+                bottom.a = originalBottomA / 2;
 
                 if (Dir.isNot(exclude, Dir.UP) && topQuad) renderer.quad(x, y + height, z, x, y + height, z + 1, x + 1, y + height, z + 1, x + 1, y + height, z, top); // Top
                 if (Dir.isNot(exclude, Dir.DOWN) && bottomQuad) renderer.quad(x, y, z, x, y, z + 1, x + 1, y, z + 1, x + 1, y, z, bottom); // Bottom
@@ -273,7 +289,7 @@ public class HoleESPPlus extends Module {
                 if (Dir.isNot(exclude, Dir.EAST)) renderer.gradientQuadVertical(x + 1, y, z, x + 1, y + height, z + 1, top, bottom); // East
 
                 top.a = originalTopA;
-                bottom.a = originalBottompA;
+                bottom.a = originalBottomA;
             }
         }
 
