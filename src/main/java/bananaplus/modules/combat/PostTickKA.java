@@ -26,7 +26,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Tameable;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PiglinEntity;
+import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
@@ -63,110 +66,104 @@ public class PostTickKA extends Module {
         Custom
     }
 
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgTargeting = settings.createGroup("Targeting");
     private final SettingGroup sgDelay = settings.createGroup("Delay");
 
-    // General
 
+    // General
     private final Setting<Weapon> weapon = sgGeneral.add(new EnumSetting.Builder<Weapon>()
-            .name("weapon")
+            .name("weapons")
             .description("Only attacks an entity when a specified item is in your hand.")
             .defaultValue(Weapon.Both)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoSwitch = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-switch")
             .description("Switches to your selected weapon when attacking the target.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyOnClick = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-click")
             .description("Only attacks when hold left click.")
             .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> onlyWhenLook = sgGeneral.add(new BoolSetting.Builder()
-            .name("only-when-look")
-            .description("Only attacks when you are looking at the entity.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Boolean> randomTeleport = sgGeneral.add(new BoolSetting.Builder()
-            .name("random-teleport")
-            .description("Randomly teleport around the target")
-            .defaultValue(false)
-            .visible(() -> !onlyWhenLook.get())
-            .build());
+            .build()
+    );
 
     private final Setting<RotationMode> rotation = sgGeneral.add(new EnumSetting.Builder<RotationMode>()
             .name("rotate")
             .description("Determines when you should rotate towards the target.")
             .defaultValue(RotationMode.Always)
-            .build());
+            .build()
+    );
 
     private final Setting<RotateTo> rotateTo = sgGeneral.add(new EnumSetting.Builder<RotateTo>()
             .name("rotate-to")
             .description("Where to rotate to when you are hitting the target.")
             .defaultValue(RotateTo.Body)
             .visible(() -> rotation.get() != RotationMode.None)
-            .build());
-
-    private final Setting<Boolean> swing = sgGeneral.add(new BoolSetting.Builder()
-            .name("swing")
-            .description("Renders your hand swing client side (Will also hide server side swing).")
-            .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> ghostSwing = sgGeneral.add(new BoolSetting.Builder()
             .name("ghost-swing")
             .description("Hides your hand swing server side.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> pauseOnCombat = sgGeneral.add(new BoolSetting.Builder()
             .name("pause-on-combat")
             .description("Freezes Baritone temporarily until you are finished attacking the entity.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
+
 
     // Targeting
-
     private final Setting<Object2BooleanMap<EntityType<?>>> entities = sgTargeting.add(new EntityTypeListSetting.Builder()
             .name("entities")
             .description("Entities to attack.")
             .defaultValue(new Object2BooleanOpenHashMap<>(0))
             .onlyAttackable()
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> ignorePassive = sgTargeting.add(new BoolSetting.Builder()
             .name("ignore-passive")
-            .description("Only attacks angry piglins and enderman.")
+            .description("Will only attack sometimes passive mobs if they are targeting you.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> range = sgTargeting.add(new DoubleSetting.Builder()
             .name("range")
             .description("The maximum range the entity can be to attack it.")
             .defaultValue(4.5)
-            .min(0)
-            .sliderMax(6)
-            .build());
+            .range(0,6)
+            .sliderRange(0,6)
+            .build()
+    );
 
     private final Setting<Double> wallsRange = sgTargeting.add(new DoubleSetting.Builder()
             .name("walls-range")
             .description("The maximum range the entity can be attacked through walls.")
-            .defaultValue(3.5)
-            .min(0)
-            .sliderMax(6)
-            .build());
+            .defaultValue(4.5)
+            .range(0,6)
+            .sliderRange(0,6)
+            .build()
+    );
 
     private final Setting<SortPriority> priority = sgTargeting.add(new EnumSetting.Builder<SortPriority>()
             .name("priority")
             .description("How to filter targets within range.")
             .defaultValue(SortPriority.LowestHealth)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> maxTargets = sgTargeting.add(new IntSetting.Builder()
             .name("max-targets")
@@ -174,27 +171,31 @@ public class PostTickKA extends Module {
             .defaultValue(1)
             .min(1)
             .sliderRange(1, 10)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> babies = sgTargeting.add(new BoolSetting.Builder()
             .name("babies")
             .description("Whether or not to attack baby variants of the entity.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> nametagged = sgTargeting.add(new BoolSetting.Builder()
             .name("nametagged")
             .description("Whether or not to attack mobs with a name tag.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Delay
-
     private final Setting<DelayMode> delayMode = sgDelay.add(new EnumSetting.Builder<DelayMode>()
             .name("delay-mode")
             .description("Mode to use for the delay to attack.")
             .defaultValue(DelayMode.Fixed)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> hitDelay = sgDelay.add(new IntSetting.Builder()
             .name("hit-delay")
@@ -203,14 +204,16 @@ public class PostTickKA extends Module {
             .min(0)
             .sliderMax(60)
             .visible(() -> delayMode.get() == DelayMode.Custom)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> TPSSync = sgDelay.add(new BoolSetting.Builder()
             .name("TPS-sync")
             .description("Tries to sync attack delay with the server's TPS.")
             .defaultValue(false)
             .visible(() -> delayMode.get() != DelayMode.Vanilla)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> switchDelay = sgDelay.add(new IntSetting.Builder()
             .name("switch-delay")
@@ -218,16 +221,20 @@ public class PostTickKA extends Module {
             .defaultValue(0)
             .min(0)
             .sliderMax(10)
-            .build());
+            .build()
+    );
+
+
+    public PostTickKA() {
+        super(BananaPlus.COMBAT, "kill-aura+", "Kill Aura with various improvements.");
+    }
+
 
     private final List<Entity> targets = new ArrayList<>();
     private int hitDelayTimer, switchTimer;
-    private Timer fixedHitTimer = new Timer();
+    private final Timer fixedHitTimer = new Timer();
     private boolean wasPathing;
 
-    public PostTickKA() {
-        super(BananaPlus.COMBAT, "post-tick-KA", "Kill Aura but its post-tick instead of pre-tick.");
-    }
 
     @Override
     public void onDeactivate() {
@@ -248,7 +255,7 @@ public class PostTickKA extends Module {
             }
             return;
         }
-        //changed
+        // Changed
         if (pauseOnCombat.get() && BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing() && !wasPathing) {
             BaritoneAPI.getProvider().getPrimaryBaritone().getCommandManager().execute("pause");
             wasPathing = true;
@@ -259,16 +266,6 @@ public class PostTickKA extends Module {
         if (rotation.get() == RotationMode.Always) rotate(primary, null);
 
         if (onlyOnClick.get() && !mc.options.attackKey.isPressed()) return;
-
-        if (onlyWhenLook.get()) {
-            primary = mc.targetedEntity;
-
-            if (primary == null) return;
-            if (!entityCheck(primary)) return;
-
-            targets.clear();
-            targets.add(primary);
-        }
 
         if (autoSwitch.get()) {
             FindItemResult weaponResult = InvUtils.findInHotbar(itemStack -> {
@@ -288,10 +285,6 @@ public class PostTickKA extends Module {
         if (!itemInHand()) return;
 
         if (delayCheck()) targets.forEach(this::attack);
-
-        if (randomTeleport.get() && !onlyWhenLook.get()) {
-            mc.player.setPosition(primary.getX() + randomOffset(), primary.getY(), primary.getZ() + randomOffset());
-        }
     }
 
     @EventHandler
@@ -303,10 +296,6 @@ public class PostTickKA extends Module {
         if (event.packet instanceof HandSwingC2SPacket && ghostSwing.get()) event.cancel();
     }
 
-    private double randomOffset() {
-        return Math.random() * 4 - 2;
-    }
-
     private boolean entityCheck(Entity entity) {
         if (entity.equals(mc.player) || entity.equals(mc.cameraEntity)) return false;
         if ((entity instanceof LivingEntity && ((LivingEntity) entity).isDead()) || !entity.isAlive()) return false;
@@ -316,10 +305,12 @@ public class PostTickKA extends Module {
         if (!PlayerUtils.canSeeEntity(entity) && BPlusPlayerUtils.distanceFromEye(entity) > wallsRange.get()) return false;
         if (ignorePassive.get()) {
             if (entity instanceof EndermanEntity enderman && !enderman.isAngry()) return false;
+            if (entity instanceof ZombifiedPiglinEntity piglin && !piglin.isAngryAt(mc.player)) return false;
+            if (entity instanceof WolfEntity mob && !mob.isAttacking()) return false;
             if (entity instanceof Tameable tameable
                     && tameable.getOwnerUuid() != null
-                    && tameable.getOwnerUuid().equals(mc.player.getUuid())) return false;
-            if (entity instanceof MobEntity mob && !mob.isAttacking()) return false;
+                    && tameable.getOwnerUuid().equals(mc.player.getUuid())
+            ) return false;
         }
         if (entity instanceof PlayerEntity) {
             if (((PlayerEntity) entity).isCreative()) return false;
@@ -364,7 +355,7 @@ public class PostTickKA extends Module {
 
     private void hitEntity(Entity target) {
         mc.interactionManager.attackEntity(mc.player, target);
-        if (swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
+        mc.player.swingHand(Hand.MAIN_HAND);
         fixedHitTimer.reset();
     }
 

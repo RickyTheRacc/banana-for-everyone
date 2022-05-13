@@ -22,31 +22,39 @@ import java.util.List;
 public class QuiverPlus extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Double> holdTime = sgGeneral.add(new DoubleSetting.Builder()
             .name("hold-time")
             .description("How long to hold the bow for before releasing it")
             .defaultValue(0.14)
             .range(0.12,0.26)
             .sliderRange(0.12,0.26)
-            .build());
+            .build()
+    );
 
     private final Setting<List<StatusEffect>> effects = sgGeneral.add(new StatusEffectListSetting.Builder()
             .name("effects")
             .description("Which effects to shoot you with.")
             .defaultValue(StatusEffects.STRENGTH)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> checkEffects = sgGeneral.add(new BoolSetting.Builder()
             .name("check-existing-effects")
             .description("Won't shoot you with effects you already have.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
+
+
+    public QuiverPlus() {
+        super(BananaPlus.COMBAT, "quiver+", "This will eventually be rewritten...");
+    }
+
 
     private final List<Integer> arrowSlots = new ArrayList<>();
 
-    public QuiverPlus() {
-        super(BananaPlus.COMBAT, "quiver+", "Shoots arrows at yourself.");
-    }
 
     @Override
     public void onActivate() {

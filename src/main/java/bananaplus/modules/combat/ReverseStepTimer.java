@@ -18,13 +18,16 @@ public class ReverseStepTimer extends Module {
         Both
     }
 
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Mode to use to bypass reverse step")
             .defaultValue(Mode.Packet)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> timer = sgGeneral.add(new DoubleSetting.Builder()
             .name("timer")
@@ -32,27 +35,33 @@ public class ReverseStepTimer extends Module {
             .min(0)
             .defaultValue(10)
             .visible(() -> mode.get() != Mode.Packet)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> height = sgGeneral.add(new DoubleSetting.Builder()
             .name("height")
             .description("The maximum y height you are allowed to fall.")
             .min(0)
             .defaultValue(5)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> webs = sgGeneral.add(new BoolSetting.Builder()
             .name("webs")
             .description("Will pull you even if there are webs below you.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     public ReverseStepTimer() {
-        super(BananaPlus.COMBAT, "reverse-step-timer", "Tries to bypass strict server for reverse step.");
+        super(BananaPlus.COMBAT, "reverse-step-timer", "Tries to bypass strict anticheats for reverse step.");
     }
+
 
     private int fallTicks;
     private final bananaplus.utils.Timer strictTimer = new bananaplus.utils.Timer();
+
 
     @EventHandler
     private void onMove(PlayerMoveEvent event) {
