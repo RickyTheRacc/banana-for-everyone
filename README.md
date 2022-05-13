@@ -13,6 +13,8 @@
 - Run the gradle `build` task and wait
 - Use the jar from the `build/libs` folder
 
+*Alternatively, use the latest prebuilt jar in the releases tab!*
+
 ## Will this get updates?
 For the foreseeable future, yes! Ricky is currently working on learning Java and is starting by fixing bugs. Bennooo has some feature planned, but they will be added at his leisure as this is more of a passion project than a responsibility. If you have a cool idea or a module you wrote, feel free to open a Pull Request!
 
