@@ -43,7 +43,8 @@ public class BPlusConfig extends Tab {
             .description("Features that need more work or are in a testing phase.")
             .defaultValue(false)
             .onChanged(bool -> BananaPlus.testFeatures())
-            .build());
+            .build()
+    );
 
     public static class BPlusConfigScreen extends WindowTabScreen {
         public BPlusConfigScreen(GuiTheme theme, Tab tab) {
