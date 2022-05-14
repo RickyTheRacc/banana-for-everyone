@@ -230,6 +230,7 @@ public class MonkeTotem extends Module {
     private final TimerUtils offhandTimer = new TimerUtils();
     private final TimerUtils poppedTimer = new TimerUtils();
     private boolean locked;
+    private int totems;
 
     private float helmetModifier;
     private float chestplateModifier;
@@ -239,15 +240,15 @@ public class MonkeTotem extends Module {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onTick(TickEvent.Pre event) {
-        FindItemResult totem = InvUtils.find(Items.TOTEM_OF_UNDYING);
-        int totemCount = totem.count();
+        FindItemResult result = InvUtils.find(Items.TOTEM_OF_UNDYING);
+        totems = result.count();
 
         // You can't swap items if you have the screen open, it will crash
         if (mc.currentScreen instanceof GenericContainerScreen) return;
 
         // Check if your health is low or mode is on strict
         boolean low = Math.min(mc.player.getHealth(), redHealth.get()) + Math.min(mc.player.getAbsorptionAmount(), yellowHealth.get()) - BPlusDamageUtils.possibleHealthReductions(crystals.get(), explosionRadius.get().floatValue(), swords.get(), swordsRadius.get().floatValue()) <= minHealth.get() + armorModifier() - holeModifier();
-        locked = (mode.get() == Mode.Strict || (mode.get() == Mode.Smart && low) && totemCount > 0);
+        locked = (mode.get() == Mode.Strict || (mode.get() == Mode.Smart && low) && totems > 0);
 
         // We find a totem from the inventory not only if our health is low, so we know exactly where to pick up another totem immediately
         int totemSlot = -1;
@@ -371,5 +372,10 @@ public class MonkeTotem extends Module {
         if (entity == null || !(entity.equals(mc.player))) return;
 
         poppedTimer.reset();
+    }
+
+    @Override
+    public String getInfoString() {
+        return String.valueOf(totems);
     }
 }

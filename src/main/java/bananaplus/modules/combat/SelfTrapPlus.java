@@ -93,7 +93,7 @@ public class SelfTrapPlus extends Module {
     );
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
-            .name("mode")
+            .name("trap-mode")
             .description("The mode at which Self Trap+ operates in.")
             .defaultValue(Mode.Full)
             .build());

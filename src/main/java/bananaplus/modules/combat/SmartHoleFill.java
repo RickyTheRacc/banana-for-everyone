@@ -283,13 +283,11 @@ public class SmartHoleFill extends Module {
         if (Math.sqrt(mc.player.getPos().squaredDistanceTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)) >= rangePlace.get()) return false;
 
 
-        if (((AbstractBlockAccessor) mc.world.getBlockState(pos).getBlock()).isCollidable()) return false;
+        return !((AbstractBlockAccessor) mc.world.getBlockState(pos).getBlock()).isCollidable();
 
         //TODO: add a check for if hole is empty
         //maybe this below works?
         //if(mc.world.getOtherEntities(null, new Box(hole.blockPos)).stream().noneMatch(Entity::collides)) return false;
-
-        return true;
     }
 
     private static class Hole {
