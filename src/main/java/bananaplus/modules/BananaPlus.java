@@ -67,6 +67,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new MonkeBurrow());
 		Modules.get().add(new MonkeDetector());
 		Modules.get().add(new Monkhand());
+		Modules.get().add(new MonkeSleeper());
 		Modules.get().add(new MonkeTotem());
 		Modules.get().add(new PostTickKA());
 		Modules.get().add(new QuiverPlus());
@@ -105,16 +106,6 @@ public class BananaPlus extends MeteorAddon {
 		// Utils
 	    BPlusDamageUtils.init();
 	    StatsUtils.init();
-
-		//Tabs
-		Tabs.get().add(new BPlusConfig());
-
-		//Dev
-		if (BPlusConfig.testFeatures.get()) testFeatures();
-	}
-
-	public static void testFeatures(){
-		if (BPlusConfig.testFeatures.get()) Modules.get().add(new MonkeSleeper());
 	}
 
 	@Override
