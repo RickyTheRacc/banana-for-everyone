@@ -7,10 +7,13 @@ import bananaplus.modules.misc.*;
 import bananaplus.utils.*;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.systems.Systems;
+import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.hud.HUD;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.orbit.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,11 +29,9 @@ public class BananaPlus extends MeteorAddon {
 	    LOG.info("Initializing Banana+ Addon");
 		LOG.info("Deez nuts haha lole");
 
-
 		// Required when using @EventHandler
 		MeteorClient.EVENT_BUS.registerLambdaFactory("bananaplus.modules", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
 		MeteorClient.EVENT_BUS.registerLambdaFactory("bananaplus.utils", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
-
 
 		// HUD
 		HUD hud = Systems.get(HUD.class);
@@ -48,7 +49,6 @@ public class BananaPlus extends MeteorAddon {
 		hud.elements.add(new HighScore(hud));
 		hud.elements.add(new KD(hud));
 		hud.elements.add(new BindsHud(hud));
-
 
 		// Combat
 		Modules.get().add(new AutoAuto());
@@ -78,7 +78,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new ReverseStepTimer());
 		Modules.get().add(new TickShift());
 
-
 		// Misc
 		Modules.get().add(new AfkLog());
 		Modules.get().add(new AntiGhostBlock());
@@ -100,15 +99,22 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new Twerk());
 		Modules.get().add(new WebNoSlow());
 
-
 		// Bruh Moment
 		Modules.get().add(new Criticals());
-
 
 		// Utils
 	    BPlusDamageUtils.init();
 	    StatsUtils.init();
 
+		//Tabs
+		Tabs.get().add(new BPlusConfig());
+
+		//Dev
+		if (BPlusConfig.testFeatures.get()) testFeatures();
+	}
+
+	public static void testFeatures(){
+		if (BPlusConfig.testFeatures.get()) Modules.get().add(new MonkeSleeper());
 	}
 
 	@Override

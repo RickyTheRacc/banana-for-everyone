@@ -39,22 +39,42 @@ public class BPrefix extends Module {
             .defaultValue("]")
             .build());
 
+    private final Setting<SettingColor> leftBracketColor = sgGeneral.add(new ColorSetting.Builder()
+            .name("left-bracket-color")
+            .description("Color display for the left bracket")
+            .defaultValue(new SettingColor(150,150,150,255))
+            .build());
+
+    private final Setting<SettingColor> rightBracketColor = sgGeneral.add(new ColorSetting.Builder()
+            .name("right-bracket-color")
+            .description("Color display for the right bracket")
+            .defaultValue(new SettingColor(150,150,150,255))
+            .build());
+
     public BPrefix() {
         super(BananaPlus.MISC, "B+-prefix", "Allows Banana+ prefix for Chat Utils.");
     }
 
     @Override
     public void onActivate() {
-        ChatUtils.registerCustomPrefix("bplusdevelopment.modules", this::getPrefix);
+        ChatUtils.registerCustomPrefix("bananaplus.modules", this::getPrefix);
     }
 
     public LiteralText getPrefix() {
         BaseText logo = new LiteralText(prefix.get());
+        BaseText left = new LiteralText(leftBracket.get());
+        BaseText right = new LiteralText(rightBracket.get());
         LiteralText prefix = new LiteralText("");
+
         logo.setStyle(logo.getStyle().withColor(TextColor.fromRgb(prefixColors.get().getPacked())));
-        prefix.append(leftBracket.get());
+        left.setStyle(left.getStyle().withColor(TextColor.fromRgb(leftBracketColor.get().getPacked())));
+        right.setStyle(right.getStyle().withColor(TextColor.fromRgb(rightBracketColor.get().getPacked())));
+
+        prefix.append(left);
         prefix.append(logo);
-        prefix.append(rightBracket.get() + " ");
+        prefix.append(right);
+        prefix.append(" ");
+
         return prefix;
     }
 }
