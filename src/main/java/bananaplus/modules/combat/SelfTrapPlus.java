@@ -46,12 +46,12 @@ public class SelfTrapPlus extends Module {
 
     public enum CenterMode {
         Center,
-        Snap
+        Snap,
+        None
     }
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
-    private final SettingGroup sgCenter = settings.createGroup("Center");
     private final SettingGroup sgAntiCity = settings.createGroup("Anti City");
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
     private final SettingGroup sgModules = settings.createGroup("Other Module Toggles");
@@ -96,7 +96,15 @@ public class SelfTrapPlus extends Module {
             .name("trap-mode")
             .description("The mode at which Self Trap+ operates in.")
             .defaultValue(Mode.Full)
-            .build());
+            .build()
+    );
+
+    private final Setting<CenterMode> centerMode = sgGeneral.add(new EnumSetting.Builder<CenterMode>()
+            .name("center-mode")
+            .description("How Self Trap+ should center you.")
+            .defaultValue(CenterMode.Snap)
+            .build()
+    );
 
     private final Setting<Boolean> dynamic = sgGeneral.add(new BoolSetting.Builder()
             .name("dynamic")
@@ -112,9 +120,16 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-    private final Setting<Boolean> onlyGround = sgGeneral.add(new BoolSetting.Builder()
+    private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Will only try to place if you are on the ground.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> onlyInHole = sgGeneral.add(new BoolSetting.Builder()
+            .name("only-in-hole")
+            .description("Will only try to place if you are in a hole.")
             .defaultValue(false)
             .build()
     );
@@ -185,22 +200,6 @@ public class SelfTrapPlus extends Module {
             .defaultValue(99)
             .sliderRange(0, 200)
             .visible(rotate::get)
-            .build()
-    );
-
-
-    // Center
-    private final Setting<Boolean> center = sgCenter.add(new BoolSetting.Builder()
-            .name("center")
-            .description("Will align you to the center of the hole when turning on Self Trap+.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<CenterMode> centerMode = sgCenter.add(new EnumSetting.Builder<CenterMode>()
-            .name("center-mode")
-            .description("How Self Trap+ should center you.")
-            .defaultValue(CenterMode.Snap)
             .build()
     );
 
@@ -426,6 +425,18 @@ public class SelfTrapPlus extends Module {
 
     @Override
     public void onActivate() {
+        if (!BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any) && onlyInHole.get()) {
+            error("Not in a hole, disabling.");
+            toggle();
+            return;
+        }
+
+        if (onlyOnGround.get() && !mc.player.isOnGround()) {
+            error("Not on the ground, disabling.");
+            toggle();
+            return;
+        }
+
         ticksPassed = 0;
         blocksPlaced = 0;
 
@@ -433,19 +444,19 @@ public class SelfTrapPlus extends Module {
 
         playerPos = BPlusEntityUtils.playerPos(mc.player);
 
-        if (center.get()) {
-            if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
-            else PlayerUtils.centerPlayer();
-        }
+        if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
+        else if (centerMode.get() == CenterMode.Center) PlayerUtils.centerPlayer();
 
         if (toggleStep.get() && step.isActive()) {
             stepWasActive = true;
             step.toggle();
         }
+
         if (toggleSpeed.get() && speed.isActive()) {
             speedWasActive = true;
             speed.toggle();
         }
+
         if (toggleStrafe.get() && strafe.isActive()) {
             strafeWasActive = true;
             strafe.toggle();
@@ -481,7 +492,7 @@ public class SelfTrapPlus extends Module {
         // Update player position
         playerPos = BPlusEntityUtils.playerPos(mc.player);
 
-        if (center.get() && !centered && mc.player.isOnGround()) {
+        if (centerMode.get() != CenterMode.None && !centered && mc.player.isOnGround()) {
             if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
             else PlayerUtils.centerPlayer();
 
@@ -505,7 +516,7 @@ public class SelfTrapPlus extends Module {
             }
         }
 
-        if (onlyGround.get() && !mc.player.isOnGround()) return;
+        if (onlyOnGround.get() && !mc.player.isOnGround()) return;
 
         if (!getTargetBlock().found()) return;
 

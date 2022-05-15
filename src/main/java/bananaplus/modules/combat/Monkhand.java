@@ -275,7 +275,7 @@ public class Monkhand extends Module {
         Web(Items.COBWEB),
         Shield(Items.SHIELD);
 
-        net.minecraft.item.Item item;
+        final net.minecraft.item.Item item;
 
         Item(net.minecraft.item.Item item) {
             this.item = item;

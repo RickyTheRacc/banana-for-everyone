@@ -24,11 +24,14 @@ public class StepPlus extends Module {
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Mode to use for Step+.")
             .defaultValue(Mode.Packet)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> height = sgGeneral.add(new DoubleSetting.Builder()
             .name("height")
@@ -37,7 +40,8 @@ public class StepPlus extends Module {
             .range(0.1,20)
             .sliderRange(0.1,20)
             .visible(() -> mode.get() == Mode.Vanilla)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> cooldown = sgGeneral.add(new DoubleSetting.Builder()
             .name("cooldown")
@@ -45,23 +49,29 @@ public class StepPlus extends Module {
             .defaultValue(2)
             .range(0,20)
             .sliderRange(0,20)
-            .build());
+            .build()
+    );
+
 
     public StepPlus() {
         super(BananaPlus.COMBAT, "step+", "Allows you to walk up full blocks.");
     }
 
+
     private boolean flag;
     private int lastStep = 0;
-    private Deque<Double> queue = new ArrayDeque<>();
+    private final Deque<Double> queue = new ArrayDeque<>();
+
 
     @Override
     public void onActivate() {
+        assert mc.player != null;
         mc.player.stepHeight = 0.5F;
     }
 
     @Override
     public void onDeactivate() {
+        assert mc.player != null;
         mc.player.stepHeight = 0.5F;
     }
 
@@ -131,6 +141,7 @@ public class StepPlus extends Module {
 
     private boolean isTouchingWall(Box box) {
         // Check in 2 calls instead of just box.expand(0.01, 0, 0.01) to prevent it getting stuck in corners
-        return !mc.world.isSpaceEmpty(box.expand(0.01, 0, 0)) || !mc.world.isSpaceEmpty(box.expand(0, 0, 0.01));
+        return !mc.world.isSpaceEmpty(box.expand(0.01, 0, 0))
+            || !mc.world.isSpaceEmpty(box.expand(0, 0, 0.01));
     }
 }

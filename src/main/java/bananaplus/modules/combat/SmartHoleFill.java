@@ -24,16 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SmartHoleFill extends Module {
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
 
-    // This is so ass i know -ben
-    public SmartHoleFill() {
-        super(BananaPlus.COMBAT, "smort-hole-fill", "Prevents players from going into holes");
-    }
-
+    // General
     private final Setting<Integer> horizontalRadius = sgGeneral.add(new IntSetting.Builder()
             .name("horizontal-radius")
             .description("Horizontal radius in which to search for holes.")
@@ -59,7 +54,8 @@ public class SmartHoleFill extends Module {
             .min(0)
             .sliderMin(0.5)
             .sliderMax(3)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
@@ -68,7 +64,8 @@ public class SmartHoleFill extends Module {
             .min(0)
             .sliderMin(1)
             .sliderMax(10)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> rangePlace = sgGeneral.add(new DoubleSetting.Builder()
             .name("place-range")
@@ -77,30 +74,35 @@ public class SmartHoleFill extends Module {
             .min(0)
             .sliderMin(1)
             .sliderMax(6)
-            .build());
+            .build()
+    );
 
     private final Setting<SortPriority> priority = sgGeneral.add(new EnumSetting.Builder<SortPriority>()
             .name("target-priority")
             .description("How to select the player to target.")
             .defaultValue(SortPriority.LowestDistance)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate").description("Whether to rotate or not.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyInHole = sgGeneral.add(new BoolSetting.Builder()
             .name("only-in-hole").description("will only fill hole when u are in a hole")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("blocks")
             .description("What blocks to use for Auto Trap+.")
             .defaultValue(Blocks.OBSIDIAN)
             .filter(this::blockFilter)
-            .build());
+            .build()
+    );
 
     /*
     private final Setting<Integer> placeDelay = sgGeneral.add(new IntSetting.Builder()
@@ -110,7 +112,8 @@ public class SmartHoleFill extends Module {
             .min(1)
             .sliderMin(1)
             .sliderMax(20)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> blocksPerTick = sgGeneral.add(new IntSetting.Builder()
             .name("blocks-per-tick")
@@ -119,21 +122,25 @@ public class SmartHoleFill extends Module {
             .min(1)
             .sliderMin(1)
             .sliderMax(20)
-            .build());
+            .build()
+    );
+
 
     // Render
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
             .name("render")
             .description("Renders a block overlay where the obsidian will be placed.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
             .visible(render::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
             .name("render-time")
@@ -142,7 +149,8 @@ public class SmartHoleFill extends Module {
             .range(0, 40)
             .sliderRange(0, 40)
             .visible(render::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> fadeAmount = sgRender.add(new IntSetting.Builder()
             .name("fade-amount")
@@ -151,23 +159,31 @@ public class SmartHoleFill extends Module {
             .range(0, 100)
             .sliderRange(0, 100)
             .visible(render::get)
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> color = sgRender.add(new ColorSetting.Builder()
             .name("box-color")
             .description("The color of blocks.")
             .visible(render::get)
             .defaultValue(new SettingColor(255, 255, 255, 25))
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The color of line.")
             .visible(render::get)
             .defaultValue(new SettingColor(255, 255, 255, 150))
-            .build());
-
+            .build()
+    );
     */
+
+
+    public SmartHoleFill() {
+        super(BananaPlus.COMBAT, "smort-hole-fill", "Prevents players from going into holes");
+    }
+
 
     private final Pool<Hole> holePool = new Pool<>(Hole::new);
     private final List<Hole> holes = new ArrayList<>();
@@ -234,7 +250,6 @@ public class SmartHoleFill extends Module {
             if (!validHole(blockPos)) return;
 
             int blocks = 0;
-            Direction air = null;
 
             for (Direction direction : Direction.values()) {
                 if (direction == Direction.UP) continue;
@@ -245,7 +260,7 @@ public class SmartHoleFill extends Module {
                 else if (direction == Direction.DOWN) return;
             }
 
-            if (blocks == 5 && air == null) {
+            if (blocks == 5) {
                  holes.add(holePool.get().set(blockPos, NULL));
             }
         });
