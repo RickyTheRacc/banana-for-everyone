@@ -51,8 +51,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
-import org.apache.http.cookie.CommonCookieAttributeHandler;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -1373,7 +1371,7 @@ public class BananaBomber extends Module {
 
         // Find best position to place the crystal on
         BlockIterator.register((int) Math.ceil(placeRange.get()), (int) Math.ceil(placeRange.get()), (bp, blockState) -> {
-            // Todo : implement a method to check more efficiently instead of using the blockstate check, maybe another check can come in before them to see if they're a solid block or not since it takes too much resources (maybe a fullcube check?)
+            // Todo : implement a method to check more efficiently instead of using the blockstate check, maybe another check can come in before them to see if they're a solid block or not since it takes too many resources (maybe a fullcube check?)
 
             // Check if its bedrock or obsidian and return if isSupport is false
             boolean hasBlock = blockState.isOf(Blocks.BEDROCK) || blockState.isOf(Blocks.OBSIDIAN);
@@ -1629,7 +1627,7 @@ public class BananaBomber extends Module {
                     bestTargetTimer = 10;
                 }
 
-                // Todo : this part is broken as fuck, it should be = not += but = will fuck a lot of scenarios up when there's multiple targets so  just using this for now until i find a fix
+                // Todo : this part is broken as fuck, it should be = not += but = will fuck a lot of scenarios up when there's multiple targets so  just using this for now until I find a fix
                 damage += dmg;
             }
         }

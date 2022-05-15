@@ -24,7 +24,6 @@ import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.meteorclient.utils.render.NametagUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.meteorclient.utils.world.BlockIterator;
-import meteordevelopment.meteorclient.utils.world.BlockUtils;
 import meteordevelopment.meteorclient.utils.world.CardinalDirection;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
@@ -98,70 +97,104 @@ public class MonkeSleeper extends Module {
     private final SettingGroup sgPause = settings.createGroup("Pause");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    // General
 
+    // General
     public final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug-mode")
             .description("Informs you about what the BA is doing.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("Range in which to target players.")
             .defaultValue(9)
             .min(0)
-            .sliderRange(0,16)
-            .build());
+            .sliderRange(0, 16)
+            .build()
+    );
 
     private final Setting<Boolean> predictMovement = sgGeneral.add(new BoolSetting.Builder()
             .name("predict-movement")
             .description("Predicts target movement.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> ignoreTerrain = sgGeneral.add(new BoolSetting.Builder()
             .name("ignore-terrain")
             .description("Completely ignores terrain if it can be blown up by beds.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> fullAnvil = sgGeneral.add(new BoolSetting.Builder()
             .name("full-anvil")
             .description("Completely ignores gaps between anvil blocks for damage calc.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> fullEchest = sgGeneral.add(new BoolSetting.Builder()
             .name("full-E-Chest")
             .description("Completely ignores gaps between E-chest blocks for damage calc.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     public final Setting<Double> explosionRadiusToTarget = sgGeneral.add(new DoubleSetting.Builder()
             .name("explosion-radius-to-target")
             .description("Max bed explosion radius to target.")
             .defaultValue(5)
-            .range(1,10)
-            .sliderRange(1,10)
-            .build());
+            .range(1, 10)
+            .sliderRange(1, 10)
+            .build()
+    );
+
+    private final Setting<Boolean> strictRotation = sgGeneral.add(new BoolSetting.Builder()
+            .name("strict-rotation")
+            .description("Rotates server-side towards the beds being broken/placed.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<YawStepMode> yawStepMode = sgGeneral.add(new EnumSetting.Builder<YawStepMode>()
+            .name("yaw-steps-mode")
+            .description("When to run the yaw steps check.")
+            .defaultValue(YawStepMode.Break)
+            .visible(strictRotation::get)
+            .build()
+    );
+
+    private final Setting<Double> yawSteps = sgGeneral.add(new DoubleSetting.Builder()
+            .name("yaw-steps")
+            .description("Maximum number of degrees its allowed to rotate in one tick.")
+            .defaultValue(180)
+            .range(1, 180)
+            .sliderRange(1, 180)
+            .visible(strictRotation::get)
+            .build()
+    );
+
 
     // Inventory
-
     private final Setting<Boolean> autoMove = sgInventory.add(new BoolSetting.Builder()
             .name("auto-move")
             .description("Moves beds into a selected hotbar slot.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> autoMoveSlot = sgInventory.add(new IntSetting.Builder()
             .name("auto-move-slot")
-            .description("The slot auto move moves beds to.")
+            .description("The slot to move beds to.")
             .defaultValue(9)
             .range(1, 9)
             .sliderRange(1, 9)
             .visible(autoMove::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoSwitch = sgInventory.add(new BoolSetting.Builder()
             .name("auto-switch")
@@ -169,63 +202,44 @@ public class MonkeSleeper extends Module {
             .defaultValue(true)
             .build());
 
-    // something
-
-    private final Setting<Boolean> strictRotation = sgGeneral.add(new BoolSetting.Builder()
-            .name("strict-rotation")
-            .description("Rotates server-side towards the beds being broken/placed.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<YawStepMode> yawStepMode = sgGeneral.add(new EnumSetting.Builder<YawStepMode>()
-            .name("yaw-steps-mode")
-            .description("When to run the yaw steps check.")
-            .defaultValue(YawStepMode.Break)
-            .visible(strictRotation::get)
-            .build());
-
-    private final Setting<Double> yawSteps = sgGeneral.add(new DoubleSetting.Builder()
-            .name("yaw-steps")
-            .description("Maximum number of degrees its allowed to rotate in one tick.")
-            .defaultValue(180)
-            .range(1,180)
-            .sliderRange(1,180)
-            .visible(strictRotation::get)
-            .build());
 
     // Place
-
     private final Setting<Boolean> doPlace = sgPlace.add(new BoolSetting.Builder()
             .name("place")
             .description("If the BA should place beds.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> packetPlace = sgPlace.add(new BoolSetting.Builder()
             .name("packet-place")
             .description("If the BA should use packets to place beds.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> placeSwing = sgPlace.add(new BoolSetting.Builder()
             .name("place-swing")
             .description("Renders place hand swings.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> ghostPlace = sgPlace.add(new BoolSetting.Builder()
             .name("ghost-place")
             .description("Hides hand swing for placing beds.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> selfPlaceExplosionRadius = sgPlace.add(new DoubleSetting.Builder()
             .name("self-place-explosion-radius")
             .description("Max bed explosion radius to self to calculate when placing.")
             .defaultValue(5)
-            .range(1,10)
-            .sliderRange(1,10)
-            .build());
+            .range(1, 10)
+            .sliderRange(1, 10)
+            .build()
+    );
 
     private final Setting<Double> PminDamage = sgPlace.add(new DoubleSetting.Builder()
             .name("min-place-damage")
@@ -233,37 +247,42 @@ public class MonkeSleeper extends Module {
             .defaultValue(10)
             .min(0)
             .sliderMax(36)
-            .build());
+            .build()
+    );
 
     public final Setting<DamageIgnore> PDamageIgnore = sgPlace.add(new EnumSetting.Builder<DamageIgnore>()
             .name("ignore-self-place-damage")
             .description("When to ignore self damage when placing beds.")
             .defaultValue(DamageIgnore.Never)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> PmaxDamage = sgPlace.add(new DoubleSetting.Builder()
             .name("max-place-damage")
             .description("Maximum place damage beds can deal to yourself.")
             .defaultValue(6)
-            .range(0,36)
-            .sliderRange(0,36)
+            .range(0, 36)
+            .sliderRange(0, 36)
             .visible(() -> PDamageIgnore.get() != DamageIgnore.Always)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> PantiSuicide = sgPlace.add(new BoolSetting.Builder()
             .name("anti-suicide-place")
             .description("Will not place beds if they will pop / kill you.")
             .defaultValue(true)
             .visible(() -> PDamageIgnore.get() != DamageIgnore.Always)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> placeDelay = sgPlace.add(new IntSetting.Builder()
             .name("place-delay")
             .description("The delay in ticks to wait to place a bed.")
             .defaultValue(8)
             .min(0)
-            .sliderRange(0,20)
-            .build());
+            .sliderRange(0, 20)
+            .build()
+    );
 
     public final Setting<Double> placeRange = sgPlace.add(new DoubleSetting.Builder()
             .name("place-range")
@@ -271,7 +290,8 @@ public class MonkeSleeper extends Module {
             .defaultValue(4.5)
             .min(0)
             .sliderMax(6)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> placeWallsRange = sgPlace.add(new DoubleSetting.Builder()
             .name("place-walls-range")
@@ -279,7 +299,8 @@ public class MonkeSleeper extends Module {
             .defaultValue(4.5)
             .min(0)
             .sliderMax(6)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> placeVerticalRange = sgPlace.add(new DoubleSetting.Builder()
             .name("place-vertical-range")
@@ -287,29 +308,33 @@ public class MonkeSleeper extends Module {
             .defaultValue(4)
             .min(0)
             .sliderMax(6)
-            .build());
+            .build()
+    );
+
 
     // Trap break
-
     public final Setting<Boolean> trapBreak = sgTrapBreak.add(new BoolSetting.Builder()
             .name("trap-break")
             .description("Attempts to place beds into target's hitbox when they are fully covered.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     public final Setting<Boolean> antiSelf = sgTrapBreak.add(new BoolSetting.Builder()
             .name("anti-self")
             .description("Will not try to trap break if the you and the target are at the same position.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> trapBreakDuration = sgTrapBreak.add(new IntSetting.Builder()
             .name("duration")
             .description("Amount of ticks it will allow you to perform this.")
             .defaultValue(10)
             .range(5, 35)
-            .sliderRange(5 , 35)
-            .build());
+            .sliderRange(5, 35)
+            .build()
+    );
 
     // Hold
 
@@ -317,82 +342,93 @@ public class MonkeSleeper extends Module {
             .name("hold")
             .description("Break beds slower to hold on to their surround when target is in hole.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<CommonEnums.ConTypeInclAlways> holdWhen = sgHold.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
             .name("hold-when")
             .description("When to start trap holding.")
             .defaultValue(CommonEnums.ConTypeInclAlways.AnyTrapped)
             .visible(hold::get)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> holdDelay = sgHold.add(new IntSetting.Builder()
             .name("hold-delay")
             .description("The delay in ticks to wait to break a bed for holding.")
             .defaultValue(8)
             .min(0)
-            .sliderRange(0,15)
+            .sliderRange(0, 15)
             .visible(hold::get)
-            .build());
+            .build()
+    );
+
 
     // Break
-
     private final Setting<Boolean> doBreak = sgBreak.add(new BoolSetting.Builder()
             .name("break")
             .description("If the BA should break beds.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> selfBreakExplosionRadius = sgBreak.add(new DoubleSetting.Builder()
             .name("self-break-explosion-radius")
             .description("Max beds explosion radius to self to calculate when breaking.")
             .defaultValue(5)
-            .range(1,10)
-            .sliderRange(1,10)
-            .build());
+            .range(1, 10)
+            .sliderRange(1, 10)
+            .build()
+    );
 
     private final Setting<Double> BminDamage = sgBreak.add(new DoubleSetting.Builder()
             .name("min-break-damage")
             .description("Minimum break damage the beds needs to deal to your target.")
             .defaultValue(3)
             .min(0)
-            .build());
+            .build()
+    );
 
     public final Setting<DamageIgnore> BDamageIgnore = sgBreak.add(new EnumSetting.Builder<DamageIgnore>()
             .name("ignore-self-break-damage")
             .description("When to ignore self damage when breaking beds.")
             .defaultValue(DamageIgnore.Never)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> BmaxDamage = sgBreak.add(new DoubleSetting.Builder()
             .name("max-break-damage")
             .description("Maximum break damage beds can deal to yourself.")
             .defaultValue(6)
-            .range(0,36)
-            .sliderRange(0,36)
+            .range(0, 36)
+            .sliderRange(0, 36)
             .visible(() -> BDamageIgnore.get() != DamageIgnore.Always)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> BantiSuicide = sgBreak.add(new BoolSetting.Builder()
             .name("anti-suicide-break")
             .description("Will not break beds if they will pop / kill you.")
             .defaultValue(true)
             .visible(() -> BDamageIgnore.get() != DamageIgnore.Always)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> breakDelay = sgBreak.add(new IntSetting.Builder()
             .name("break-delay")
             .description("The delay in ticks to wait to break a bed.")
             .defaultValue(0)
             .min(0)
-            .sliderRange(0,20)
-            .build());
+            .sliderRange(0, 20)
+            .build()
+    );
 
     private final Setting<Boolean> smartDelay = sgBreak.add(new BoolSetting.Builder()
             .name("smart-delay")
             .description("Only breaks beds when the target can receive damage.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> breakRange = sgBreak.add(new DoubleSetting.Builder()
             .name("break-range")
@@ -400,7 +436,8 @@ public class MonkeSleeper extends Module {
             .defaultValue(4.5)
             .min(0)
             .sliderMax(6)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> breakWallsRange = sgBreak.add(new DoubleSetting.Builder()
             .name("break-walls-range")
@@ -408,162 +445,187 @@ public class MonkeSleeper extends Module {
             .defaultValue(4.5)
             .min(0)
             .sliderMax(6)
-            .build());
+            .build()
+    );
+
 
     // Chain Pop
-
     public final Setting<Boolean> selfPopInvincibility = sgChainPop.add(new BoolSetting.Builder()
             .name("self-pop-invincibility")
             .description("Ignores self damage if you just popped.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> selfPopInvincibilityTime = sgChainPop.add(new IntSetting.Builder()
             .name("self-pop-time")
             .description("How many millisecond to consider for self-pop invincibility")
             .defaultValue(300)
-            .sliderRange(1,2000)
+            .sliderRange(1, 2000)
             .visible(selfPopInvincibility::get)
-            .build());
+            .build()
+    );
 
     public final Setting<SelfPopIgnore> selfPopIgnore = sgChainPop.add(new EnumSetting.Builder<SelfPopIgnore>()
             .name("self-pop-ignore")
             .description("What to ignore when you just popped.")
             .defaultValue(SelfPopIgnore.Break)
             .visible(selfPopInvincibility::get)
-            .build());
+            .build()
+    );
 
     public final Setting<Boolean> targetPopInvincibility = sgChainPop.add(new BoolSetting.Builder()
             .name("target-pop-invincibility")
             .description("Tries to pause certain actions when your enemy just popped.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> targetPopInvincibilityTime = sgChainPop.add(new IntSetting.Builder()
             .name("target-pop-time")
             .description("How many milliseconds to consider for target-pop invincibility")
             .defaultValue(500)
-            .sliderRange(1,2000)
+            .sliderRange(1, 2000)
             .visible(targetPopInvincibility::get)
-            .build());
+            .build()
+    );
 
     public final Setting<PopPause> popPause = sgChainPop.add(new EnumSetting.Builder<PopPause>()
             .name("pop-pause-mode")
             .description("What to pause when your enemy just popped.")
             .defaultValue(PopPause.Break)
             .visible(targetPopInvincibility::get)
-            .build());
+            .build()
+    );
+
 
     // Pause
-
     private final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
             .name("pause-health")
             .description("Pauses when you go below a certain health.")
             .defaultValue(5)
             .min(0)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> eatPause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-eat")
             .description("Pauses BA when eating.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> drinkPause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-drink")
             .description("Pauses BA when drinking.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> minePause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-mine")
             .description("Pauses BA when mining.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
 
     // Render
-
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
-            .name("render")
-            .description("Whether or not to render bed placements.")
+            .name("render-swing")
+            .description("Whether to swing your hand while placing. (Needs to be implemented)")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
-    private final Setting<Boolean> renderShape = sgRender.add(new BoolSetting.Builder()
-            .name("render-shape")
-            .description("Whether or not to render actual bed shapes.")
-            .defaultValue(false)
-            .visible(render::get)
-            .build());
-
-    private final Setting<Boolean> render1 = sgRender.add(new BoolSetting.Builder()
-            .name("render1")
-            .description("Whether or not to render bed placements.")
-            .defaultValue(false)
-            .build());
-
-    private final Setting<Double> breh1 = sgRender.add(new DoubleSetting.Builder()
-            .name("x1")
-            .sliderRange(-2,2)
-            .build());
-
-    private final Setting<Double> breh2 = sgRender.add(new DoubleSetting.Builder()
-            .name("y1")
-            .sliderRange(-2,2)
-            .build());
-
-    private final Setting<Double> breh3 = sgRender.add(new DoubleSetting.Builder()
-            .name("z1")
-            .sliderRange(-2,2)
-            .build());
-
-    private final Setting<Double> breh4 = sgRender.add(new DoubleSetting.Builder()
-            .name("x2")
-            .sliderRange(-2,2)
-            .build());
-
-    private final Setting<Double> breh5 = sgRender.add(new DoubleSetting.Builder()
-            .name("y2")
-            .sliderRange(-2,2)
-            .build());
-
-    private final Setting<Double> breh6 = sgRender.add(new DoubleSetting.Builder()
-            .name("z2")
-            .sliderRange(-2,2)
-            .build());
-
-    private final Setting<Integer> breh7 = sgRender.add(new IntSetting.Builder()
-            .name("breh7")
-            .sliderRange(-100,100)
-            .build());
+    private final Setting<RenderMode> renderMode = sgRender.add(new EnumSetting.Builder<RenderMode>()
+            .name("shape-mode")
+            .description("How the shapes are rendered.")
+            .defaultValue(RenderMode.Normal)
+            .build()
+    );
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
             .visible(render::get)
-            .build());
+            .build()
+    );
+
+    private final Setting<Boolean> detailedRender = sgRender.add(new BoolSetting.Builder()
+            .name("detailed-render")
+            .description("Whether or not to render the shape of an actual bed.")
+            .defaultValue(false)
+            .visible(render::get)
+            .build()
+    );
+
+    private final Setting<Double> breh1 = sgRender.add(new DoubleSetting.Builder()
+            .name("x1")
+            .sliderRange(-2, 2)
+            .build()
+    );
+
+    private final Setting<Double> breh2 = sgRender.add(new DoubleSetting.Builder()
+            .name("y1")
+            .sliderRange(-2, 2)
+            .build()
+    );
+
+    private final Setting<Double> breh3 = sgRender.add(new DoubleSetting.Builder()
+            .name("z1")
+            .sliderRange(-2, 2)
+            .build()
+    );
+
+    private final Setting<Double> breh4 = sgRender.add(new DoubleSetting.Builder()
+            .name("x2")
+            .sliderRange(-2, 2)
+            .build()
+    );
+
+    private final Setting<Double> breh5 = sgRender.add(new DoubleSetting.Builder()
+            .name("y2")
+            .sliderRange(-2, 2)
+            .build()
+    );
+
+    private final Setting<Double> breh6 = sgRender.add(new DoubleSetting.Builder()
+            .name("z2")
+            .sliderRange(-2, 2)
+            .build()
+    );
+
+    private final Setting<Integer> breh7 = sgRender.add(new IntSetting.Builder()
+            .name("breh7")
+            .sliderRange(-100, 100)
+            .build()
+    );
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 45))
             .visible(() -> render.get() && shapeMode.get() != ShapeMode.Lines)
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The line color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> render.get() && shapeMode.get() != ShapeMode.Sides)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> renderDamageText = sgRender.add(new BoolSetting.Builder()
             .name("damage")
             .description("Renders bed damage text in the block overlay.")
             .defaultValue(true)
             .visible(render::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> damageTextScale = sgRender.add(new DoubleSetting.Builder()
             .name("damage-scale")
@@ -572,14 +634,16 @@ public class MonkeSleeper extends Module {
             .min(1)
             .sliderMax(4)
             .visible(() -> render.get() && renderDamageText.get())
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> damageTextColor = sgRender.add(new ColorSetting.Builder()
             .name("damage-color")
             .description("What the color of the damage text should be.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> render.get() && renderDamageText.get())
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
             .name("place-time")
@@ -588,27 +652,31 @@ public class MonkeSleeper extends Module {
             .min(0)
             .sliderMax(20)
             .visible(render::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> renderBreak = sgRender.add(new BoolSetting.Builder()
             .name("break")
             .description("Renders a block overlay where the block the beds are broken on.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> sideColorB = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 45))
             .visible(() -> renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> lineColorB = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The line color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> renderBreakTime = sgRender.add(new IntSetting.Builder()
             .name("break-time")
@@ -617,9 +685,14 @@ public class MonkeSleeper extends Module {
             .min(0)
             .sliderMax(20)
             .visible(renderBreak::get)
-            .build());
+            .build()
+    );
 
-    // Fields
+
+    public MonkeSleeper() {
+        super(BananaPlus.COMBAT, "monke-sleeper", "Automatically places and breaks beds.");
+    }
+
 
     public int breakTimer;
     private int placeTimer;
@@ -646,7 +719,7 @@ public class MonkeSleeper extends Module {
 
     private boolean didRotateThisTick;
     private boolean isLastRotationPos;
-    private final Vec3d lastRotationPos = new Vec3d(0, 0 ,0);
+    private final Vec3d lastRotationPos = new Vec3d(0, 0, 0);
     private double lastYaw, lastPitch;
     private int lastRotationTimer;
 
@@ -659,9 +732,6 @@ public class MonkeSleeper extends Module {
 
     private double renderDamage;
 
-    public MonkeSleeper() {
-        super(BananaPlus.COMBAT, "monke-sleeper", "Automatically places and attacks beds.");
-    }
 
     @Override
     public void onActivate() {
@@ -762,7 +832,8 @@ public class MonkeSleeper extends Module {
     // Break
 
     private void doBreak() {
-        if (!doBreak.get() || breakTimer > 0 || (popPause.get() != PopPause.Place && BedUtil.targetJustPopped())) return;
+        if (!doBreak.get() || breakTimer > 0 || (popPause.get() != PopPause.Place && BedUtil.targetJustPopped()))
+            return;
 
         BlockPos bedPos = getBreakPosition();
 
@@ -781,8 +852,7 @@ public class MonkeSleeper extends Module {
                 if (doYawSteps(yaw, pitch)) {
                     setRotation(true, bedVec, 0, 0);
                     Rotations.rotate(yaw, pitch, 50, () -> BedUtil.breakBed(bedPos));
-                }
-                else {
+                } else {
                     attacked = false;
                 }
             }
@@ -807,7 +877,7 @@ public class MonkeSleeper extends Module {
                 Vec3d damageVec = Vec3d.ofCenter(damagePos);
 
                 if (!isOutOfRange(bedVec, false)) {
-                    // Check if its the foot of the bed, if it is we offset the position to the head
+                    // Check if it's the foot of the bed, if it is we offset the position to the head
                     if (mc.world.getBlockState(bedPos).get(Properties.BED_PART).equals(BedPart.FOOT)) {
                         damagePos.offset(mc.world.getBlockState(bedPos).get(Properties.HORIZONTAL_FACING));
                     }
@@ -836,7 +906,7 @@ public class MonkeSleeper extends Module {
         if (!(entity instanceof BedBlockEntity)) return 0;
         BlockPos bedPos = entity.getPos();
         BlockPos damagePos = bedPos;
-        // Check if its the foot of the bed, if it is we offset the position to the head
+        // Check if it's the foot of the bed, if it is we offset the position to the head
         if (mc.world.getBlockState(bedPos).get(Properties.BED_PART).equals(BedPart.FOOT)) {
             damagePos.offset(mc.world.getBlockState(bedPos).get(Properties.HORIZONTAL_FACING));
         }
@@ -893,7 +963,8 @@ public class MonkeSleeper extends Module {
     // Place
 
     private void doPlace() {
-        if (!doPlace.get() || placeTimer > 0 || (popPause.get() != PopPause.Break && BedUtil.targetJustPopped())) return;
+        if (!doPlace.get() || placeTimer > 0 || (popPause.get() != PopPause.Break && BedUtil.targetJustPopped()))
+            return;
 
         // Return if there are no beds in inventory
         if (!InvUtils.find(itemStack -> itemStack.getItem() instanceof BedItem).found()) return;
@@ -971,9 +1042,8 @@ public class MonkeSleeper extends Module {
 
                     placeTimer = placeDelay.get();
                 }
-            }
-            else {
-                Rotations.rotate(BedUtil.getDirectedYaw(result.getBlockPos(), bestBlockPos.get()), mc.player.getPitch(), 50,() -> placeBed(result, bestDamage.get()));
+            } else {
+                Rotations.rotate(BedUtil.getDirectedYaw(result.getBlockPos(), bestBlockPos.get()), mc.player.getPitch(), 50, () -> placeBed(result, bestDamage.get()));
 
                 placeTimer = placeDelay.get();
             }
@@ -1056,8 +1126,7 @@ public class MonkeSleeper extends Module {
         if (serverYaw < targetYaw) {
             if (delta < 180) yaw += yawSteps.get();
             else yaw -= yawSteps.get();
-        }
-        else {
+        } else {
             if (delta < 180) yaw -= yawSteps.get();
             else yaw += yawSteps.get();
         }
@@ -1105,9 +1174,9 @@ public class MonkeSleeper extends Module {
 
         if (fast) {
             PlayerEntity target = getNearestTarget();
-            if (!(smartDelay.get() && breaking && target.hurtTime > 0)) damage = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
-        }
-        else {
+            if (!(smartDelay.get() && breaking && target.hurtTime > 0))
+                damage = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+        } else {
             for (PlayerEntity target : targets) {
                 if (smartDelay.get() && breaking && target.hurtTime > 0) continue;
 
@@ -1169,15 +1238,24 @@ public class MonkeSleeper extends Module {
         }
     }
 
-    // Render
     @EventHandler
     private void onRender(Render3DEvent event) {
-        if (renderTimer > 0 && render.get()) {
+        if (renderMode.get() != RenderMode.None && renderTimer > 0) {
+
             int x = renderPos.getX();
             int y = renderPos.getY();
             int z = renderPos.getZ();
 
-            if (renderShape.get()) {
+            if (!detailedRender.get()) {
+                switch (direction) {
+                    case North -> event.renderer.box(x, y, z - 1, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+                    case South -> event.renderer.box(x, y, z, x + 1, y + 0.5625, z + 2, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+                    case East -> event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+                    case West -> event.renderer.box(x - 1, y, z, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+                }
+            }
+
+            else {
                 switch (direction) {
                     case North -> {
                         // Body
@@ -1204,55 +1282,16 @@ public class MonkeSleeper extends Module {
                         event.renderer.box(x + 1, y + 0.1875, z - 1, x + 0.8125, y + 0.5625, z - 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
 
                     }
+
                     case South -> {
-                        // Body
-
-
-                        // Left and Right
-
-
-                        // Front and Back
-
-
-                        // Legs
-                        //event.renderer.box(x + 0.1875, y + 0.1875, z + 0.1875, x, y, z, sideColor.get(), lineColor.get(), shapeMode.get(), 4);
-                        //event.renderer.box(x + 1, y + 0.1875, z + 0.1875, x + 0.8125, y, z, sideColor.get(), lineColor.get(), shapeMode.get(), 4);
-                        //event.renderer.box(x + 1, y + 0.1875, z + 2, x + 0.8125, y, z + 1.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 4);
-                        //event.renderer.box(x + 0.1875, y + 0.1875, z + 2, x, y, z + 1.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 4);
-
-                        // Corners
-                        //event.renderer.box(x + 0.1875, y + 0.1875, z + 0.1875, x, y + 0.5625, z, sideColor.get(), lineColor.get(), shapeMode.get(), 44);
-                        //event.renderer.box(x + 1, y + 0.1875, z + 0.1875, x + 0.8125, y + 0.5625, z, sideColor.get(), lineColor.get(), shapeMode.get(), 76);
-                        //event.renderer.box(x + 1, y + 0.1875, z + 2, x + 0.8125, y + 0.5625, z + 1.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
-                        //event.renderer.box(x + 0.1875, y + 0.1875, z + 2, x, y + 0.5625, z + 1.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 52);
-
-                        if (render1.get()) {
-                            event.renderer.box(x + breh1.get(), y + breh2.get(), z + breh3.get(), x + breh4.get(), y + breh5.get(), z + breh6.get(), sideColor.get(), lineColor.get(), shapeMode.get(), breh7.get());
-                        }
-
-
-                        //event.renderer.box(x, y + 0.1875, z, x + 1, y + 0.5625, z + 2, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                        // event.renderer.box(x, y, z + breh1.get(), x + breh2.get(), y + 0.1875, z + breh3.get(), sideColor.get(), lineColor.get(), shapeMode.get(), breh4.get().intValue());
+                        event.renderer.box(x, y, z, x + 1, y + 0.5625, z + 2, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
                     }
                     case East -> {
-                        //event.renderer.box(x, y + 0.1875, z, x + 2, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                        if (render1.get()) {
-                            event.renderer.box(x + breh1.get(), y + breh2.get(), z + breh3.get(), x + breh4.get(), y + breh5.get(), z + breh6.get(), sideColor.get(), lineColor.get(), shapeMode.get(), breh7.get());
-                        }
+                        event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
                     }
                     case West -> {
-                        //event.renderer.box(x - 1, y + 0.1875, z, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                        if (render1.get()) {
-                            event.renderer.box(x + breh1.get(), y + breh2.get(), z + breh3.get(), x + breh4.get(), y + breh5.get(), z + breh6.get(), sideColor.get(), lineColor.get(), shapeMode.get(), breh7.get());
-                        }
+                        event.renderer.box(x - 1, y, z, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
                     }
-                }
-            } else {
-                switch (direction) {
-                    case North -> event.renderer.box(x, y, z - 1, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    case South -> event.renderer.box(x, y, z, x + 1, y + 0.5625, z + 2, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    case East -> event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    case West -> event.renderer.box(x - 1, y, z, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
                 }
             }
         }
@@ -1264,10 +1303,10 @@ public class MonkeSleeper extends Module {
         if (!render.get() || renderTimer <= 0 || !renderDamageText.get()) return;
 
         switch (direction) {
-            case North -> vec3.set(renderPos.getX() + 0.5, renderPos.getY() + (renderShape.get() ? 0.435 : 0.28125), renderPos.getZ());
-            case East ->  vec3.set(renderPos.getX() + 1, renderPos.getY() + (renderShape.get() ? 0.435 : 0.28125), renderPos.getZ() + 0.5);
-            case South ->  vec3.set(renderPos.getX() + 0.5, renderPos.getY() + (renderShape.get() ? 0.435 : 0.28125), renderPos.getZ() + 1);
-            case West ->  vec3.set(renderPos.getX(), renderPos.getY() + (renderShape.get() ? 0.435 : 0.28125), renderPos.getZ() + 0.5);
+            case North -> vec3.set(renderPos.getX() + 0.5, renderPos.getY() + (detailedRender.get() ? 0.435 : 0.28125), renderPos.getZ());
+            case East -> vec3.set(renderPos.getX() + 1, renderPos.getY() + (detailedRender.get() ? 0.435 : 0.28125), renderPos.getZ() + 0.5);
+            case South -> vec3.set(renderPos.getX() + 0.5, renderPos.getY() + (detailedRender.get() ? 0.435 : 0.28125), renderPos.getZ() + 1);
+            case West -> vec3.set(renderPos.getX(), renderPos.getY() + (detailedRender.get() ? 0.435 : 0.28125), renderPos.getZ() + 0.5);
         }
 
         if (NametagUtils.to2D(vec3, damageTextScale.get())) {
@@ -1283,8 +1322,8 @@ public class MonkeSleeper extends Module {
         }
     }
 
-    public PlayerEntity getPlayerTarget() {
-        if(bestTarget != null) {
+    public PlayerEntity getPlayerTarget () {
+        if (bestTarget != null) {
             return bestTarget;
         } else {
             return null;
