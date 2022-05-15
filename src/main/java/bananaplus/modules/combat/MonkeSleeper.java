@@ -48,6 +48,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -99,19 +100,21 @@ public class MonkeSleeper extends Module {
 
 
     // General
-    public final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
-            .name("debug-mode")
-            .description("Informs you about what the BA is doing.")
-            .defaultValue(false)
-            .build()
-    );
-
     private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("Range in which to target players.")
             .defaultValue(9)
             .min(0)
             .sliderRange(0, 16)
+            .build()
+    );
+
+    public final Setting<Double> placeRadius = sgGeneral.add(new DoubleSetting.Builder()
+            .name("place-radius")
+            .description("Max bed explosion radius to target.")
+            .defaultValue(5)
+            .range(1,10)
+            .sliderRange(1,10)
             .build()
     );
 
@@ -129,26 +132,10 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
-    private final Setting<Boolean> fullAnvil = sgGeneral.add(new BoolSetting.Builder()
-            .name("full-anvil")
-            .description("Completely ignores gaps between anvil blocks for damage calc.")
-            .defaultValue(true)
-            .build()
-    );
-
-    private final Setting<Boolean> fullEchest = sgGeneral.add(new BoolSetting.Builder()
-            .name("full-E-Chest")
-            .description("Completely ignores gaps between E-chest blocks for damage calc.")
-            .defaultValue(true)
-            .build()
-    );
-
-    public final Setting<Double> explosionRadiusToTarget = sgGeneral.add(new DoubleSetting.Builder()
-            .name("explosion-radius-to-target")
-            .description("Max bed explosion radius to target.")
-            .defaultValue(5)
-            .range(1, 10)
-            .sliderRange(1, 10)
+    private final Setting<Boolean> fullBlocks = sgGeneral.add(new BoolSetting.Builder()
+            .name("full-blocks")
+            .description("Treat anvils and ender chests as full blocks.")
+            .defaultValue(false)
             .build()
     );
 
@@ -174,6 +161,13 @@ public class MonkeSleeper extends Module {
             .range(1, 180)
             .sliderRange(1, 180)
             .visible(strictRotation::get)
+            .build()
+    );
+
+    public final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
+            .name("debug-mode")
+            .description("Informs you about what the BA is doing.")
+            .defaultValue(false)
             .build()
     );
 
@@ -561,48 +555,6 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
-    private final Setting<Double> breh1 = sgRender.add(new DoubleSetting.Builder()
-            .name("x1")
-            .sliderRange(-2, 2)
-            .build()
-    );
-
-    private final Setting<Double> breh2 = sgRender.add(new DoubleSetting.Builder()
-            .name("y1")
-            .sliderRange(-2, 2)
-            .build()
-    );
-
-    private final Setting<Double> breh3 = sgRender.add(new DoubleSetting.Builder()
-            .name("z1")
-            .sliderRange(-2, 2)
-            .build()
-    );
-
-    private final Setting<Double> breh4 = sgRender.add(new DoubleSetting.Builder()
-            .name("x2")
-            .sliderRange(-2, 2)
-            .build()
-    );
-
-    private final Setting<Double> breh5 = sgRender.add(new DoubleSetting.Builder()
-            .name("y2")
-            .sliderRange(-2, 2)
-            .build()
-    );
-
-    private final Setting<Double> breh6 = sgRender.add(new DoubleSetting.Builder()
-            .name("z2")
-            .sliderRange(-2, 2)
-            .build()
-    );
-
-    private final Setting<Integer> breh7 = sgRender.add(new IntSetting.Builder()
-            .name("breh7")
-            .sliderRange(-100, 100)
-            .build()
-    );
-
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the block overlay.")
@@ -730,6 +682,7 @@ public class MonkeSleeper extends Module {
     private final BlockPos.Mutable renderPos = new BlockPos.Mutable();
     private final BlockPos.Mutable breakRenderPos = new BlockPos.Mutable();
 
+    private int xOffset, zOffset;
     private double renderDamage;
 
 
@@ -883,7 +836,7 @@ public class MonkeSleeper extends Module {
                     }
 
                     if (!BedUtil.shouldIgnoreSelfBreakDamage()) {
-                        float selfDamage = BPlusDamageUtils.bedDamage(mc.player, damageVec, predictMovement.get(), selfBreakExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+                        float selfDamage = BPlusDamageUtils.bedDamage(mc.player, damageVec, predictMovement.get(), selfBreakExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
                         if (selfDamage > BmaxDamage.get() || (BantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                             continue;
                     } else if (debug.get()) warning("Ignoring self break dmg");
@@ -926,7 +879,7 @@ public class MonkeSleeper extends Module {
     }
      */
 
-    private List<BlockPos> trapBreakPositions = new ArrayList<>();
+    private final List<BlockPos> trapBreakPositions = new ArrayList<>();
 
     private void doTrapBreak() {
         if (!doPlace.get()) return;
@@ -992,7 +945,7 @@ public class MonkeSleeper extends Module {
 
             // Check damage to self and anti suicide
             if (!BedUtil.shouldIgnoreSelfPlaceDamage()) {
-                float selfDamage = BPlusDamageUtils.bedDamage(mc.player, vec3d, predictMovement.get(), selfPlaceExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+                float selfDamage = BPlusDamageUtils.bedDamage(mc.player, vec3d, predictMovement.get(), selfPlaceExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
                 if (selfDamage > PmaxDamage.get() || (PantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                     return;
             } else if (debug.get()) warning("Ignoring self place dmg");
@@ -1175,12 +1128,12 @@ public class MonkeSleeper extends Module {
         if (fast) {
             PlayerEntity target = getNearestTarget();
             if (!(smartDelay.get() && breaking && target.hurtTime > 0))
-                damage = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+                damage = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), placeRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
         } else {
             for (PlayerEntity target : targets) {
                 if (smartDelay.get() && breaking && target.hurtTime > 0) continue;
 
-                float dmg = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullAnvil.get(), fullEchest.get());
+                float dmg = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), placeRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
 
                 // Update best target
                 if (dmg > bestTargetDamage) {
@@ -1216,9 +1169,8 @@ public class MonkeSleeper extends Module {
 
     @EventHandler
     private void onReceivePacket(PacketEvent.Receive event) {
-        if (!(event.packet instanceof EntityStatusS2CPacket)) return;
+        if (!(event.packet instanceof EntityStatusS2CPacket p)) return;
 
-        EntityStatusS2CPacket p = (EntityStatusS2CPacket) event.packet;
         if (p.getStatus() != 35) return;
 
         Entity entity = p.getEntity(mc.world);
@@ -1246,6 +1198,13 @@ public class MonkeSleeper extends Module {
             int y = renderPos.getY();
             int z = renderPos.getZ();
 
+            switch (direction) {
+                case North -> zOffset = 0;
+                case South -> zOffset = 1;
+                //case East ->
+                //case West ->
+            }
+
             if (!detailedRender.get()) {
                 switch (direction) {
                     case North -> event.renderer.box(x, y, z - 1, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
@@ -1255,42 +1214,36 @@ public class MonkeSleeper extends Module {
                 }
             }
 
-            else {
+            if (detailedRender.get()) {
                 switch (direction) {
-                    case North -> {
+                    case North, South -> {
                         // Body
-                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125, x + 0.8125, y + 0.5625, z + 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), -7);
+                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, x + 0.8125, y + 0.5625, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), -7);
 
                         // Left and Right
-                        event.renderer.box(x, y + 0.1875, z + 0.8125, x + 0.1875, y + 0.5625, z - 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), -39);
-                        event.renderer.box(x + 0.8125, y + 0.1875, z + 0.8125, x + 1, y + 0.5625, z - 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 56);
+                        event.renderer.box(x, y + 0.1875, z + 0.8125 + zOffset, x + 0.1875, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), -39);
+                        event.renderer.box(x + 0.8125, y + 0.1875, z + 0.8125 + zOffset, x + 1, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 56);
 
                         // Front and Back
-                        event.renderer.box(x + 0.1875, y + 0.1875, z + 0.8125, x + 0.8125, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 104);
-                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125, x + 0.8125, y + 0.5625, z - 1, sideColor.get(), lineColor.get(), shapeMode.get(), 104);
+                        event.renderer.box(x + 0.1875, y + 0.1875, z + 0.8125 + zOffset, x + 0.8125, y + 0.5625, z + 1 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 104);
+                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, x + 0.8125, y + 0.5625, z - 1 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 104);
 
                         // Legs
-                        event.renderer.box(x, y, z + 1, x + 0.1875, y + 0.1875, z + 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
-                        event.renderer.box(x, y, z - 1, x + 0.1875, y + 0.1875, z - 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
-                        event.renderer.box(x + 0.8125, y, z + 1, x + 1, y + 0.1875, z + 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
-                        event.renderer.box(x + 1, y, z - 1, x + 0.8125, y + 0.1875, z - 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x, y, z + 1 + zOffset, x + 0.1875, y + 0.1875, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x, y, z - 1 + zOffset, x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x + 0.8125, y, z + 1 + zOffset, x + 1, y + 0.1875, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x + 1, y, z - 1 + zOffset, x + 0.8125, y + 0.1875, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
 
                         // Corners
-                        event.renderer.box(x, y + 0.1875, z + 1, x + 0.1875, y + 0.5625, z + 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), -44);
-                        event.renderer.box(x, y + 0.1875, z - 1, x + 0.1875, y + 0.5625, z - 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
-                        event.renderer.box(x + 0.8125, y + 0.1875, z + 1, x + 1, y + 0.5625, z + 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 52);
-                        event.renderer.box(x + 1, y + 0.1875, z - 1, x + 0.8125, y + 0.5625, z - 0.8125, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
+                        event.renderer.box(x, y + 0.1875, z + 1 + zOffset, x + 0.1875, y + 0.5625, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), -44);
+                        event.renderer.box(x, y + 0.1875, z - 1 + zOffset, x + 0.1875, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
+                        event.renderer.box(x + 0.8125, y + 0.1875, z + 1 + zOffset, x + 1, y + 0.5625, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 52);
+                        event.renderer.box(x + 1, y + 0.1875, z - 1 + zOffset, x + 0.8125, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
 
                     }
 
-                    case South -> {
-                        event.renderer.box(x, y, z, x + 1, y + 0.5625, z + 2, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    }
-                    case East -> {
+                    case East, West -> {
                         event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    }
-                    case West -> {
-                        event.renderer.box(x - 1, y, z, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
                     }
                 }
             }

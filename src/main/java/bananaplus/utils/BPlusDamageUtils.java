@@ -94,7 +94,7 @@ public class BPlusDamageUtils {
 
     // Bed Damage
 
-    public static float bedDamage(PlayerEntity player, Vec3d bed, boolean predictMovement, double explosionRadius, boolean ignoreTerrain, boolean fullAnvil, boolean fullEchest) {
+    public static float bedDamage(PlayerEntity player, Vec3d bed, boolean predictMovement, double explosionRadius, boolean ignoreTerrain, boolean fullBlocks) {
         if (EntityUtils.getGameMode(player) == GameMode.CREATIVE && !(player instanceof FakePlayerEntity)) return 0;
 
         ((IVec3d) vec3d).set(player.getPos().x, player.getPos().y, player.getPos().z);
@@ -122,7 +122,7 @@ public class BPlusDamageUtils {
     }
 
     public static float bedDamage(PlayerEntity player, Vec3d bed, double explosionRadius) {
-        return bedDamage(player, bed, false, explosionRadius, false, false, false);
+        return bedDamage(player, bed, false, explosionRadius, false, false);
     }
 
     /*
