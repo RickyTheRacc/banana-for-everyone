@@ -19,7 +19,8 @@ public class Twerk extends Module {
             .defaultValue(4)
             .min(2)
             .sliderRange(2,100)
-            .build());
+            .build()
+);
 
     private boolean upp = false;
 

@@ -19,6 +19,7 @@ import net.minecraft.util.Hand;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 
+
 public class BindClickExtra extends Module {
     private enum Type {
         Immediate,
@@ -44,13 +45,30 @@ public class BindClickExtra extends Module {
         }
     }
 
-    public enum MMode {MiddleClickToFollow, BindClickFollow}
+    public enum MMode {
+        MiddleClickToFollow,
+        BindClickFollow
+    }
+
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    private final Setting<MMode> mMode = sgGeneral.add(new EnumSetting.Builder<MMode>().name("Mode").description("The mode at which to follow the player.").defaultValue(MMode.BindClickFollow).build());
 
-    private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder().name("follow-keybind").description("What key to press to start following someone").defaultValue(Keybind.fromKey(-1)).visible(() -> mMode.get() == MMode.BindClickFollow).build());
+    // General
+    private final Setting<MMode> mMode = sgGeneral.add(new EnumSetting.Builder<MMode>()
+            .name("Mode")
+            .description("The mode at which to follow the player.")
+            .defaultValue(MMode.BindClickFollow)
+            .build()
+    );
+
+    private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
+            .name("follow-keybind")
+            .description("What key to press to start following someone")
+            .defaultValue(Keybind.fromKey(-1))
+            .visible(() -> mMode.get() == MMode.BindClickFollow)
+            .build()
+    );
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("item-mode")
@@ -73,18 +91,21 @@ public class BindClickExtra extends Module {
             .build()
     );
 
-    private boolean isUsing;
 
     public BindClickExtra() {
         super(BananaPlus.MISC, "bind-click-extra", "Lets you use items when you press the bound key.");
     }
+
+
+    private boolean isUsing;
+
 
     @Override
     public void onDeactivate() {
         stopIfUsing();
     }
 
-    boolean presseD = false;
+    boolean pressed = false;
 
     @EventHandler
     private void onMouseButton(MouseButtonEvent event) {
@@ -120,10 +141,10 @@ public class BindClickExtra extends Module {
 
         if(mMode.get() != MMode.MiddleClickToFollow){
             if (!keybind.get().isPressed()) {
-                presseD = false;
+                pressed = false;
             }
 
-            if (keybind.get().isPressed() && !presseD) {
+            if (keybind.get().isPressed() && !pressed) {
 
                 if (mc.player.getOffHandStack().getItem() != mode.get().item && onlyWhenItemHeld.get()) return;
 
@@ -148,7 +169,7 @@ public class BindClickExtra extends Module {
                     }
                 }
 
-                presseD = true;
+                pressed = true;
             }
         }
 

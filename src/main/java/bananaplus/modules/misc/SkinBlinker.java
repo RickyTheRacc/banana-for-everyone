@@ -25,14 +25,16 @@ public class SkinBlinker extends Module {
             .name("mode")
             .description("What mode the skin blinker should behave in.")
             .defaultValue(Mode.Sequential)
-            .build());
+            .build()
+);
 
     private final Setting<SequentialMode> seqMode = sgGeneral.add(new EnumSetting.Builder<SequentialMode>()
             .name("sequential-mode")
             .description("Whether to toggle your skin parts on or off.")
             .defaultValue(SequentialMode.On)
             .visible(() -> mode.get() == Mode.Sequential)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> sequentialDelay = sgGeneral.add(new IntSetting.Builder()
             .name("sequential-delay")
@@ -41,14 +43,16 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Sequential)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> cape = sgGeneral.add(new BoolSetting.Builder()
             .name("cape")
             .description("Blinks the cape part of your skin (only works if you have a Mojang cape).")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Individual)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> capeDelay = sgGeneral.add(new IntSetting.Builder()
             .name("cape-delay")
@@ -57,14 +61,16 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Individual && cape.get())
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> head = sgGeneral.add(new BoolSetting.Builder()
             .name("head")
             .description("Blinks the head part of your skin.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Individual)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> headDelay = sgGeneral.add(new IntSetting.Builder()
             .name("head-delay")
@@ -73,14 +79,16 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Individual && head.get())
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> jacket = sgGeneral.add(new BoolSetting.Builder()
             .name("jacket")
             .description("Blinks the torso part of your skin.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Individual)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> jacketDelay = sgGeneral.add(new IntSetting.Builder()
             .name("jacket-delay")
@@ -89,14 +97,16 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Individual && jacket.get())
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> leftArm = sgGeneral.add(new BoolSetting.Builder()
             .name("left-arm")
             .description("Blinks the left arm of your skin.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Individual)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> leftArmDelay = sgGeneral.add(new IntSetting.Builder()
             .name("left-arm-delay")
@@ -105,14 +115,16 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Individual && leftArm.get())
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> rightArm = sgGeneral.add(new BoolSetting.Builder()
             .name("right-arm")
             .description("Blinks the right arm of your skin.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Individual)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> rightArmDelay = sgGeneral.add(new IntSetting.Builder()
             .name("right-arm-delay")
@@ -121,14 +133,16 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Individual && rightArm.get())
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> leftLeg = sgGeneral.add(new BoolSetting.Builder()
             .name("left-arm")
             .description("Blinks the head left leg of your skin.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Individual)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> leftLegDelay = sgGeneral.add(new IntSetting.Builder()
             .name("left-leg-delay")
@@ -137,14 +151,16 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Individual && leftLeg.get())
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> rightLeg = sgGeneral.add(new BoolSetting.Builder()
             .name("right-arm")
             .description("Blinks the head right leg of your skin.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Individual)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> rightLegDelay = sgGeneral.add(new IntSetting.Builder()
             .name("right-leg-delay")
@@ -153,7 +169,8 @@ public class SkinBlinker extends Module {
             .min(1)
             .sliderRange(1,15)
             .visible(() -> mode.get() == Mode.Individual && rightLeg.get())
-            .build());
+            .build()
+);
 
     public SkinBlinker() {
         super(BananaPlus.MISC, "skin-blinker", "Blinks different parts of your skin :)");

@@ -1,3 +1,4 @@
+Ben's List
 - port and fix armor message
 - chams minor change
 - auto city ready progress and enum switcher
@@ -6,7 +7,7 @@
 - warnings?
 - surround web protect
 - auto tnt trap
-- anti crystal
+- anti-crystal
 - put all the other features in sniper in
 - rgb logo
 - auto build
@@ -16,3 +17,12 @@
 - use a mixin for criticals instead
 
 
+Ricky's List
+- Figure out how to make criticals a mixin (beat ben :heheheha:)
+- Combine middle click friend and extra
+- Combine anti ghost and invis block
+- Make options for the discord presence to look like other clients trolla
+- Add working toggle on death to block placing modules
+- Make other module toggles actually work
+- Complete monke sleeper detailed rendering
+- Finish correcting grammar issues  (left off on instamine bypass)

@@ -18,55 +18,67 @@ import net.minecraft.util.math.Direction;
 public class AntiGhostBlock extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onlyBP = sgGeneral.add(new BoolSetting.Builder()
             .name("only-blast-proof")
             .description("Only checks for blast proof blocks to limit spamming packets")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> underFeet = sgGeneral.add(new IntSetting.Builder()
             .name("under-feet")
             .description("How many blocks under your feet it should start counting for horizontal")
             .defaultValue(0)
             .sliderRange(-5,5)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> horizontalRange = sgGeneral.add(new IntSetting.Builder()
             .name("horizontal-range")
             .defaultValue(4)
             .sliderRange(1,6)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> verticalRange = sgGeneral.add(new IntSetting.Builder()
             .name("vertical-range")
             .defaultValue(4)
             .sliderRange(1, 6)
-            .build());
+            .build()
+    );
 
     public final Setting<Boolean> autoToggle = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-toggle")
             .description("Automatically turns off after checking for ghost blocks")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
             .description("Tick delay for checking for ghost blocks.")
             .defaultValue(200)
             .sliderRange(1,2000)
-            .build());
+            .build()
+    );
+
 
     public AntiGhostBlock() {
         super(BananaPlus.MISC, "anti-ghost-block", "Tries to remove nearby ghost blocks.");
     }
 
+
     private static final BlockPos.Mutable blockPos = new BlockPos.Mutable();
     private int ticks;
+
 
     @Override
     public void onActivate() {

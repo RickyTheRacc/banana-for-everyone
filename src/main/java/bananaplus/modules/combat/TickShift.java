@@ -24,12 +24,14 @@ public class TickShift extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgAC = settings.createGroup("Anti Cheat");
 
+
     // Charge
     private final Setting<Boolean> charge = sgCharge.add(new BoolSetting.Builder()
             .name("charge")
             .description("Whether or not to charge up your movements.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> chargeTicks = sgCharge.add(new IntSetting.Builder()
             .name("charge-ticks")
@@ -38,21 +40,25 @@ public class TickShift extends Module {
             .min(1)
             .sliderRange(1, 50)
             .visible(charge::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> lockMovement = sgCharge.add(new BoolSetting.Builder()
             .name("lock-movement")
             .description("Disables your movement when you are charging.")
             .defaultValue(false)
             .visible(charge::get)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> chatInfo = sgCharge.add(new BoolSetting.Builder()
             .name("chat-info")
             .description("Tells you when you have finished charging.")
             .defaultValue(false)
             .visible(charge::get)
-            .build());
+            .build()
+    );
+
 
     // General
     private final Setting<Integer> durationTicks = sgGeneral.add(new IntSetting.Builder()
@@ -61,7 +67,8 @@ public class TickShift extends Module {
             .defaultValue(60)
             .min(1)
             .sliderRange(1, 100)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> factor = sgGeneral.add(new DoubleSetting.Builder()
             .name("factor")
@@ -69,13 +76,15 @@ public class TickShift extends Module {
             .defaultValue(3.5)
             .min(1)
             .sliderRange(1, 10)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onJump = sgGeneral.add(new BoolSetting.Builder()
             .name("on-jump")
             .description("Whether the player needs to jump first or not.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> distance = sgGeneral.add(new DoubleSetting.Builder()
             .name("distance")
@@ -83,44 +92,52 @@ public class TickShift extends Module {
             .defaultValue(12)
             .min(1)
             .sliderRange(1, 20)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> onRubberband = sgGeneral.add(new BoolSetting.Builder()
             .name("disable-on-rubberband")
             .description("Whether or not to turn off on rubberband.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
+
 
     // Anti Cheat
     private final Setting<Boolean> inWater = sgAC.add(new BoolSetting.Builder()
             .name("in-water")
             .description("Whether or not to allow you to tick shift in water.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> inLava = sgAC.add(new BoolSetting.Builder()
             .name("in-lava")
             .description("Whether or not to allow you to tick shift in lava.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> whenSneaking = sgAC.add(new BoolSetting.Builder()
             .name("when-sneaking")
             .description("Allow tick shift when sneaking.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> hungerCheck = sgAC.add(new BoolSetting.Builder()
             .name("hunger-check")
             .description("Pauses when hunger reaches 3 or less drumsticks")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> step = sgAC.add(new BoolSetting.Builder()
             .name("step")
             .description("Whether or not to allow you to step up on to blocks.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Double> stepHeight = sgAC.add(new DoubleSetting.Builder()
             .name("height")
@@ -129,13 +146,15 @@ public class TickShift extends Module {
             .min(0.5)
             .sliderRange(0.5, 10)
             .visible(step::get)
-            .build());
+            .build()
+    );
+
 
     public TickShift() {
         super(BananaPlus.COMBAT, "tick-shift", "Allows you to charge up movement packets and move swiftly.");
     }
 
-    // Fields
+
     private int chargeTicked;
     private int durationTicked;
 
@@ -147,6 +166,7 @@ public class TickShift extends Module {
     private Vec3d startPos;
 
     Timer timerClass = Modules.get().get(Timer.class);
+
 
     @Override
     public void onActivate() {

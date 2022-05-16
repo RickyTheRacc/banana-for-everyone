@@ -38,6 +38,7 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
+import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -87,6 +88,7 @@ public class MonkeSleeper extends Module {
         Fade,
         None
     }
+
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgInventory = settings.createGroup("Inventory");
@@ -194,7 +196,8 @@ public class MonkeSleeper extends Module {
             .name("auto-switch")
             .description("Switches to and from beds automatically.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
 
     // Place
@@ -523,6 +526,13 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
+    private final Setting<Boolean> craftPause = sgPause.add(new BoolSetting.Builder()
+            .name("pause-on-craft")
+            .description("Pauses BA when crafting.")
+            .defaultValue(true)
+            .build()
+    );
+
 
     // Render
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
@@ -742,10 +752,11 @@ public class MonkeSleeper extends Module {
         if (breakRenderTimer > 0) breakRenderTimer--;
 
         // Check pause settings
-        if (PlayerUtils.shouldPause(minePause.get(), eatPause.get(), drinkPause.get()) || PlayerUtils.getTotalHealth() <= pauseAtHealth.get()) {
+        if (PlayerUtils.shouldPause(minePause.get(), eatPause.get(), drinkPause.get()) || PlayerUtils.getTotalHealth() <= pauseAtHealth.get() || craftPause.get() && mc.player.currentScreenHandler instanceof CraftingScreenHandler) {
             if (debug.get()) warning("Pausing");
             return;
         }
+
 
         // Set player eye pos
         ((IVec3d) playerEyePos).set(mc.player.getPos().x, mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose()), mc.player.getPos().z);

@@ -46,13 +46,15 @@ public class Platform extends Module {
             .name("blocks")
             .description("What blocks to use for Surround+.")
             .defaultValue(Blocks.OBSIDIAN)
-            .build());
+            .build()
+);
 
     private final Setting<List<Block>> fallbackBlocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("fallback-blocks")
             .description("What blocks to use for Surround+ if no target block is found.")
             .defaultValue(Blocks.CRYING_OBSIDIAN)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> platformRange = sgGeneral.add(new IntSetting.Builder()
             .name("platform-range")
@@ -60,13 +62,15 @@ public class Platform extends Module {
             .defaultValue(2)
             .range(1,5)
             .sliderRange(1,5)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
             .description("Tick delay between block placements.")
             .defaultValue(0)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> blocksPerTick = sgGeneral.add(new IntSetting.Builder()
             .name("blocks-per-interval")
@@ -75,64 +79,74 @@ public class Platform extends Module {
             .min(1)
             .sliderMin(1)
             .sliderMax(20)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> doubleHeight = sgGeneral.add(new BoolSetting.Builder()
             .name("double-height")
             .description("Places below of the original surround blocks to prevent people from face-placing you.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> onlyGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Will only try to place if you are on the ground.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     // Placing
     private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
             .defaultValue(BPlusWorldUtils.SwitchMode.Both)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> switchBack = sgPlacing.add(new BoolSetting.Builder()
             .name("switch-back")
             .description("Switches back to your original slot after placing.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<BPlusWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.PlaceMode>()
             .name("place-mode")
             .description("How to switch to your target block.")
             .defaultValue(BPlusWorldUtils.PlaceMode.Both)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> airPlace = sgPlacing.add(new BoolSetting.Builder()
             .name("air-place")
             .description("Whether to place blocks mid air or not.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> onlyAirPlace = sgPlacing.add(new BoolSetting.Builder()
             .name("only-air-place")
             .description("Forces you to only airplace to help with stricter rotations.")
             .defaultValue(false)
             .visible(airPlace::get)
-            .build());
+            .build()
+);
 
     private final Setting<BPlusWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.AirPlaceDirection>()
             .name("air-place-direction")
             .description("Side to try to place at when you are trying to air place.")
             .defaultValue(BPlusWorldUtils.AirPlaceDirection.Down)
             .visible(airPlace::get)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> rotate = sgPlacing.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Whether to face towards the block you are placing or not.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> rotationPrio = sgPlacing.add(new IntSetting.Builder()
             .name("rotation-priority")
@@ -140,104 +154,120 @@ public class Platform extends Module {
             .defaultValue(97)
             .sliderRange(0, 200)
             .visible(rotate::get)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> cancelMove = sgGeneral.add(new BoolSetting.Builder()
             .name("cancel-jump")
             .description("Prevents you from jumping.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     // Force keybinds
     private final Setting<Keybind> doubleHeightKeybind = sgForce.add(new KeybindSetting.Builder()
             .name("double-height-keybind")
             .description("Turns on double height.")
             .defaultValue(Keybind.none())
-            .build());
+            .build()
+);
 
     // Toggles
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-y-change")
             .description("Automatically disables when your y level (step, jumping, etc).")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> toggleOnComplete = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-complete")
             .description("Automatically disables when all blocks are placed.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> onPearl = sgToggle.add(new BoolSetting.Builder()
             .name("disable-on-pearl")
             .description("Automatically disables when you throw a pearl (work if u use middle/bind click extra).")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> onChorus = sgToggle.add(new BoolSetting.Builder()
             .name("disable-on-chorus")
             .description("Automatically disables after you eat a chorus.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     // Modules
     private final Setting<Boolean> toggleStep = sgModules.add(new BoolSetting.Builder()
             .name("toggle-step")
             .description("Toggles off step when activating surround.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> toggleSpeed = sgModules.add(new BoolSetting.Builder()
             .name("toggle-speed")
             .description("Toggles off speed when activating surround.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> toggleStrafe = sgModules.add(new BoolSetting.Builder()
             .name("toggle-strafe+")
             .description("Toggles off strafe+ when activating surround.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> toggleBack = sgModules.add(new BoolSetting.Builder()
             .name("toggle-back")
             .description("Toggles the modules above back on if it was on previously when turning Surround+.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     // Render
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders hand swing when trying to place a block.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
             .name("render")
             .description("Renders a block overlay where the block will be placed.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
             .visible(render::get)
-            .build());
+            .build()
+);
 
     private final Setting<SettingColor> placeColor = sgRender.add(new ColorSetting.Builder()
             .name("place-box-color")
             .description("The color of placing blocks.")
             .defaultValue(new SettingColor(255, 255, 255, 25))
             .visible(render::get)
-            .build());
+            .build()
+);
 
     private final Setting<SettingColor> placeLineColor = sgRender.add(new ColorSetting.Builder()
             .name("place-line-color")
             .description("The color of placing line.")
             .defaultValue(new SettingColor(255, 255, 255, 150))
             .visible(render::get)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
             .name("render-time")
@@ -246,7 +276,8 @@ public class Platform extends Module {
             .range(0, 40)
             .sliderRange(0, 40)
             .visible(render::get)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> fadeAmount = sgRender.add(new IntSetting.Builder()
             .name("fade-amount")
@@ -255,7 +286,8 @@ public class Platform extends Module {
             .range(0, 100)
             .sliderRange(0, 100)
             .visible(render::get)
-            .build());
+            .build()
+);
 
     public Platform() {
         super(BananaPlus.MISC, "platform", "Platforms around your feet to make building easier.");

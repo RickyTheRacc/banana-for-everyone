@@ -41,19 +41,22 @@ public class OneClickEat extends Module {
             .name("white-list")
             .description("Which items you can one click eat.")
             .filter(Item::isFood)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> usePotions = sgGeneral.add(new BoolSetting.Builder()
             .name("use-potions")
             .description("Allows you to also use potions.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> onlyGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Only allows you to one click eat on ground.")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private boolean isUsing;
     private boolean pressed;

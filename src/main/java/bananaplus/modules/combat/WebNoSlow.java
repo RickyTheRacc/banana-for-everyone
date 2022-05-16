@@ -17,13 +17,16 @@ public class WebNoSlow extends Module {
         Adaptive,
     }
 
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+
 
     public final Setting<WebMode> web = sgGeneral.add(new EnumSetting.Builder<WebMode>()
             .name("web")
             .description("Whether or not cobwebs will not slow you down.")
             .defaultValue(WebMode.Adaptive)
-            .build());
+            .build()
+    );
 
     public final Setting<Integer> webTimer = sgGeneral.add(new IntSetting.Builder()
             .name("web-timer")
@@ -32,20 +35,25 @@ public class WebNoSlow extends Module {
             .min(1)
             .sliderMin(1)
             .visible(() -> web.get() != WebMode.Vanilla)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
             .name("chat-info")
             .description("Notifies you in chat when you are webbed.")
             .defaultValue(false)
-            .build());
+            .build()
+    );
+
+
+    public WebNoSlow() {
+        super(BananaPlus.COMBAT, "web-no-slow", "An improved no-slow for webs.");
+    }
+
 
     private boolean resetTimer;
     private boolean sentMessage;
 
-    public WebNoSlow() {
-        super(BananaPlus.COMBAT, "web-no-slow", "A better version of the No Slow for webs.");
-    }
 
     @Override
     public void onActivate() {

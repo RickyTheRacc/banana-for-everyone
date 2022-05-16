@@ -15,35 +15,44 @@ import net.minecraft.util.math.Direction;
 public class AntiInvisBlock extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug")
             .defaultValue(false)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> underFeet = sgGeneral.add(new IntSetting.Builder()
             .name("under-feet")
             .description("How many blocks under your feet it should start counting for horizontal")
             .defaultValue(0)
             .sliderRange(-5,5)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> horizontalRange = sgGeneral.add(new IntSetting.Builder()
             .name("horizontal-range")
             .defaultValue(4)
             .sliderRange(1,6)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> verticalRange = sgGeneral.add(new IntSetting.Builder()
             .name("vertical-range")
             .defaultValue(4)
             .sliderRange(1, 6)
-            .build());
+            .build()
+    );
+
 
     public AntiInvisBlock() {
         super(BananaPlus.MISC, "anti-invis-block", "Tries to add nearby invisible blocks.");
     }
 
+
     private static final BlockPos.Mutable blockPos = new BlockPos.Mutable();
+
 
     @Override
     public void onActivate() {

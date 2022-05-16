@@ -30,26 +30,30 @@ public class InstaMineBypass extends Module {
     private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug")
             .defaultValue(false)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> pick = sgGeneral.add(new BoolSetting.Builder()
             .name("only-pick")
             .description("Only tries to mine the block if you are holding a pickaxe.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> ironPick = sgGeneral.add(new BoolSetting.Builder()
             .name("iron-pick")
             .description("Allows iron pickaxe to count as a pickaxe for instamine.")
             .defaultValue(false)
             .visible(pick::get)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Faces the blocks being mined server side.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     // Delays
     private final Setting<Integer> bypassDelay = sgDelay.add(new IntSetting.Builder()
@@ -58,7 +62,8 @@ public class InstaMineBypass extends Module {
             .defaultValue(4)
             .min(1)
             .sliderMax(100)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> bypassIterations = sgDelay.add(new IntSetting.Builder()
             .name("bypass iterations")
@@ -66,7 +71,8 @@ public class InstaMineBypass extends Module {
             .defaultValue(0)
             .min(0)
             .sliderMax(20)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> normalDelay = sgDelay.add(new IntSetting.Builder()
             .name("normal delay")
@@ -74,7 +80,8 @@ public class InstaMineBypass extends Module {
             .defaultValue(41)
             .min(1)
             .sliderMax(100)
-            .build());
+            .build()
+);
 
     private final Setting<Integer> normalIterations = sgDelay.add(new IntSetting.Builder()
             .name("normal iterations")
@@ -82,7 +89,8 @@ public class InstaMineBypass extends Module {
             .defaultValue(1)
             .min(0)
             .sliderMax(20)
-            .build());
+            .build()
+);
 
     // Render
 
@@ -90,25 +98,29 @@ public class InstaMineBypass extends Module {
             .name("render")
             .description("Renders a block overlay on the block being broken.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
-            .build());
+            .build()
+);
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The color of the sides of the blocks being rendered.")
             .defaultValue(new SettingColor(204, 0, 0, 10))
-            .build());
+            .build()
+);
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The color of the lines of the blocks being rendered.")
             .defaultValue(new SettingColor(204, 0, 0, 255))
-            .build());
+            .build()
+);
 
     private int ticksPassed;
     private int ticks;

@@ -23,37 +23,150 @@ import java.util.List;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 
 public class AutoSex extends Module{
-
-    public AutoSex() {
-        super(BananaPlus.MISC, "auto-Sex", "Tries to have sex whit the player in different ways.");
+    public enum Mode {
+        MiddleClickToFollow,
+        FollowPlayer,
+        BindClickFollow
     }
+
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgSex = settings.createGroup("Auto Sex");
 
-    public enum Mode {MiddleClickToFollow, FollowPlayer, BindClickFollow}
 
-    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>().name("Mode").description("The mode at which to follow the player.").defaultValue(Mode.BindClickFollow).build());
-    private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder().name("follow-keybind").description("What key to press to start following someone").defaultValue(Keybind.fromKey(-1)).visible(() -> mode.get() == Mode.BindClickFollow).build());
+    // General
+    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
+            .name("Mode")
+            .description("The mode at which to follow the player.")
+            .defaultValue(Mode.BindClickFollow)
+            .build()
+    );
 
-    private final Setting<Boolean> onlyFriend = sgGeneral.add(new BoolSetting.Builder().name("only-follow-friends").description("Whether or not to only follow friends.").defaultValue(false).build());
-    private final Setting<Boolean> onlyOther = sgGeneral.add(new BoolSetting.Builder().name("don't-follow-friends").description("Whether or not to follow friends.").defaultValue(false).visible(() -> mode.get() != Mode.FollowPlayer).build());
-    private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder().name("Range").description("The range in which it follows a random player").defaultValue(20).min(0).sliderMax(200).visible(() -> mode.get() == Mode.FollowPlayer).build());
-    private final Setting<Boolean> ignoreRange = sgGeneral.add(new BoolSetting.Builder().name("keep-Following").description("follow the player even if they are out of range").defaultValue(false).visible(() -> mode.get() == Mode.FollowPlayer).build());
-    private final Setting<SortPriority> priority = sgGeneral.add(new EnumSetting.Builder<SortPriority>().name("target-priority").description("How to select the player to target.").defaultValue(SortPriority.LowestDistance).visible(() -> mode.get() == Mode.FollowPlayer).build());
-    private final Setting<Boolean> message = sgGeneral.add(new BoolSetting.Builder().name("message").description("Sends a message to the player when you start/stop following them.").defaultValue(false).build());
-    private final Setting<Boolean> twerkWhenClose = sgSex.add(new BoolSetting.Builder().name("Auto-hump").description("Starts having sex with the player you are following when close to them").defaultValue(false).build());
-    private final Setting<Boolean> dirtyTalk = sgSex.add(new BoolSetting.Builder().name("Dirty-Talk").description("Dirty talk").defaultValue(false).visible(message::get).build());
-    private final Setting<Boolean> dm = sgGeneral.add(new BoolSetting.Builder().name("private-msg").description("sends a private chat msg to the person").defaultValue(false).visible(message::get).build());
-    private final Setting<Boolean> pm = sgGeneral.add(new BoolSetting.Builder().name("public-msg").description("sends a public chat msg").defaultValue(false).visible(message::get).build());
-    private final Setting<Integer> delay = sgSex.add(new IntSetting.Builder().name("delay").description("The delay between specified messages in ticks.").defaultValue(20).min(0).sliderMax(200).visible(message::get).build());
-    private final Setting<Boolean> random = sgSex.add(new BoolSetting.Builder().name("randomise").description("Selects a random message from your spam message list.").defaultValue(false).visible(message::get).build());
-    private final Setting<List<String>> messages = sgSex.add(new StringListSetting.Builder().name("messages").description("Messages to use for dirty talk.").defaultValue(List.of(
-            "Please cum inside me (enemy)!",
-            "Ahhh harder daddy (enemy)",
-            "Put your cock inside me (enemy)!",
-            "Let me swallow ur babies (enemy)",
-            "Haah... Uugh.. Aaah...")).visible(message::get).build());
+    private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
+            .name("follow-keybind")
+            .description("What key to press to start following someone")
+            .defaultValue(Keybind.fromKey(-1))
+            .visible(() -> mode.get() == Mode.BindClickFollow)
+            .build()
+    );
+
+    private final Setting<Boolean> onlyFriend = sgGeneral.add(new BoolSetting.Builder()
+            .name("only-follow-friends")
+            .description("Whether or not to only follow friends.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> onlyOther = sgGeneral.add(new BoolSetting.Builder()
+            .name("don't-follow-friends")
+            .description("Whether or not to follow friends.")
+            .defaultValue(false)
+            .visible(() -> mode.get() != Mode.FollowPlayer)
+            .build()
+    );
+
+    private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
+            .name("Range")
+            .description("The range in which it follows a random player")
+            .defaultValue(20)
+            .min(0)
+            .sliderMax(200)
+            .visible(() -> mode.get() == Mode.FollowPlayer)
+            .build()
+    );
+
+    private final Setting<Boolean> ignoreRange = sgGeneral.add(new BoolSetting.Builder()
+            .name("keep-Following")
+            .description("follow the player even if they are out of range")
+            .defaultValue(false).visible(() -> mode.get() == Mode.FollowPlayer)
+            .build()
+    );
+
+    private final Setting<SortPriority> priority = sgGeneral.add(new EnumSetting.Builder<SortPriority>()
+            .name("target-priority")
+            .description("How to select the player to target.")
+            .defaultValue(SortPriority.LowestDistance)
+            .visible(() -> mode.get() == Mode.FollowPlayer)
+            .build()
+    );
+
+    private final Setting<Boolean> message = sgGeneral.add(new BoolSetting.Builder()
+            .name("message")
+            .description("Sends a message to the player when you start/stop following them.")
+            .defaultValue(false)
+            .build()
+    );
+
+
+    // Sex
+    private final Setting<Boolean> twerkWhenClose = sgSex.add(new BoolSetting.Builder()
+            .name("auto-hump")
+            .description("Crouch against the target to give the appearance of sex OwO")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> dirtyTalk = sgSex.add(new BoolSetting.Builder()
+            .name("dirty-talk")
+            .description("Whisper naughty things in your enemy's ear")
+            .defaultValue(true)
+            .visible(message::get)
+            .build()
+    );
+
+    private final Setting<Boolean> dm = sgGeneral.add(new BoolSetting.Builder()
+            .name("private-msg")
+            .description("sends a private chat msg to the person")
+            .defaultValue(false)
+            .visible(message::get)
+            .build()
+    );
+
+    private final Setting<Boolean> pm = sgGeneral.add(new BoolSetting.Builder()
+            .name("public-msg")
+            .description("sends a public chat msg")
+            .defaultValue(false)
+            .visible(message::get)
+            .build()
+    );
+
+    private final Setting<Integer> delay = sgSex.add(new IntSetting.Builder()
+            .name("delay")
+            .description("The delay between specified messages in ticks.")
+            .defaultValue(20)
+            .min(0)
+            .sliderMax(200)
+            .visible(message::get)
+            .build()
+    );
+
+    private final Setting<Boolean> random = sgSex.add(new BoolSetting.Builder()
+            .name("randomise")
+            .description("Selects a random message from your spam message list.")
+            .defaultValue(false)
+            .visible(message::get)
+            .build()
+    );
+
+    private final Setting<List<String>> messages = sgSex.add(new StringListSetting.Builder()
+            .name("messages")
+            .description("Messages to use for dirty talk.")
+            .defaultValue(List.of(
+                   "Please cum inside me (enemy)!",
+                   "Ahhh harder daddy (enemy)",
+                   "Put your cock inside me (enemy)!",
+                   "Let me swallow ur babies (enemy)",
+                   "Haah... Uugh.. Aaah..."
+                    )
+            )
+            .visible(message::get)
+            .build()
+    );
+
+
+    public AutoSex() {
+        super(BananaPlus.MISC, "auto-Sex", "Tries to have sex whit the player in different ways.");
+    }
 
 
     private int messageI, timer;

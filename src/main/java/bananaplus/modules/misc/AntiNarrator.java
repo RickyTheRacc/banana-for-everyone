@@ -21,21 +21,27 @@ public class AntiNarrator extends Module {
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .defaultValue(Mode.Disable)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> macOs = sgGeneral.add(new BoolSetting.Builder()
             .name("apple-PC")
-            .description("Oh no I am on an Apple PC... :sob:")
+            .description("Lol imagine being on an apple PC weirdo")
             .defaultValue(false)
             .visible(() -> mode.get() == Mode.Cancel)
-            .build());
+            .build()
+    );
+
 
     public AntiNarrator() {
         super(BananaPlus.MISC, "anti-narrator", "Stops the annoying narrator from popping up. Cancel = Cancel event when you press Ctrl+B, Disable = Automatically disables narrator when you turn it on.");
     }
+
 
     @EventHandler
     private void onTick(TickEvent.Post event) {

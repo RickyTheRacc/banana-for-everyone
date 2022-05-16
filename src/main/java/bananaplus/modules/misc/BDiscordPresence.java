@@ -40,11 +40,12 @@ public class BDiscordPresence extends Module {
         Sequential
     }
 
+
     private final SettingGroup sgLine1 = settings.createGroup("Line 1");
     private final SettingGroup sgLine2 = settings.createGroup("Line 2");
 
-    // Line 1
 
+    // Line 1
     private final Setting<List<String>> line1Strings = sgLine1.add(new StringListSetting.Builder()
             .name("line-1-messages")
             .description("Messages used for the first line.")
@@ -69,8 +70,8 @@ public class BDiscordPresence extends Module {
             .build()
     );
 
-    // Line 2
 
+    // Line 2
     private final Setting<List<String>> line2Strings = sgLine2.add(new StringListSetting.Builder()
             .name("line-2-messages")
             .description("Messages used for the second line.")
@@ -95,6 +96,14 @@ public class BDiscordPresence extends Module {
             .build()
     );
 
+
+    public BDiscordPresence() {
+        super(BananaPlus.MISC, "discord-rpc", "Displays Banana+ as your presence on Discord. U can use these: (killCount) = killStreak, (enemy) = player u killed, (KD) = kills/deaths, u can also use starscript {} see doc down below");
+
+        runInMainMenu = true;
+    }
+
+
     private static final RichPresence rpc = new RichPresence();
     private int ticks;
     private boolean forceUpdate, lastWasInMainMenu;
@@ -105,11 +114,6 @@ public class BDiscordPresence extends Module {
     private final List<Script> line2Scripts = new ArrayList<>();
     private int line2Ticks, line2I;
 
-    public BDiscordPresence() {
-        super(BananaPlus.MISC, "B+-discord-presence", "Displays Banana+ as your presence on Discord. U can use these: (killCount) = killStreak, (enemy) = player u killed, (KD) = kills/deaths, u can also use starscript {} see doc down below");
-
-        runInMainMenu = true;
-    }
 
     @Override
     public void onActivate() {
@@ -188,7 +192,11 @@ public class BDiscordPresence extends Module {
                     }
 
                     try {
-                        rpc.setDetails(MeteorStarscript.ss.run(line1Scripts.get(i)).replace("(killCount)", StatsUtils.killStreak.toString()).replace("(KD)", StatsUtils.KD()).replace("(kills)", StatsUtils.kills.toString()).replace("(deaths)", StatsUtils.deaths.toString()));
+                        rpc.setDetails(MeteorStarscript.ss.run(line1Scripts.get(i))
+                                .replace("{killstreak}", StatsUtils.killStreak.toString())
+                                .replace("{KD}", StatsUtils.KD())
+                                .replace("{kills}", StatsUtils.kills.toString())
+                                .replace("{deaths}", StatsUtils.deaths.toString()));
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
@@ -208,7 +216,11 @@ public class BDiscordPresence extends Module {
                     }
 
                     try {
-                        rpc.setState(MeteorStarscript.ss.run(line2Scripts.get(i)).replace("(killCount)", StatsUtils.killStreak.toString()).replace("(KD)", StatsUtils.KD()).replace("(kills)", StatsUtils.kills.toString()).replace("(deaths)", StatsUtils.deaths.toString()));
+                        rpc.setState(MeteorStarscript.ss.run(line2Scripts.get(i))
+                                .replace("{killstreak}", StatsUtils.killStreak.toString())
+                                .replace("{KD}", StatsUtils.KD())
+                                .replace("{kills}", StatsUtils.kills.toString())
+                                .replace("{deaths}", StatsUtils.deaths.toString()));
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }

@@ -16,12 +16,37 @@ import net.minecraft.util.Identifier;
 import java.util.Calendar;
 
 public class HudLogo extends HudElement {
+    public enum Mode {
+        Event,
+        Basic
+    }
+
+
+    private final SettingGroup sgGeneral = settings.getDefaultGroup();
+
+
+    private final Setting<Mode> logo = sgGeneral.add(new EnumSetting.Builder<Mode>()
+            .name("Logo")
+            .description("Which logo to use for the hud")
+            .defaultValue(Mode.Event)
+            .build()
+    );
+
+    private final Setting<Double> scale = sgGeneral.add(new DoubleSetting.Builder()
+            .name("scale")
+            .description("Scale of the logo")
+            .defaultValue(3)
+            .min(0.1)
+            .sliderMin(0.1)
+            .sliderMax(4)
+            .build()
+    );
+
 
     public HudLogo(HUD hud) {
         super(hud, "banana+-logo", "Displays the Banana+ logo");
     }
 
-    public enum Mode {Event, Basic}
 
     private static final Identifier LOGO = new Identifier("bananaplus", "logo.png");
     private static final Identifier LOGOC = new Identifier("bananaplus", "circle.png");
@@ -33,22 +58,6 @@ public class HudLogo extends HudElement {
     private static final Identifier MEX = new Identifier("bananaplus", "mex.png");
     private static final Identifier USA = new Identifier("bananaplus", "usa.png");
     private static final Identifier PAT = new Identifier("bananaplus", "patrick.png");
-
-    private final SettingGroup sgGeneral = settings.getDefaultGroup();
-    private final Setting<Mode> logo = sgGeneral.add(new EnumSetting.Builder<Mode>()
-            .name("Logo")
-            .description("Which logo to use for the hud")
-            .defaultValue(Mode.Event)
-            .build());
-
-    private final Setting<Double> scale = sgGeneral.add(new DoubleSetting.Builder()
-            .name("scale")
-            .description("Scale of the logo")
-            .defaultValue(3)
-            .min(0.1)
-            .sliderMin(0.1)
-            .sliderMax(4)
-            .build());
 
 
     @Override

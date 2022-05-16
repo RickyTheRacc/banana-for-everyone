@@ -18,7 +18,8 @@ public class TimeAnimator extends Module {
             .description("How fast the day and night cycle should be.")
             .defaultValue(100)
             .sliderRange(1, 500)
-            .build());
+            .build()
+);
 
     public TimeAnimator() {
         super(BananaPlus.MISC, "time-animator", "Speeds up the day and night cycle.");

@@ -21,13 +21,15 @@ public class LightningDeaths extends Module {
             .description("How far away the lightning is allowed to spawn from you.")
             .defaultValue(16)
             .sliderRange(0, 256)
-            .build());
+            .build()
+);
 
     private final Setting<Boolean> avoidSelf = sgGeneral.add(new BoolSetting.Builder()
             .name("avoid-self")
             .description("Will not render your own deaths.")
             .defaultValue(true)
-            .build());
+            .build()
+);
 
     public LightningDeaths() {
         super(BananaPlus.MISC, "lightning-deaths", "Spawns a lightning where a player dies.");

@@ -13,14 +13,16 @@ import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
 import net.minecraft.text.LiteralText;
 
 public class AfkLog extends Module {
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Dimension> dimension = sgGeneral.add(new EnumSetting.Builder<Dimension>()
             .name("dimension")
             .description("Dimension for the coords.")
             .defaultValue(Dimension.Nether)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> xCoords = sgGeneral.add(new IntSetting.Builder()
             .name("x-coords")
@@ -28,7 +30,8 @@ public class AfkLog extends Module {
             .defaultValue(1000)
             .range(-2147483648, 2147483647)
             .sliderRange(-2147483648, 2147483647)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> zCoords = sgGeneral.add(new IntSetting.Builder()
             .name("z-coords")
@@ -36,7 +39,8 @@ public class AfkLog extends Module {
             .defaultValue(1000)
             .range(-2147483648, 2147483647)
             .sliderRange(-2147483648, 2147483647)
-            .build());
+            .build()
+    );
 
     private final Setting<Integer> radius = sgGeneral.add(new IntSetting.Builder()
             .name("radius")
@@ -44,23 +48,28 @@ public class AfkLog extends Module {
             .defaultValue(64)
             .min(0)
             .sliderRange(0, 256)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> toggleAutoReconnect = sgGeneral.add(new BoolSetting.Builder()
             .name("toggle-auto-reconnect")
             .description("Turns off auto reconnect when disconnecting.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
 
     private final Setting<Boolean> autoToggle = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-toggle")
             .description("Turns itself off when disconnecting.")
             .defaultValue(true)
-            .build());
+            .build()
+    );
+
 
     public AfkLog() {
         super(BananaPlus.MISC, "afk-log", "Logs out when you are at a certain coords for afk travelling.");
     }
+
 
     @EventHandler
     private void onTick(TickEvent.Post event) {

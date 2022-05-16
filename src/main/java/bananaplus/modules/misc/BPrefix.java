@@ -15,49 +15,64 @@ import net.minecraft.text.TextColor;
 public class BPrefix extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<String> prefix = sgGeneral.add(new StringSetting.Builder()
             .name("prefix")
             .description("What to be displayed as Banana+ Prefix")
             .defaultValue("Banana+")
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> prefixColors = sgGeneral.add(new ColorSetting.Builder()
             .name("prefix-color")
             .description("Color display for the prefix")
             .defaultValue(new SettingColor(255,193,0,255))
-            .build());
+            .build()
+    );
 
     private final Setting<String> leftBracket = sgGeneral.add(new StringSetting.Builder()
             .name("left-bracket")
             .description("What to be displayed as left bracket for the prefix")
             .defaultValue("[")
-            .build());
+            .build()
+    );
 
     private final Setting<String> rightBracket = sgGeneral.add(new StringSetting.Builder()
             .name("right-bracket")
             .description("What to be displayed as right bracket for the prefix")
             .defaultValue("]")
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> leftBracketColor = sgGeneral.add(new ColorSetting.Builder()
             .name("left-bracket-color")
             .description("Color display for the left bracket")
             .defaultValue(new SettingColor(150,150,150,255))
-            .build());
+            .build()
+    );
 
     private final Setting<SettingColor> rightBracketColor = sgGeneral.add(new ColorSetting.Builder()
             .name("right-bracket-color")
             .description("Color display for the right bracket")
             .defaultValue(new SettingColor(150,150,150,255))
-            .build());
+            .build()
+    );
+
 
     public BPrefix() {
         super(BananaPlus.MISC, "B+-prefix", "Allows Banana+ prefix for Chat Utils.");
     }
 
+
     @Override
     public void onActivate() {
         ChatUtils.registerCustomPrefix("bananaplus.modules", this::getPrefix);
+    }
+
+    @Override
+    public void onDeactivate() {
+        ChatUtils.unregisterCustomPrefix("bananaplus.modules");
     }
 
     public LiteralText getPrefix() {

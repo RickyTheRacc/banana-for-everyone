@@ -16,22 +16,46 @@ import net.minecraft.entity.player.PlayerEntity;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 
 public class BindClickFriend extends Module{
+    public enum MMode {
+        MiddleClickToFollow,
+        BindClickFollow
+    }
 
-    public enum MMode {MiddleClickToFollow, BindClickFollow}
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    private final Setting<MMode> mMode = sgGeneral.add(new EnumSetting.Builder<MMode>().name("Mode").description("The mode at which to follow the player.").defaultValue(MMode.BindClickFollow).build());
 
-    private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder().name("follow-keybind").description("What key to press to start following someone").defaultValue(Keybind.fromKey(-1)).visible(() -> mMode.get() == MMode.BindClickFollow).build());
+    // General
+    private final Setting<MMode> mMode = sgGeneral.add(new EnumSetting.Builder<MMode>()
+            .name("Mode")
+            .description("The mode at which to follow the player.")
+            .defaultValue(MMode.BindClickFollow)
+            .build()
+    );
 
-    private final Setting<Boolean> message = sgGeneral.add(new BoolSetting.Builder().name("message").description("Sends a message to the player when you add them as a friend.").defaultValue(false).build());
+    private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
+            .name("follow-keybind")
+            .description("What key to press to start following someone")
+            .defaultValue(Keybind.fromKey(-1))
+            .visible(() -> mMode.get() == MMode.BindClickFollow)
+            .build()
+    );
+
+    private final Setting<Boolean> message = sgGeneral.add(new BoolSetting.Builder()
+            .name("message")
+            .description("Sends a message to the player when you add them as a friend.")
+            .defaultValue(false)
+            .build()
+    );
+
 
     public BindClickFriend() {
-        super(BananaPlus.MISC, "bind-click-friend", "Adds or removes a player as a friend when the bound key is pressed.");
+        super(BananaPlus.MISC, "bind-click-friend", "Add or remove players as friends when a key is pressed.");
     }
 
+
     boolean pressed = false;
+
 
     @EventHandler
     private void onMouseButton(MouseButtonEvent event) {
