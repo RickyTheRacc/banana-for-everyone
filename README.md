@@ -4,7 +4,7 @@
 
 <h1 align="center">Banana+</h1>
 
-<p align="center">Run from it, dread it... Banana arrives just the same.</p>
+<p align="center">Based PVP addon for Meteor Client.</p>
 <p align="center"><i>By Bennooo, Necro, and RickyTheRacc</i></p>
 
 # How to use:
@@ -13,7 +13,8 @@
 - Run the gradle `build` task and wait
 - Use the jar from the `build/libs` folder
 
-*Alternatively, use the latest prebuilt jar in the releases tab!*
+*Releases will only be published for new versions of Meteor or MC.*<br>
+*We recommend building the addon yourself for the newest updates!*
 
 ## Will this get updates?
 For the foreseeable future, yes! Ricky is currently working on learning Java and is starting by fixing bugs. Bennooo has some feature planned, but they will be added at his leisure as this is more of a passion project than a responsibility. If you have a cool idea or a module you wrote, feel free to open a Pull Request!
