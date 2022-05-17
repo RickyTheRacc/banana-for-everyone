@@ -542,7 +542,7 @@ public class MonkeSleeper extends Module {
     );
 
     private final Setting<RenderMode> renderMode = sgRender.add(new EnumSetting.Builder<RenderMode>()
-            .name("shape-mode")
+            .name("render-mode")
             .description("How the shapes are rendered.")
             .defaultValue(RenderMode.Normal)
             .build()
@@ -553,6 +553,26 @@ public class MonkeSleeper extends Module {
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
             .visible(() -> renderMode.get() != RenderMode.None)
+            .build()
+    );
+
+    private final Setting<Integer> fadeTime = sgRender.add(new IntSetting.Builder()
+            .name("fade-time")
+            .description("Tick duration for rendering placing.")
+            .defaultValue(8)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(()-> (renderMode.get() == RenderMode.Fade))
+            .build()
+    );
+
+    private final Setting<Integer> fadeAmount = sgRender.add(new IntSetting.Builder()
+            .name("fade-amount")
+            .description("How strong the fade should be.")
+            .defaultValue(8)
+            .range(0,100)
+            .sliderRange(0,100)
+            .visible(()-> (renderMode.get() == RenderMode.Fade))
             .build()
     );
 
@@ -575,7 +595,7 @@ public class MonkeSleeper extends Module {
     );
 
     private final Setting<SettingColor> placeSideColor = sgRender.add(new ColorSetting.Builder()
-            .name("side-color")
+            .name("place-side-color")
             .description("The side color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 45))
             .visible(() -> renderMode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Lines)
@@ -583,10 +603,44 @@ public class MonkeSleeper extends Module {
     );
 
     private final Setting<SettingColor> placeLineColor = sgRender.add(new ColorSetting.Builder()
-            .name("line-color")
+            .name("place-line-color")
             .description("The line color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> renderMode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Sides)
+            .build()
+    );
+
+    private final Setting<Boolean> renderBreak = sgRender.add(new BoolSetting.Builder()
+            .name("break")
+            .description("Renders a block overlay where the block the beds are broken on.")
+            .defaultValue(false)
+            .visible(() -> renderMode.get() != RenderMode.None)
+            .build()
+    );
+
+    private final Setting<Integer> breakRenderTime = sgRender.add(new IntSetting.Builder()
+            .name("break-time")
+            .description("How long to render breaking for.")
+            .defaultValue(13)
+            .min(0)
+            .sliderMax(20)
+            .visible(() -> renderMode.get() == RenderMode.Normal && renderBreak.get())
+            .build()
+    );
+
+    private final Setting<SettingColor> breakSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("break-side-color")
+            .description("The side color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 45))
+            .visible(() -> renderMode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
+            .build()
+    );
+
+    private final Setting<SettingColor> breakLineColor = sgRender.add(new ColorSetting.Builder()
+            .name("break-line-color")
+            .description("The line color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 255))
+            .visible(() -> renderMode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
             .build()
     );
 
@@ -613,40 +667,6 @@ public class MonkeSleeper extends Module {
             .description("What the color of the damage text should be.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> renderMode.get() != RenderMode.None && renderDamage.get())
-            .build()
-    );
-
-    private final Setting<Boolean> renderBreak = sgRender.add(new BoolSetting.Builder()
-            .name("break")
-            .description("Renders a block overlay where the block the beds are broken on.")
-            .defaultValue(false)
-            .visible(() -> renderMode.get() != RenderMode.None)
-            .build()
-    );
-
-    private final Setting<Integer> breakRenderTime = sgRender.add(new IntSetting.Builder()
-            .name("break-time")
-            .description("How long to render breaking for.")
-            .defaultValue(13)
-            .min(0)
-            .sliderMax(20)
-            .visible(() -> renderMode.get() == RenderMode.Normal && renderBreak.get())
-            .build()
-    );
-
-    private final Setting<SettingColor> breakSideColor = sgRender.add(new ColorSetting.Builder()
-            .name("side-color")
-            .description("The side color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 45))
-            .visible(() -> renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
-            .build()
-    );
-
-    private final Setting<SettingColor> breakLineColor = sgRender.add(new ColorSetting.Builder()
-            .name("line-color")
-            .description("The line color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 255))
-            .visible(() -> renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
             .build()
     );
 

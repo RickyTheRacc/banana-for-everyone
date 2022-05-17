@@ -846,7 +846,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<RenderMode> mode = sgRender.add(new EnumSetting.Builder<RenderMode>()
+    private final Setting<RenderMode> renderMode = sgRender.add(new EnumSetting.Builder<RenderMode>()
             .name("render-mode")
             .description("The mode to render in.")
             .defaultValue(RenderMode.Normal)
@@ -857,93 +857,7 @@ public class BananaBomber extends Module {
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
-            .visible(() -> mode.get() != RenderMode.None)
-            .build()
-    );
-
-    private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
-            .name("place-time")
-            .description("How long to render placements for.")
-            .defaultValue(10)
-            .range(0,20)
-            .sliderRange(0,20)
-            .visible(() -> mode.get() == RenderMode.Normal)
-            .build()
-    );
-
-    private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
-            .name("side-color")
-            .description("The side color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 45))
-            .visible(() -> mode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Lines)
-            .build()
-    );
-
-    private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
-            .name("line-color")
-            .description("The line color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 255))
-            .visible(() -> mode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Sides)
-            .build()
-    );
-
-    private final Setting<Boolean> renderDamageText = sgRender.add(new BoolSetting.Builder()
-            .name("damage")
-            .description("Renders crystal damage text in the block overlay.")
-            .defaultValue(true)
-            .visible(() -> mode.get() != RenderMode.None)
-            .build()
-    );
-
-    private final Setting<Double> damageTextScale = sgRender.add(new DoubleSetting.Builder()
-            .name("damage-scale")
-            .description("How big the damage text should be.")
-            .defaultValue(1.25)
-            .min(1)
-            .sliderMax(4)
-            .visible(() -> mode.get() != RenderMode.None && renderDamageText.get())
-            .build()
-    );
-
-    private final Setting<SettingColor> damageTextColor = sgRender.add(new ColorSetting.Builder()
-            .name("damage-color")
-            .description("What the color of the damage text should be.")
-            .defaultValue(new SettingColor(255, 255, 255, 255))
-            .visible(() -> mode.get() != RenderMode.None && renderDamageText.get())
-            .build()
-    );
-
-    private final Setting<Boolean> renderBreak = sgRender.add(new BoolSetting.Builder()
-            .name("break")
-            .description("Renders a block overlay over the block the crystals are broken on.")
-            .defaultValue(false)
-            .visible(() -> mode.get() != RenderMode.None)
-            .build()
-    );
-
-    private final Setting<SettingColor> sideColorB = sgRender.add(new ColorSetting.Builder()
-            .name("side-color")
-            .description("The side color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 45))
-            .visible(() -> mode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
-            .build()
-    );
-
-    private final Setting<SettingColor> lineColorB = sgRender.add(new ColorSetting.Builder()
-            .name("line-color")
-            .description("The line color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 255))
-            .visible(() -> mode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
-            .build()
-    );
-
-    private final Setting<Integer> renderBreakTime = sgRender.add(new IntSetting.Builder()
-            .name("break-time")
-            .description("How long to render breaking for.")
-            .defaultValue(7)
-            .range(0,20)
-            .sliderRange(0,20)
-            .visible(()-> mode.get() != RenderMode.None && renderBreak.get() && mode.get() == RenderMode.Normal)
+            .visible(() -> renderMode.get() != RenderMode.None)
             .build()
     );
 
@@ -953,7 +867,7 @@ public class BananaBomber extends Module {
             .defaultValue(8)
             .range(0,20)
             .sliderRange(0,20)
-            .visible(()-> (mode.get() == RenderMode.Fade))
+            .visible(()-> (renderMode.get() == RenderMode.Fade))
             .build()
     );
 
@@ -963,7 +877,93 @@ public class BananaBomber extends Module {
             .defaultValue(8)
             .range(0,100)
             .sliderRange(0,100)
-            .visible(()-> (mode.get() == RenderMode.Fade))
+            .visible(()-> (renderMode.get() == RenderMode.Fade))
+            .build()
+    );
+
+    private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
+            .name("place-time")
+            .description("How long to render placements for.")
+            .defaultValue(10)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(() -> renderMode.get() == RenderMode.Normal)
+            .build()
+    );
+
+    private final Setting<SettingColor> placeSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("place-side-color")
+            .description("The side color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 45))
+            .visible(() -> renderMode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Lines)
+            .build()
+    );
+
+    private final Setting<SettingColor> placeLineColor = sgRender.add(new ColorSetting.Builder()
+            .name("place-line-color")
+            .description("The line color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 255))
+            .visible(() -> renderMode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Sides)
+            .build()
+    );
+
+    private final Setting<Boolean> renderBreak = sgRender.add(new BoolSetting.Builder()
+            .name("break")
+            .description("Renders a block overlay over the block the crystals are broken on.")
+            .defaultValue(false)
+            .visible(() -> renderMode.get() != RenderMode.None)
+            .build()
+    );
+
+    private final Setting<Integer> renderBreakTime = sgRender.add(new IntSetting.Builder()
+            .name("break-time")
+            .description("How long to render breaking for.")
+            .defaultValue(7)
+            .range(0,20)
+            .sliderRange(0,20)
+            .visible(()-> renderMode.get() != RenderMode.None && renderBreak.get() && renderMode.get() == RenderMode.Normal)
+            .build()
+    );
+
+    private final Setting<SettingColor> breakSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("side-color")
+            .description("The side color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 45))
+            .visible(() -> renderMode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
+            .build()
+    );
+
+    private final Setting<SettingColor> breakLineColor = sgRender.add(new ColorSetting.Builder()
+            .name("line-color")
+            .description("The line color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 255))
+            .visible(() -> renderMode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
+            .build()
+    );
+
+    private final Setting<Boolean> renderDamage = sgRender.add(new BoolSetting.Builder()
+            .name("damage")
+            .description("Renders crystal damage text in the block overlay.")
+            .defaultValue(true)
+            .visible(() -> renderMode.get() != RenderMode.None)
+            .build()
+    );
+
+    private final Setting<Double> damageScale = sgRender.add(new DoubleSetting.Builder()
+            .name("damage-scale")
+            .description("How big the damage text should be.")
+            .defaultValue(1.25)
+            .min(1)
+            .sliderMax(4)
+            .visible(() -> renderMode.get() != RenderMode.None && renderDamage.get())
+            .build()
+    );
+
+    private final Setting<SettingColor> damageColor = sgRender.add(new ColorSetting.Builder()
+            .name("damage-color")
+            .description("What the color of the damage text should be.")
+            .defaultValue(new SettingColor(255, 255, 255, 255))
+            .visible(() -> renderMode.get() != RenderMode.None && renderDamage.get())
             .build()
     );
 
@@ -1023,7 +1023,7 @@ public class BananaBomber extends Module {
     private final Pool<RenderBlock> renderBreakBlockPool = new Pool<>(RenderBlock::new);
     private final List<RenderBlock> renderBreakBlocks = new ArrayList<>();
 
-    private double renderDamage;
+    private double damage;
 
 
     @Override
@@ -1521,7 +1521,7 @@ public class BananaBomber extends Module {
 
             renderTimer = renderTime.get();
             renderPos.set(result.getBlockPos());
-            renderDamage = damage;
+            this.damage = damage;
         }
         else {
             // Place support block
@@ -1692,35 +1692,35 @@ public class BananaBomber extends Module {
     // Render
     @EventHandler
     private void onRender(Render3DEvent event) {
-        if (mode.get() == RenderMode.Fade) {
+        if (renderMode.get() == RenderMode.Fade) {
             renderBlocks.sort(Comparator.comparingInt(o -> -o.ticks));
-            renderBlocks.forEach(renderBlock -> renderBlock.render(event, sideColor.get(), lineColor.get(), shapeMode.get()));
+            renderBlocks.forEach(renderBlock -> renderBlock.render(event, placeSideColor.get(), placeLineColor.get(), shapeMode.get()));
 
             if (renderBreak.get()) {
                 renderBreakBlocks.sort(Comparator.comparingInt(o -> -o.ticks));
-                renderBreakBlocks.forEach(renderBlock -> renderBlock.render(event, sideColorB.get(), lineColorB.get(), shapeMode.get()));
+                renderBreakBlocks.forEach(renderBlock -> renderBlock.render(event, breakSideColor.get(), breakLineColor.get(), shapeMode.get()));
             }
-        } else if (mode.get() == RenderMode.Normal) {
+        } else if (renderMode.get() == RenderMode.Normal) {
             if (renderTimer > 0) {
-                event.renderer.box(renderPos, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+                event.renderer.box(renderPos, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
             }
 
             if (breakRenderTimer > 0 && renderBreak.get() && !mc.world.getBlockState(breakRenderPos).isAir()) {
                 int preSideA = 0;
                 int preLineA = 0;
-                if (mode.get() == RenderMode.Fade) {
-                    preSideA = sideColor.get().a;
-                    sideColor.get().a -= 20;
-                    sideColor.get().validate();
+                if (renderMode.get() == RenderMode.Fade) {
+                    preSideA = placeSideColor.get().a;
+                    placeSideColor.get().a -= 20;
+                    placeSideColor.get().validate();
 
-                    preLineA = lineColorB.get().a;
-                    lineColorB.get().a -= 20;
-                    lineColorB.get().validate();
+                    preLineA = breakLineColor.get().a;
+                    breakLineColor.get().a -= 20;
+                    breakLineColor.get().validate();
                 }
-                event.renderer.box(breakRenderPos, sideColorB.get(), lineColorB.get(), shapeMode.get(), 0);
+                event.renderer.box(breakRenderPos, breakSideColor.get(), breakLineColor.get(), shapeMode.get(), 0);
 
-                sideColorB.get().a = preSideA;
-                lineColorB.get().a = preLineA;
+                breakSideColor.get().a = preSideA;
+                breakLineColor.get().a = preLineA;
             }
         }
 
@@ -1757,17 +1757,17 @@ public class BananaBomber extends Module {
 
     @EventHandler
     private void onRender2D(Render2DEvent event) {
-        if (mode.get() == RenderMode.None|| renderTimer <= 0 || !renderDamageText.get()) return;
+        if (renderMode.get() == RenderMode.None|| renderTimer <= 0 || !renderDamage.get()) return;
 
         vec3.set(renderPos.getX() + 0.5, renderPos.getY() + 0.5, renderPos.getZ() + 0.5);
 
-        if (NametagUtils.to2D(vec3, damageTextScale.get())) {
+        if (NametagUtils.to2D(vec3, damageScale.get())) {
             NametagUtils.begin(vec3);
             TextRenderer.get().begin(1, false, true);
 
-            String text = String.format("%.1f", renderDamage);
+            String text = String.format("%.1f", damage);
             double w = TextRenderer.get().getWidth(text) * 0.5;
-            TextRenderer.get().render(text, -w, 0, damageTextColor.get(), true);
+            TextRenderer.get().render(text, -w, 0, damageColor.get(), true);
 
             TextRenderer.get().end();
             NametagUtils.end();
