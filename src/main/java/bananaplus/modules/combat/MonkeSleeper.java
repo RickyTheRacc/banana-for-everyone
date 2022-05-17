@@ -14,6 +14,8 @@ import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.combat.CrystalAura;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
 import meteordevelopment.meteorclient.utils.misc.Vec3;
@@ -532,6 +534,13 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
+    private final Setting<Boolean> caPause = sgPause.add(new BoolSetting.Builder()
+            .name("pause-on-CA")
+            .description("Pauses BA when crystal aura is active..")
+            .defaultValue(true)
+            .build()
+    );
+
 
     // Render
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
@@ -708,6 +717,13 @@ public class MonkeSleeper extends Module {
     public TimerUtils selfPoppedTimer = new TimerUtils();
     public TimerUtils targetPoppedTimer = new TimerUtils();
 
+    public CrystalAura getMeteorCA() {
+        return Modules.get().get(CrystalAura.class);
+    }
+    public BananaBomber getBananaCA() {
+        return Modules.get().get(BananaBomber.class);
+    }
+
     private int renderTimer, breakRenderTimer;
     private final BlockPos.Mutable renderPos = new BlockPos.Mutable();
     private final BlockPos.Mutable breakRenderPos = new BlockPos.Mutable();
@@ -772,11 +788,14 @@ public class MonkeSleeper extends Module {
         if (breakRenderTimer > 0) breakRenderTimer--;
 
         // Check pause settings
-        if (PlayerUtils.shouldPause(minePause.get(), eatPause.get(), drinkPause.get()) || PlayerUtils.getTotalHealth() <= pauseAtHealth.get() || craftPause.get() && mc.player.currentScreenHandler instanceof CraftingScreenHandler) {
+        Module meteorCA = getMeteorCA();
+        Module bananaCA = getBananaCA();
+        if (caPause.get() && meteorCA.isActive() || bananaCA.isActive()) return;
+
+        if (PlayerUtils.shouldPause(minePause.get(), eatPause.get(), drinkPause.get()) || PlayerUtils.getTotalHealth() <= pauseAtHealth.get() || caPause.get() && mc.player.currentScreenHandler instanceof CraftingScreenHandler) {
             if (debug.get()) warning("Pausing");
             return;
         }
-
 
         // Set player eye pos
         ((IVec3d) playerEyePos).set(mc.player.getPos().x, mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose()), mc.player.getPos().z);
