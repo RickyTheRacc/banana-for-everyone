@@ -56,7 +56,7 @@ public class ReverseStepTimer extends Module {
 
 
     public ReverseStepTimer() {
-        super(BananaPlus.COMBAT, "reverse-step-timer", "Tries to bypass strict anticheats for reverse step.");
+        super(BananaPlus.COMBAT, "reverse-step+", "Tries to bypass strict anticheats for reverse step.");
     }
 
 

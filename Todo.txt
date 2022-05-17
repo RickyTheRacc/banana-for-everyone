@@ -22,7 +22,4 @@ Ricky's List
 - Combine middle click friend and extra
 - Combine anti ghost and invis block
 - Make options for the discord presence to look like other clients trolla
-- Add working toggle on death to block placing modules
-- Make other module toggles actually work
 - Complete monke sleeper detailed rendering
-- Finish correcting grammar issues  (left off on instamine bypass)

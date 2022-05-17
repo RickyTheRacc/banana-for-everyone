@@ -564,22 +564,22 @@ public class SurroundPlus extends Module {
     public void onDeactivate() {
         if (toggleBack.get()) {
             Module step = getStep();
-            if (step.isActive() && stepWasActive) {
+            if (!step.isActive() && stepWasActive) {
                 step.toggle();
                 stepWasActive = false;
             }
             Module stepPlus = getStepPlus();
-            if (stepPlus.isActive() && stepPlusWasActive) {
+            if (!stepPlus.isActive() && stepPlusWasActive) {
                 stepPlus.toggle();
                 stepPlusWasActive = false;
             }
             Module speed = getSpeed();
-            if (speed.isActive() && speedWasActive) {
+            if (!speed.isActive() && speedWasActive) {
                 speed.toggle();
                 speedWasActive = false;
             }
             Module strafe = getStrafe();
-            if (strafe.isActive() && strafeWasActive) {
+            if (!strafe.isActive() && strafeWasActive) {
                 strafe.toggle();
                 strafeWasActive = false;
             }

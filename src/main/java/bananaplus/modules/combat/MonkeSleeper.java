@@ -49,7 +49,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -535,7 +534,7 @@ public class MonkeSleeper extends Module {
 
 
     // Render
-    private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
+    private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Whether to swing your hand while placing. (Needs to be implemented)")
             .defaultValue(true)
@@ -553,7 +552,7 @@ public class MonkeSleeper extends Module {
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
-            .visible(render::get)
+            .visible(() -> renderMode.get() != RenderMode.None)
             .build()
     );
 
@@ -561,59 +560,59 @@ public class MonkeSleeper extends Module {
             .name("detailed-render")
             .description("Whether or not to render the shape of an actual bed.")
             .defaultValue(false)
-            .visible(render::get)
+            .visible(() -> renderMode.get() != RenderMode.None)
             .build()
     );
 
-    private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
-            .name("side-color")
-            .description("The side color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 45))
-            .visible(() -> render.get() && shapeMode.get() != ShapeMode.Lines)
-            .build()
-    );
-
-    private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
-            .name("line-color")
-            .description("The line color of the block overlay.")
-            .defaultValue(new SettingColor(255, 255, 255, 255))
-            .visible(() -> render.get() && shapeMode.get() != ShapeMode.Sides)
-            .build()
-    );
-
-    private final Setting<Boolean> renderDamageText = sgRender.add(new BoolSetting.Builder()
-            .name("damage")
-            .description("Renders bed damage text in the block overlay.")
-            .defaultValue(true)
-            .visible(render::get)
-            .build()
-    );
-
-    private final Setting<Double> damageTextScale = sgRender.add(new DoubleSetting.Builder()
-            .name("damage-scale")
-            .description("How big the damage text should be.")
-            .defaultValue(1.25)
-            .min(1)
-            .sliderMax(4)
-            .visible(() -> render.get() && renderDamageText.get())
-            .build()
-    );
-
-    private final Setting<SettingColor> damageTextColor = sgRender.add(new ColorSetting.Builder()
-            .name("damage-color")
-            .description("What the color of the damage text should be.")
-            .defaultValue(new SettingColor(255, 255, 255, 255))
-            .visible(() -> render.get() && renderDamageText.get())
-            .build()
-    );
-
-    private final Setting<Integer> renderTime = sgRender.add(new IntSetting.Builder()
+    private final Setting<Integer> placeRenderTime = sgRender.add(new IntSetting.Builder()
             .name("place-time")
             .description("How long to render for.")
             .defaultValue(10)
             .min(0)
             .sliderMax(20)
-            .visible(render::get)
+            .visible(() -> renderMode.get() == RenderMode.Normal)
+            .build()
+    );
+
+    private final Setting<SettingColor> placeSideColor = sgRender.add(new ColorSetting.Builder()
+            .name("side-color")
+            .description("The side color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 45))
+            .visible(() -> renderMode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Lines)
+            .build()
+    );
+
+    private final Setting<SettingColor> placeLineColor = sgRender.add(new ColorSetting.Builder()
+            .name("line-color")
+            .description("The line color of the block overlay.")
+            .defaultValue(new SettingColor(255, 255, 255, 255))
+            .visible(() -> renderMode.get() != RenderMode.None && shapeMode.get() != ShapeMode.Sides)
+            .build()
+    );
+
+    private final Setting<Boolean> renderDamage = sgRender.add(new BoolSetting.Builder()
+            .name("damage")
+            .description("Renders bed damage text in the block overlay.")
+            .defaultValue(true)
+            .visible(() -> renderMode.get() != RenderMode.None)
+            .build()
+    );
+
+    private final Setting<Double> damageScale = sgRender.add(new DoubleSetting.Builder()
+            .name("damage-scale")
+            .description("How big the damage text should be.")
+            .defaultValue(1.25)
+            .min(1)
+            .sliderMax(4)
+            .visible(() -> renderMode.get() != RenderMode.None && renderDamage.get())
+            .build()
+    );
+
+    private final Setting<SettingColor> damageColor = sgRender.add(new ColorSetting.Builder()
+            .name("damage-color")
+            .description("What the color of the damage text should be.")
+            .defaultValue(new SettingColor(255, 255, 255, 255))
+            .visible(() -> renderMode.get() != RenderMode.None && renderDamage.get())
             .build()
     );
 
@@ -621,10 +620,21 @@ public class MonkeSleeper extends Module {
             .name("break")
             .description("Renders a block overlay where the block the beds are broken on.")
             .defaultValue(false)
+            .visible(() -> renderMode.get() != RenderMode.None)
             .build()
     );
 
-    private final Setting<SettingColor> sideColorB = sgRender.add(new ColorSetting.Builder()
+    private final Setting<Integer> breakRenderTime = sgRender.add(new IntSetting.Builder()
+            .name("break-time")
+            .description("How long to render breaking for.")
+            .defaultValue(13)
+            .min(0)
+            .sliderMax(20)
+            .visible(() -> renderMode.get() == RenderMode.Normal && renderBreak.get())
+            .build()
+    );
+
+    private final Setting<SettingColor> breakSideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The side color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 45))
@@ -632,21 +642,11 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
-    private final Setting<SettingColor> lineColorB = sgRender.add(new ColorSetting.Builder()
+    private final Setting<SettingColor> breakLineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The line color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
-            .build()
-    );
-
-    private final Setting<Integer> renderBreakTime = sgRender.add(new IntSetting.Builder()
-            .name("break-time")
-            .description("How long to render breaking for.")
-            .defaultValue(13)
-            .min(0)
-            .sliderMax(20)
-            .visible(renderBreak::get)
             .build()
     );
 
@@ -693,7 +693,7 @@ public class MonkeSleeper extends Module {
     private final BlockPos.Mutable breakRenderPos = new BlockPos.Mutable();
 
     private int xOffset, zOffset;
-    private double renderDamage;
+    private double damage;
 
 
     @Override
@@ -825,7 +825,7 @@ public class MonkeSleeper extends Module {
 
                 // Break render
                 breakRenderPos.set(bedPos);
-                breakRenderTimer = renderBreakTime.get();
+                breakRenderTimer = breakRenderTime.get();
             }
         }
     }
@@ -1061,9 +1061,9 @@ public class MonkeSleeper extends Module {
 
         if (debug.get()) warning("Placing");
 
-        renderTimer = renderTime.get();
+        renderTimer = placeRenderTime.get();
         renderPos.set(result.getBlockPos());
-        renderDamage = damage;
+        this.damage = damage;
 
         // Switch back
         if (autoSwitch.get()) InvUtils.swap(prevSlot, false);
@@ -1218,10 +1218,10 @@ public class MonkeSleeper extends Module {
 
             if (!detailedRender.get()) {
                 switch (direction) {
-                    case North -> event.renderer.box(x, y, z - 1, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    case South -> event.renderer.box(x, y, z, x + 1, y + 0.5625, z + 2, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    case East -> event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-                    case West -> event.renderer.box(x - 1, y, z, x + 1, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+                    case North -> event.renderer.box(x, y, z - 1, x + 1, y + 0.5625, z + 1, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
+                    case South -> event.renderer.box(x, y, z, x + 1, y + 0.5625, z + 2, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
+                    case East -> event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
+                    case West -> event.renderer.box(x - 1, y, z, x + 1, y + 0.5625, z + 1, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
                 }
             }
 
@@ -1229,32 +1229,32 @@ public class MonkeSleeper extends Module {
                 switch (direction) {
                     case North, South -> {
                         // Body
-                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, x + 0.8125, y + 0.5625, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), -7);
+                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, x + 0.8125, y + 0.5625, z + 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), -7);
 
                         // Left and Right
-                        event.renderer.box(x, y + 0.1875, z + 0.8125 + zOffset, x + 0.1875, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), -39);
-                        event.renderer.box(x + 0.8125, y + 0.1875, z + 0.8125 + zOffset, x + 1, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 56);
+                        event.renderer.box(x, y + 0.1875, z + 0.8125 + zOffset, x + 0.1875, y + 0.5625, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), -39);
+                        event.renderer.box(x + 0.8125, y + 0.1875, z + 0.8125 + zOffset, x + 1, y + 0.5625, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 56);
 
                         // Front and Back
-                        event.renderer.box(x + 0.1875, y + 0.1875, z + 0.8125 + zOffset, x + 0.8125, y + 0.5625, z + 1 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 104);
-                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, x + 0.8125, y + 0.5625, z - 1 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 104);
+                        event.renderer.box(x + 0.1875, y + 0.1875, z + 0.8125 + zOffset, x + 0.8125, y + 0.5625, z + 1 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 104);
+                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, x + 0.8125, y + 0.5625, z - 1 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 104);
 
                         // Legs
-                        event.renderer.box(x, y, z + 1 + zOffset, x + 0.1875, y + 0.1875, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
-                        event.renderer.box(x, y, z - 1 + zOffset, x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
-                        event.renderer.box(x + 0.8125, y, z + 1 + zOffset, x + 1, y + 0.1875, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
-                        event.renderer.box(x + 1, y, z - 1 + zOffset, x + 0.8125, y + 0.1875, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x, y, z + 1 + zOffset, x + 0.1875, y + 0.1875, z + 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x, y, z - 1 + zOffset, x + 0.1875, y + 0.1875, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x + 0.8125, y, z + 1 + zOffset, x + 1, y + 0.1875, z + 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x + 1, y, z - 1 + zOffset, x + 0.8125, y + 0.1875, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
 
                         // Corners
-                        event.renderer.box(x, y + 0.1875, z + 1 + zOffset, x + 0.1875, y + 0.5625, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), -44);
-                        event.renderer.box(x, y + 0.1875, z - 1 + zOffset, x + 0.1875, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
-                        event.renderer.box(x + 0.8125, y + 0.1875, z + 1 + zOffset, x + 1, y + 0.5625, z + 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 52);
-                        event.renderer.box(x + 1, y + 0.1875, z - 1 + zOffset, x + 0.8125, y + 0.5625, z - 0.8125 + zOffset, sideColor.get(), lineColor.get(), shapeMode.get(), 84);
+                        event.renderer.box(x, y + 0.1875, z + 1 + zOffset, x + 0.1875, y + 0.5625, z + 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), -44);
+                        event.renderer.box(x, y + 0.1875, z - 1 + zOffset, x + 0.1875, y + 0.5625, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 84);
+                        event.renderer.box(x + 0.8125, y + 0.1875, z + 1 + zOffset, x + 1, y + 0.5625, z + 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 52);
+                        event.renderer.box(x + 1, y + 0.1875, z - 1 + zOffset, x + 0.8125, y + 0.5625, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 84);
 
                     }
 
                     case East, West -> {
-                        event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+                        event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
                     }
                 }
             }
@@ -1264,7 +1264,7 @@ public class MonkeSleeper extends Module {
 
     @EventHandler
     private void onRender2D(Render2DEvent event) {
-        if (!render.get() || renderTimer <= 0 || !renderDamageText.get()) return;
+        if (!renderSwing.get() || renderTimer <= 0 || !renderDamage.get()) return;
 
         switch (direction) {
             case North -> vec3.set(renderPos.getX() + 0.5, renderPos.getY() + (detailedRender.get() ? 0.435 : 0.28125), renderPos.getZ());
@@ -1273,13 +1273,13 @@ public class MonkeSleeper extends Module {
             case West -> vec3.set(renderPos.getX(), renderPos.getY() + (detailedRender.get() ? 0.435 : 0.28125), renderPos.getZ() + 0.5);
         }
 
-        if (NametagUtils.to2D(vec3, damageTextScale.get())) {
+        if (NametagUtils.to2D(vec3, damageScale.get())) {
             NametagUtils.begin(vec3);
             TextRenderer.get().begin(1, false, true);
 
-            String text = String.format("%.1f", renderDamage);
+            String text = String.format("%.1f", damage);
             double w = TextRenderer.get().getWidth(text) * 0.5;
-            TextRenderer.get().render(text, -w, 0, damageTextColor.get(), true);
+            TextRenderer.get().render(text, -w, 0, damageColor.get(), true);
 
             TextRenderer.get().end();
             NametagUtils.end();
