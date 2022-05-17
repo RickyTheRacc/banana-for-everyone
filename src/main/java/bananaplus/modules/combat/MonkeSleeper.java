@@ -556,6 +556,14 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
+    private final Setting<Boolean> detailedRender = sgRender.add(new BoolSetting.Builder()
+            .name("detailed-render")
+            .description("Whether or not to render the shape of an actual bed.")
+            .defaultValue(false)
+            .visible(() -> renderMode.get() != RenderMode.None)
+            .build()
+    );
+
     private final Setting<Integer> fadeTime = sgRender.add(new IntSetting.Builder()
             .name("fade-time")
             .description("Tick duration for rendering placing.")
@@ -573,14 +581,6 @@ public class MonkeSleeper extends Module {
             .range(0,100)
             .sliderRange(0,100)
             .visible(()-> (renderMode.get() == RenderMode.Fade))
-            .build()
-    );
-
-    private final Setting<Boolean> detailedRender = sgRender.add(new BoolSetting.Builder()
-            .name("detailed-render")
-            .description("Whether or not to render the shape of an actual bed.")
-            .defaultValue(false)
-            .visible(() -> renderMode.get() != RenderMode.None)
             .build()
     );
 

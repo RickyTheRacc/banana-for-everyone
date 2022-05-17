@@ -926,7 +926,7 @@ public class BananaBomber extends Module {
     );
 
     private final Setting<SettingColor> breakSideColor = sgRender.add(new ColorSetting.Builder()
-            .name("side-color")
+            .name("break-side-color")
             .description("The side color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 45))
             .visible(() -> renderMode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Lines)
@@ -934,7 +934,7 @@ public class BananaBomber extends Module {
     );
 
     private final Setting<SettingColor> breakLineColor = sgRender.add(new ColorSetting.Builder()
-            .name("line-color")
+            .name("break-line-color")
             .description("The line color of the block overlay.")
             .defaultValue(new SettingColor(255, 255, 255, 255))
             .visible(() -> renderMode.get() != RenderMode.None && renderBreak.get() && shapeMode.get() != ShapeMode.Sides)
