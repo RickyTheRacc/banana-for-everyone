@@ -1,8 +1,9 @@
+
+<h1 align="center">Banana+</h1>
+
 <p align="center">
 <img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/bananaplus/logo.png" alt="meteor-client-logo" width="35%"/>
 </p>
-
-<h1 align="center">Banana+</h1>
 
 <p align="center">Based PVP addon for Meteor Client.</p>
 <p align="center"><i>By Bennooo, Necro, and RickyTheRacc</i></p>
