@@ -10,7 +10,6 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 
 public class Twerk extends Module {
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Double> twerkDelay = sgGeneral.add(new DoubleSetting.Builder()
@@ -20,15 +19,18 @@ public class Twerk extends Module {
             .min(2)
             .sliderRange(2,100)
             .build()
-);
+    );
 
-    private boolean upp = false;
+
 
     public Twerk() {
         super(BananaPlus.MISC, "twerk", "Twerk like the true queen Miley Cyrus");
     }
 
-    private TimerUtils onTwerk = new TimerUtils();
+
+    private boolean upp = false;
+    private final TimerUtils onTwerk = new TimerUtils();
+
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {

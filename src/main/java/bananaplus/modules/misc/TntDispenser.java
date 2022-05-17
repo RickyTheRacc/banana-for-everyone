@@ -35,6 +35,7 @@ public class TntDispenser extends Module {
         Any
     }
 
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgTrap = settings.createGroup("Trap");
     private final SettingGroup sgDispensing = settings.createGroup("Dispensing");
@@ -43,8 +44,8 @@ public class TntDispenser extends Module {
     private final SettingGroup sgTrapRender = settings.createGroup("Trap Render");
     private final SettingGroup sgDispensingRender = settings.createGroup("Dispensing Render");
 
-    // General
 
+    // General
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("The range players can be targeted.")
@@ -63,8 +64,8 @@ public class TntDispenser extends Module {
             .build()
     );
 
-    // Trap
 
+    // Trap
     private final Setting<Integer> delay = sgTrap.add(new IntSetting.Builder()
             .name("place-delay")
             .description("How many ticks between block placements.")
@@ -86,8 +87,8 @@ public class TntDispenser extends Module {
             .build()
     );
 
-    // Dispenser
 
+    // Dispenser
     private final Setting<DispenserMode> dispenserPlace = sgDispensing.add(new EnumSetting.Builder<DispenserMode>()
             .name("dispenser-mode")
             .description("Where can it place dispensers around their head.")
@@ -120,6 +121,7 @@ public class TntDispenser extends Module {
             .build()
     );
 
+
     // Toggle
     private final Setting<Boolean> disableTarget = sgToggle.add(new BoolSetting.Builder()
             .name("disable-on-no-target")
@@ -149,8 +151,8 @@ public class TntDispenser extends Module {
             .build()
     );
 
-    // Pause
 
+    // Pause
     private final Setting<Boolean> onlyHole = sgPause.add(new BoolSetting.Builder()
             .name("only-in-hole")
             .description("Only continues the module if you are in a safe hole")
@@ -208,8 +210,8 @@ public class TntDispenser extends Module {
             .build()
     );
 
-    // Trap Render
 
+    // Trap Render
     private final Setting<Boolean> trapRender = sgTrapRender.add(new BoolSetting.Builder()
             .name("trap-render")
             .description("Renders an overlay where obsidian will be placed.")
@@ -257,8 +259,8 @@ public class TntDispenser extends Module {
             .build()
     );
 
-    // Dispenser Render
 
+    // Dispenser Render
     private final Setting<Boolean> dispenserRender = sgDispensingRender.add(new BoolSetting.Builder()
             .name("dispense-render")
             .description("Renders an overlay where dispensers & lever will be placed.")
@@ -315,14 +317,16 @@ public class TntDispenser extends Module {
     );
 
 
+    public TntDispenser() {
+        super(BananaPlus.COMBAT, "tnt-dispenser", "Traps people in an obsidian and perform mass amount of TNT trolling on them.");
+    }
+
+
     private final List<BlockPos> placePositions = new ArrayList<>();
     private PlayerEntity target;
     private boolean placed;
     private int timer;
 
-    public TntDispenser() {
-        super(BananaPlus.COMBAT, "tnt-dispenser", "Traps people in an obsidian and perform mass amount of TNT trolling on them.");
-    }
 
     @Override
     public void onActivate() {

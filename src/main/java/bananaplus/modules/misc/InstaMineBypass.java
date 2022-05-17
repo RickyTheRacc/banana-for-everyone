@@ -20,25 +20,26 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class InstaMineBypass extends Module {
-
+public class
+InstaMineBypass extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgDelay = settings.createGroup("Delays");
     private final SettingGroup sgRender = settings.createGroup("Render");
+
 
     // General
     private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug")
             .defaultValue(false)
             .build()
-);
+    );
 
     private final Setting<Boolean> pick = sgGeneral.add(new BoolSetting.Builder()
             .name("only-pick")
             .description("Only tries to mine the block if you are holding a pickaxe.")
             .defaultValue(true)
             .build()
-);
+    );
 
     private final Setting<Boolean> ironPick = sgGeneral.add(new BoolSetting.Builder()
             .name("iron-pick")
@@ -46,14 +47,15 @@ public class InstaMineBypass extends Module {
             .defaultValue(false)
             .visible(pick::get)
             .build()
-);
+    );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Faces the blocks being mined server side.")
             .defaultValue(true)
             .build()
-);
+    );
+
 
     // Delays
     private final Setting<Integer> bypassDelay = sgDelay.add(new IntSetting.Builder()
@@ -63,7 +65,7 @@ public class InstaMineBypass extends Module {
             .min(1)
             .sliderMax(100)
             .build()
-);
+    );
 
     private final Setting<Integer> bypassIterations = sgDelay.add(new IntSetting.Builder()
             .name("bypass iterations")
@@ -72,7 +74,7 @@ public class InstaMineBypass extends Module {
             .min(0)
             .sliderMax(20)
             .build()
-);
+    );
 
     private final Setting<Integer> normalDelay = sgDelay.add(new IntSetting.Builder()
             .name("normal delay")
@@ -81,7 +83,7 @@ public class InstaMineBypass extends Module {
             .min(1)
             .sliderMax(100)
             .build()
-);
+    );
 
     private final Setting<Integer> normalIterations = sgDelay.add(new IntSetting.Builder()
             .name("normal iterations")
@@ -90,37 +92,43 @@ public class InstaMineBypass extends Module {
             .min(0)
             .sliderMax(20)
             .build()
-);
+    );
+
 
     // Render
-
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
             .name("render")
             .description("Renders a block overlay on the block being broken.")
             .defaultValue(true)
             .build()
-);
+    );
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
             .defaultValue(ShapeMode.Both)
             .build()
-);
+    );
 
     private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
             .name("side-color")
             .description("The color of the sides of the blocks being rendered.")
             .defaultValue(new SettingColor(204, 0, 0, 10))
             .build()
-);
+    );
 
     private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
             .name("line-color")
             .description("The color of the lines of the blocks being rendered.")
             .defaultValue(new SettingColor(204, 0, 0, 255))
             .build()
-);
+    );
+
+
+    public InstaMineBypass() {
+        super(BananaPlus.MISC, "insta-mine-bypass", "Attempts to bypass instant mine.");
+    }
+
 
     private int ticksPassed;
     private int ticks;
@@ -131,9 +139,6 @@ public class InstaMineBypass extends Module {
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable(0, -1, 0);
     private Direction direction;
 
-    public InstaMineBypass() {
-        super(BananaPlus.MISC, "insta-mine-bypass", "Attempts to bypass instant mine.");
-    }
 
     @Override
     public void onActivate() {

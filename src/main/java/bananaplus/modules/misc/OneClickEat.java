@@ -30,33 +30,36 @@ import net.minecraft.util.math.BlockPos;
 import java.util.List;
 
 public class OneClickEat extends Module {
-
-    public OneClickEat() {
-        super(BananaPlus.MISC, "one-click-eat", "Allows you to eat a consumable with one click");
-    }
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<List<Item>> foodList = sgGeneral.add(new ItemListSetting.Builder()
             .name("white-list")
             .description("Which items you can one click eat.")
             .filter(Item::isFood)
             .build()
-);
+    );
 
     private final Setting<Boolean> usePotions = sgGeneral.add(new BoolSetting.Builder()
             .name("use-potions")
             .description("Allows you to also use potions.")
             .defaultValue(false)
             .build()
-);
+    );
 
     private final Setting<Boolean> onlyGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Only allows you to one click eat on ground.")
             .defaultValue(false)
             .build()
-);
+    );
+
+
+    public OneClickEat() {
+        super(BananaPlus.MISC, "one-click-eat", "Allows you to eat a consumable with one click");
+    }
+
 
     private boolean isUsing;
     private boolean pressed;

@@ -13,19 +13,24 @@ import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 public class TimeAnimator extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Integer> speed = sgGeneral.add(new IntSetting.Builder()
             .name("speed")
             .description("How fast the day and night cycle should be.")
             .defaultValue(100)
             .sliderRange(1, 500)
             .build()
-);
+    );
+
 
     public TimeAnimator() {
         super(BananaPlus.MISC, "time-animator", "Speeds up the day and night cycle.");
     }
 
+
     private long timer;
+
 
     @Override
     public void onActivate() {
