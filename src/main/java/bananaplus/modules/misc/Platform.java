@@ -1,6 +1,7 @@
 package bananaplus.modules.misc;
 
 import bananaplus.modules.BananaPlus;
+import bananaplus.modules.combat.StepPlus;
 import bananaplus.modules.combat.StrafePlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
@@ -24,9 +25,11 @@ import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ChorusFruitItem;
 import net.minecraft.item.EnderPearlItem;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
+import net.minecraft.network.packet.s2c.play.DeathMessageS2CPacket;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
@@ -206,10 +209,24 @@ public class Platform extends Module {
             .build()
     );
 
+    private final Setting<Boolean> onDeath = sgToggle.add(new BoolSetting.Builder()
+            .name("disable-on-death")
+            .description("Automatically disables after you die.")
+            .defaultValue(true)
+            .build()
+    );
+
 
     // Modules
     private final Setting<Boolean> toggleStep = sgModules.add(new BoolSetting.Builder()
             .name("toggle-step")
+            .description("Toggles off step when activating surround.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleStepPlus = sgModules.add(new BoolSetting.Builder()
+            .name("toggle-step-plus")
             .description("Toggles off step when activating surround.")
             .defaultValue(false)
             .build()
@@ -308,12 +325,23 @@ public class Platform extends Module {
 
     public boolean cancelJump;
 
-    Modules modules = Modules.get();
-    Step step = modules.get(Step.class);
-    Speed speed = modules.get(Speed.class);
-    StrafePlus strafe = modules.get(StrafePlus.class);
+    public Step getStep() {
+        return Modules.get().get(Step.class);
+    }
 
-    private boolean stepWasActive, speedWasActive, strafeWasActive;
+    public StepPlus getStepPlus() {
+        return Modules.get().get(StepPlus.class);
+    }
+
+    public Speed getSpeed() {
+        return Modules.get().get(Speed.class);
+    }
+
+    public StrafePlus getStrafe() {
+        return Modules.get().get(StrafePlus.class);
+    }
+
+    private boolean stepWasActive, stepPlusWasActive, speedWasActive, strafeWasActive;
 
     private final BlockPos.Mutable renderPos = new BlockPos.Mutable();
 
@@ -328,17 +356,25 @@ public class Platform extends Module {
 
         playerPos = BPlusEntityUtils.playerPos(mc.player);
 
-        if (toggleStep.get() && step.isActive()) {
-            stepWasActive = true;
+        Module step = getStep();
+        if (step.isActive() && toggleStep.get()) {
             step.toggle();
+            stepWasActive = true;
         }
-        if (toggleSpeed.get() && speed.isActive()) {
-            speedWasActive = true;
+        Module stepPlus = getStepPlus();
+        if (stepPlus.isActive() && toggleStepPlus.get()) {
+            stepPlus.toggle();
+            stepPlusWasActive = true;
+        }
+        Module speed = getSpeed();
+        if (speed.isActive() && toggleSpeed.get()) {
             speed.toggle();
+            speedWasActive = true;
         }
-        if (toggleStrafe.get() && strafe.isActive()) {
-            strafeWasActive = true;
+        Module strafe = getStrafe();
+        if (strafe.isActive() && toggleStrafe.get()) {
             strafe.toggle();
+            strafeWasActive = true;
         }
 
         for (RenderBlock renderBlock : renderBlocks) renderBlockPool.free(renderBlock);
@@ -348,9 +384,26 @@ public class Platform extends Module {
     @Override
     public void onDeactivate() {
         if (toggleBack.get()) {
-            if (stepWasActive && !step.isActive()) step.toggle();
-            if (speedWasActive && !speed.isActive()) speed.toggle();
-            if (strafeWasActive && !strafe.isActive()) strafe.toggle();
+            Module step = getStep();
+            if (step.isActive() && stepWasActive) {
+                step.toggle();
+                stepWasActive = false;
+            }
+            Module stepPlus = getStepPlus();
+            if (stepPlus.isActive() && stepPlusWasActive) {
+                stepPlus.toggle();
+                stepPlusWasActive = false;
+            }
+            Module speed = getSpeed();
+            if (speed.isActive() && speedWasActive) {
+                speed.toggle();
+                speedWasActive = false;
+            }
+            Module strafe = getStrafe();
+            if (strafe.isActive() && strafeWasActive) {
+                strafe.toggle();
+                strafeWasActive = false;
+            }
         }
 
         for (RenderBlock renderBlock : renderBlocks) renderBlockPool.free(renderBlock);
@@ -476,6 +529,16 @@ public class Platform extends Module {
     }
 
     //Toggle
+    @EventHandler
+    private void onPacketReceive(PacketEvent.Receive event)  {
+        if (event.packet instanceof DeathMessageS2CPacket packet) {
+            Entity entity = mc.world.getEntityById(packet.getEntityId());
+            if (entity == mc.player && onDeath.get()) {
+                toggle();
+            }
+        }
+    }
+    
     @EventHandler
     private void onPacketSend(PacketEvent.Send event) {
         if (event.packet instanceof PlayerInteractItemC2SPacket && (mc.player.getOffHandStack().getItem() instanceof EnderPearlItem || mc.player.getMainHandStack().getItem() instanceof EnderPearlItem) && onPearl.get()) {

@@ -24,11 +24,13 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ChorusFruitItem;
 import net.minecraft.item.EnderPearlItem;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.network.packet.s2c.play.BlockBreakingProgressS2CPacket;
+import net.minecraft.network.packet.s2c.play.DeathMessageS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -249,32 +251,46 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
+    private final Setting<Boolean> onDeath = sgToggle.add(new BoolSetting.Builder()
+            .name("disable-on-death")
+            .description("Automatically disables after you die.")
+            .defaultValue(true)
+            .build()
+    );
+
 
     // Modules
     private final Setting<Boolean> toggleStep = sgModules.add(new BoolSetting.Builder()
             .name("toggle-step")
-            .description("Toggles off step when activating Self Trap+.")
+            .description("Toggles off step when activating surround.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleStepPlus = sgModules.add(new BoolSetting.Builder()
+            .name("toggle-step-plus")
+            .description("Toggles off step when activating surround.")
             .defaultValue(false)
             .build()
     );
 
     private final Setting<Boolean> toggleSpeed = sgModules.add(new BoolSetting.Builder()
             .name("toggle-speed")
-            .description("Toggles off speed when activating Self Trap+.")
+            .description("Toggles off speed when activating surround.")
             .defaultValue(false)
             .build()
     );
 
     private final Setting<Boolean> toggleStrafe = sgModules.add(new BoolSetting.Builder()
             .name("toggle-strafe+")
-            .description("Toggles off strafe+ when activating Self Trap+.")
+            .description("Toggles off strafe+ when activating surround.")
             .defaultValue(false)
             .build()
     );
 
     private final Setting<Boolean> toggleBack = sgModules.add(new BoolSetting.Builder()
             .name("toggle-back")
-            .description("Toggles the modules above back on if it was on previously when turning Self Trap+.")
+            .description("Toggles the modules above back on if it was on previously when turning Surround+.")
             .defaultValue(false)
             .build()
     );
@@ -410,12 +426,23 @@ public class SelfTrapPlus extends Module {
 
     private boolean shouldAntiCev;
 
-    Modules modules = Modules.get();
-    Step step = modules.get(Step.class);
-    Speed speed = modules.get(Speed.class);
-    StrafePlus strafe = modules.get(StrafePlus.class);
+    public Step getStep() {
+        return Modules.get().get(Step.class);
+    }
 
-    private boolean stepWasActive, speedWasActive, strafeWasActive;
+    public StepPlus getStepPlus() {
+        return Modules.get().get(StepPlus.class);
+    }
+
+    public Speed getSpeed() {
+        return Modules.get().get(Speed.class);
+    }
+
+    public StrafePlus getStrafe() {
+        return Modules.get().get(StrafePlus.class);
+    }
+
+    private boolean stepWasActive, stepPlusWasActive, speedWasActive, strafeWasActive;
 
     private final BlockPos.Mutable renderPos = new BlockPos.Mutable();
 
@@ -447,19 +474,25 @@ public class SelfTrapPlus extends Module {
         if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
         else if (centerMode.get() == CenterMode.Center) PlayerUtils.centerPlayer();
 
-        if (toggleStep.get() && step.isActive()) {
-            stepWasActive = true;
+        Module step = getStep();
+        if (step.isActive() && toggleStep.get()) {
             step.toggle();
+            stepWasActive = true;
         }
-
-        if (toggleSpeed.get() && speed.isActive()) {
-            speedWasActive = true;
+        Module stepPlus = getStepPlus();
+        if (stepPlus.isActive() && toggleStepPlus.get()) {
+            stepPlus.toggle();
+            stepPlusWasActive = true;
+        }
+        Module speed = getSpeed();
+        if (speed.isActive() && toggleSpeed.get()) {
             speed.toggle();
+            speedWasActive = true;
         }
-
-        if (toggleStrafe.get() && strafe.isActive()) {
-            strafeWasActive = true;
+        Module strafe = getStrafe();
+        if (strafe.isActive() && toggleStrafe.get()) {
             strafe.toggle();
+            strafeWasActive = true;
         }
 
         for (RenderBlock renderBlock : renderBlocks) renderBlockPool.free(renderBlock);
@@ -469,9 +502,26 @@ public class SelfTrapPlus extends Module {
     @Override
     public void onDeactivate() {
         if (toggleBack.get()) {
-            if (stepWasActive && !step.isActive()) step.toggle();
-            if (speedWasActive && !speed.isActive()) speed.toggle();
-            if (strafeWasActive && !strafe.isActive()) strafe.toggle();
+            Module step = getStep();
+            if (step.isActive() && stepWasActive) {
+                step.toggle();
+                stepWasActive = false;
+            }
+            Module stepPlus = getStepPlus();
+            if (stepPlus.isActive() && stepPlusWasActive) {
+                stepPlus.toggle();
+                stepPlusWasActive = false;
+            }
+            Module speed = getSpeed();
+            if (speed.isActive() && speedWasActive) {
+                speed.toggle();
+                speedWasActive = false;
+            }
+            Module strafe = getStrafe();
+            if (strafe.isActive() && strafeWasActive) {
+                strafe.toggle();
+                strafeWasActive = false;
+            }
         }
 
         shouldAntiCev = false;
@@ -692,6 +742,16 @@ public class SelfTrapPlus extends Module {
     }
 
     //Toggle
+    @EventHandler
+    private void onPacketReceive(PacketEvent.Receive event)  {
+        if (event.packet instanceof DeathMessageS2CPacket packet) {
+            Entity entity = mc.world.getEntityById(packet.getEntityId());
+            if (entity == mc.player && onDeath.get()) {
+                toggle();
+            }
+        }
+    }
+
     @EventHandler
     private void onPacketSend(PacketEvent.Send event) {
         if (event.packet instanceof PlayerInteractItemC2SPacket && (mc.player.getOffHandStack().getItem() instanceof EnderPearlItem || mc.player.getMainHandStack().getItem() instanceof EnderPearlItem) && onPearl.get()) {

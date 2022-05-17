@@ -36,12 +36,12 @@ public class Twerk extends Module {
     private void onTick(TickEvent.Pre event) {
         mc.options.sneakKey.setPressed(upp);
 
-        if (onTwerk.passedMillis(Double.valueOf(twerkDelay.get()).longValue()) && !upp) {
+        if (onTwerk.passedMillis(twerkDelay.get().longValue()) && !upp) {
             onTwerk.reset();
             upp = true;
         }
 
-        if (onTwerk.passedMillis(Double.valueOf(twerkDelay.get()).longValue()) && upp) {
+        if (onTwerk.passedMillis(twerkDelay.get().longValue()) && upp) {
             onTwerk.reset();
             upp = false;
         }
