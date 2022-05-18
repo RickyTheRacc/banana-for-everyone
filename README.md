@@ -4,7 +4,7 @@
 
 <h1 align="center">Banana+</h1>
 
-<p align="center">Based PVP addon for Meteor Client.</p>
+<p align="center">Based addon for Meteor Client.</p>
 <p align="center"><i>By Bennooo, Necro, and RickyTheRacc</i></p>
 
 # How to use:
