@@ -3,7 +3,8 @@
   "package": "bananaplus.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "FreecamMixin"
   ],
   "injectors": {
     "defaultRequire": 1
