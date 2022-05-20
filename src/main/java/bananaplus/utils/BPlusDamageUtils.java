@@ -92,18 +92,17 @@ public class BPlusDamageUtils {
         return crystalDamage(player, crystal, false, explosionRadius, false, false);
     }
 
-    // Bed Damage
 
-    public static float bedDamage(PlayerEntity player, Vec3d bed, boolean predictMovement, double explosionRadius, boolean ignoreTerrain, boolean fullBlocks) {
+    // Bed Damage
+    public static float bedDamage(PlayerEntity player, Vec3d bed, boolean predictMovement, boolean ignoreTerrain, boolean fullBlocks) {
         if (EntityUtils.getGameMode(player) == GameMode.CREATIVE && !(player instanceof FakePlayerEntity)) return 0;
 
         ((IVec3d) vec3d).set(player.getPos().x, player.getPos().y, player.getPos().z);
         if (predictMovement) ((IVec3d) vec3d).set(vec3d.x + player.getVelocity().x, vec3d.y + player.getVelocity().y, vec3d.z + player.getVelocity().z);
 
         float modDistance = (float) Math.sqrt(player.squaredDistanceTo(bed));
-        if (modDistance > explosionRadius) return 0;
 
-        float exposure = getExposure(bed, player, predictMovement, raycastContext, ignoreTerrain, false);
+        float exposure = getExposure(bed, player, predictMovement, raycastContext, ignoreTerrain, fullBlocks);
         float impact = (1 - (modDistance * 0.1f)) * exposure;
         float damage = (impact * impact + impact) * 35 + 1;
 
@@ -121,8 +120,8 @@ public class BPlusDamageUtils {
         return damage < 0 ? 0 : damage;
     }
 
-    public static float bedDamage(PlayerEntity player, Vec3d bed, double explosionRadius) {
-        return bedDamage(player, bed, false, explosionRadius, false, false);
+    public static float bedDamage(PlayerEntity player, Vec3d bed) {
+        return bedDamage(player, bed, false, false, false);
     }
 
     /*
@@ -315,8 +314,8 @@ public class BPlusDamageUtils {
                     BlockPos bp = blockEntity.getPos();
                     Vec3d pos = new Vec3d(bp.getX(), bp.getY(), bp.getZ());
 
-                    if (blockEntity instanceof BedBlockEntity && damageTaken < bedDamage(mc.player, pos, explosionRadius)) {
-                        damageTaken = bedDamage(mc.player, pos, explosionRadius);
+                    if (blockEntity instanceof BedBlockEntity && damageTaken < bedDamage(mc.player, pos)) {
+                        damageTaken = bedDamage(mc.player, pos);
                     }
                 }
             }

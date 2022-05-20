@@ -58,13 +58,11 @@ public class BedUtil {
     }
 
     public static boolean shouldIgnoreSelfPlaceDamage() {
-        return (MSleeper.PDamageIgnore.get() == MonkeSleeper.DamageIgnore.Always
-                || (MSleeper.selfPopInvincibility.get() && MSleeper.selfPopIgnore.get() != MonkeSleeper.SelfPopIgnore.Break && !MSleeper.selfPoppedTimer.passedMillis(MSleeper.selfPopInvincibilityTime.get())));
+        return (MSleeper.selfPopInvincibility.get() && MSleeper.selfPopIgnore.get() != MonkeSleeper.SelfPopIgnore.Break && !MSleeper.selfPoppedTimer.passedMillis(MSleeper.selfPopInvincibilityTime.get()));
     }
 
     public static boolean shouldIgnoreSelfBreakDamage() {
-        return (MSleeper.BDamageIgnore.get() == MonkeSleeper.DamageIgnore.Always
-                || (MSleeper.selfPopInvincibility.get() && MSleeper.selfPopIgnore.get() != MonkeSleeper.SelfPopIgnore.Place && !MSleeper.selfPoppedTimer.passedMillis(MSleeper.selfPopInvincibilityTime.get())));
+        return (MSleeper.selfPopInvincibility.get() && MSleeper.selfPopIgnore.get() != MonkeSleeper.SelfPopIgnore.Place && !MSleeper.selfPoppedTimer.passedMillis(MSleeper.selfPopInvincibilityTime.get()));
     }
 
     /*

@@ -36,11 +36,11 @@ import net.minecraft.block.enums.BedPart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BedItem;
+import net.minecraft.item.PotionItem;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
-import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -94,8 +94,7 @@ public class MonkeSleeper extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgInventory = settings.createGroup("Inventory");
     private final SettingGroup sgPlace = settings.createGroup("Place");
-    private final SettingGroup sgTrapBreak = settings.createGroup("Trap Break");
-    private final SettingGroup sgHold = settings.createGroup("Hold");
+    private final SettingGroup sgHold = settings.createGroup("Self Trap Hold");
     private final SettingGroup sgBreak = settings.createGroup("Break");
     private final SettingGroup sgChainPop = settings.createGroup("Chain Pop");
     private final SettingGroup sgPause = settings.createGroup("Pause");
@@ -184,7 +183,7 @@ public class MonkeSleeper extends Module {
     );
 
     public final Setting<Integer> autoMoveSlot = sgInventory.add(new IntSetting.Builder()
-            .name("auto-move-slot")
+            .name("move-slot")
             .description("The slot to move beds to.")
             .defaultValue(9)
             .range(1, 9)
@@ -202,23 +201,27 @@ public class MonkeSleeper extends Module {
 
 
     // Place
-    private final Setting<Boolean> doPlace = sgPlace.add(new BoolSetting.Builder()
-            .name("place")
-            .description("If the BA should place beds.")
-            .defaultValue(true)
+    public final Setting<Integer> normalDelay = sgPlace.add(new IntSetting.Builder()
+            .name("normal-delay")
+            .description("The delay to use for targets in holes.")
+            .defaultValue(10)
+            .min(0)
+            .sliderRange(0,20)
             .build()
     );
 
+    public final Setting<Integer> movingDelay = sgPlace.add(new IntSetting.Builder()
+            .name("moving-delay")
+            .description("The delay to use for targets outside holes.")
+            .defaultValue(7)
+            .min(0)
+            .sliderRange(0,20)
+            .build()
+    );
+    
     private final Setting<Boolean> packetPlace = sgPlace.add(new BoolSetting.Builder()
             .name("packet-place")
             .description("If the BA should use packets to place beds.")
-            .defaultValue(true)
-            .build()
-    );
-
-    private final Setting<Boolean> placeSwing = sgPlace.add(new BoolSetting.Builder()
-            .name("place-swing")
-            .description("Renders place hand swings.")
             .defaultValue(true)
             .build()
     );
@@ -230,55 +233,28 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
-    private final Setting<Double> selfPlaceExplosionRadius = sgPlace.add(new DoubleSetting.Builder()
-            .name("self-place-explosion-radius")
-            .description("Max bed explosion radius to self to calculate when placing.")
-            .defaultValue(5)
-            .range(1, 10)
-            .sliderRange(1, 10)
-            .build()
-    );
-
-    private final Setting<Double> PminDamage = sgPlace.add(new DoubleSetting.Builder()
-            .name("min-place-damage")
-            .description("Minimum place damage the beds needs to deal to your target.")
+    private final Setting<Double> minDamage = sgPlace.add(new DoubleSetting.Builder()
+            .name("min-damage")
+            .description("Minimum damage the beds needs to deal to your target.")
             .defaultValue(10)
             .min(0)
             .sliderMax(36)
             .build()
     );
 
-    public final Setting<DamageIgnore> PDamageIgnore = sgPlace.add(new EnumSetting.Builder<DamageIgnore>()
-            .name("ignore-self-place-damage")
-            .description("When to ignore self damage when placing beds.")
-            .defaultValue(DamageIgnore.Never)
-            .build()
-    );
-
-    private final Setting<Double> PmaxDamage = sgPlace.add(new DoubleSetting.Builder()
-            .name("max-place-damage")
-            .description("Maximum place damage beds can deal to yourself.")
+    private final Setting<Double> maxDamage = sgPlace.add(new DoubleSetting.Builder()
+            .name("max-damage")
+            .description("Maximum damage beds can deal to yourself.")
             .defaultValue(6)
             .range(0, 36)
             .sliderRange(0, 36)
-            .visible(() -> PDamageIgnore.get() != DamageIgnore.Always)
             .build()
     );
 
-    private final Setting<Boolean> PantiSuicide = sgPlace.add(new BoolSetting.Builder()
+    private final Setting<Boolean> antiSuicide = sgPlace.add(new BoolSetting.Builder()
             .name("anti-suicide-place")
             .description("Will not place beds if they will pop / kill you.")
             .defaultValue(true)
-            .visible(() -> PDamageIgnore.get() != DamageIgnore.Always)
-            .build()
-    );
-
-    public final Setting<Integer> placeDelay = sgPlace.add(new IntSetting.Builder()
-            .name("place-delay")
-            .description("The delay in ticks to wait to place a bed.")
-            .defaultValue(8)
-            .min(0)
-            .sliderRange(0, 20)
             .build()
     );
 
@@ -291,8 +267,8 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
-    private final Setting<Double> placeWallsRange = sgPlace.add(new DoubleSetting.Builder()
-            .name("place-walls-range")
+    private final Setting<Double> wallsRange = sgPlace.add(new DoubleSetting.Builder()
+            .name("walls-range")
             .description("Range in which to place beds when behind blocks.")
             .defaultValue(4.5)
             .min(0)
@@ -300,64 +276,28 @@ public class MonkeSleeper extends Module {
             .build()
     );
 
-    private final Setting<Double> placeVerticalRange = sgPlace.add(new DoubleSetting.Builder()
-            .name("place-vertical-range")
-            .description("Vertical range in which to place beds.")
-            .defaultValue(4)
-            .min(0)
-            .sliderMax(6)
-            .build()
-    );
-
 
     // Trap break
-    public final Setting<Boolean> trapBreak = sgTrapBreak.add(new BoolSetting.Builder()
-            .name("trap-break")
-            .description("Attempts to place beds into target's hitbox when they are fully covered.")
+    public final Setting<Boolean> selfTrapHold = sgHold.add(new BoolSetting.Builder()
+            .name("self-trap-hold")
+            .description("Place beds the same tick they are broken to trap your enemy in their surround.")
             .defaultValue(true)
-            .build()
-    );
-
-    public final Setting<Boolean> antiSelf = sgTrapBreak.add(new BoolSetting.Builder()
-            .name("anti-self")
-            .description("Will not try to trap break if the you and the target are at the same position.")
-            .defaultValue(true)
-            .build()
-    );
-
-    public final Setting<Integer> trapBreakDuration = sgTrapBreak.add(new IntSetting.Builder()
-            .name("duration")
-            .description("Amount of ticks it will allow you to perform this.")
-            .defaultValue(10)
-            .range(5, 35)
-            .sliderRange(5, 35)
-            .build()
-    );
-
-    // Hold
-
-    public final Setting<Boolean> hold = sgHold.add(new BoolSetting.Builder()
-            .name("hold")
-            .description("Break beds slower to hold on to their surround when target is in hole.")
-            .defaultValue(false)
-            .build()
-    );
-
-    public final Setting<CommonEnums.ConTypeInclAlways> holdWhen = sgHold.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
-            .name("hold-when")
-            .description("When to start trap holding.")
-            .defaultValue(CommonEnums.ConTypeInclAlways.AnyTrapped)
-            .visible(hold::get)
             .build()
     );
 
     public final Setting<Integer> holdDelay = sgHold.add(new IntSetting.Builder()
             .name("hold-delay")
-            .description("The delay in ticks to wait to break a bed for holding.")
-            .defaultValue(8)
-            .min(0)
-            .sliderRange(0, 15)
-            .visible(hold::get)
+            .description("Break delay while holding a target's self trap.")
+            .defaultValue(10)
+            .range(1,20)
+            .sliderRange(1,20)
+            .build()
+    );
+
+    public final Setting<Boolean> antiSelfHold = sgHold.add(new BoolSetting.Builder()
+            .name("trap-self")
+            .description("Will not try to self trap hold if you are sharing a hole with your target.")
+            .defaultValue(true)
             .build()
     );
 
@@ -731,6 +671,10 @@ public class MonkeSleeper extends Module {
     private int xOffset, zOffset;
     private double damage;
 
+    private int getLastRotationStopDelay() {
+        return Math.max(10, movingDelay.get() / 2 + breakDelay.get() / 2 + 10);
+    }
+
 
     @Override
     public void onActivate() {
@@ -754,21 +698,47 @@ public class MonkeSleeper extends Module {
     @Override
     public void onDeactivate() {
         targets.clear();
-
         bestTarget = null;
-    }
-
-    private int getLastRotationStopDelay() {
-        return Math.max(10, placeDelay.get() / 2 + breakDelay.get() / 2 + 10);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     private void onPreTick(TickEvent.Pre event) {
+        // Don't turn on in the overworld
         if (mc.world.getDimension().isBedWorking()) {
-            error("Bed no boom boom in this dimension... disabling.");
+            error("Beds won't work in this dimension, disabling.");
             toggle();
             return;
         }
+
+
+        // Check pause settings
+        if (eatPause.get() && (mc.player.isUsingItem() && (mc.player.getMainHandStack().getItem().isFood() || mc.player.getOffHandStack().getItem().isFood()))) {
+            if (debug.get()) warning("Pausing on eat.");
+            return;
+        }
+
+        if (drinkPause.get() && mc.player.isUsingItem() && (mc.player.getMainHandStack().getItem() instanceof PotionItem || mc.player.getOffHandStack().getItem() instanceof PotionItem)) {
+            if (debug.get()) warning("Pausing on drink.");
+            return;
+        }
+
+        if (minePause.get() && mc.interactionManager.isBreakingBlock()) {
+            if (debug.get()) warning("Pausing on mine.");
+            return;
+        }
+
+        Module meteorCA = getMeteorCA();
+        Module bananaCA = getBananaCA();
+        if (caPause.get() && meteorCA.isActive() || bananaCA.isActive()) {
+            if (debug.get()) warning("Pausing on CA.");
+            return;
+        }
+
+        if (PlayerUtils.getTotalHealth() <= pauseAtHealth.get()) {
+            if (debug.get()) warning("Pausing on low HP.");
+            return;
+        }
+
 
         // Update last rotation
         didRotateThisTick = false;
@@ -786,16 +756,6 @@ public class MonkeSleeper extends Module {
         // Decrement render timers
         if (renderTimer > 0) renderTimer--;
         if (breakRenderTimer > 0) breakRenderTimer--;
-
-        // Check pause settings
-        Module meteorCA = getMeteorCA();
-        Module bananaCA = getBananaCA();
-        if (caPause.get() && meteorCA.isActive() || bananaCA.isActive()) return;
-
-        if (PlayerUtils.shouldPause(minePause.get(), eatPause.get(), drinkPause.get()) || PlayerUtils.getTotalHealth() <= pauseAtHealth.get() || caPause.get() && mc.player.currentScreenHandler instanceof CraftingScreenHandler) {
-            if (debug.get()) warning("Pausing");
-            return;
-        }
 
         // Set player eye pos
         ((IVec3d) playerEyePos).set(mc.player.getPos().x, mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose()), mc.player.getPos().z);
@@ -886,7 +846,7 @@ public class MonkeSleeper extends Module {
                     }
 
                     if (!BedUtil.shouldIgnoreSelfBreakDamage()) {
-                        float selfDamage = BPlusDamageUtils.bedDamage(mc.player, damageVec, predictMovement.get(), selfBreakExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+                        float selfDamage = BPlusDamageUtils.bedDamage(mc.player, damageVec, predictMovement.get(), ignoreTerrain.get(), fullBlocks.get());
                         if (selfDamage > BmaxDamage.get() || (BantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                             continue;
                     } else if (debug.get()) warning("Ignoring self break dmg");
@@ -932,8 +892,6 @@ public class MonkeSleeper extends Module {
     private final List<BlockPos> trapBreakPositions = new ArrayList<>();
 
     private void doTrapBreak() {
-        if (!doPlace.get()) return;
-
         // Return if there are no beds in inventory
         if (!InvUtils.find(itemStack -> itemStack.getItem() instanceof BedItem).found()) return;
 
@@ -941,7 +899,7 @@ public class MonkeSleeper extends Module {
 
         BlockPos blockPos = trapBreakPositions.get(trapBreakPositions.size() - 1);
 
-        if (BPlusWorldUtils.place(blockPos, InvUtils.find(itemStack -> itemStack.getItem() instanceof BedItem), false, 50, BPlusWorldUtils.SwitchMode.Client, BPlusWorldUtils.PlaceMode.Packet, false, BPlusWorldUtils.AirPlaceDirection.Up, placeSwing.get(), true, true))
+        if (BPlusWorldUtils.place(blockPos, InvUtils.find(itemStack -> itemStack.getItem() instanceof BedItem), false, 50, BPlusWorldUtils.SwitchMode.Client, BPlusWorldUtils.PlaceMode.Packet, false, BPlusWorldUtils.AirPlaceDirection.Up, renderSwing.get(), true, true))
             trapBreakPositions.remove(blockPos);
 
     }
@@ -966,7 +924,7 @@ public class MonkeSleeper extends Module {
     // Place
 
     private void doPlace() {
-        if (!doPlace.get() || placeTimer > 0 || (popPause.get() != PopPause.Break && BedUtil.targetJustPopped()))
+        if (placeTimer > 0 || (popPause.get() != PopPause.Break && BedUtil.targetJustPopped()))
             return;
 
         // Return if there are no beds in inventory
@@ -980,7 +938,7 @@ public class MonkeSleeper extends Module {
         AtomicReference<BlockPos.Mutable> bestBlockPos = new AtomicReference<>(new BlockPos.Mutable());
 
         // Find best position to place the bed on
-        BlockIterator.register((int) Math.ceil(placeRange.get()), (int) Math.ceil(placeVerticalRange.get()), (bp, blockState) -> {
+        BlockIterator.register((int) Math.ceil(placeRange.get()), (int) Math.ceil(placeRange.get()), (bp, blockState) -> {
 
             boolean isBedHead = blockState.getBlock() instanceof BedBlock && blockState.get(Properties.BED_PART).equals(BedPart.HEAD);
 
@@ -995,15 +953,15 @@ public class MonkeSleeper extends Module {
 
             // Check damage to self and anti suicide
             if (!BedUtil.shouldIgnoreSelfPlaceDamage()) {
-                float selfDamage = BPlusDamageUtils.bedDamage(mc.player, vec3d, predictMovement.get(), selfPlaceExplosionRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
-                if (selfDamage > PmaxDamage.get() || (PantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
+                float selfDamage = BPlusDamageUtils.bedDamage(mc.player, vec3d, predictMovement.get(), ignoreTerrain.get(), fullBlocks.get());
+                if (selfDamage > maxDamage.get() || (antiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                     return;
             } else if (debug.get()) warning("Ignoring self place dmg");
 
             // Check damage to targets and face place
             float damage = getDamageToTargets(vec3d, false, false);
 
-            if (damage < PminDamage.get()) return;
+            if (damage < minDamage.get()) return;
 
             // Compare damage
             if (damage > bestDamage.get()) {
@@ -1043,12 +1001,12 @@ public class MonkeSleeper extends Module {
                     setRotation(true, vec3d, 0, 0);
                     Rotations.rotate(yaw, pitch, 50, () -> placeBed(result, bestDamage.get()));
 
-                    placeTimer = placeDelay.get();
+                    placeTimer = movingDelay.get();
                 }
             } else {
                 Rotations.rotate(BedUtil.getDirectedYaw(result.getBlockPos(), bestBlockPos.get()), mc.player.getPitch(), 50, () -> placeBed(result, bestDamage.get()));
 
-                placeTimer = placeDelay.get();
+                placeTimer = movingDelay.get();
             }
         });
     }
@@ -1091,7 +1049,7 @@ public class MonkeSleeper extends Module {
         if (packetPlace.get()) mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result));
         else mc.interactionManager.interactBlock(mc.player, mc.world, hand, result);
 
-        if (placeSwing.get()) mc.player.swingHand(hand);
+        if (renderSwing.get()) mc.player.swingHand(hand);
         if (!ghostPlace.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));
 
         // placingBedBlockPos.set(result.getBlockPos());
@@ -1153,7 +1111,7 @@ public class MonkeSleeper extends Module {
         boolean behindWall = result == null;
         double distance = mc.player.getEyePos().distanceTo(vec3d);
 
-        return distance > (behindWall ? (place ? placeWallsRange : breakWallsRange).get() : (place ? placeRange : breakRange).get());
+        return distance > (behindWall ? (place ? wallsRange : breakWallsRange).get() : (place ? placeRange : breakRange).get());
     }
 
     private PlayerEntity getNearestTarget() {
@@ -1178,12 +1136,12 @@ public class MonkeSleeper extends Module {
         if (fast) {
             PlayerEntity target = getNearestTarget();
             if (!(smartDelay.get() && breaking && target.hurtTime > 0))
-                damage = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), placeRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+                damage = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), ignoreTerrain.get(), fullBlocks.get());
         } else {
             for (PlayerEntity target : targets) {
                 if (smartDelay.get() && breaking && target.hurtTime > 0) continue;
 
-                float dmg = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), placeRadius.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+                float dmg = BPlusDamageUtils.bedDamage(target, vec3d, predictMovement.get(), ignoreTerrain.get(), fullBlocks.get());
 
                 // Update best target
                 if (dmg > bestTargetDamage) {
@@ -1251,8 +1209,8 @@ public class MonkeSleeper extends Module {
             switch (direction) {
                 case North -> zOffset = 0;
                 case South -> zOffset = 1;
-                //case East ->
-                //case West ->
+                case East -> xOffset = 0;
+                case West -> xOffset = 1;
             }
 
             if (!detailedRender.get()) {
@@ -1289,11 +1247,32 @@ public class MonkeSleeper extends Module {
                         event.renderer.box(x, y + 0.1875, z - 1 + zOffset, x + 0.1875, y + 0.5625, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 84);
                         event.renderer.box(x + 0.8125, y + 0.1875, z + 1 + zOffset, x + 1, y + 0.5625, z + 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 52);
                         event.renderer.box(x + 1, y + 0.1875, z - 1 + zOffset, x + 0.8125, y + 0.5625, z - 0.8125 + zOffset, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 84);
-
                     }
 
                     case East, West -> {
-                        event.renderer.box(x, y, z, x + 2, y + 0.5625, z + 1, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
+                        // Body
+                        event.renderer.box(x - 0.8125, y + 0.1875, z + 0.1875, x + 0.8125, + 0.8125, z + 0.8125, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), -7);
+
+                        // Left and Right
+                        event.renderer.box(x+ 0.1875, y + 0.1875, z, x - 0.8125, y + 0.5625, z + 0.1875, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), -39);
+                        event.renderer.box(x + 0.8125, y + 0.1875, z + 0.8125 , x - 0.8125, y + 0.5625, z + 1, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 56);
+/*
+                        // Front and Back
+                        event.renderer.box(x + 0.1875, y + 0.1875, z + 0.8125 , x + 0.8125, y + 0.5625, z + 1 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 104);
+                        event.renderer.box(x + 0.1875, y + 0.1875, z - 0.8125 , x + 0.8125, y + 0.5625, z - 1 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 104);
+
+                        // Legs
+                        event.renderer.box(x, y, z + 1 , x + 0.1875, y + 0.1875, z + 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x, y, z - 1 , x + 0.1875, y + 0.1875, z - 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x + 0.8125, y, z + 1 , x + 1, y + 0.1875, z + 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
+                        event.renderer.box(x + 1, y, z - 1 , x + 0.8125, y + 0.1875, z - 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 2);
+
+                        // Corners
+                        event.renderer.box(x, y + 0.1875, z + 1 , x + 0.1875, y + 0.5625, z + 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), -44);
+                        event.renderer.box(x, y + 0.1875, z - 1 , x + 0.1875, y + 0.5625, z - 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 84);
+                        event.renderer.box(x + 0.8125, y + 0.1875, z + 1 , x + 1, y + 0.5625, z + 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 52);
+                        event.renderer.box(x + 1, y + 0.1875, z - 1 , x + 0.8125, y + 0.5625, z - 0.8125 , placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 84);
+ */
                     }
                 }
             }
