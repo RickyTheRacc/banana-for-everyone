@@ -20,7 +20,8 @@
     ]
   },
   "mixins": [
-    "banana.mixins.json"
+    "meteor.mixins.json",
+    "minecraft.mixins.json"
   ],
   "accessWidener": "accesswidener",
   "custom": {

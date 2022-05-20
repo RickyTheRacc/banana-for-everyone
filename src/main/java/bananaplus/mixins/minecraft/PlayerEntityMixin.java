@@ -1,4 +1,4 @@
-package bananaplus.mixins;
+package bananaplus.mixins.minecraft;
 
 import bananaplus.modules.combat.AnchorPlus;
 import bananaplus.modules.misc.Platform;

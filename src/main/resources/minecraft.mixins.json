@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "bananaplus.mixins.minecraft",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "PlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

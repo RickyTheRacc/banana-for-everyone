@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "bananaplus.mixins.meteor",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "FreecamMixin",
+    "CriticalsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
