@@ -3,8 +3,9 @@
   "package": "bananaplus.mixins.meteor",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "FreecamMixin",
-    "CriticalsMixin"
+    "AutoRespawnMixin",
+    "CriticalsMixin",
+    "FreecamMixin"
   ],
   "injectors": {
     "defaultRequire": 1

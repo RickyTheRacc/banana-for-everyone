@@ -11,7 +11,6 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.combat.AutoTotem;
-import meteordevelopment.meteorclient.systems.modules.combat.AutoWeb;
 import meteordevelopment.meteorclient.systems.modules.combat.CrystalAura;
 import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
@@ -129,7 +128,7 @@ public class Monkhand extends Module {
     );
 
     private final Setting<Boolean> crystalCev = sgCrystal.add(new BoolSetting.Builder()
-            .name("crystal-on-cev-breaker")
+            .name("crystal-on-cev")
             .description("Holds a crystal when you have Cev Breaker enabled.")
             .defaultValue(true)
             .build()
@@ -255,8 +254,7 @@ public class Monkhand extends Module {
         else if (inSingleBedrock.get() && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Unbreakable)) return true;
         else if (inSingleHole.get() && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any)) return true;
         else if (inDoubleBedrock.get() && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Unbreakable)) return true;
-        else if (inDoubleHole.get() && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)) return true;
-        return false;
+        else return inDoubleHole.get() && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any);
     }
 
     @Override

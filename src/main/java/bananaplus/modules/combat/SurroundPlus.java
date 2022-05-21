@@ -329,7 +329,7 @@ public class SurroundPlus extends Module {
     );
 
     private final Setting<Boolean> toggleStepPlus = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-step-plus")
+            .name("toggle-step+")
             .description("Toggles off step when activating surround.")
             .defaultValue(false)
             .build()
@@ -497,21 +497,10 @@ public class SurroundPlus extends Module {
     private boolean shouldRussianPlusSouth;
     private boolean shouldRussianPlusWest;
 
-    public Step getStep() {
-        return Modules.get().get(Step.class);
-    }
-
-    public StepPlus getStepPlus() {
-        return Modules.get().get(StepPlus.class);
-    }
-
-    public Speed getSpeed() {
-        return Modules.get().get(Speed.class);
-    }
-
-    public StrafePlus getStrafe() {
-        return Modules.get().get(StrafePlus.class);
-    }
+    public Step getStep() {return Modules.get().get(Step.class);}
+    public StepPlus getStepPlus() {return Modules.get().get(StepPlus.class);}
+    public Speed getSpeed() {return Modules.get().get(Speed.class);}
+    public StrafePlus getStrafe() {return Modules.get().get(StrafePlus.class);}
 
     private boolean stepWasActive, stepPlusWasActive, speedWasActive, strafeWasActive;
 

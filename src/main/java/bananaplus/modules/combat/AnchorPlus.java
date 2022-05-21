@@ -61,33 +61,34 @@ public class AnchorPlus extends Module {
             .defaultValue(0.3)
             .min(0)
             .sliderMax(5)
+            .visible(pull::get)
             .build()
     );
 
     private final Setting<Boolean> webs = sgGeneral.add(new BoolSetting.Builder()
-            .name("Pull into webs")
-            .description("Will also pull into webs.")
+            .name("into-webs")
+            .description("Whether Anchor+ should pull you into webs.")
             .defaultValue(false)
             .build()
     );
 
     private final Setting<Boolean> whileForward = sgGeneral.add(new BoolSetting.Builder()
             .name("while-forward")
-            .description("Should anchor+ be active forward key is held.")
+            .description("Should Anchor+ be active while the forward key is held.")
             .defaultValue(true)
             .build()
     );
 
     private final Setting<Boolean> whileJumping = sgGeneral.add(new BoolSetting.Builder()
             .name("while-jumping")
-            .description("Should anchor be active while jump key held.")
+            .description("Should Anchor be active while the jump key is held.")
             .defaultValue(true)
             .build()
     );
 
     private final Setting<Integer> pullDelay = sgGeneral.add(new IntSetting.Builder()
-            .name("Pull-Delay")
-            .description("Amount of ticks anchor+ should wait before pulling you after you jump.")
+            .name("jump-delay")
+            .description("Ticks to wait after jumping to begin pulling.")
             .defaultValue(14)
             .min(1)
             .sliderMax(60)
@@ -96,7 +97,7 @@ public class AnchorPlus extends Module {
     );
 
     private final Setting<Boolean> onGround = sgGeneral.add(new BoolSetting.Builder()
-            .name("Pull-On-Ground")
+            .name("pull-on-ground")
             .description("If the pull delay should be reset when u land on the ground.")
             .defaultValue(true)
             .visible(() -> !whileJumping.get())
@@ -105,23 +106,37 @@ public class AnchorPlus extends Module {
 
 
     //Toggles
-    private final Setting<Boolean> turnOffStep = sgToggle.add(new BoolSetting.Builder()
+    private final Setting<Boolean> toggleStep = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-step")
-            .description("Turns off Step on activation.")
+            .description("Toggles off step when activating surround.")
             .defaultValue(false)
             .build()
     );
 
-    private final Setting<Boolean> turnOffStrafe = sgToggle.add(new BoolSetting.Builder()
-            .name("toggle-strafe")
-            .description("Turns off Strafe on activation.")
+    private final Setting<Boolean> toggleStepPlus = sgToggle.add(new BoolSetting.Builder()
+            .name("toggle-step+")
+            .description("Toggles off step when activating surround.")
             .defaultValue(false)
             .build()
     );
 
-    private final Setting<Boolean> turnOffSpeed = sgToggle.add(new BoolSetting.Builder()
+    private final Setting<Boolean> toggleSpeed = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-speed")
-            .description("Turns off Speed on activation.")
+            .description("Toggles off speed when activating surround.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleStrafe = sgToggle.add(new BoolSetting.Builder()
+            .name("toggle-strafe+")
+            .description("Toggles off strafe+ when activating surround.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleBack = sgToggle.add(new BoolSetting.Builder()
+            .name("toggle-back")
+            .description("Toggle these modules back on after Anchor+ is turned off.")
             .defaultValue(false)
             .build()
     );
@@ -146,21 +161,70 @@ public class AnchorPlus extends Module {
     boolean didJump = false;
     boolean pausing = false;
 
+    public Step getStep() {return Modules.get().get(Step.class);}
+    public StepPlus getStepPlus() {return Modules.get().get(StepPlus.class);}
+    public Speed getSpeed() {return Modules.get().get(Speed.class);}
+    public StrafePlus getStrafe() {return Modules.get().get(StrafePlus.class);}
+
+    private boolean stepWasActive, stepPlusWasActive, speedWasActive, strafeWasActive;
 
     @Override
     public void onActivate() {
         didJump = false;
         wasInHole = false;
         holeX = holeZ = 0;
+
+        Module step = getStep();
+        if (step.isActive() && toggleStep.get()) {
+            step.toggle();
+            stepWasActive = true;
+        }
+        Module stepPlus = getStepPlus();
+        if (stepPlus.isActive() && toggleStepPlus.get()) {
+            stepPlus.toggle();
+            stepPlusWasActive = true;
+        }
+        Module speed = getSpeed();
+        if (speed.isActive() && toggleSpeed.get()) {
+            speed.toggle();
+            speedWasActive = true;
+        }
+        Module strafe = getStrafe();
+        if (strafe.isActive() && toggleStrafe.get()) {
+            strafe.toggle();
+            strafeWasActive = true;
+        }
+    }
+
+    @Override
+    public void onDeactivate() {
+        if (toggleBack.get()) {
+            Module step = getStep();
+            if (!step.isActive() && stepWasActive) {
+                step.toggle();
+                stepWasActive = false;
+            }
+            Module stepPlus = getStepPlus();
+            if (!stepPlus.isActive() && stepPlusWasActive) {
+                stepPlus.toggle();
+                stepPlusWasActive = false;
+            }
+            Module speed = getSpeed();
+            if (!speed.isActive() && speedWasActive) {
+                speed.toggle();
+                speedWasActive = false;
+            }
+            Module strafe = getStrafe();
+            if (!strafe.isActive() && strafeWasActive) {
+                strafe.toggle();
+                strafeWasActive = false;
+            }
+        }
     }
 
     @EventHandler
     private void onPreTick(TickEvent.Pre event) {
         cancelJump = foundHole && cancel.get() && mc.player.getPitch() >= minPitch.get();
-        Modules modules = Modules.get();
-        if (turnOffStep.get() && modules.get(Step.class).isActive()) modules.get(Step.class).toggle();
-        if (turnOffStrafe.get() && modules.get(StrafePlus.class).isActive()) modules.get(StrafePlus.class).toggle();
-        if (turnOffSpeed.get() && modules.get(Speed.class).isActive()) modules.get(Speed.class).toggle();
     }
 
     @EventHandler
