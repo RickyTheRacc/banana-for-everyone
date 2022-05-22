@@ -23,8 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AutoRespawn.class)
 public class AutoRespawnMixin extends Module{
 
-    private SettingGroup sgGeneral;
-
     private Setting<Boolean> autoRekit;
     private Setting<Boolean> chatInfo;
     private Setting<String> kitName;
