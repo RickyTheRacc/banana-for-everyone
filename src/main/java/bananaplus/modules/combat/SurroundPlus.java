@@ -11,9 +11,6 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.movement.Step;
-import meteordevelopment.meteorclient.systems.modules.movement.speed.Speed;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.Pool;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
@@ -44,23 +41,24 @@ public class SurroundPlus extends Module {
     public enum Mode {
         Normal,
         Russian,
-        RussianPlus
+        Autist
     }
 
     public enum CenterMode {
         Center,
-        Snap
+        Snap,
+        None
     }
 
     public enum AntiCityMode {
-        None,
         Smart,
-        All
+        All,
+        None
     }
 
     public enum AntiCityShape {
         Russian,
-        RussianPlus,
+        Autist,
     }
 
     public enum RenderMode {
@@ -72,17 +70,15 @@ public class SurroundPlus extends Module {
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
-    private final SettingGroup sgCenter = settings.createGroup("Center");
     private final SettingGroup sgAntiCity = settings.createGroup("Anti City");
     private final SettingGroup sgForce = settings.createGroup("Force Keybinds");
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
-    private final SettingGroup sgModules = settings.createGroup("Other Module Toggles");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
     
     // General
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
-            .name("blocks")
+            .name("primary-blocks")
             .description("What blocks to use for Surround+.")
             .defaultValue(Blocks.OBSIDIAN)
             .filter(this::blockFilter)
@@ -101,23 +97,32 @@ public class SurroundPlus extends Module {
             .name("delay")
             .description("Tick delay between block placements.")
             .defaultValue(0)
+            .range(1,20)
+            .sliderRange(1,20)
             .build()
     );
 
     private final Setting<Integer> blocksPerTick = sgGeneral.add(new IntSetting.Builder()
-            .name("blocks-per-interval")
-            .description("Blocks placed per delay interval.")
-            .defaultValue(5)
+            .name("blocks-per-tick")
+            .description("Blocks placed per tick.")
+            .defaultValue(4)
             .min(1)
-            .sliderMin(1)
-            .sliderMax(20)
+            .range(1,20)
+            .sliderRange(1,20)
             .build()
     );
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
-            .name("mode")
-            .description("The mode at which Surround+ operates in.")
+            .name("layout")
+            .description("Where Banana+ should place blocks.")
             .defaultValue(Mode.Normal)
+            .build()
+    );
+
+    private final Setting<CenterMode> centerMode = sgGeneral.add(new EnumSetting.Builder<CenterMode>()
+            .name("center")
+            .description("How Surround+ should center you.")
+            .defaultValue(CenterMode.Center)
             .build()
     );
 
@@ -125,14 +130,7 @@ public class SurroundPlus extends Module {
             .name("dynamic")
             .description("Will check for your hitbox to find placing positions.")
             .defaultValue(false)
-            .build()
-    );
-
-
-    private final Setting<Boolean> doubleHeight = sgGeneral.add(new BoolSetting.Builder()
-            .name("double-height")
-            .description("Places on top of the original surround blocks to prevent people from face-placing you.")
-            .defaultValue(false)
+            .visible(() -> centerMode.get() == CenterMode.None)
             .build()
     );
 
@@ -140,6 +138,34 @@ public class SurroundPlus extends Module {
             .name("only-on-ground")
             .description("Will only try to place if you are on the ground.")
             .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleModules = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-modules")
+            .description("Turn off other modules when surround is activated.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleBack = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-back-on")
+            .description("Turn the other modules back on when surround is deactivated.")
+            .defaultValue(false)
+            .visible(toggleModules::get)
+            .build()
+    );
+
+    private final Setting<List<Module>> modules = sgGeneral.add(new ModuleListSetting.Builder()
+            .name("modules")
+            .description("Which modules to disable on activation.")
+            /*.defaultValue(new ArrayList<>() {{
+                add(Modules.get().get(Step.class));
+                add(Modules.get().get(StepPlus.class));
+                add(Modules.get().get(Speed.class));
+                add(Modules.get().get(StrafePlus.class));
+            }})*/
+            .visible(toggleModules::get)
             .build()
     );
 
@@ -189,7 +215,7 @@ public class SurroundPlus extends Module {
     );
 
     private final Setting<BPlusWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.AirPlaceDirection>()
-            .name("air-place-direction")
+            .name("place-direction")
             .description("Side to try to place at when you are trying to air place.")
             .defaultValue(BPlusWorldUtils.AirPlaceDirection.Up)
             .visible(airPlace::get)
@@ -209,22 +235,6 @@ public class SurroundPlus extends Module {
             .defaultValue(100)
             .sliderRange(0, 200)
             .visible(rotate::get)
-            .build()
-    );
-
-
-    // Center
-    private final Setting<Boolean> center = sgCenter.add(new BoolSetting.Builder()
-            .name("center")
-            .description("Will align you to the center of the hole when turning on Surround+.")
-            .defaultValue(true)
-            .build()
-    );
-
-    private final Setting<CenterMode> centerMode = sgCenter.add(new EnumSetting.Builder<CenterMode>()
-            .name("center-mode")
-            .description("How Surround+ should center you.")
-            .defaultValue(CenterMode.Snap)
             .build()
     );
 
@@ -254,13 +264,6 @@ public class SurroundPlus extends Module {
 
 
     // Force keybinds
-    private final Setting<Keybind> doubleHeightKeybind = sgForce.add(new KeybindSetting.Builder()
-            .name("double-height-keybind")
-            .description("Turns on double height.")
-            .defaultValue(Keybind.none())
-            .build()
-    );
-
     private final Setting<Keybind> russianKeybind = sgForce.add(new KeybindSetting.Builder()
             .name("russian-keybind")
             .description("Turns on Russian surround when held")
@@ -286,7 +289,7 @@ public class SurroundPlus extends Module {
     // Toggles
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-y-change")
-            .description("Automatically disables when your y level (step, jumping, etc).")
+            .description("Automatically disables when your Y level changes.")
             .defaultValue(true)
             .build()
     );
@@ -298,60 +301,23 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-    private final Setting<Boolean> onPearl = sgToggle.add(new BoolSetting.Builder()
-            .name("disable-on-pearl")
+    private final Setting<Boolean> toggleOnPearl = sgToggle.add(new BoolSetting.Builder()
+            .name("toggle-on-pearl")
             .description("Automatically disables when you throw a pearl (work if u use middle/bind click extra).")
             .defaultValue(true)
             .build()
     );
 
-    private final Setting<Boolean> onChorus = sgToggle.add(new BoolSetting.Builder()
-            .name("disable-on-chorus")
+    private final Setting<Boolean> toggleOnChorus = sgToggle.add(new BoolSetting.Builder()
+            .name("toggle-on-chorus")
             .description("Automatically disables after you eat a chorus.")
             .defaultValue(true)
             .build()
     );
 
-    private final Setting<Boolean> onDeath = sgToggle.add(new BoolSetting.Builder()
-            .name("disable-on-death")
+    private final Setting<Boolean> toggleOnDeath = sgToggle.add(new BoolSetting.Builder()
+            .name("toggle-on-death")
             .description("Automatically disables after you die.")
-            .defaultValue(true)
-            .build()
-    );
-
-
-    // Modules
-    private final Setting<Boolean> toggleStep = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-step")
-            .description("Toggles off step when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleStepPlus = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-step+")
-            .description("Toggles off step when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleSpeed = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-speed")
-            .description("Toggles off speed when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleStrafe = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-strafe+")
-            .description("Toggles off strafe+ when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleBack = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-back")
-            .description("Toggles the modules above back on if it was on previously when turning Surround+.")
             .defaultValue(false)
             .build()
     );
@@ -483,7 +449,6 @@ public class SurroundPlus extends Module {
 
     private boolean centered;
 
-    // Anti City
     private BlockPos prevBreakPos;
     PlayerEntity prevBreakingPlayer = null;
 
@@ -497,12 +462,7 @@ public class SurroundPlus extends Module {
     private boolean shouldRussianPlusSouth;
     private boolean shouldRussianPlusWest;
 
-    public Step getStep() {return Modules.get().get(Step.class);}
-    public StepPlus getStepPlus() {return Modules.get().get(StepPlus.class);}
-    public Speed getSpeed() {return Modules.get().get(Speed.class);}
-    public StrafePlus getStrafe() {return Modules.get().get(StrafePlus.class);}
-
-    private boolean stepWasActive, stepPlusWasActive, speedWasActive, strafeWasActive;
+    public ArrayList<Module> toActivate;
 
     private final BlockPos.Mutable renderPos = new BlockPos.Mutable();
 
@@ -516,33 +476,22 @@ public class SurroundPlus extends Module {
         blocksPlaced = 0;
 
         centered = false;
-
         playerPos = BPlusEntityUtils.playerPos(mc.player);
 
-        if (center.get()) {
+        toActivate = new ArrayList<>();
+
+        if (centerMode.get() != CenterMode.None) {
             if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
             else PlayerUtils.centerPlayer();
         }
 
-        Module step = getStep();
-        if (step.isActive() && toggleStep.get()) {
-            step.toggle();
-            stepWasActive = true;
-        }
-        Module stepPlus = getStepPlus();
-        if (stepPlus.isActive() && toggleStepPlus.get()) {
-            stepPlus.toggle();
-            stepPlusWasActive = true;
-        }
-        Module speed = getSpeed();
-        if (speed.isActive() && toggleSpeed.get()) {
-            speed.toggle();
-            speedWasActive = true;
-        }
-        Module strafe = getStrafe();
-        if (strafe.isActive() && toggleStrafe.get()) {
-            strafe.toggle();
-            strafeWasActive = true;
+        if (toggleModules.get() && !modules.get().isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : modules.get()) {
+                if (module.isActive()) {
+                    module.toggle();
+                    toActivate.add(module);
+                }
+            }
         }
 
         for (RenderBlock renderBlock : renderBlocks) renderBlockPool.free(renderBlock);
@@ -551,26 +500,11 @@ public class SurroundPlus extends Module {
 
     @Override
     public void onDeactivate() {
-        if (toggleBack.get()) {
-            Module step = getStep();
-            if (!step.isActive() && stepWasActive) {
-                step.toggle();
-                stepWasActive = false;
-            }
-            Module stepPlus = getStepPlus();
-            if (!stepPlus.isActive() && stepPlusWasActive) {
-                stepPlus.toggle();
-                stepPlusWasActive = false;
-            }
-            Module speed = getSpeed();
-            if (!speed.isActive() && speedWasActive) {
-                speed.toggle();
-                speedWasActive = false;
-            }
-            Module strafe = getStrafe();
-            if (!strafe.isActive() && strafeWasActive) {
-                strafe.toggle();
-                strafeWasActive = false;
+        if (toggleBack.get() && !toActivate.isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : toActivate) {
+                if (!module.isActive()) {
+                    module.toggle();
+                }
             }
         }
 
@@ -600,7 +534,7 @@ public class SurroundPlus extends Module {
         // Update player position
         playerPos = BPlusEntityUtils.playerPos(mc.player);
 
-        if (center.get() && !centered && mc.player.isOnGround()) {
+        if (centerMode.get() != CenterMode.None && !centered && mc.player.isOnGround()) {
             if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
             else PlayerUtils.centerPlayer();
 
@@ -702,13 +636,6 @@ public class SurroundPlus extends Module {
     private List<BlockPos> extraPos() {
         List<BlockPos> pos = new ArrayList<>();
 
-        // Double Height
-        if (doubleHeight.get() || doubleHeightKeybind.get().isPressed()) {
-            for (BlockPos centerPos : centerPos()) {
-                add(pos, centerPos.up());
-            }
-        }
-
         // North
         if (mode.get() != Mode.Normal || russianKeybind.get().isPressed() || russianPlusKeybind.get().isPressed() || shouldRussianNorth || shouldRussianPlusNorth) {
             if (mc.world.getBlockState(playerPos.north()).getBlock() != Blocks.BEDROCK) {
@@ -718,7 +645,7 @@ public class SurroundPlus extends Module {
                 }
             }
         }
-        if (mode.get() == Mode.RussianPlus || russianPlusKeybind.get().isPressed() || shouldRussianPlusNorth) {
+        if (mode.get() == Mode.Autist || russianPlusKeybind.get().isPressed() || shouldRussianPlusNorth) {
             if (mc.world.getBlockState(playerPos.north()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) {
                     add(pos, playerPos.north().west());
@@ -738,7 +665,7 @@ public class SurroundPlus extends Module {
                 }
             }
         }
-        if (mode.get() == Mode.RussianPlus || russianPlusKeybind.get().isPressed() || shouldRussianPlusEast) {
+        if (mode.get() == Mode.Autist || russianPlusKeybind.get().isPressed() || shouldRussianPlusEast) {
             if (mc.world.getBlockState(playerPos.east()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) {
                     add(pos, playerPos.east().north());
@@ -758,7 +685,7 @@ public class SurroundPlus extends Module {
                 }
             }
         }
-        if (mode.get() == Mode.RussianPlus || russianPlusKeybind.get().isPressed() || shouldRussianPlusSouth) {
+        if (mode.get() == Mode.Autist || russianPlusKeybind.get().isPressed() || shouldRussianPlusSouth) {
             if (mc.world.getBlockState(playerPos.south()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) {
                     add(pos, playerPos.south().east());
@@ -778,7 +705,7 @@ public class SurroundPlus extends Module {
                 }
             }
         }
-        if (mode.get() == Mode.RussianPlus || russianPlusKeybind.get().isPressed() || shouldRussianPlusWest) {
+        if (mode.get() == Mode.Autist || russianPlusKeybind.get().isPressed() || shouldRussianPlusWest) {
             if (mc.world.getBlockState(playerPos.west()).getBlock() != Blocks.BEDROCK) {
                 if (!dynamic.get()) {
                     add(pos, playerPos.west().south());
@@ -911,7 +838,7 @@ public class SurroundPlus extends Module {
     private void onPacketReceive(PacketEvent.Receive event)  {
         if (event.packet instanceof DeathMessageS2CPacket packet) {
             Entity entity = mc.world.getEntityById(packet.getEntityId());
-            if (entity == mc.player && onDeath.get()) {
+            if (entity == mc.player && toggleOnDeath.get()) {
                 toggle();
             }
         }
@@ -919,14 +846,14 @@ public class SurroundPlus extends Module {
 
     @EventHandler
     private void onPacketSend(PacketEvent.Send event) {
-        if (event.packet instanceof PlayerInteractItemC2SPacket && (mc.player.getOffHandStack().getItem() instanceof EnderPearlItem || mc.player.getMainHandStack().getItem() instanceof EnderPearlItem) && onPearl.get()) {
+        if (event.packet instanceof PlayerInteractItemC2SPacket && (mc.player.getOffHandStack().getItem() instanceof EnderPearlItem || mc.player.getMainHandStack().getItem() instanceof EnderPearlItem) && toggleOnPearl.get()) {
             toggle();
         }
     }
 
     @EventHandler
     private void onFinishUsingItem(FinishUsingItemEvent event) {
-        if (event.itemStack.getItem() instanceof ChorusFruitItem && onChorus.get()) {
+        if (event.itemStack.getItem() instanceof ChorusFruitItem && toggleOnChorus.get()) {
             toggle();
         }
     }

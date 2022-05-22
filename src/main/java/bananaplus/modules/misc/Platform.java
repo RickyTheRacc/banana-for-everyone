@@ -1,8 +1,6 @@
 package bananaplus.modules.misc;
 
 import bananaplus.modules.BananaPlus;
-import bananaplus.modules.combat.StepPlus;
-import bananaplus.modules.combat.StrafePlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
 import bananaplus.utils.PositionUtils;
@@ -13,9 +11,6 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.movement.Step;
-import meteordevelopment.meteorclient.systems.modules.movement.speed.Speed;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.Pool;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
@@ -42,13 +37,12 @@ public class Platform extends Module {
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgForce = settings.createGroup("Force Keybinds");
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
-    private final SettingGroup sgModules = settings.createGroup("Other Module Toggles");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
 
     // General
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
-            .name("blocks")
+            .name("primary-blocks")
             .description("What blocks to use for Surround+.")
             .defaultValue(Blocks.OBSIDIAN)
             .build()
@@ -73,17 +67,18 @@ public class Platform extends Module {
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
             .description("Tick delay between block placements.")
-            .defaultValue(0)
+            .defaultValue(2)
+            .range(0,20)
+            .sliderRange(0,20)
             .build()
     );
 
     private final Setting<Integer> blocksPerTick = sgGeneral.add(new IntSetting.Builder()
-            .name("blocks-per-interval")
+            .name("blocks-per-tick")
             .description("Blocks placed per delay interval.")
-            .defaultValue(5)
-            .min(1)
-            .sliderMin(1)
-            .sliderMax(20)
+            .defaultValue(3)
+            .range(1,20)
+            .sliderRange(1,20)
             .build()
     );
 
@@ -98,6 +93,41 @@ public class Platform extends Module {
             .name("only-on-ground")
             .description("Will only try to place if you are on the ground.")
             .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> cancelMove = sgGeneral.add(new BoolSetting.Builder()
+            .name("cancel-jump")
+            .description("Prevents you from jumping.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleModules = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-modules")
+            .description("Turn off other modules when surround is activated.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleBack = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-back-on")
+            .description("Turn the other modules back on when surround is deactivated.")
+            .defaultValue(false)
+            .visible(toggleModules::get)
+            .build()
+    );
+
+    private final Setting<List<Module>> modules = sgGeneral.add(new ModuleListSetting.Builder()
+            .name("modules")
+            .description("Which modules to disable on activation.")
+            /*.defaultValue(new ArrayList<>() {{
+                add(Modules.get().get(Step.class));
+                add(Modules.get().get(StepPlus.class));
+                add(Modules.get().get(Speed.class));
+                add(Modules.get().get(StrafePlus.class));
+            }})*/
+            .visible(toggleModules::get)
             .build()
     );
 
@@ -163,13 +193,6 @@ public class Platform extends Module {
             .build()
     );
 
-    private final Setting<Boolean> cancelMove = sgGeneral.add(new BoolSetting.Builder()
-            .name("cancel-jump")
-            .description("Prevents you from jumping.")
-            .defaultValue(false)
-            .build()
-    );
-
 
     // Force keybinds
     private final Setting<Keybind> doubleHeightKeybind = sgForce.add(new KeybindSetting.Builder()
@@ -213,43 +236,6 @@ public class Platform extends Module {
             .name("disable-on-death")
             .description("Automatically disables after you die.")
             .defaultValue(true)
-            .build()
-    );
-
-
-    // Modules
-    private final Setting<Boolean> toggleStep = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-step")
-            .description("Toggles off step when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleStepPlus = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-step-plus")
-            .description("Toggles off step when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleSpeed = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-speed")
-            .description("Toggles off speed when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleStrafe = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-strafe+")
-            .description("Toggles off strafe+ when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleBack = sgModules.add(new BoolSetting.Builder()
-            .name("toggle-back")
-            .description("Toggles the modules above back on if it was on previously when turning Surround+.")
-            .defaultValue(false)
             .build()
     );
 
@@ -325,23 +311,7 @@ public class Platform extends Module {
 
     public boolean cancelJump;
 
-    public Step getStep() {
-        return Modules.get().get(Step.class);
-    }
-
-    public StepPlus getStepPlus() {
-        return Modules.get().get(StepPlus.class);
-    }
-
-    public Speed getSpeed() {
-        return Modules.get().get(Speed.class);
-    }
-
-    public StrafePlus getStrafe() {
-        return Modules.get().get(StrafePlus.class);
-    }
-
-    private boolean stepWasActive, stepPlusWasActive, speedWasActive, strafeWasActive;
+    public ArrayList<Module> toActivate;
 
     private final BlockPos.Mutable renderPos = new BlockPos.Mutable();
 
@@ -354,27 +324,17 @@ public class Platform extends Module {
         ticksPassed = 0;
         blocksPlaced = 0;
 
+        toActivate = new ArrayList<>();
+
         playerPos = BPlusEntityUtils.playerPos(mc.player);
 
-        Module step = getStep();
-        if (step.isActive() && toggleStep.get()) {
-            step.toggle();
-            stepWasActive = true;
-        }
-        Module stepPlus = getStepPlus();
-        if (stepPlus.isActive() && toggleStepPlus.get()) {
-            stepPlus.toggle();
-            stepPlusWasActive = true;
-        }
-        Module speed = getSpeed();
-        if (speed.isActive() && toggleSpeed.get()) {
-            speed.toggle();
-            speedWasActive = true;
-        }
-        Module strafe = getStrafe();
-        if (strafe.isActive() && toggleStrafe.get()) {
-            strafe.toggle();
-            strafeWasActive = true;
+        if (toggleModules.get() && !modules.get().isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : modules.get()) {
+                if (module.isActive()) {
+                    module.toggle();
+                    toActivate.add(module);
+                }
+            }
         }
 
         for (RenderBlock renderBlock : renderBlocks) renderBlockPool.free(renderBlock);
@@ -383,26 +343,11 @@ public class Platform extends Module {
 
     @Override
     public void onDeactivate() {
-        if (toggleBack.get()) {
-            Module step = getStep();
-            if (!step.isActive() && stepWasActive) {
-                step.toggle();
-                stepWasActive = false;
-            }
-            Module stepPlus = getStepPlus();
-            if (!stepPlus.isActive() && stepPlusWasActive) {
-                stepPlus.toggle();
-                stepPlusWasActive = false;
-            }
-            Module speed = getSpeed();
-            if (!speed.isActive() && speedWasActive) {
-                speed.toggle();
-                speedWasActive = false;
-            }
-            Module strafe = getStrafe();
-            if (!strafe.isActive() && strafeWasActive) {
-                strafe.toggle();
-                strafeWasActive = false;
+        if (toggleBack.get() && !toActivate.isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : toActivate) {
+                if (!module.isActive()) {
+                    module.toggle();
+                }
             }
         }
 
