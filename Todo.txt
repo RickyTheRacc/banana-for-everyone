@@ -14,11 +14,9 @@ Ben's List
 - auto trap hitbox check
 - whois protection (for website)
 - monke totem (hold totem ticks & min health required to unlock the locked stated)
-- use a mixin for criticals instead
 
 
 Ricky's List
-- Figure out how to make criticals a mixin (beat ben :heheheha:)
 - Combine middle click friend and extra
 - Combine anti ghost and invis block
 - Make options for the discord presence to look like other clients trolla
