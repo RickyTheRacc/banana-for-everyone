@@ -12,7 +12,7 @@
   "contact": {
     "repo": "https://github.com/Bennooo/banana-for-everyone"
   },
-  "icon": "assets/bananaplus/logo.png",
+  "icon": "assets/textures/logo.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [

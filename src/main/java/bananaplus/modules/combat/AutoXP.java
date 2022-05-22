@@ -124,7 +124,6 @@ public class AutoXP extends Module {
         isHealth = PlayerUtils.getTotalHealth() >= minHealth.get();
         isGround = (onlyOnGround.get() && mc.player.isOnGround()) || !onlyOnGround.get();
         isHole = (onlyInHole.get() && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)) || !onlyInHole.get();
-
         isOnStandby = isKey && isHealth && isGround && isHole;
 
         if (!isOnStandby) return;
