@@ -50,11 +50,9 @@ public class BananaPlus extends MeteorAddon {
 
 
 		// Combat
-		Modules.get().add(new AutoAuto());
 		Modules.get().add(new AutoCityPlus());
 		Modules.get().add(new AutoTrapPlus());
 		Modules.get().add(new AutoXP());
-		//Modules.get().add(new RickyMend());
 		Modules.get().add(new AnchorPlus());
 		Modules.get().add(new AntiTrap());
 		Modules.get().add(new BurrowESP());
