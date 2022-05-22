@@ -154,7 +154,7 @@ public class AutoXP extends Module {
 
 
     public AutoXP() {
-        super(BananaPlus.MISC, "wip-XP-thrower", "Throw experience bottles to repair your armor and tools.");
+        super(BananaPlus.COMBAT, "auto-XP", "Throw experience bottles to repair your armor and tools.");
     }
 
 
