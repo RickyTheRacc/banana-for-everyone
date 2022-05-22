@@ -20,7 +20,7 @@
     ]
   },
   "mixins": [
-    "meteor.mixins.json",
+    "meteorclient.mixins.json",
     "minecraft.mixins.json"
   ],
   "accessWidener": "accesswidener",
