@@ -121,6 +121,13 @@ public class PostTickKA extends Module {
             .build()
     );
 
+    private final Setting<Boolean> ignorePassive = sgGeneral.add(new BoolSetting.Builder()
+            .name("ignore-passive")
+            .description("Will only attack sometimes passive mobs if they are targeting you.")
+            .defaultValue(true)
+            .build()
+    );
+
 
     // Targeting
     private final Setting<Object2BooleanMap<EntityType<?>>> entities = sgTargeting.add(new EntityTypeListSetting.Builder()
@@ -128,13 +135,6 @@ public class PostTickKA extends Module {
             .description("Entities to attack.")
             .defaultValue(new Object2BooleanOpenHashMap<>(0))
             .onlyAttackable()
-            .build()
-    );
-
-    private final Setting<Boolean> ignorePassive = sgTargeting.add(new BoolSetting.Builder()
-            .name("ignore-passive")
-            .description("Will only attack sometimes passive mobs if they are targeting you.")
-            .defaultValue(true)
             .build()
     );
 
@@ -159,16 +159,16 @@ public class PostTickKA extends Module {
     private final Setting<SortPriority> priority = sgTargeting.add(new EnumSetting.Builder<SortPriority>()
             .name("priority")
             .description("How to filter targets within range.")
-            .defaultValue(SortPriority.LowestHealth)
+            .defaultValue(SortPriority.ClosestAngle)
             .build()
     );
 
     private final Setting<Integer> maxTargets = sgTargeting.add(new IntSetting.Builder()
-            .name("max-targets")
+            .name("targets")
             .description("How many entities to target at once.")
             .defaultValue(1)
-            .min(1)
-            .sliderRange(1, 10)
+            .range(1,5)
+            .sliderRange(1,5)
             .build()
     );
 
@@ -191,14 +191,14 @@ public class PostTickKA extends Module {
     private final Setting<DelayMode> delayMode = sgDelay.add(new EnumSetting.Builder<DelayMode>()
             .name("delay-mode")
             .description("Mode to use for the delay to attack.")
-            .defaultValue(DelayMode.Fixed)
+            .defaultValue(DelayMode.Custom)
             .build()
     );
 
     private final Setting<Integer> hitDelay = sgDelay.add(new IntSetting.Builder()
             .name("hit-delay")
             .description("How fast you hit the entity in ticks.")
-            .defaultValue(0)
+            .defaultValue(11)
             .min(0)
             .sliderMax(60)
             .visible(() -> delayMode.get() == DelayMode.Custom)
@@ -208,7 +208,7 @@ public class PostTickKA extends Module {
     private final Setting<Boolean> TPSSync = sgDelay.add(new BoolSetting.Builder()
             .name("TPS-sync")
             .description("Tries to sync attack delay with the server's TPS.")
-            .defaultValue(false)
+            .defaultValue(true)
             .visible(() -> delayMode.get() != DelayMode.Vanilla)
             .build()
     );
@@ -305,10 +305,6 @@ public class PostTickKA extends Module {
             if (entity instanceof EndermanEntity enderman && !enderman.isAngry()) return false;
             if (entity instanceof ZombifiedPiglinEntity piglin && !piglin.isAngryAt(mc.player)) return false;
             if (entity instanceof WolfEntity mob && !mob.isAttacking()) return false;
-            if (entity instanceof Tameable tameable
-                    && tameable.getOwnerUuid() != null
-                    && tameable.getOwnerUuid().equals(mc.player.getUuid())
-            ) return false;
         }
         if (entity instanceof PlayerEntity) {
             if (((PlayerEntity) entity).isCreative()) return false;
