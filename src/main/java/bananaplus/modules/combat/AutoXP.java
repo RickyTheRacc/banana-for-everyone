@@ -41,7 +41,7 @@ public class AutoXP extends Module {
 
     private final Setting<Boolean> replenish = sgGeneral.add(new BoolSetting.Builder()
             .name("replenish")
-            .description("Automatically mode XP into your hotbar.")
+            .description("Automatically move XP into your hotbar.")
             .defaultValue(false)
             .build()
     );
