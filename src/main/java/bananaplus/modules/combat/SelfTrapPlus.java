@@ -79,17 +79,18 @@ public class SelfTrapPlus extends Module {
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
             .description("Tick delay between block placements.")
-            .defaultValue(0)
+            .defaultValue(1)
+            .range(0,20)
+            .sliderRange(0,20)
             .build()
     );
 
     private final Setting<Integer> blocksPerTick = sgGeneral.add(new IntSetting.Builder()
             .name("blocks-per-tick")
             .description("Blocks placed per delay interval.")
-            .defaultValue(5)
-            .min(1)
-            .sliderMin(1)
-            .sliderMax(20)
+            .defaultValue(4)
+            .range(1,5)
+            .sliderRange(1,5)
             .build()
     );
 
@@ -139,7 +140,7 @@ public class SelfTrapPlus extends Module {
     private final Setting<Boolean> toggleModules = sgGeneral.add(new BoolSetting.Builder()
             .name("toggle-modules")
             .description("Turn off other modules when surround is activated.")
-            .defaultValue(true)
+            .defaultValue(false)
             .build()
     );
 

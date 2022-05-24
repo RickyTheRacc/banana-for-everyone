@@ -99,9 +99,9 @@ public class SurroundPlus extends Module {
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
             .description("Tick delay between block placements.")
-            .defaultValue(0)
-            .range(1,20)
-            .sliderRange(1,20)
+            .defaultValue(1)
+            .range(0,20)
+            .sliderRange(0,20)
             .build()
     );
 
@@ -109,9 +109,8 @@ public class SurroundPlus extends Module {
             .name("blocks-per-tick")
             .description("Blocks placed per tick.")
             .defaultValue(4)
-            .min(1)
-            .range(1,20)
-            .sliderRange(1,20)
+            .range(1,5)
+            .sliderRange(1,5)
             .build()
     );
 
@@ -147,7 +146,7 @@ public class SurroundPlus extends Module {
     private final Setting<Boolean> toggleModules = sgGeneral.add(new BoolSetting.Builder()
             .name("toggle-modules")
             .description("Turn off other modules when surround is activated.")
-            .defaultValue(true)
+            .defaultValue(false)
             .build()
     );
 
