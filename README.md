@@ -7,20 +7,29 @@
 <p align="center">Based addon for Meteor Client.</p>
 <p align="center"><i>By Bennooo, Necro, and RickyTheRacc</i></p>
 
-# How to use:
+## How to use:
 - Download and open with GitHub Desktop
 - Open the project through IntelliJ
 - Run the gradle `build` task and wait
 - Use the jar from the `build/libs` folder
 
-*Releases will only be published for new versions of Meteor or MC.*<br>
-*We recommend building the addon yourself for the newest updates!*
-
-## Will this get updates?
-For the foreseeable future, yes! Ricky is currently working on learning Java and is starting by fixing bugs. Bennooo has some feature planned, but they will be added at his leisure as this is more of a passion project than a responsibility. If you have a cool idea or a module you wrote, feel free to open a Pull Request!
-
-## Personal Note From Ben: 
+*You can also use the jars found in the releases page which are automatically built after every commit!*
+<br>
+<br>
+## Suggestions and Bug Reports
+Should be recorded by opening an issue [here](https://github.com/Bennooo/banana-for-everyone/issues/new/choose).
+Keep in mind that this is a passion project above anything else, and the devs aren't guaranteed to add every feature.
+If you are submitting a bug report, be concise and clear about what causes the issue.
+<br>
+<br>
+## Personal Note From Ben:
 This started off as a passion project just for me and Necro, and I think it’s insane how far this actually went. From a meteor prefix to a skid to finally a masterpiece. Thank you all for supporting this project, shits unreal! Sad that this shit happened tho.
 
 B+ on top, All love <3  -ben
+<br>
+<br>
+## Credits
+[Cally72jhb](https://github.com/cally72jhb) for Packet Fly <br>
+[Meteor Development](https://github.com/MeteorDevelopment) for [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)<br>
+The [Fabric Team](https://github.com/FabricMC) for [Fabric](https://github.com/FabricMC/fabric-loader) and [Yarn](https://github.com/FabricMC/yarn)
 
