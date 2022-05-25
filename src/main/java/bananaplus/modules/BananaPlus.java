@@ -11,6 +11,7 @@ import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.systems.hud.HUD;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import net.minecraft.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,8 @@ import java.lang.invoke.MethodHandles;
 
 public class BananaPlus extends MeteorAddon {
 	public static final Logger LOG = LoggerFactory.getLogger("Banana+");
-	public static final Category COMBAT = new Category("Banana Combat");
-   	public static final Category MISC = new Category("Banana Misc.");
+	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
+   	public static final Category MISC = new Category("Banana Misc.", Items.GOLDEN_APPLE.getDefaultStack());
 
 	@Override
 	public void onInitialize() {
@@ -91,6 +92,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new BindClickFriend());
 		Modules.get().add(new InstaMineBypass());
 		Modules.get().add(new LightningDeaths());
+		Modules.get().add(new MonkeFlight());
 		Modules.get().add(new OneClickEat());
 		Modules.get().add(new Platform());
 		Modules.get().add(new SkinBlinker());
