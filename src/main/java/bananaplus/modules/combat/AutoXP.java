@@ -48,7 +48,7 @@ public class AutoXP extends Module {
 
     private final Setting<Integer> hotbarSlot = sgGeneral.add(new IntSetting.Builder()
             .name("hotbar-slot")
-            .description("How damaged an item must be to activate.")
+            .description("Which hotbar slot to move the XP to.")
             .defaultValue(5)
             .range(1,9)
             .sliderRange(1,9)
@@ -70,7 +70,7 @@ public class AutoXP extends Module {
     // Player
     private final Setting<SwitchMode> autoSwitch = sgPlayer.add(new EnumSetting.Builder<SwitchMode> ()
             .name("auto-switch")
-            .description("When the module should activate.")
+            .description("How to switch to XP.")
             .defaultValue(SwitchMode.Silent)
             .build()
     );
@@ -108,14 +108,14 @@ public class AutoXP extends Module {
 
     private final Setting<Boolean> onlyOnGround = sgPlayer.add(new BoolSetting.Builder()
             .name("only-on-ground")
-            .description("Only allows when you are on the ground.")
+            .description("Only activate when you are on the ground.")
             .defaultValue(true)
             .build()
     );
 
     private final Setting<Boolean> onlyInHole = sgPlayer.add(new BoolSetting.Builder()
             .name("only-in-hole")
-            .description("Only allows when you are in a hole.")
+            .description("Only activate when you are in a hole.")
             .defaultValue(false)
             .build()
     );
@@ -145,10 +145,10 @@ public class AutoXP extends Module {
 
     private final Setting<Double> minHealth = sgPause.add(new DoubleSetting.Builder()
             .name("min-health")
-            .description("Minimum health for Auto XP.")
+            .description("Minimum health to throw XP.")
             .defaultValue(10)
-            .range(0,20)
-            .sliderRange(0,20)
+            .range(1,36)
+            .sliderRange(1,36)
             .build()
     );
 

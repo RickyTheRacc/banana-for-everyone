@@ -287,10 +287,7 @@ public class PostTickKA extends Module {
 
     @EventHandler
     private void onSendPacket(PacketEvent.Send event) {
-        if (event.packet instanceof UpdateSelectedSlotC2SPacket) {
-            switchTimer = switchDelay.get();
-        }
-
+        if (event.packet instanceof UpdateSelectedSlotC2SPacket) switchTimer = switchDelay.get();
         if (event.packet instanceof HandSwingC2SPacket && ghostSwing.get()) event.cancel();
     }
 
@@ -302,7 +299,7 @@ public class PostTickKA extends Module {
         if (!nametagged.get() && entity.hasCustomName()) return false;
         if (!PlayerUtils.canSeeEntity(entity) && BPlusPlayerUtils.distanceFromEye(entity) > wallsRange.get()) return false;
         if (ignorePassive.get()) {
-            if (entity instanceof EndermanEntity enderman && !enderman.isAngry()) return false;
+            if (entity instanceof EndermanEntity enderman && !enderman.isAngryAt(mc.player)) return false;
             if (entity instanceof ZombifiedPiglinEntity piglin && !piglin.isAngryAt(mc.player)) return false;
             if (entity instanceof WolfEntity mob && !mob.isAttacking()) return false;
         }
@@ -323,7 +320,6 @@ public class PostTickKA extends Module {
             case Vanilla -> {
                 return mc.player.getAttackCooldownProgress(0.5f) >= 1;
             }
-
             case Custom -> {
                 if (hitDelayTimer > 0) {
                     hitDelayTimer--;
@@ -333,12 +329,10 @@ public class PostTickKA extends Module {
                     return true;
                 }
             }
-
             case Fixed -> {
                 if (fixedHitTimer.passedMillis((long) (fixedDelay() / BPlusServerUtils.getTPSMatch(TPSSync.get())))) return true;
             }
         }
-
         return false;
     }
 
