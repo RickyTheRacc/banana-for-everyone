@@ -9,6 +9,7 @@ import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.render.Freecam;
 import meteordevelopment.meteorclient.systems.modules.world.Timer;
 import meteordevelopment.meteorclient.utils.misc.input.Input;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
@@ -166,6 +167,7 @@ public class TickShift extends Module {
     private Vec3d startPos;
 
     Timer timerClass = Modules.get().get(Timer.class);
+    public Freecam freecam() {return Modules.get().get(Freecam.class);}
 
 
     @Override
@@ -203,7 +205,7 @@ public class TickShift extends Module {
 
     @EventHandler
     private void onKey(KeyEvent event) {
-        if (!charged && lockMovement.get()) {
+        if (!charged && lockMovement.get() && !freecam().isActive()) {
             if (Input.isKeyPressed(GLFW.GLFW_KEY_W) || Input.isKeyPressed(GLFW.GLFW_KEY_A) || Input.isKeyPressed(GLFW.GLFW_KEY_S) || Input.isKeyPressed(GLFW.GLFW_KEY_D) || Input.isKeyPressed(GLFW.GLFW_KEY_SPACE))
                 event.cancel();
         }
