@@ -17,9 +17,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AnchorPlus extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
-    private final SettingGroup sgToggle = settings.createGroup("Toggles");
 
 
     // General
@@ -49,7 +51,7 @@ public class AnchorPlus extends Module {
     );
 
     private final Setting<Boolean> pull = sgGeneral.add(new BoolSetting.Builder()
-            .name("pull")
+            .name("pull-player")
             .description("Whether Anchor should pull you into a hole.")
             .defaultValue(false)
             .build()
@@ -104,40 +106,31 @@ public class AnchorPlus extends Module {
             .build()
     );
 
-
-    //Toggles
-    private final Setting<Boolean> toggleStep = sgToggle.add(new BoolSetting.Builder()
-            .name("toggle-step")
-            .description("Toggles off step when activating surround.")
+    private final Setting<Boolean> toggleModules = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-modules")
+            .description("Turn off other modules when surround is activated.")
             .defaultValue(false)
             .build()
     );
 
-    private final Setting<Boolean> toggleStepPlus = sgToggle.add(new BoolSetting.Builder()
-            .name("toggle-step+")
-            .description("Toggles off step when activating surround.")
+    private final Setting<Boolean> toggleBack = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-back-on")
+            .description("Turn the other modules back on when surround is deactivated.")
             .defaultValue(false)
+            .visible(toggleModules::get)
             .build()
     );
 
-    private final Setting<Boolean> toggleSpeed = sgToggle.add(new BoolSetting.Builder()
-            .name("toggle-speed")
-            .description("Toggles off speed when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleStrafe = sgToggle.add(new BoolSetting.Builder()
-            .name("toggle-strafe+")
-            .description("Toggles off strafe+ when activating surround.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> toggleBack = sgToggle.add(new BoolSetting.Builder()
-            .name("toggle-back")
-            .description("Toggle these modules back on after Anchor+ is turned off.")
-            .defaultValue(false)
+    private final Setting<List<Module>> modules = sgGeneral.add(new ModuleListSetting.Builder()
+            .name("modules")
+            .description("Which modules to disable on activation.")
+            /*.defaultValue(new ArrayList<>() {{
+                add(Modules.get().get(Step.class));
+                add(Modules.get().get(StepPlus.class));
+                add(Modules.get().get(Speed.class));
+                add(Modules.get().get(StrafePlus.class));
+            }})*/
+            .visible(toggleModules::get)
             .build()
     );
 
@@ -161,12 +154,7 @@ public class AnchorPlus extends Module {
     boolean didJump = false;
     boolean pausing = false;
 
-    public Step getStep() {return Modules.get().get(Step.class);}
-    public StepPlus getStepPlus() {return Modules.get().get(StepPlus.class);}
-    public Speed getSpeed() {return Modules.get().get(Speed.class);}
-    public StrafePlus getStrafe() {return Modules.get().get(StrafePlus.class);}
-
-    private boolean stepWasActive, stepPlusWasActive, speedWasActive, strafeWasActive;
+    public ArrayList<Module> toActivate;
 
     @Override
     public void onActivate() {
@@ -174,50 +162,25 @@ public class AnchorPlus extends Module {
         wasInHole = false;
         holeX = holeZ = 0;
 
-        Module step = getStep();
-        if (step.isActive() && toggleStep.get()) {
-            step.toggle();
-            stepWasActive = true;
-        }
-        Module stepPlus = getStepPlus();
-        if (stepPlus.isActive() && toggleStepPlus.get()) {
-            stepPlus.toggle();
-            stepPlusWasActive = true;
-        }
-        Module speed = getSpeed();
-        if (speed.isActive() && toggleSpeed.get()) {
-            speed.toggle();
-            speedWasActive = true;
-        }
-        Module strafe = getStrafe();
-        if (strafe.isActive() && toggleStrafe.get()) {
-            strafe.toggle();
-            strafeWasActive = true;
+        toActivate = new ArrayList<>();
+
+        if (toggleModules.get() && !modules.get().isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : modules.get()) {
+                if (module.isActive()) {
+                    module.toggle();
+                    toActivate.add(module);
+                }
+            }
         }
     }
 
     @Override
     public void onDeactivate() {
-        if (toggleBack.get()) {
-            Module step = getStep();
-            if (!step.isActive() && stepWasActive) {
-                step.toggle();
-                stepWasActive = false;
-            }
-            Module stepPlus = getStepPlus();
-            if (!stepPlus.isActive() && stepPlusWasActive) {
-                stepPlus.toggle();
-                stepPlusWasActive = false;
-            }
-            Module speed = getSpeed();
-            if (!speed.isActive() && speedWasActive) {
-                speed.toggle();
-                speedWasActive = false;
-            }
-            Module strafe = getStrafe();
-            if (!strafe.isActive() && strafeWasActive) {
-                strafe.toggle();
-                strafeWasActive = false;
+        if (toggleBack.get() && !toActivate.isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : toActivate) {
+                if (!module.isActive()) {
+                    module.toggle();
+                }
             }
         }
     }
