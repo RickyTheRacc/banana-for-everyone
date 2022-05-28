@@ -5,7 +5,8 @@
   "client": [
     "AutoRespawnMixin",
     "CriticalsMixin",
-    "FreecamMixin"
+    "FreecamMixin",
+    "SpeedMineMixin"
   ],
   "injectors": {
     "defaultRequire": 1
