@@ -3,7 +3,7 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.ServerUtils.BPlusServerUtils;
+import bananaplus.utils.serverutils.BPlusServerUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;

@@ -3,7 +3,7 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import baritone.api.BaritoneAPI;
 import bananaplus.utils.BPlusPlayerUtils;
-import bananaplus.utils.ServerUtils.BPlusServerUtils;
+import bananaplus.utils.serverutils.BPlusServerUtils;
 import bananaplus.utils.TimerUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;

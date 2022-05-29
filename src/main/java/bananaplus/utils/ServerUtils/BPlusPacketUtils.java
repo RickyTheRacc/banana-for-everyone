@@ -1,4 +1,4 @@
-package bananaplus.utils.ServerUtils;
+package bananaplus.utils.serverutils;
 
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;

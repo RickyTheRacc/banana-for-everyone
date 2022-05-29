@@ -1,6 +1,6 @@
 package bananaplus.utils;
 
-import bananaplus.utils.ServerUtils.BPlusPacketUtils;
+import bananaplus.utils.serverutils.BPlusPacketUtils;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;

@@ -349,7 +349,7 @@ public class MonkeTotem extends Module {
     }
 
     private float holeModifier() {
-        // Todo : implement the ping sync util from ServerUtils
+        // Todo : implement the ping sync util from serverutils
 
         if (inSingleBedrock.get() > 0 && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Unbreakable)) return inSingleBedrock.get().floatValue();
         else if (inSingleHole.get() > 0 && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any)) return inSingleHole.get().floatValue();

@@ -1,4 +1,4 @@
-package bananaplus.utils.ServerUtils;
+package bananaplus.utils.serverutils;
 
 import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.utils.world.TickRate;

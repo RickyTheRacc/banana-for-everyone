@@ -2,7 +2,7 @@ package bananaplus.modules.misc;
 
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.ServerUtils.BPlusPacketUtils;
+import bananaplus.utils.serverutils.BPlusPacketUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
