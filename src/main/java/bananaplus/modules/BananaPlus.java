@@ -64,7 +64,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new CityESPPlus());
 		Modules.get().add(new HoleESPPlus());
 		Modules.get().add(new MonkeBurrow());
-		Modules.get().add(new MonkeDetector());
 		Modules.get().add(new Monkhand());
 		Modules.get().add(new MonkeSleeper());
 		Modules.get().add(new MonkeTotem());
