@@ -30,6 +30,7 @@ public class AfkLog extends Module {
             .defaultValue(1000)
             .range(-2147483648, 2147483647)
             .sliderRange(-2147483648, 2147483647)
+            .noSlider()
             .build()
     );
 
@@ -39,6 +40,7 @@ public class AfkLog extends Module {
             .defaultValue(1000)
             .range(-2147483648, 2147483647)
             .sliderRange(-2147483648, 2147483647)
+            .noSlider()
             .build()
     );
 

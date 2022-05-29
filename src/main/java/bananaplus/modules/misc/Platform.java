@@ -267,10 +267,10 @@ public class Platform extends Module {
     );
 
     private final Setting<SettingColor> placeColor = sgRender.add(new ColorSetting.Builder()
-            .name("place-box-color")
+            .name("place-side-color")
             .description("The color of placing blocks.")
             .defaultValue(new SettingColor(255, 255, 255, 25))
-            .visible(render::get)
+            .visible(() -> shapeMode.get() != ShapeMode.Sides && render.get())
             .build()
     );
 
@@ -278,7 +278,7 @@ public class Platform extends Module {
             .name("place-line-color")
             .description("The color of placing line.")
             .defaultValue(new SettingColor(255, 255, 255, 150))
-            .visible(render::get)
+            .visible(() -> shapeMode.get() != ShapeMode.Sides && render.get())
             .build()
     );
 

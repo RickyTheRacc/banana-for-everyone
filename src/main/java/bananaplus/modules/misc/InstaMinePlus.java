@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class
-InstaMineBypass extends Module {
+InstaMinePlus extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgDelay = settings.createGroup("Delays");
     private final SettingGroup sgRender = settings.createGroup("Render");
@@ -125,8 +125,8 @@ InstaMineBypass extends Module {
     );
 
 
-    public InstaMineBypass() {
-        super(BananaPlus.MISC, "insta-mine-bypass", "Attempts to bypass instant mine.");
+    public InstaMinePlus() {
+        super(BananaPlus.MISC, "insta-mine+", "Attempts to bypass instant mine.");
     }
 
 

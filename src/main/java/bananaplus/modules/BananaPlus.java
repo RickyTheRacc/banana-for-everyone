@@ -89,8 +89,8 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new BindClickExtra());
 		Modules.get().add(new BPrefix());
 		Modules.get().add(new BindClickFriend());
-		Modules.get().add(new InstaMineBypass());
-		Modules.get().add(new LightningDeaths());
+		Modules.get().add(new InstaMinePlus());
+		Modules.get().add(new KillEffects());
 		Modules.get().add(new MonkeFlight());
 		Modules.get().add(new OneClickEat());
 		Modules.get().add(new Platform());

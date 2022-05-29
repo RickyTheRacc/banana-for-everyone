@@ -30,6 +30,7 @@ public class BurrowESP extends Module {
             .name("side-color")
             .description("The side color of the rendering.")
             .defaultValue(new SettingColor(230, 0, 255, 5))
+            .visible(() -> shapeMode.get() != ShapeMode.Lines)
             .build()
     );
 
@@ -37,6 +38,7 @@ public class BurrowESP extends Module {
             .name("line-color")
             .description("The line color of the rendering.")
             .defaultValue(new SettingColor(250, 0, 255, 255))
+            .visible(() -> shapeMode.get() != ShapeMode.Sides)
             .build()
     );
 
@@ -51,7 +53,7 @@ public class BurrowESP extends Module {
             .name("web-side-color")
             .description("The side color of the rendering for webs.")
             .defaultValue(new SettingColor(240, 250, 65, 35))
-            .visible(renderWebbed::get)
+            .visible(() -> shapeMode.get() != ShapeMode.Lines && renderWebbed.get())
             .build()
     );
 
@@ -59,7 +61,7 @@ public class BurrowESP extends Module {
             .name("web-line-color")
             .description("The line color of the rendering for webs.")
             .defaultValue(new SettingColor(0, 0, 0, 0))
-            .visible(renderWebbed::get)
+            .visible(() -> shapeMode.get() != ShapeMode.Sides && renderWebbed.get())
             .build()
     );
 

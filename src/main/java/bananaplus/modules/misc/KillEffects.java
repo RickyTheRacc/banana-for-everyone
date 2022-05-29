@@ -12,7 +12,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 
-public class LightningDeaths extends Module {
+public class KillEffects extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Integer> range = sgGeneral.add(new IntSetting.Builder()
@@ -31,8 +31,8 @@ public class LightningDeaths extends Module {
     );
 
 
-    public LightningDeaths() {
-        super(BananaPlus.MISC, "lightning-deaths", "Spawns a lightning where a player dies.");
+    public KillEffects() {
+        super(BananaPlus.MISC, "kill-effects", "Spawns a lightning where a player dies.");
     }
 
 
