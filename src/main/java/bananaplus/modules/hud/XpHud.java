@@ -19,8 +19,7 @@ public class XpHud extends HudElement {
         .description("Scale of exp bottle counter.")
         .defaultValue(3)
         .min(1)
-        .sliderMin(1)
-        .sliderMax(4)
+        .sliderRange(1,4)
         .build()
     );
 

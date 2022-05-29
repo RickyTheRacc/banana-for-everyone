@@ -15,6 +15,8 @@ import net.minecraft.entity.Entity;
 public class KillEffects extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Integer> range = sgGeneral.add(new IntSetting.Builder()
             .name("range")
             .description("How far away the lightning is allowed to spawn from you.")

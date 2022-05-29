@@ -834,15 +834,14 @@ public class MonkeSleeper extends Module {
             if (blockEntity instanceof BedBlockEntity) {
 
                 BlockPos bedPos = blockEntity.getPos();
-                BlockPos damagePos = bedPos;
 
                 Vec3d bedVec = Vec3d.ofCenter(bedPos);
-                Vec3d damageVec = Vec3d.ofCenter(damagePos);
+                Vec3d damageVec = Vec3d.ofCenter(bedPos);
 
                 if (!isOutOfRange(bedVec, false)) {
                     // Check if it's the foot of the bed, if it is we offset the position to the head
                     if (mc.world.getBlockState(bedPos).get(Properties.BED_PART).equals(BedPart.FOOT)) {
-                        damagePos.offset(mc.world.getBlockState(bedPos).get(Properties.HORIZONTAL_FACING));
+                        bedPos.offset(mc.world.getBlockState(bedPos).get(Properties.HORIZONTAL_FACING));
                     }
 
                     if (!BedUtil.shouldIgnoreSelfBreakDamage()) {

@@ -77,12 +77,13 @@ public class BPlusDamageUtils {
 
         // Multiply damage by difficulty
         damage = getDamageForDifficulty(damage);
-        // Reduce by armour
+        // Reduce by Armor
         damage = DamageUtil.getDamageLeft(damage, (float) player.getArmor(), (float) player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).getValue());
-        // Reduce by resistance
+        // Reduce by Resistance
         damage = resistanceReduction(player, damage);
         // Set the IExplosion
         ((IExplosion) explosion).set(crystal, 6, false);
+        // Reduce by Blast Protection
         damage = blastProtReduction(player, damage, explosion);
 
         return damage < 0 ? 0 : damage;

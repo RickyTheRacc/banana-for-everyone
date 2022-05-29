@@ -12,7 +12,6 @@ import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BindsHud extends HudElement {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -101,9 +100,7 @@ public class BindsHud extends HudElement {
 
         modules.clear();
 
-        for (Module module : Modules.get().getAll().stream().filter(module -> module.keybind.isSet()).collect(Collectors.toList())) {
-            modules.add(module);
-        }
+        modules.addAll(Modules.get().getAll().stream().filter(module -> module.keybind.isSet()).toList());
 
         modules.sort((o1, o2) -> {
             double _1 = getModuleWidth(renderer, o1);
@@ -213,11 +210,11 @@ public class BindsHud extends HudElement {
 
                 Renderer2D.COLOR.quad(Math.min(prevX, x) - 2 - outlineWidth.get(), Math.max(prevX, x) == x ? y : y - outlineWidth.get(),
                         (Math.max(prevX, x) - 2) - (Math.min(prevX, x) - 2 - outlineWidth.get()), outlineWidth.get(),
-                        prevColor, prevColor, color, color); // Left inbetween quad
+                        prevColor, prevColor, color, color); // Left between quad
 
                 Renderer2D.COLOR.quad(Math.min(prevX + prevTextLength, x + textLength) + 2, Math.min(prevX + prevTextLength, x + textLength) == x + textLength ? y : y - outlineWidth.get(),
                         (Math.max(prevX + prevTextLength, x + textLength) + 2 + outlineWidth.get()) - (Math.min(prevX + prevTextLength, x + textLength) + 2), outlineWidth.get(),
-                        prevColor, prevColor, color, color); // Right inbetween quad
+                        prevColor, prevColor, color, color); // Right between quad
             }
         }
 

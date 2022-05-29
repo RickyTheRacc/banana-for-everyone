@@ -12,6 +12,8 @@ import meteordevelopment.orbit.EventHandler;
 public class Twerk extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+
+    // General
     private final Setting<Double> twerkDelay = sgGeneral.add(new DoubleSetting.Builder()
             .name("Twerk Delay")
             .description("In Millis")
@@ -20,7 +22,6 @@ public class Twerk extends Module {
             .sliderRange(2,100)
             .build()
     );
-
 
 
     public Twerk() {
