@@ -5,6 +5,7 @@ import bananaplus.modules.hud.*;
 import bananaplus.modules.hud.stats.*;
 import bananaplus.modules.misc.*;
 import bananaplus.utils.*;
+import bananaplus.utils.AntiNarrator;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.Systems;
@@ -81,7 +82,6 @@ public class BananaPlus extends MeteorAddon {
 		// Misc
 		Modules.get().add(new AfkLog());
 		Modules.get().add(new AntiGlitchBlock());
-		Modules.get().add(new AntiNarrator());
 		Modules.get().add(new AutoFollow());
 		Modules.get().add(new AutoSex());
 		Modules.get().add(new BDiscordPresence());
@@ -103,6 +103,7 @@ public class BananaPlus extends MeteorAddon {
 		// Utils
 	    BPlusDamageUtils.init();
 	    StatsUtils.init();
+		AntiNarrator.init();
 	}
 
 	@Override
