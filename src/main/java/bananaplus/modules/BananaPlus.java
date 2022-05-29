@@ -81,8 +81,7 @@ public class BananaPlus extends MeteorAddon {
 
 		// Misc
 		Modules.get().add(new AfkLog());
-		Modules.get().add(new AntiGhostBlock());
-		Modules.get().add(new AntiInvisBlock());
+		Modules.get().add(new AntiGlitchBlock());
 		Modules.get().add(new AntiNarrator());
 		Modules.get().add(new AutoFollow());
 		Modules.get().add(new AutoSex());

@@ -15,7 +15,7 @@ import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class AntiGhostBlock extends Module {
+public class AntiGlitchBlock extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
 
@@ -67,12 +67,13 @@ public class AntiGhostBlock extends Module {
             .description("Tick delay for checking for ghost blocks.")
             .defaultValue(200)
             .sliderRange(1,2000)
+            .visible(autoToggle::get)
             .build()
     );
 
 
-    public AntiGhostBlock() {
-        super(BananaPlus.MISC, "anti-ghost-block", "Tries to remove nearby ghost blocks.");
+    public AntiGlitchBlock() {
+        super(BananaPlus.MISC, "anti-glitch-block", "Tries to remove nearby glitch blocks.");
     }
 
 
@@ -107,18 +108,21 @@ public class AntiGhostBlock extends Module {
 
         BlockPos pos = mc.player.getBlockPos();
         for (int dz = -horizontalRange.get(); dz <= horizontalRange.get(); dz++)
-            for (int dx = -horizontalRange.get(); dx <= horizontalRange.get(); dx++)
-                for (int dy = -verticalRange.get(); dy <= verticalRange.get(); dy++) {
-                    blockPos.set(pos.getX() + dx, (pos.getY() + underFeet.get()) + dy, pos.getZ() + dz);
-                    BlockState blockState = mc.world.getBlockState(blockPos);
-                    if (!blockState.isAir() && !blockState.isOf(Blocks.BEDROCK)
-                            && ((blockState.getBlock().getBlastResistance() >= 600 && onlyBP.get()) || !onlyBP.get())) {
-                        if (debug.get()) info(String.valueOf(blockPos));
-                        PlayerActionC2SPacket packet = new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK
-                                ,new BlockPos(pos.getX() + dx, (pos.getY() + underFeet.get()) + dy, pos.getZ() + dz), Direction.UP);
+        for (int dx = -horizontalRange.get(); dx <= horizontalRange.get(); dx++)
+        for (int dy = -verticalRange.get(); dy <= verticalRange.get(); dy++) {
+            blockPos.set(pos.getX() + dx, (pos.getY() + underFeet.get()) + dy, pos.getZ() + dz);
+            BlockState blockState = mc.world.getBlockState(blockPos);
+            if (!blockState.isAir() && !blockState.isOf(Blocks.BEDROCK) && ((blockState.getBlock().getBlastResistance() >= 600 && onlyBP.get()) || !onlyBP.get())) {
+                if (debug.get()) info(String.valueOf(blockPos));
+                PlayerActionC2SPacket ghostPacket = new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK
+                ,new BlockPos(pos.getX() + dx, (pos.getY() + underFeet.get()) + dy, pos.getZ() + dz), Direction.UP);
 
-                        conn.sendPacket(packet);
-                    }
-                }
+                PlayerActionC2SPacket invisPacket = new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK
+                ,new BlockPos(pos.getX() + dx, (pos.getY() + underFeet.get()) + dy, pos.getZ() + dz), Direction.UP);
+
+                conn.sendPacket(ghostPacket);
+                conn.sendPacket(invisPacket);
+            }
+        }
     }
 }
