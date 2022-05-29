@@ -115,7 +115,7 @@ public class PostTickKA extends Module {
     );
 
     private final Setting<Boolean> pauseOnCombat = sgGeneral.add(new BoolSetting.Builder()
-            .name("pause-on-combat")
+            .name("pause-baritone")
             .description("Freezes Baritone temporarily until you are finished attacking the entity.")
             .defaultValue(true)
             .build()
