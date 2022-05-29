@@ -19,11 +19,11 @@ import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.player.Rotations;
+import meteordevelopment.meteorclient.utils.world.TickRate;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Tameable;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -213,6 +213,13 @@ public class PostTickKA extends Module {
             .build()
     );
 
+    private final Setting<Boolean> lagPause = sgDelay.add(new BoolSetting.Builder()
+            .name("lag-pause")
+            .description("Whether to pause if the server is not responding.")
+            .defaultValue(true)
+            .build()
+    );
+
     private final Setting<Integer> switchDelay = sgDelay.add(new IntSetting.Builder()
             .name("switch-delay")
             .description("How many ticks to wait before hitting an entity after switching hotbar slots.")
@@ -234,6 +241,7 @@ public class PostTickKA extends Module {
     private boolean wasPathing;
 
 
+
     @Override
     public void onDeactivate() {
         hitDelayTimer = 0;
@@ -243,6 +251,9 @@ public class PostTickKA extends Module {
     @EventHandler
     private void onTick(TickEvent.Pre event) {
         if (!mc.player.isAlive() || PlayerUtils.getGameMode() == GameMode.SPECTATOR) return;
+
+        float timeSinceLastTick = TickRate.INSTANCE.getTimeSinceLastTick();
+        if (timeSinceLastTick >= 1f && lagPause.get()) return;
 
         TargetUtils.getList(targets, this::entityCheck, priority.get(), maxTargets.get());
 
