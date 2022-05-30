@@ -309,19 +309,17 @@ public class BPlusDamageUtils {
             }
         }
 
-            // Check for beds if in nether
-            if (PlayerUtils.getDimension() != Dimension.Overworld) {
-                for (BlockEntity blockEntity : Utils.blockEntities()) {
-                    BlockPos bp = blockEntity.getPos();
-                    Vec3d pos = new Vec3d(bp.getX(), bp.getY(), bp.getZ());
+        // Check for beds if in nether
+        if (PlayerUtils.getDimension() != Dimension.Overworld) {
+            for (BlockEntity blockEntity : Utils.blockEntities()) {
+                BlockPos bp = blockEntity.getPos();
+                Vec3d pos = new Vec3d(bp.getX(), bp.getY(), bp.getZ());
 
-                    if (blockEntity instanceof BedBlockEntity && damageTaken < bedDamage(mc.player, pos)) {
-                        damageTaken = bedDamage(mc.player, pos);
-                    }
+                if (blockEntity instanceof BedBlockEntity && damageTaken < bedDamage(mc.player, pos)) {
+                    damageTaken = bedDamage(mc.player, pos);
                 }
             }
-
-            // Todo : add an option for anchors too
+        }
 
         return damageTaken;
     }

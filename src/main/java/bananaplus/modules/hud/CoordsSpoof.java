@@ -99,13 +99,16 @@ public class CoordsSpoof extends HudElement {
                     left2 = "Nether Pos: ";
                     right2 = accurate.get() ?
                             String.format("%.1f %.1f %.1f", (x / 8.0) + xOffset.get(), y, (z / 8.0) + zOffset.get()) :
-                            String.format("%d %d %d", (int) (x / 8.0) + xOffset.get(), (int) y, (int) (z / 8.0) + zOffset.get());
+                            String.format("%d %d %d", (int) (x / 8.0) + xOffset.get(), (int) y, (int) (z / 8.0) + zOffset.get()
+                    );
                 }
+
                 case Nether -> {
                     left2 = "Overworld Pos: ";
                     right2 = accurate.get() ?
                             String.format("%.1f %.1f %.1f", (x * 8.0) + xOffset.get(), y, (z * 8.0) + zOffset.get()) :
-                            String.format("%d %d %d", (int) (x * 8.0) + xOffset.get(), (int) y, (int) (z * 8.0) + zOffset.get());
+                            String.format("%d %d %d", (int) (x * 8.0) + xOffset.get(), (int) y, (int) (z * 8.0) + zOffset.get()
+                    );
                 }
             }
         }
