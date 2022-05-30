@@ -27,7 +27,8 @@ public class AntiNarrator {
     // Cancel the keybind to enable narrator
     @EventHandler
     private static void onKey(KeyEvent event) {
-        if (Input.isKeyPressed(GLFW.GLFW_KEY_B) && (getOS() == OS.Mac) ? Input.isKeyPressed(GLFW.GLFW_KEY_LEFT_SUPER) : Input.isKeyPressed(GLFW.GLFW_KEY_LEFT_CONTROL)) event.cancel();
+        if ((Input.isKeyPressed(GLFW.GLFW_KEY_B) && Input.isKeyPressed(GLFW.GLFW_KEY_LEFT_SUPER) && getOS() == OS.Mac)) event.cancel();
+        else if ((Input.isKeyPressed(GLFW.GLFW_KEY_B) && Input.isKeyPressed(GLFW.GLFW_KEY_LEFT_CONTROL))) event.cancel();
     }
 }
 
