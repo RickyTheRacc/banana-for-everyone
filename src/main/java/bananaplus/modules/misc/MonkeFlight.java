@@ -36,9 +36,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-/*
-Great Module ported from Konas and modified by Cally72jhb and then skidded again by B+ :)
-*/
+// Originally taken from Future leak, then Konas, then used / modified by Vector Addon
+// Used with explicit permission from Cally72jhb, original code belongs to them!
 
 public class MonkeFlight extends Module {
     public enum Type {
