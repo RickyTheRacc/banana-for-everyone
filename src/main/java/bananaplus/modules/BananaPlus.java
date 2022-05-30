@@ -35,20 +35,21 @@ public class BananaPlus extends MeteorAddon {
 
 		// HUD
 		HUD hud = Systems.get(HUD.class);
-		hud.elements.add(new CrystalsPs(hud));
 		hud.elements.add(new BananaHud(hud));
-		hud.elements.add(new XpHud(hud));
-		hud.elements.add(new MonkeBombsHud(hud));
-		hud.elements.add(new CoordinatesHud(hud));
-		hud.elements.add(new ObbyHud(hud));
-		hud.elements.add(new EchestHud(hud));
-		hud.elements.add(new HudLogo(hud));
+		hud.elements.add(new BindsHud(hud));
+		hud.elements.add(new CoordsSpoof(hud));
+		hud.elements.add(new CrystalsPs(hud));
 		hud.elements.add(new Deaths(hud));
+		hud.elements.add(new EchestHud(hud));
+		hud.elements.add(new HighScore(hud));
+		hud.elements.add(new HudLogo(hud));
+		hud.elements.add(new KD(hud));
 		hud.elements.add(new Kills(hud));
 		hud.elements.add(new KillStreak(hud));
-		hud.elements.add(new HighScore(hud));
-		hud.elements.add(new KD(hud));
-		hud.elements.add(new BindsHud(hud));
+		hud.elements.add(new MonkeBombsHud(hud));
+		hud.elements.add(new ObbyHud(hud));
+		hud.elements.add(new WelcomeHud(hud));
+		hud.elements.add(new XpHud(hud));
 
 
 		// Combat
