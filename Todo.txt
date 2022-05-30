@@ -18,6 +18,8 @@ Ben's List
 
 Ricky's List
 - Combine middle click friend and extra
-- Combine anti ghost and invis block
 - Make options for the discord presence to look like other clients trolla
-- Complete monke sleeper detailed rendering
+- Make kill and pop manager modules
+- Add auto cope to the auto respawn mixin
+- Fix anti surround toggling off and make it use other blocks
+- Add smart boost to Packet Fly
