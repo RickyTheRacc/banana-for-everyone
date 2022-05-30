@@ -29,7 +29,7 @@ B+ on top, All love <3  -ben
 <br>
 <br>
 ## Credits
-[Cally72jhb](https://github.com/cally72jhb) for Packet Fly <br>
+Packet Fly used with permission from [Cally72jhb](https://github.com/cally72jhb)<br>
 [Meteor Development](https://github.com/MeteorDevelopment) for [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)<br>
 The [Fabric Team](https://github.com/FabricMC) for [Fabric](https://github.com/FabricMC/fabric-loader) and [Yarn](https://github.com/FabricMC/yarn)
 
