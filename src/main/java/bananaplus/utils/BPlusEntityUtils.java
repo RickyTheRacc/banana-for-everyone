@@ -1,6 +1,8 @@
 package bananaplus.utils;
 
+import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.utils.Utils;
+import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,6 +15,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -28,15 +31,23 @@ import java.util.List;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class BPlusEntityUtils {
+    public static Entity deadEntity;
+    public static boolean isDeathPacket(PacketEvent.Receive event) {
+        if (event.packet instanceof EntityStatusS2CPacket packet) {
+            if (packet.getStatus() == 3) {
+                deadEntity = packet.getEntity(mc.world);
+                return deadEntity instanceof PlayerEntity;
+            }
+        }
+        return false;
+    }
 
     public static Direction rayTraceCheck(BlockPos pos, boolean forceReturn) {
         Vec3d eyesPos = new Vec3d(mc.player.getX(), mc.player.getY() + (double)mc.player.getEyeHeight(mc.player.getPose()), mc.player.getZ());
         Direction[] var3 = Direction.values();
-        int var4 = var3.length;
 
-        for(int var5 = 0; var5 < var4; ++var5) {
-            Direction direction = var3[var5];
-            RaycastContext raycastContext = new RaycastContext(eyesPos, new Vec3d((double)pos.getX() + 0.5D + (double)direction.getVector().getX() * 0.5D, (double)pos.getY() + 0.5D + (double)direction.getVector().getY() * 0.5D, (double)pos.getZ() + 0.5D + (double)direction.getVector().getZ() * 0.5D), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, mc.player);
+        for (Direction direction : var3) {
+            RaycastContext raycastContext = new RaycastContext(eyesPos, new Vec3d((double) pos.getX() + 0.5D + (double) direction.getVector().getX() * 0.5D, (double) pos.getY() + 0.5D + (double) direction.getVector().getY() * 0.5D, (double) pos.getZ() + 0.5D + (double) direction.getVector().getZ() * 0.5D), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, mc.player);
             BlockHitResult result = mc.world.raycast(raycastContext);
             if (result != null && result.getType() == HitResult.Type.BLOCK && result.getBlockPos().equals(pos)) {
                 return direction;
@@ -118,63 +129,35 @@ public class BPlusEntityUtils {
     }
 
     public enum BlastResistantType {
-        Any, // Any blastresistant block
+        Any, // Any blast resistant block
         Unbreakable, // Can't be mined
         Mineable, // You can mine the block
-        NotAir // Doesn't matter as long its not air
+        NotAir // Doesn't matter as long it's not air
     }
 
     public static boolean isBlastResistant(BlockPos pos, BlastResistantType type) {
         Block block = mc.world.getBlockState(pos).getBlock();
         switch (type) {
-            case Any -> {
-                /* Necro why not just use .getBlastResistance() >= 600?
-                First of all, there are blocks outside unattainable with vanilla that are blastresistance
-                Im talking bout end portals, barriers, end portals etc
-                Second of all, to get the .getBlastResistance(), the block has to be returned
-                So it's more performance friendly if we matched the block manually rather than getting the blastresistance value
-                 */
-                // I will also try to sort this from the most common to the least common (for pvp) so it can return as soon as it is found
-                // If you are trying to reach a non mutually exclusive condition, you should check the bedrock condition first then the other case
-                // See HoleESP+ or MonkeTotem for reference
-                return block == Blocks.BEDROCK
-                        || block == Blocks.OBSIDIAN
-                        || block == Blocks.CRYING_OBSIDIAN
-                        // Also Necro why don't you just use instanceof AnvilBlock here?
-                        // the 3 different type of anvil is returned first before it is registered into the AnvilBlock category
-                        // so returning each one will be just slightly better, i know not that much, but for a bad pc :sob: every little things matter
-                        || block == Blocks.ANVIL
-                        || block == Blocks.CHIPPED_ANVIL
-                        || block == Blocks.DAMAGED_ANVIL
-                        || block == Blocks.NETHERITE_BLOCK
-                        || block == Blocks.ENDER_CHEST
-                        || block == Blocks.RESPAWN_ANCHOR
-                        || block == Blocks.ANCIENT_DEBRIS
-                        || block == Blocks.ENCHANTING_TABLE
-                        || block == Blocks.END_PORTAL_FRAME;
+            case Any, Mineable -> {
+                return block == Blocks.OBSIDIAN
+                    || block == Blocks.CRYING_OBSIDIAN
+                    || block instanceof AnvilBlock
+                    || block == Blocks.NETHERITE_BLOCK
+                    || block == Blocks.ENDER_CHEST
+                    || block == Blocks.RESPAWN_ANCHOR
+                    || block == Blocks.ANCIENT_DEBRIS
+                    || block == Blocks.ENCHANTING_TABLE
+                    || (block == Blocks.BEDROCK && type == BlastResistantType.Any)
+                    || (block == Blocks.END_PORTAL_FRAME && type == BlastResistantType.Any);
             }
             case Unbreakable -> {
                 return block == Blocks.BEDROCK
-                || block == Blocks.END_PORTAL_FRAME;
-            }
-            case Mineable -> {
-                // Block is blast resistant but not bedrock
-                return block == Blocks.OBSIDIAN
-                        || block == Blocks.CRYING_OBSIDIAN
-                        || block == Blocks.ANVIL
-                        || block == Blocks.CHIPPED_ANVIL
-                        || block == Blocks.DAMAGED_ANVIL
-                        || block == Blocks.NETHERITE_BLOCK
-                        || block == Blocks.ENDER_CHEST
-                        || block == Blocks.RESPAWN_ANCHOR
-                        || block == Blocks.ANCIENT_DEBRIS
-                        || block == Blocks.ENCHANTING_TABLE;
+                    || block == Blocks.END_PORTAL_FRAME;
             }
             case NotAir -> {
                 return block != Blocks.AIR;
             }
         }
-
         return false;
     }
 
@@ -356,6 +339,4 @@ public class BPlusEntityUtils {
                 || item == Items.CHAINMAIL_BOOTS
                 || item == Items.LEATHER_BOOTS;
     }
-
-    public static int DeathPacket = 3;
 }

@@ -15,7 +15,6 @@ public class PositionUtils {
         for (BlockPos pos : posList) {
             if (mc.world.getBlockState(pos).getMaterial().isReplaceable()) return false;
         }
-
         return true;
     }
 
@@ -39,6 +38,7 @@ public class PositionUtils {
 
     public static List<BlockPos> dynamicHeadPos(PlayerEntity targetEntity, boolean predictMovement) {
         List<BlockPos> pos = new ArrayList<>();
+
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         if (predictMovement) {
             Vec3d v = targetEntity.getVelocity();
@@ -63,7 +63,7 @@ public class PositionUtils {
 
     public static List<BlockPos> dynamicBottomPos(PlayerEntity targetEntity, boolean predictMovement) {
         List<BlockPos> pos = new ArrayList<>();
-        // First we get the player's hitbox and contract is by 0.001 because minecraft is weird
+
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         if (predictMovement) {
             Vec3d v = targetEntity.getVelocity();
@@ -81,6 +81,7 @@ public class PositionUtils {
 
     public static List<BlockPos> dynamicFeetPos(PlayerEntity targetEntity, boolean predictMovement) {
         List<BlockPos> pos = new ArrayList<>();
+
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         if (predictMovement) {
             Vec3d v = targetEntity.getVelocity();
@@ -106,6 +107,7 @@ public class PositionUtils {
 
     public static List<BlockPos> dynamicRussianNorth(PlayerEntity targetEntity, boolean plus) {
         List<BlockPos> pos = new ArrayList<>();
+
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // North
         pos.add(new BlockPos(box.minX, box.minY + 0.4, box.minZ - 1).north());
@@ -120,6 +122,7 @@ public class PositionUtils {
 
     public static List<BlockPos> dynamicRussianEast(PlayerEntity targetEntity, boolean plus) {
         List<BlockPos> pos = new ArrayList<>();
+
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // East
         pos.add(new BlockPos(box.maxX + 1, box.minY + 0.4, box.minZ).east());
@@ -134,6 +137,7 @@ public class PositionUtils {
 
     public static List<BlockPos> dynamicRussianSouth(PlayerEntity targetEntity, boolean plus) {
         List<BlockPos> pos = new ArrayList<>();
+
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // South
         pos.add(new BlockPos(box.maxX, box.minY + 0.4, box.maxZ + 1).south());
@@ -148,6 +152,7 @@ public class PositionUtils {
 
     public static List<BlockPos> dynamicRussianWest(PlayerEntity targetEntity, boolean plus) {
         List<BlockPos> pos = new ArrayList<>();
+
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // West
         pos.add(new BlockPos(box.minX - 1, box.minY + 0.4, box.maxZ).west());

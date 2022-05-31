@@ -1,12 +1,13 @@
 package bananaplus.modules.misc;
 
 import bananaplus.modules.BananaPlus;
-import bananaplus.utils.serverutils.BPlusServerUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.world.Timer;
 import meteordevelopment.orbit.EventHandler;
+
+import static bananaplus.utils.TimerUtils.getTPSMatch;
 
 public class TPSSync extends Module {
 
@@ -18,6 +19,6 @@ public class TPSSync extends Module {
     private void onTick(TickEvent.Post event) {
         if (!isActive()) return;
 
-        Modules.get().get(Timer.class).setOverride(BPlusServerUtils.getTPSMatch(true));
+        Modules.get().get(Timer.class).setOverride(getTPSMatch(true));
     }
 }

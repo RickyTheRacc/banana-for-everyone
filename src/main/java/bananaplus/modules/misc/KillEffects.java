@@ -2,7 +2,6 @@ package bananaplus.modules.misc;
 
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.serverutils.BPlusPacketUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -11,6 +10,9 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
+
+import static bananaplus.utils.BPlusEntityUtils.deadEntity;
+import static bananaplus.utils.BPlusEntityUtils.isDeathPacket;
 
 public class KillEffects extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -40,8 +42,8 @@ public class KillEffects extends Module {
 
     @EventHandler
     private void onReceivePacket(PacketEvent.Receive event) {
-        if (BPlusPacketUtils.isDeathPacket(event)) {
-            Entity player = BPlusPacketUtils.deadEntity;
+        if (isDeathPacket(event)) {
+            Entity player = deadEntity;
             if (player == mc.player && avoidSelf.get()) return;
             if (mc.player.distanceTo(player) > range.get()) return;
 

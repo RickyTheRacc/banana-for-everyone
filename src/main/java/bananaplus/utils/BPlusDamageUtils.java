@@ -125,18 +125,6 @@ public class BPlusDamageUtils {
         return bedDamage(player, bed, false, false, false);
     }
 
-    /*
-    // Anchor damage
-
-    public static float anchorDamage(LivingEntity player, Vec3d anchor) {
-        mc.world.removeBlock(new BlockPos(anchor), false);
-        float damage = bedDamage(player, anchor);
-        mc.world.setBlockState(new BlockPos(anchor), Blocks.RESPAWN_ANCHOR.getDefaultState());
-        return damage;
-    }
-
-     */
-
     // Sword damage
 
     public static float getSwordDamage(PlayerEntity entity, boolean charged) {

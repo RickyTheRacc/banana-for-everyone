@@ -3,7 +3,6 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.serverutils.BPlusServerUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -24,6 +23,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.Vec3d;
+
+import static bananaplus.utils.TimerUtils.getTPSMatch;
 
 public class StrafePlus extends Module {
     public enum Mode {
@@ -342,9 +343,9 @@ public class StrafePlus extends Module {
         if (BPlusEntityUtils.isWebbed(mc.player) && !mc.player.isOnGround() && webbedPause.get() == WebbedPause.OnAir) return;
 
         if (mc.player.isOnGround()) {
-           timerClass.setOverride(PlayerUtils.isMoving() ? (groundTimer.get() * BPlusServerUtils.getTPSMatch(TPSSync.get())) : Timer.OFF);
+           timerClass.setOverride(PlayerUtils.isMoving() ? (groundTimer.get() * getTPSMatch(TPSSync.get())) : Timer.OFF);
         } else
-           timerClass.setOverride(PlayerUtils.isMoving() ? (airTimer.get() * BPlusServerUtils.getTPSMatch(TPSSync.get())) : Timer.OFF);
+           timerClass.setOverride(PlayerUtils.isMoving() ? (airTimer.get() * getTPSMatch(TPSSync.get())) : Timer.OFF);
 
         // Vanilla
         if (mode.get() == Mode.Vanilla && !rubberbanded) {

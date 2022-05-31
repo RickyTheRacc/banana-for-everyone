@@ -2,7 +2,6 @@ package bananaplus.modules.combat;
 
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.serverutils.BPlusServerUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -18,6 +17,8 @@ import net.minecraft.item.EnchantedGoldenAppleItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
+
+import static bananaplus.utils.TimerUtils.getTPSMatch;
 
 public class AutoXP extends Module {
     public enum SwitchMode {
@@ -201,7 +202,7 @@ public class AutoXP extends Module {
                     else throwXP(hotbarXP);
 
                     // Reset throw delay
-                    delay = (int) (throwDelay.get() / BPlusServerUtils.getTPSMatch(tpsSync.get()));
+                    delay = (int) (throwDelay.get() / getTPSMatch(tpsSync.get()));
                 }
             }
         } else isRepairing = false;

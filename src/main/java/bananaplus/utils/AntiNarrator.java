@@ -12,22 +12,9 @@ public class AntiNarrator {
         MeteorClient.EVENT_BUS.subscribe(AntiNarrator.class);
     }
 
-    public enum OS {
-        PC,
-        Mac,
-        Other
-    }
-
-    private static OS getOS() {
-        if (Platform.isWindows()) return OS.PC;
-        if (Platform.isMac()) return OS.Mac;
-        return OS.Other;
-    }
-
-    // Cancel the keybind to enable narrator
     @EventHandler
     private static void onKey(KeyEvent event) {
-        if ((Input.isKeyPressed(GLFW.GLFW_KEY_B) && Input.isKeyPressed(GLFW.GLFW_KEY_LEFT_SUPER) && getOS() == OS.Mac)) event.cancel();
+        if ((Input.isKeyPressed(GLFW.GLFW_KEY_B) && Input.isKeyPressed(GLFW.GLFW_KEY_LEFT_SUPER) && Platform.isMac())) event.cancel();
         else if ((Input.isKeyPressed(GLFW.GLFW_KEY_B) && Input.isKeyPressed(GLFW.GLFW_KEY_LEFT_CONTROL))) event.cancel();
     }
 }
