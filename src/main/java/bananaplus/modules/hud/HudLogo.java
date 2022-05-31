@@ -88,7 +88,7 @@ public class HudLogo extends HudElement {
 
 
     // Normal Logos
-    private static final Identifier LOGO = new Identifier("textures", "logo.png");
+    private static final Identifier LOGO = new Identifier("textures", "logo1.png");
     private static final Identifier LOGO2 = new Identifier("textures", "logo2.png");
     private static final Identifier LOGO3 = new Identifier("textures", "logo3.png");
     private static final Identifier CIRCLE = new Identifier("textures", "circle.png");
