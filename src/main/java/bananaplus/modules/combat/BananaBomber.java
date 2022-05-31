@@ -111,6 +111,14 @@ public class BananaBomber extends Module {
         None
     }
 
+    public enum TrapType {
+        BothTrapped,
+        AnyTrapped,
+        TopTrapped,
+        FaceTrapped,
+        Always
+    }
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlace = settings.createGroup("Place");
     private final SettingGroup sgFacePlace = settings.createGroup("Face Place");
@@ -453,10 +461,10 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    public final Setting<CommonEnums.ConTypeInclAlways> burrowBWhen = sgSurround.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
+    public final Setting<TrapType> burrowBWhen = sgSurround.add(new EnumSetting.Builder<TrapType>()
             .name("burrow-break-when")
             .description("When to start burrow breaking.")
-            .defaultValue(CommonEnums.ConTypeInclAlways.Always)
+            .defaultValue(TrapType.Always)
             .visible(burrowBreak::get)
             .build()
     );
@@ -475,10 +483,10 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    public final Setting<CommonEnums.ConTypeInclAlways> surroundBWhen = sgSurround.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
+    public final Setting<TrapType> surroundBWhen = sgSurround.add(new EnumSetting.Builder<TrapType>()
             .name("surround-break-when")
             .description("When to start surround breaking.")
-            .defaultValue(CommonEnums.ConTypeInclAlways.FaceTrapped)
+            .defaultValue(TrapType.FaceTrapped)
             .visible(surroundBreak::get)
             .build()
     );
@@ -516,10 +524,10 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    public final Setting<CommonEnums.ConTypeInclAlways> surroundHWhen = sgSurround.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
+    public final Setting<TrapType> surroundHWhen = sgSurround.add(new EnumSetting.Builder<TrapType>()
             .name("surround-hold-when")
             .description("When to start surround holding.")
-            .defaultValue(CommonEnums.ConTypeInclAlways.AnyTrapped)
+            .defaultValue(TrapType.AnyTrapped)
             .visible(surroundHold::get)
             .build()
     );

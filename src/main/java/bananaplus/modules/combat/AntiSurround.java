@@ -3,7 +3,6 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusPlayerUtils;
-import bananaplus.utils.CommonEnums;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -31,6 +30,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class AntiSurround extends Module {
+    public enum TrapType {
+        BothTrapped,
+        AnyTrapped,
+        TopTrapped,
+        FaceTrapped,
+        Always
+    }
+
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
@@ -54,10 +62,10 @@ public class AntiSurround extends Module {
             .build()
     );
 
-    private final Setting<CommonEnums.ConTypeInclAlways> when = sgGeneral.add(new EnumSetting.Builder<CommonEnums.ConTypeInclAlways>()
+    private final Setting<TrapType> when = sgGeneral.add(new EnumSetting.Builder<TrapType>()
             .name("when")
             .description("When to start button trapping.")
-            .defaultValue(CommonEnums.ConTypeInclAlways.Always)
+            .defaultValue(TrapType.Always)
             .build()
     );
 

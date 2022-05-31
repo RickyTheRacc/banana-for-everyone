@@ -3,7 +3,6 @@ package bananaplus.modules.combat;
 import bananaplus.modules.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusWorldUtils;
-import bananaplus.utils.CommonEnums;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.entity.player.ItemUseCrosshairTargetEvent;
 import meteordevelopment.meteorclient.events.entity.player.StoppedUsingItemEvent;
@@ -34,15 +33,22 @@ public class AntiTrap extends Module {
         Down
     }
 
+    public enum TrapType {
+        BothTrapped,
+        AnyTrapped,
+        TopTrapped,
+        FaceTrapped
+    }
+
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
 
     // General
-    private final Setting<CommonEnums.ConType> trappedWhen = sgGeneral.add(new EnumSetting.Builder<CommonEnums.ConType>()
+    private final Setting<TrapType> trappedWhen = sgGeneral.add(new EnumSetting.Builder<TrapType>()
             .name("activate-on")
             .description("How you must be trapped in order to activate.")
-            .defaultValue(CommonEnums.ConType.BothTrapped)
+            .defaultValue(TrapType.BothTrapped)
             .build()
     );
 
