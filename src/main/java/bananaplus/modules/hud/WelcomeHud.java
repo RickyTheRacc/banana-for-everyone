@@ -1,6 +1,5 @@
 package bananaplus.modules.hud;
 
-import bananaplus.modules.combat.AutoCityPlus;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -33,7 +32,7 @@ public class WelcomeHud extends HudElement {
     private final Setting<String> morningGreeting = sgGeneral.add(new StringSetting.Builder()
             .name("morning-greeting")
             .description("What to display as a greeting during morning hours.")
-            .defaultValue("Good morning")
+            .defaultValue("Good Morning")
             .visible(() -> mode.get() == Mode.Normal)
             .build()
     );
@@ -41,7 +40,7 @@ public class WelcomeHud extends HudElement {
     private final Setting<String> afternoonGreeting = sgGeneral.add(new StringSetting.Builder()
             .name("afternoon-greeting")
             .description("What to display as a greeting during afternoon hours.")
-            .defaultValue("Good afternoon")
+            .defaultValue("Good Afternoon")
             .visible(() -> mode.get() == Mode.Normal)
             .build()
     );
@@ -49,7 +48,7 @@ public class WelcomeHud extends HudElement {
     private final Setting<String> eveningGreeting = sgGeneral.add(new StringSetting.Builder()
             .name("evening-greeting")
             .description("What to display as a greeting during evening hours.")
-            .defaultValue("Good evening")
+            .defaultValue("Good Evening")
             .visible(() -> mode.get() == Mode.Normal)
             .build()
     );
@@ -85,10 +84,10 @@ public class WelcomeHud extends HudElement {
             if (localTime <= 12) leftText = morningGreeting.get();
             if (localTime >= 13 && localTime <= 16) leftText = afternoonGreeting.get();
             if (localTime >= 17) leftText = eveningGreeting.get();
-            leftText = leftText + ",";
         }
-        leftText = leftText + " ";
 
+
+        leftText = leftText + ", ";
         rightText = Modules.get().get(NameProtect.class).getName(mc.getSession().getUsername());
 
         leftWidth = renderer.textWidth(leftText);
