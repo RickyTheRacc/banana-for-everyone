@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.Calendar;
 
-public class HudLogo extends HudElement {
+public class LogoHud extends HudElement {
     public enum Logo {
         Default,
         British,
@@ -82,7 +82,7 @@ public class HudLogo extends HudElement {
     );
 
 
-    public HudLogo(HUD hud) {
+    public LogoHud(HUD hud) {
         super(hud, "banana+-logo", "Displays the Banana+ logo");
     }
 
