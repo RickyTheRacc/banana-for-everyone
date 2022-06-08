@@ -80,7 +80,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AntiGlitchBlock());
 		Modules.get().add(new AutoFollow());
 		Modules.get().add(new AutoSex());
-		Modules.get().add(new Presence());
+		Modules.get().add(new BDiscordPresence());
 		Modules.get().add(new BindClickExtra());
 		Modules.get().add(new BPrefix());
 		Modules.get().add(new BindClickFriend());
