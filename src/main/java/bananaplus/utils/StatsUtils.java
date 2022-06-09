@@ -28,6 +28,7 @@ public class StatsUtils {
 
     private static int ticksPassed;
     public static int crystalsPerSec;
+    public static int first;
 
 
     public static String KD() {
@@ -78,7 +79,6 @@ public class StatsUtils {
     @EventHandler
     private static void onTick(TickEvent.Pre event) {
         if (!Utils.canUpdate()) return;
-        int first = 0;
 
         if (ticksPassed < 21) ticksPassed++;
             else {
