@@ -6,7 +6,8 @@
     "AutoRespawnMixin",
     "CriticalsMixin",
     "FreecamMixin",
-    "SpeedMineMixin"
+    "SpeedMineMixin",
+    "ZoomMixin"
   ],
   "injectors": {
     "defaultRequire": 1
