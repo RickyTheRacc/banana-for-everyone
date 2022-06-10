@@ -42,7 +42,7 @@ public class BananaPlus extends MeteorAddon {
 		hud.elements.add(new HighScore(hud));
 		hud.elements.add(new ItemCounter(hud));
 		hud.elements.add(new LogoHud(hud));
-		hud.elements.add(new KD(hud));
+		hud.elements.add(new KDR(hud));
 		hud.elements.add(new Kills(hud));
 		hud.elements.add(new KillStreak(hud));
 		hud.elements.add(new WelcomeHud(hud));
@@ -80,7 +80,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AntiGlitchBlock());
 		Modules.get().add(new AutoFollow());
 		Modules.get().add(new AutoSex());
-		Modules.get().add(new BDiscordPresence());
+		Modules.get().add(new Presence());
 		Modules.get().add(new BindClickExtra());
 		Modules.get().add(new BPrefix());
 		Modules.get().add(new BindClickFriend());

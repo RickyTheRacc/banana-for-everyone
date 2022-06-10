@@ -9,9 +9,12 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WidgetScreen;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
+import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.misc.DiscordPresence;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
@@ -34,7 +37,7 @@ import net.minecraft.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BDiscordPresence extends Module {
+public class Presence extends Module {
     public enum SelectMode {
         Random,
         Sequential
@@ -49,7 +52,12 @@ public class BDiscordPresence extends Module {
     private final Setting<List<String>> line1Strings = sgLine1.add(new StringListSetting.Builder()
             .name("line-1-messages")
             .description("Messages used for the first line.")
-            .defaultValue("eat ass smoke gas", "B+ On top", "ezing monkes")
+            .defaultValue(
+                    "Owning with Banana+",
+                    "(kills) opps smoked",
+                    "Whipping that (KDR) KDR",
+                    "Could it be any easier?"
+            )
             .onChanged(strings -> recompileLine1())
             .build()
     );
@@ -57,9 +65,9 @@ public class BDiscordPresence extends Module {
     private final Setting<Integer> line1UpdateDelay = sgLine1.add(new IntSetting.Builder()
             .name("line-1-update-delay")
             .description("How fast to update the first line in ticks.")
-            .defaultValue(200)
-            .min(10)
-            .sliderRange(10, 200)
+            .defaultValue(50)
+            .range(10,200)
+            .sliderRange(10,200)
             .build()
     );
 
@@ -75,7 +83,10 @@ public class BDiscordPresence extends Module {
     private final Setting<List<String>> line2Strings = sgLine2.add(new StringListSetting.Builder()
             .name("line-2-messages")
             .description("Messages used for the second line.")
-            .defaultValue("Banana+", "{round({server.tps}, 1)} TPS", "Playing on {server.difficulty} difficulty.", "{server.player_count} Players online")
+            .defaultValue(
+                    "(invite)",
+                    "Banana+ on top!"
+            )
             .onChanged(strings -> recompileLine2())
             .build()
     );
@@ -83,9 +94,9 @@ public class BDiscordPresence extends Module {
     private final Setting<Integer> line2UpdateDelay = sgLine2.add(new IntSetting.Builder()
             .name("line-2-update-delay")
             .description("How fast to update the second line in ticks.")
-            .defaultValue(60)
-            .min(10)
-            .sliderRange(10, 200)
+            .defaultValue(200)
+            .range(10,200)
+            .sliderRange(10,200)
             .build()
     );
 
@@ -97,8 +108,8 @@ public class BDiscordPresence extends Module {
     );
 
 
-    public BDiscordPresence() {
-        super(BananaPlus.MISC, "discord-rpc", "Displays Banana+ as your presence on Discord. U can use these: (killCount) = killStreak, (enemy) = player u killed, (KD) = kills/deaths, u can also use starscript {} see doc down below");
+    public Presence() {
+        super(BananaPlus.MISC, "discord-rpc", "Displays Banana+ as your presence on Discord.");
 
         runInMainMenu = true;
     }
@@ -117,6 +128,8 @@ public class BDiscordPresence extends Module {
 
     @Override
     public void onActivate() {
+        checkRPC();
+
         DiscordIPC.start(870386147069661274L, null);
 
         rpc.setStart(System.currentTimeMillis() / 1000L);
@@ -134,6 +147,12 @@ public class BDiscordPresence extends Module {
 
         line1I = 0;
         line2I = 0;
+    }
+
+    public void checkRPC() {
+        DiscordPresence presence = Modules.get().get(DiscordPresence.class);
+        if (presence == null) return;
+        if (presence.isActive()) presence.toggle();
     }
 
     @Override
@@ -193,10 +212,12 @@ public class BDiscordPresence extends Module {
 
                     try {
                         rpc.setDetails(MeteorStarscript.ss.run(line1Scripts.get(i))
-                                .replace("{killstreak}", StatsUtils.killStreak.toString())
-                                .replace("{KD}", StatsUtils.KD())
-                                .replace("{kills}", StatsUtils.kills.toString())
-                                .replace("{deaths}", StatsUtils.deaths.toString()));
+                                .replace("(killstreak)", StatsUtils.killStreak.toString())
+                                .replace("(KDR)", StatsUtils.KDR())
+                                .replace("(kills)", StatsUtils.kills.toString())
+                                .replace("(deaths)", StatsUtils.deaths.toString())
+                                .replace("(invite)", "https://discord.gg/tByq7JXakQ")
+                                .replace("(highscore)", StatsUtils.highScore.toString()));
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
@@ -217,10 +238,12 @@ public class BDiscordPresence extends Module {
 
                     try {
                         rpc.setState(MeteorStarscript.ss.run(line2Scripts.get(i))
-                                .replace("{killstreak}", StatsUtils.killStreak.toString())
-                                .replace("{KD}", StatsUtils.KD())
-                                .replace("{kills}", StatsUtils.kills.toString())
-                                .replace("{deaths}", StatsUtils.deaths.toString()));
+                                .replace("(killstreak)", StatsUtils.killStreak.toString())
+                                .replace("(KDR)", StatsUtils.KDR())
+                                .replace("(kills)", StatsUtils.kills.toString())
+                                .replace("(deaths)", StatsUtils.deaths.toString())
+                                .replace("(invite)", "https://discord.gg/tByq7JXakQ")
+                                .replace("(highscore)", StatsUtils.highScore.toString()));
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
@@ -272,9 +295,15 @@ public class BDiscordPresence extends Module {
 
     @Override
     public WWidget getWidget(GuiTheme theme) {
-        WButton help = theme.button("Open documentation.");
-        help.action = () -> Util.getOperatingSystem().open("https://github.com/MeteorDevelopment/meteor-client/wiki/Starscript");
+        WHorizontalList buttons = theme.horizontalList();
 
-        return help;
+        WButton meteor = buttons.add(theme.button("Meteor Placeholders")).widget();
+        WButton banana = buttons.add(theme.button("Banana+ Placeholders")).widget();
+
+
+        meteor.action = () -> Util.getOperatingSystem().open("https://github.com/MeteorDevelopment/meteor-client/wiki/Starscript");
+        banana.action = () -> Util.getOperatingSystem().open("https://github.com/Bennooo/banana-for-everyone/wiki#what-are-bananas-placeholders");
+
+        return buttons;
     }
 }

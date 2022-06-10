@@ -97,8 +97,6 @@ public class ItemCounter extends HudElement {
     private void updateCounter() {
         items.get().sort(Comparator.comparingDouble(value -> getName(value).length()));
 
-        for (Item item: items.get())
-
         itemCounter.clear();
         for (Item item: items.get()) itemCounter.add(getName(item) + ": " + InvUtils.find(item).count());
 

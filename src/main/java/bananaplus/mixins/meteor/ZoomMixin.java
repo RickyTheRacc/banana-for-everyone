@@ -30,7 +30,7 @@ public class ZoomMixin extends Module{
     private void onInit(CallbackInfo ci) {
 
         f1 = sgGeneral.add(new BoolSetting.Builder()
-                .name("f1")
+                .name("toggle-hud")
                 .description("Toggles the Heads-Up Display.")
                 .defaultValue(false)
                 .build()

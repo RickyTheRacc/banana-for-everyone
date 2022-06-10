@@ -31,7 +31,7 @@ public class StatsUtils {
     public static int first;
 
 
-    public static String KD() {
+    public static String KDR() {
         if (StatsUtils.deaths < 2) return StatsUtils.kills + ".00";
         else {
             Double doubleKD = (double) StatsUtils.kills / StatsUtils.deaths;
