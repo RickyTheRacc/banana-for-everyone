@@ -38,7 +38,7 @@ public class CevBreaker extends Module {
         Normal,
         Packet,
         Instant
-    };
+    }
 
     private final SettingGroup sgGeneral = settings.createGroup("general");
 
@@ -142,11 +142,8 @@ public class CevBreaker extends Module {
                 if(closestTarget == null) {
                     warning("Can't place obsidian above the target! Disabling...");
                     toggle();
-                    return;
                 }
-                else {
-                    return;
-                }
+                return;
             }
         }
 
@@ -166,11 +163,8 @@ public class CevBreaker extends Module {
                 if(closestTarget == null) {
                     warning("Can't place the crystal! Disabling...");
                     toggle();
-                    return;
                 }
-                else {
-                    return;
-                }
+                return;
             }
             else {
                 if(!offhand && !mainhand) mc.player.getInventory().selectedSlot = crystalSlot;
@@ -179,8 +173,8 @@ public class CevBreaker extends Module {
                 if(swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
                 else mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
                 if(rotate.get()) {
-                    Rotations.rotate(rotation[0], rotation[1], 25, () -> mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result)));
-                } else mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result));
+                    Rotations.rotate(rotation[0], rotation[1], 25, () -> mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result, 0)));
+                } else mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result, 0));
             }
         }
         //Breaking obby

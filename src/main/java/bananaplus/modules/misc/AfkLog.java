@@ -10,7 +10,7 @@ import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.world.Dimension;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 public class AfkLog extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -28,8 +28,8 @@ public class AfkLog extends Module {
             .name("x-coords")
             .description("The X coords it should log you out.")
             .defaultValue(1000)
-            .range(-2147483648, 2147483647)
-            .sliderRange(-2147483648, 2147483647)
+            .range(-29999872,29999872)
+            .sliderRange(-29999872,29999872)
             .noSlider()
             .build()
     );
@@ -38,8 +38,8 @@ public class AfkLog extends Module {
             .name("z-coords")
             .description("The z coords it should log you out.")
             .defaultValue(1000)
-            .range(-2147483648, 2147483647)
-            .sliderRange(-2147483648, 2147483647)
+            .range(-29999872,29999872)
+            .sliderRange(-29999872,29999872)
             .noSlider()
             .build()
     );
@@ -49,12 +49,12 @@ public class AfkLog extends Module {
             .description("The radius of coords from the exact coords it will log you out.")
             .defaultValue(64)
             .min(0)
-            .sliderRange(0, 256)
+            .sliderRange(0,256)
             .build()
     );
 
     private final Setting<Boolean> toggleAutoReconnect = sgGeneral.add(new BoolSetting.Builder()
-            .name("toggle-auto-reconnect")
+            .name("prevent-reconnect")
             .description("Turns off auto reconnect when disconnecting.")
             .defaultValue(true)
             .build()
@@ -79,9 +79,8 @@ public class AfkLog extends Module {
             if (toggleAutoReconnect.get() && Modules.get().isActive(AutoReconnect.class)) Modules.get().get(AutoReconnect.class).toggle();
             if (autoToggle.get()) toggle();
 
-            mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(new LiteralText("[AfkLog] Arrived at destination.")));
+            mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(Text.literal("AfkLog Arrived at destination.")));
         }
-
     }
 
     private boolean xCoordsMatch() {

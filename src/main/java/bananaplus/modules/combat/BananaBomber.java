@@ -1229,7 +1229,7 @@ public class BananaBomber extends Module {
         float bestDamage = 0;
         Entity crystal = null;
 
-        // Find best crystal to break
+        // Find the best crystal to break
         for (Entity entity : mc.world.getEntities()) {
             float damage = getBreakDamage(entity, true);
 
@@ -1282,7 +1282,7 @@ public class BananaBomber extends Module {
                 return 0;
         } else if (debug.get()) warning("Ignoring self break dmg");
 
-        // Check damage to targets and face place
+        // Check damage to target and face place
         float damage = getDamageToTargets(entity.getPos(), true, false);
         boolean facePlaced = (facePlace.get() && CrystalUtils.shouldFacePlace(blockPos) || forceFacePlace.get().isPressed());
 
@@ -1421,7 +1421,7 @@ public class BananaBomber extends Module {
                     return;
             } else if (debug.get()) warning("Ignoring self place dmg");
 
-            // Check damage to targets and face place
+            // Check damage to target and face place
             float damage = getDamageToTargets(vec3d, false, !hasBlock && support.get() == SupportMode.Fast);
 
             boolean facePlaced = (facePlace.get() && CrystalUtils.shouldFacePlace(blockPos) || forceFacePlace.get().isPressed());
@@ -1511,7 +1511,7 @@ public class BananaBomber extends Module {
         // Place
         if (supportBlock == null) {
             // Place crystal
-            mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result));
+            mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result, 0));
 
             if (renderSwing.get()) mc.player.swingHand(hand);
             if (!hideSwings.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));

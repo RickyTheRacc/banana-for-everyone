@@ -253,12 +253,12 @@ public class AutoXP extends Module {
 
         // If it's in the offhand just use that and don't switch
         if (hotbarExp.isOffhand()) {
-            mc.interactionManager.interactItem(mc.player, mc.world, Hand.OFF_HAND);
+            mc.interactionManager.interactItem(mc.player, Hand.OFF_HAND);
         } else {
             // Switching on the mainhand
             if (autoSwitch.get() == SwitchMode.Silent || !(noGapSwitch.get() && mc.player.getMainHandStack().getItem() instanceof EnchantedGoldenAppleItem)) {
                 InvUtils.swap(hotbarExp.slot(), false);
-                mc.interactionManager.interactItem(mc.player, mc.world, Hand.MAIN_HAND);
+                mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 if (autoSwitch.get() == SwitchMode.Silent) InvUtils.swap(prevSlot, false);
             }
         }

@@ -172,7 +172,7 @@ public class CrystalUtils {
                         || (BBomber.surroundBDiagonal.get() && (crystal.equals(pos.east().north()) || crystal.equals(pos.east().south())))
                 ));
 
-        // I tried this one below and it doesn't work very well, still I think there's a better way of doing this tho, this takes so much computing power
+        // I tried this one below, and it doesn't work very well, still I think there's a better way of doing this tho, this takes so much computing power
         /*
         BlockPos targetSurround = EntityUtils.getCityBlock(playerTarget);
 
@@ -183,8 +183,7 @@ public class CrystalUtils {
 
                     // If one of the positions matches the current pos, ignore minDamage
                     if (pos.equals(targetSurround.down().offset(direction))) return true;
-                }
-         */
+                }         */
     }
 
     public static boolean isSurroundBreaking() {

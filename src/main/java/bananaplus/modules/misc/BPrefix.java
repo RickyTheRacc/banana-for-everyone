@@ -8,9 +8,9 @@ import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
-import net.minecraft.text.BaseText;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.registry.MutableRegistry;
 
 public class BPrefix extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -75,11 +75,11 @@ public class BPrefix extends Module {
         ChatUtils.unregisterCustomPrefix("bananaplus.modules");
     }
 
-    public LiteralText getPrefix() {
-        BaseText logo = new LiteralText(prefix.get());
-        BaseText left = new LiteralText(leftBracket.get());
-        BaseText right = new LiteralText(rightBracket.get());
-        LiteralText prefix = new LiteralText("");
+    public Text getPrefix() {
+        MutableText logo = Text.literal(prefix.get());
+        MutableText left = Text.literal(leftBracket.get());
+        MutableText right = Text.literal(rightBracket.get());
+        MutableText prefix = Text.literal("");
 
         logo.setStyle(logo.getStyle().withColor(TextColor.fromRgb(prefixColors.get().getPacked())));
         left.setStyle(left.getStyle().withColor(TextColor.fromRgb(leftBracketColor.get().getPacked())));
