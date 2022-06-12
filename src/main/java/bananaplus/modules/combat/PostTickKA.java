@@ -23,6 +23,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Tameable;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -314,6 +315,10 @@ public class PostTickKA extends Module {
             if (entity instanceof EndermanEntity enderman && !enderman.isAngryAt(mc.player)) return false;
             if (entity instanceof ZombifiedPiglinEntity piglin && !piglin.isAngryAt(mc.player)) return false;
             if (entity instanceof WolfEntity mob && !mob.isAttacking()) return false;
+            if (entity instanceof Tameable tameable
+                    && tameable.getOwnerUuid() != null
+                    && tameable.getOwnerUuid().equals(mc.player.getUuid())
+            ) return false;
         }
         if (entity instanceof PlayerEntity) {
             if (((PlayerEntity) entity).isCreative()) return false;
