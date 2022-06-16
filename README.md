@@ -25,7 +25,7 @@ If you are submitting a bug report, be concise and clear about what causes the i
 ## Personal Note From Ben:
 This started off as a passion project just for me and Necro, and I think it’s insane how far this actually went. From a meteor prefix to a skid to finally a masterpiece. Thank you all for supporting this project, shits unreal! Sad that this shit happened tho.
 
-B+ on top, All love <3  -ben
+B+ on top, All love <3 -ben
 <br>
 <br>
 ## Credits
