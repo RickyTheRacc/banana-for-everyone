@@ -12,6 +12,7 @@ import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.systems.hud.HUD;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,17 @@ public class BananaPlus extends MeteorAddon {
 	@Override
 	public void onInitialize() {
 	    LOG.info("Initializing Banana+ Addon");
+
+
+		// Anti Bedtrap
+		if (FabricLoader.getInstance().isModLoaded("bedtrap")) {
+			LOG.error("Bedtrap Addon was detected during initialization, closing the game.");
+			LOG.error("Please remove Bedtrap from your mods folder to use Banana+.");
+			System.exit(0);
+
+			boolean checktimer = true;
+			while (checktimer) { try { Thread.sleep(1000); } catch (Exception ignored2) {}}
+		}
 
 
 		// Required when using @EventHandler
