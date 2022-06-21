@@ -12,7 +12,7 @@
   "contact": {
     "repo": "https://github.com/Bennooo/banana-for-everyone"
   },
-  "icon": "logo1.png",
+  "icon": "assets/textures/logo2.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
@@ -30,6 +30,6 @@
   "depends": {
     "java": ">=17",
     "minecraft": ">=1.19",
-    "meteor-client": ">=0.4.6"
+    "meteor-client": ">=0.4.9"
   }
 }

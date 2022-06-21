@@ -30,15 +30,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AutoBuild extends Module {
-
     public enum CenterMode {
         Center,
         Snap,
         None
     }
+
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
+
 
     // General
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
@@ -155,6 +157,7 @@ public class AutoBuild extends Module {
             .visible(rotate::get)
             .build()
     );
+
 
     // Toggles
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
