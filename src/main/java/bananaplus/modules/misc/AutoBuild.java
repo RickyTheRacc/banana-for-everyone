@@ -5,7 +5,6 @@ import bananaplus.utils.BPlusEntityUtils;
 import bananaplus.utils.BPlusPlayerUtils;
 import bananaplus.utils.BPlusWorldUtils;
 import bananaplus.utils.PositionUtils;
-import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
@@ -15,7 +14,6 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.misc.HorizontalDirection;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
@@ -23,15 +21,10 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ChorusFruitItem;
-import net.minecraft.item.EnderPearlItem;
-import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.network.packet.s2c.play.DeathMessageS2CPacket;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import javax.management.InstanceNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -185,11 +178,11 @@ public class AutoBuild extends Module {
 
     //TODO: Clean this upp maybe and make the grid nicer with a header and stuff.
 
-    boolean ett = false, tva = false, tree = false, fyra = false, fem = false;
-    boolean ett1 = false,tva1 = false, tree1 = false, fyra1 = false, fem1 = false;
-    boolean ett2 = false, tva2 = false, tree2 = false, fyra2 = false, fem2 = false;
-    boolean ett3 = false, tva3 = false, tree3 = false, fyra3 = false, fem3 = false;
-    boolean ett4 = false, tva4 = false, tree4 = false, fyra4 = false, fem4 = false;
+    boolean ett = false, tva = true, tree = true, fyra = false, fem = false;
+    boolean ett1 = false,tva1 = true, tree1 = false, fyra1 = true, fem1 = false;
+    boolean ett2 = false, tva2 = true, tree2 = true, fyra2 = false, fem2 = false;
+    boolean ett3 = false, tva3 = true, tree3 = false, fyra3 = true, fem3 = false;
+    boolean ett4 = false, tva4 = true, tree4 = true, fyra4 = false, fem4 = false;
 
 
     @Override
