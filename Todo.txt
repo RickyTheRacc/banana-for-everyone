@@ -1,13 +1,12 @@
 Ben's List
 - make a armor message module 
-- auto city ready progress and enum switcher
+- auto city ready progress and enum switcher (rewrite?)
 - put all the other features in sniper in (maybe)
 - rgb logo (hmmm)
 - whois protection (for website)
 - monke hand (fix it)
-- fix cev add the bplus place utils and stuff
 - add back auto ez
-
+- make a render utils and apply it for everything (fade, shrink and something else)
 
 Ricky's List
 - Combine middle click friend and extra
