@@ -2,6 +2,7 @@ package bananaplus.utils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
@@ -59,5 +60,17 @@ public class BPlusPlayerUtils {
         double dz = forward * speed * sin - side * speed * cos;
 
         return new double[] { dx, dz };
+    }
+
+    public static Direction direction(float yaw){
+        yaw = yaw % 360;
+        if (yaw < 0) yaw += 360;
+
+        if (yaw >= 315 || yaw < 45) return Direction.SOUTH;
+        else if (yaw >= 45 && yaw < 135) return Direction.WEST;
+        else if (yaw >= 135 && yaw < 225) return Direction.NORTH;
+        else if (yaw >= 225 && yaw < 315) return Direction.EAST;
+
+        return Direction.SOUTH;
     }
 }

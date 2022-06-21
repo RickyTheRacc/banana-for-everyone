@@ -1,5 +1,7 @@
 package bananaplus.utils;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -13,7 +15,7 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 public class PositionUtils {
     public static boolean allPlaced(List<BlockPos> posList) {
         for (BlockPos pos : posList) {
-            if (mc.world.getBlockState(pos).getMaterial().isReplaceable()) return false;
+            if (mc.world.getBlockState(pos).getBlock() == Blocks.AIR) return false;
         }
         return true;
     }
