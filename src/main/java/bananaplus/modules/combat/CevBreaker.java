@@ -40,8 +40,13 @@ public class CevBreaker extends Module {
         Instant
     }
 
-    private final SettingGroup sgGeneral = settings.createGroup("general");
+    private final SettingGroup sgGeneral = settings.createGroup("General");
+    private final SettingGroup sgBreaking = settings.createGroup("Breaking");
+    private final SettingGroup sgPlacing = settings.createGroup("Placing");
+    private final SettingGroup sgPause = settings.createGroup("Pause");
+    private final SettingGroup sgRender = settings.createGroup("Render");
 
+    //general
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Whether to rotate or not.")
@@ -49,14 +54,43 @@ public class CevBreaker extends Module {
             .build()
     );
 
-    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
+    private final Setting<Boolean> toggleModules = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-modules")
+            .description("Turn off other modules when surround is activated.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> toggleBack = sgGeneral.add(new BoolSetting.Builder()
+            .name("toggle-back-on")
+            .description("Turn the other modules back on when surround is deactivated.")
+            .defaultValue(false)
+            .visible(toggleModules::get)
+            .build()
+    );
+
+    private final Setting<List<Module>> modules = sgGeneral.add(new ModuleListSetting.Builder()
+            .name("modules")
+            .description("Which modules to disable on activation.")
+            /*.defaultValue(new ArrayList<>() {{
+                add(Modules.get().get(Step.class));
+                add(Modules.get().get(StepPlus.class));
+                add(Modules.get().get(Speed.class));
+                add(Modules.get().get(StrafePlus.class));
+            }})*/
+            .visible(toggleModules::get)
+            .build()
+    );
+
+    // Breaking
+    private final Setting<Mode> mode = sgBreaking.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Which mode to use for breaking the obsidian.")
             .defaultValue(Mode.Packet)
             .build()
     );
 
-    private final Setting<Boolean> smartDelay = sgGeneral.add(new BoolSetting.Builder()
+    private final Setting<Boolean> smartDelay = sgBreaking.add(new BoolSetting.Builder()
             .name("smart-delay")
             .description("Waits until the target can get damaged again with breaking the block.")
             .defaultValue(true)
@@ -64,14 +98,7 @@ public class CevBreaker extends Module {
             .build()
     );
 
-    private final Setting<Boolean> swing = sgGeneral.add(new BoolSetting.Builder()
-            .name("swing")
-            .description("Renders your swing client-side.")
-            .defaultValue(true)
-            .build()
-    );
-
-    private final Setting<Integer> switchDelay = sgGeneral.add(new IntSetting.Builder()
+    private final Setting<Integer> switchDelay = sgBreaking.add(new IntSetting.Builder()
             .name("switch-delay")
             .description("How many ticks to wait before hitting an entity after switching hotbar slots.")
             .defaultValue(1)
@@ -81,9 +108,85 @@ public class CevBreaker extends Module {
             .build()
     );
 
+    // Placing
+    private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
+            .name("switch-mode")
+            .description("How to switch to your target block.")
+            .defaultValue(BPlusWorldUtils.SwitchMode.Both)
+            .build()
+    );
+
+    private final Setting<BPlusWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.PlaceMode>()
+            .name("place-mode")
+            .description("How to switch to your target block.")
+            .defaultValue(BPlusWorldUtils.PlaceMode.Both)
+            .build()
+    );
+
+    private final Setting<Boolean> onlyAirPlace = sgPlacing.add(new BoolSetting.Builder()
+            .name("only-air-place")
+            .description("Forces you to only airplace to help with stricter rotations.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<BPlusWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.AirPlaceDirection>()
+            .name("place-direction")
+            .description("Side to try to place at when you are trying to air place.")
+            .defaultValue(BPlusWorldUtils.AirPlaceDirection.Down)
+            .build()
+    );
+
+    private final Setting<Integer> rotationPrio = sgPlacing.add(new IntSetting.Builder()
+            .name("rotation-priority")
+            .description("Rotation priority for Surround+.")
+            .defaultValue(50)
+            .sliderRange(0, 200)
+            .visible(rotate::get)
+            .build()
+    );
+
+    // Pause
+    private final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
+            .name("pause-health")
+            .description("Pauses when you go below a certain health.")
+            .defaultValue(5)
+            .min(0)
+            .build()
+    );
+
+    private final Setting<Boolean> eatPause = sgPause.add(new BoolSetting.Builder()
+            .name("pause-on-eat")
+            .description("Pauses Crystal Aura when eating.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> drinkPause = sgPause.add(new BoolSetting.Builder()
+            .name("pause-on-drink")
+            .description("Pauses Crystal Aura when drinking.")
+            .defaultValue(true)
+            .build()
+    );
+
+    // Render
+    private final Setting<Boolean> swing = sgRender.add(new BoolSetting.Builder()
+            .name("swing")
+            .description("Renders your swing client-side.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Boolean> info = sgRender.add(new BoolSetting.Builder()
+            .name("info")
+            .description("idk info")
+            .defaultValue(true)
+            .build()
+    );
+
 
     public CevBreaker() {
-        super(BananaPlus.COMBAT, "cev-breaker", "Break crystals over a holefag's head to deal massive damage!");
+        super(BananaPlus.COMBAT, "cev-breaker", "Break crystals over a ppl's head to deal massive damage!");
     }
 
 
@@ -92,6 +195,9 @@ public class CevBreaker extends Module {
     private int switchDelayLeft, timer, breakDelayLeft;
     private final List<PlayerEntity> blacklisted = new ArrayList<>();
     private final List<EndCrystalEntity> crystals = new ArrayList<>();
+    public ArrayList<Module> toActivate;
+
+    boolean pause = false;
 
     @EventHandler
     public void onActivate() {
@@ -100,6 +206,28 @@ public class CevBreaker extends Module {
         switchDelayLeft = 0;
         timer = 0;
         blacklisted.clear();
+
+        toActivate = new ArrayList<>();
+
+        if (toggleModules.get() && !modules.get().isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : modules.get()) {
+                if (module.isActive()) {
+                    module.toggle();
+                    toActivate.add(module);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDeactivate() {
+        if (toggleBack.get() && !toActivate.isEmpty() && mc.world != null && mc.player != null) {
+            for (Module module : toActivate) {
+                if (!module.isActive()) {
+                    module.toggle();
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -113,16 +241,23 @@ public class CevBreaker extends Module {
         pickSlot = pickSlot == -1 ? InvUtils.findInHotbar(Items.DIAMOND_PICKAXE).slot() : pickSlot;
 
         if((crystalSlot == -1 && !(mc.player.getOffHandStack().getItem() instanceof EndCrystalItem)) || obsidianSlot == -1 || pickSlot == -1) {
-            warning("No " + (crystalSlot == -1 && !(mc.player.getOffHandStack().getItem() instanceof EndCrystalItem) ? "crystals" : (obsidianSlot == -1 ? "obsidian" :  "pickaxe")) + " found, disabling...");
+            if (info.get()) warning("No " + (crystalSlot == -1 && !(mc.player.getOffHandStack().getItem() instanceof EndCrystalItem) ? "crystals" : (obsidianSlot == -1 ? "obsidian" :  "pickaxe")) + " found, disabling...");
             toggle();
             return;
         }
         getEntities();
         if(closestTarget == null) {
-            error( "No target found, disabling...");
+            if (info.get()) error( "No target found, disabling...");
             toggle();
             return;
         }
+
+        // Check pause settings
+        if (PlayerUtils.shouldPause(false, eatPause.get(), drinkPause.get()) || PlayerUtils.getTotalHealth() <= pauseAtHealth.get()) {
+            if (info.get() && !pause) warning("Pausing");
+            pause = true;
+            return;
+        } else{pause = false;}
 
         BlockPos blockPos = closestTarget.getBlockPos().add(0, 2, 0);
         BlockState blockState = mc.world.getBlockState(blockPos);
@@ -134,13 +269,14 @@ public class CevBreaker extends Module {
                 break;
             }
         }
+
         //Placing obby
         if(!blockState.isOf(Blocks.OBSIDIAN) && !crystalThere && (mc.player.getMainHandStack().getItem().equals(Items.OBSIDIAN) || switchDelayLeft <= 0)) {
-            if(!BPlusWorldUtils.place(blockPos, InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), 50, BPlusWorldUtils.SwitchMode.Client, BPlusWorldUtils.PlaceMode.Client, false, BPlusWorldUtils.AirPlaceDirection.Down, swing.get(), true, true)) {
+            if(!BPlusWorldUtils.place(blockPos, InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), swing.get(), true, true)) {
                 blacklisted.add(closestTarget);
                 getEntities();
                 if(closestTarget == null) {
-                    warning("Can't place obsidian above the target! Disabling...");
+                    if (info.get()) warning("Can't place obsidian above the target! Disabling...");
                     toggle();
                 }
                 return;
@@ -161,7 +297,7 @@ public class CevBreaker extends Module {
                 blacklisted.add(closestTarget);
                 getEntities();
                 if(closestTarget == null) {
-                    warning("Can't place the crystal! Disabling...");
+                    if (info.get()) warning("Can't place the crystal! Disabling...");
                     toggle();
                 }
                 return;
@@ -177,6 +313,7 @@ public class CevBreaker extends Module {
                 } else mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result, 0));
             }
         }
+
         //Breaking obby
         if(blockState.isAir() && mode.get() == Mode.Packet) startedYet = false;
         if((mc.player.getInventory().selectedSlot == pickSlot || switchDelayLeft <= 0) && crystalThere && blockState.isOf(Blocks.OBSIDIAN)) {
@@ -206,6 +343,7 @@ public class CevBreaker extends Module {
                 }
             }
         }
+
         //Breaking the crystal
         BananaBomber BBomber = Modules.get().get(BananaBomber.class);
         if(BBomber.bestTarget == null || BBomber.bestTarget != closestTarget || BBomber.BminDamage.get() >= 6) {
