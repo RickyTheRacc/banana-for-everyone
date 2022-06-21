@@ -1,19 +1,12 @@
 Ben's List
-- port and fix armor message
-- chams minor change
+- make a armor message module 
 - auto city ready progress and enum switcher
-- double burrow
-- custom burrow
-- warnings?
-- surround web protect
-- auto tnt trap
-- anti-crystal
-- put all the other features in sniper in
-- rgb logo
-- auto build
-- auto trap hitbox check
+- put all the other features in sniper in (maybe)
+- rgb logo (hmmm)
 - whois protection (for website)
-- monke totem (hold totem ticks & min health required to unlock the locked stated)
+- monke hand (fix it)
+- fix cev add the bplus place utils and stuff
+- add back auto ez
 
 
 Ricky's List
