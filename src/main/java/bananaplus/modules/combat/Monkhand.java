@@ -55,6 +55,19 @@ public class Monkhand extends Module {
             .build()
     );
 
+    private final Setting<Boolean> allowSwap = sgGeneral.add(new BoolSetting.Builder()
+            .name("allow-Swap")
+            .description("Allows you to swap what item you are holding in your offhand.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> info = sgGeneral.add(new BoolSetting.Builder()
+            .name("info")
+            .description("idk info")
+            .defaultValue(true)
+            .build()
+    );
 
     // Gap
     private final Setting<Boolean> allowCrapples = sgGap.add(new BoolSetting.Builder()
@@ -150,6 +163,8 @@ public class Monkhand extends Module {
     private boolean sentMessage;
     private Item currentItem;
 
+    private boolean swapped;
+    private boolean key;
 
     @Override
     public void onActivate() {
@@ -165,6 +180,33 @@ public class Monkhand extends Module {
         AutoTotem autoTotem = modules.get(AutoTotem.class);
         MonkeTotem monkeTotem = modules.get(MonkeTotem.class);
 
+        // Swap
+        if (allowSwap.get()){
+
+            if (!mc.options.swapHandsKey.isPressed()) key = false;
+
+            if (mc.options.swapHandsKey.isPressed()
+                    && swapped == false
+                    && key == false
+                    && (mc.player.getOffHandStack().getItem() == currentItem.item || mc.player.getOffHandStack().getItem() == fallbackItem.get().item)){
+                swapped = true;
+                key = true;
+                if (info.get()) info("Swapped! Swap with one of the chosen items to return to normal.");
+            }
+
+            if (mc.options.swapHandsKey.isPressed()
+                    && swapped == true
+                    && key == false
+                    && (mc.player.getMainHandStack().getItem() == currentItem.item || mc.player.getMainHandStack().getItem() == fallbackItem.get().item)){
+                swapped = false;
+                key = true;
+                if (info.get()) info("Swapped back!");
+            }
+        }
+        else {
+            swapped = false;
+        }
+
         // Gapples
         if (mainHand instanceof SwordItem && swordGap.get() && allowGap()) currentItem = Item.EGap;
         else if (mainHand instanceof AxeItem && axeGap.get() && allowGap()) currentItem = Item.EGap;
@@ -179,7 +221,7 @@ public class Monkhand extends Module {
         else currentItem = item.get();
 
         // Checking offhand item
-        if (mc.player.getOffHandStack().getItem() != currentItem.item) {
+        if (mc.player.getOffHandStack().getItem() != currentItem.item && (swapped == false || !allowSwap.get())) {
             FindItemResult item = InvUtils.find(itemStack -> itemStack.getItem() == currentItem.item, hotbar.get() ? 0 : 9, 35);
 
             // No offhand item
@@ -191,7 +233,7 @@ public class Monkhand extends Module {
 
             if (!item.found()) {
                 if (!sentMessage) {
-                    warning("Chosen item not found.");
+                    if (info.get()) warning("Chosen item not found.");
                     sentMessage = true;
                 }
             }
@@ -252,7 +294,8 @@ public class Monkhand extends Module {
         Obsidian(Items.OBSIDIAN),
         Firework(Items.FIREWORK_ROCKET),
         Web(Items.COBWEB),
-        Shield(Items.SHIELD);
+        Shield(Items.SHIELD),
+        GCarrot(Items.GOLDEN_CARROT);
 
         final net.minecraft.item.Item item;
 
