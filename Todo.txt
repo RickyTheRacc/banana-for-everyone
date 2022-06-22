@@ -4,7 +4,6 @@ Ben's List
 - put all the other features in sniper in (maybe)
 - rgb logo (hmmm)
 - whois protection (for website)
-- monke hand (fix it)
 - add back auto ez
 - make a render utils and apply it for everything (fade, shrink and something else)
 
