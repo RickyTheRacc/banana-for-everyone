@@ -13,7 +13,6 @@ import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.EnchantedGoldenAppleItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,7 +20,7 @@ import net.minecraft.util.Hand;
 
 import static bananaplus.utils.TimerUtils.getTPSMatch;
 
-public class AutoXP extends Module {
+public class XPThrower extends Module {
     public enum SwitchMode {
         Normal,
         Silent,
@@ -42,8 +41,8 @@ public class AutoXP extends Module {
     );
 
     public final Setting<Boolean> justThrow = sgGeneral.add(new BoolSetting.Builder()
-            .name("just-throw")
-            .description("Throws xp even tho nothing needs repairing")
+            .name("force-throw")
+            .description("Throw XP even if your items are fully repaired.")
             .defaultValue(false)
             .build()
     );
@@ -168,8 +167,8 @@ public class AutoXP extends Module {
     );
 
 
-    public AutoXP() {
-        super(BananaPlus.COMBAT, "auto-XP", "Throw experience bottles to repair your armor and tools.");
+    public XPThrower() {
+        super(BananaPlus.COMBAT, "XP-thrower", "Throw XP bottles to repair your armor and tools.");
     }
 
 

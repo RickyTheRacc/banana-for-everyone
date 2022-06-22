@@ -70,6 +70,7 @@ public class Monkhand extends Module {
             .build()
     );
 
+
     // Gap
     private final Setting<Boolean> allowCrapples = sgGap.add(new BoolSetting.Builder()
             .name("allow-crapples")
@@ -154,17 +155,18 @@ public class Monkhand extends Module {
             .build()
     );
 
+
     // Misc
-    private final Setting<Boolean> autoXPOnXp = sgMisc.add(new BoolSetting.Builder()
-            .name("Xp-on-Auto-XP")
-            .description("Holds Bottles of Enchanting when Auto XP is on.")
+    private final Setting<Boolean> xpOnXP = sgMisc.add(new BoolSetting.Builder()
+            .name("XP-on-XP-thrower")
+            .description("Holds experience bottles if Auto XP is being used.")
             .defaultValue(false)
-            .visible(() -> !Modules.get().get(AutoXP.class).replenish.get())
+            .visible(() -> !Modules.get().get(XPThrower.class).replenish.get())
             .build()
     );
 
     private final Setting<Boolean> rocketBow = sgMisc.add(new BoolSetting.Builder()
-            .name("Crossbow-rocket")
+            .name("crossbow-rocket")
             .description("Holds a rocket if you are holding a crossbow.")
             .defaultValue(false)
             .build()
@@ -196,7 +198,7 @@ public class Monkhand extends Module {
         Modules modules = Modules.get();
         AutoTotem autoTotem = modules.get(AutoTotem.class);
         MonkeTotem monkeTotem = modules.get(MonkeTotem.class);
-        AutoXP autoXP = modules.get(AutoXP.class);
+        XPThrower xpthrower = modules.get(XPThrower.class);
 
         // Swap
         if (allowSwap.get()){
@@ -230,7 +232,7 @@ public class Monkhand extends Module {
         else if (mainHand instanceof AxeItem && axeGap.get() && allowGap()) currentItem = Item.EGap;
 
         // Xp
-        else if (autoXPOnXp.get() && autoXP.isActive() && (!autoXP.isRepaired() || autoXP.justThrow.get()) && !autoXP.replenish.get() && autoXP.throwBind.get().isPressed()) currentItem = Item.Exp;
+        else if (xpOnXP.get() && xpthrower.isActive() && (!xpthrower.isRepaired() || xpthrower.justThrow.get()) && !xpthrower.replenish.get() && xpthrower.throwBind.get().isPressed()) currentItem = Item.Exp;
 
         // Crystals
         else if ((modules.isActive(CrystalAura.class) && crystalCa.get() || modules.isActive(BananaBomber.class) && crystalCa.get())
