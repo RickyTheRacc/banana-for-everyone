@@ -24,6 +24,7 @@ public class Monkhand extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgGap = settings.createGroup("Gap");
     private final SettingGroup sgCrystal = settings.createGroup("Crystal");
+    private final SettingGroup sgMisc = settings.createGroup("Misc");
 
 
     // General
@@ -153,6 +154,22 @@ public class Monkhand extends Module {
             .build()
     );
 
+    // Misc
+    private final Setting<Boolean> autoXPOnXp = sgMisc.add(new BoolSetting.Builder()
+            .name("Xp-on-Auto-XP")
+            .description("Holds Bottles of Enchanting when Auto XP is on.")
+            .defaultValue(false)
+            .visible(() -> !Modules.get().get(AutoXP.class).replenish.get())
+            .build()
+    );
+
+    private final Setting<Boolean> rocketBow = sgMisc.add(new BoolSetting.Builder()
+            .name("Crossbow-rocket")
+            .description("Holds a rocket if you are holding a crossbow.")
+            .defaultValue(false)
+            .build()
+    );
+
 
     public Monkhand() {
         super(BananaPlus.COMBAT, "monkhand", "Allows you to hold specified items in your offhand.");
@@ -179,6 +196,7 @@ public class Monkhand extends Module {
         Modules modules = Modules.get();
         AutoTotem autoTotem = modules.get(AutoTotem.class);
         MonkeTotem monkeTotem = modules.get(MonkeTotem.class);
+        AutoXP autoXP = modules.get(AutoXP.class);
 
         // Swap
         if (allowSwap.get()){
@@ -211,11 +229,17 @@ public class Monkhand extends Module {
         if (mainHand instanceof SwordItem && swordGap.get() && allowGap()) currentItem = Item.EGap;
         else if (mainHand instanceof AxeItem && axeGap.get() && allowGap()) currentItem = Item.EGap;
 
+        // Xp
+        else if (autoXPOnXp.get() && autoXP.isActive() && (!autoXP.isRepaired() || autoXP.justThrow.get()) && !autoXP.replenish.get() && autoXP.throwBind.get().isPressed()) currentItem = Item.Exp;
+
         // Crystals
         else if ((modules.isActive(CrystalAura.class) && crystalCa.get() || modules.isActive(BananaBomber.class) && crystalCa.get())
                 || mc.interactionManager.isBreakingBlock() && crystalMine.get()
                 || modules.isActive(CevBreaker.class) && crystalCev.get()
         ) currentItem = Item.Crystal;
+
+        // Rocket
+        else if ((mc.player.getMainHandStack().getItem() instanceof CrossbowItem) && rocketBow.get()) currentItem = Item.Firework;
 
         // Normal Thing
         else currentItem = item.get();

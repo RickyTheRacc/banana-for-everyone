@@ -13,6 +13,7 @@ import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.EnchantedGoldenAppleItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -33,14 +34,21 @@ public class AutoXP extends Module {
 
 
     // General
-    private final Setting<Keybind> throwBind = sgGeneral.add(new KeybindSetting.Builder()
+    public final Setting<Keybind> throwBind = sgGeneral.add(new KeybindSetting.Builder()
             .name("keybind")
             .description("The keybind to throw XP.")
             .defaultValue(Keybind.none())
             .build()
     );
 
-    private final Setting<Boolean> replenish = sgGeneral.add(new BoolSetting.Builder()
+    public final Setting<Boolean> justThrow = sgGeneral.add(new BoolSetting.Builder()
+            .name("just-throw")
+            .description("Throws xp even tho nothing needs repairing")
+            .defaultValue(false)
+            .build()
+    );
+
+    public final Setting<Boolean> replenish = sgGeneral.add(new BoolSetting.Builder()
             .name("replenish")
             .description("Automatically move XP into your hotbar.")
             .defaultValue(false)
@@ -57,16 +65,22 @@ public class AutoXP extends Module {
             .build()
     );
 
-
     private final Setting<Integer> maxThreshold = sgGeneral.add(new IntSetting.Builder()
             .name("max-durability")
             .description("The maximum durability to repair items to.")
             .defaultValue(80)
             .range(1,100)
             .sliderRange(1,100)
+            .visible(()-> !justThrow.get())
             .build()
     );
 
+    public final Setting<Boolean> heldItem = sgGeneral.add(new BoolSetting.Builder()
+            .name("repair held")
+            .description("Repairs the item you are holding in your main hand.")
+            .defaultValue(false)
+            .build()
+    );
 
     // Player
     private final Setting<SwitchMode> autoSwitch = sgPlayer.add(new EnumSetting.Builder<SwitchMode> ()
@@ -182,7 +196,7 @@ public class AutoXP extends Module {
         if(shouldWait()) return;
 
         // Activate if the bind is pressed or if a piece of armor is below the threshold
-        if (throwBind.get().isPressed() && !isRepaired()) {
+        if (throwBind.get().isPressed() && (!isRepaired() || justThrow.get())) {
             isRepairing = true;
 
             FindItemResult XP = InvUtils.find(Items.EXPERIENCE_BOTTLE);
@@ -208,16 +222,18 @@ public class AutoXP extends Module {
         } else isRepairing = false;
     }
 
-    private boolean isRepaired() {
+    public boolean isRepaired() {
         ItemStack helmet = mc.player.getInventory().getArmorStack(3);
         ItemStack chestplate = mc.player.getInventory().getArmorStack(2);
         ItemStack leggings = mc.player.getInventory().getArmorStack(1);
         ItemStack boots = mc.player.getInventory().getArmorStack(0);
+        ItemStack tool = mc.player.getMainHandStack();
 
         boolean helmetRepaired;
         boolean chestplateRepaired;
         boolean leggingsRepaired;
         boolean bootsRepaired;
+        boolean toolsRepaired;
 
         if (EnchantmentHelper.getLevel(Enchantments.MENDING, helmet) > 0) {
             helmetRepaired = (float) (helmet.getMaxDamage() - helmet.getDamage()) / helmet.getMaxDamage() * 100 >= maxThreshold.get();
@@ -235,7 +251,13 @@ public class AutoXP extends Module {
             bootsRepaired = (float) (boots.getMaxDamage() - boots.getDamage()) / boots.getMaxDamage() * 100 >= maxThreshold.get();
         } else bootsRepaired = true;
 
-        return helmetRepaired && chestplateRepaired && leggingsRepaired && bootsRepaired;
+        if (heldItem.get()) {
+            if (EnchantmentHelper.getLevel(Enchantments.MENDING, tool) > 0) {
+                toolsRepaired = (float) (tool.getMaxDamage() - tool.getDamage()) / tool.getMaxDamage() * 100 >= maxThreshold.get();
+            } else toolsRepaired = true;
+        } else toolsRepaired = true;
+
+        return helmetRepaired && chestplateRepaired && leggingsRepaired && bootsRepaired && toolsRepaired;
     }
 
     private boolean shouldWait() {
