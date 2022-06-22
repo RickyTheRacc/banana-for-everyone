@@ -12,18 +12,19 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.world.BlockUtils;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.SkeletonHorseEntity;
 import net.minecraft.entity.mob.ZombieHorseEntity;
 import net.minecraft.entity.passive.*;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.MinecartEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
+import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 
@@ -48,6 +49,13 @@ public class OneClickEat extends Module {
             .build()
     );
 
+    private final Setting<Boolean> ignoreMobs = sgGeneral.add(new BoolSetting.Builder()
+            .name("ignore-Mobs")
+            .description("Dose not let u eat if u are looking at mobs (players not included). Will make a better solution later.")
+            .defaultValue(false)
+            .build()
+    );
+
     private final Setting<Boolean> onlyGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Only allows you to one click eat on ground.")
@@ -60,12 +68,11 @@ public class OneClickEat extends Module {
         super(BananaPlus.MISC, "one-click-eat", "Allows you to eat a consumable with one click");
     }
 
-
     private boolean isUsing;
     private boolean pressed;
 
     private boolean isBerry() {
-        return mc.player.getMainHandStack().getItem() == Items.SWEET_BERRIES || mc.player.getOffHandStack().getItem() == Items.SWEET_BERRIES;
+        return mc.player.getMainHandStack().getItem() == Items.SWEET_BERRIES || mc.player.getOffHandStack().getItem() == Items.SWEET_BERRIES || mc.player.getMainHandStack().getItem() == Items.GLOW_BERRIES || mc.player.getOffHandStack().getItem() == Items.GLOW_BERRIES;
     }
 
     private boolean isPotato() {
@@ -94,8 +101,67 @@ public class OneClickEat extends Module {
                 || mc.world.getBlockState(pos).isOf(Blocks.FARMLAND);
     }
 
+    private boolean isGround(BlockPos pos){
+        return mc.player.getMainHandStack().getItem() instanceof BlockItem && !mc.world.getBlockState(pos).isOf(Blocks.AIR);
+    }
+
     private boolean isFarmland(BlockPos pos) {
         return mc.world.getBlockState(pos).isOf(Blocks.FARMLAND);
+    }
+
+    private boolean mainHandFull(){
+
+        // maybe add armor item?
+        return  mc.player.getMainHandStack().getItem() == Items.TRIDENT
+                || mc.player.getMainHandStack().getItem() == Items.BOW
+                || mc.player.getMainHandStack().getItem() == Items.CROSSBOW
+                || mc.player.getMainHandStack().getItem() instanceof GoatHornItem
+                || mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE
+                || mc.player.getMainHandStack().getItem() instanceof BucketItem
+                || mc.player.getMainHandStack().getItem() == Items.WRITABLE_BOOK
+                || mc.player.getMainHandStack().getItem() == Items.WRITTEN_BOOK
+                || mc.player.getMainHandStack().getItem() == Items.FIREWORK_ROCKET
+                || mc.player.getMainHandStack().getItem() == Items.LEAD
+                || mc.player.getMainHandStack().getItem() == Items.NAME_TAG
+                || mc.player.getMainHandStack().getItem() instanceof BoatItem
+                || mc.player.getMainHandStack().getItem() instanceof MinecartItem
+                || mc.player.getMainHandStack().getItem() == Items.SADDLE
+                || mc.player.getMainHandStack().getItem() == Items.ARMOR_STAND
+                || mc.player.getMainHandStack().getItem() == Items.SHIELD
+                || mc.player.getMainHandStack().getItem() == Items.SHEARS
+                || mc.player.getMainHandStack().getItem() == Items.ITEM_FRAME
+                || mc.player.getMainHandStack().getItem() instanceof BannerItem
+                || mc.player.getMainHandStack().getItem() == Items.PAINTING
+                || mc.player.getMainHandStack().getItem() == Items.SPYGLASS
+                || mc.player.getMainHandStack().getItem() == Items.FISHING_ROD
+                || mc.player.getMainHandStack().getItem() == Items.FLINT_AND_STEEL
+                || mc.player.getMainHandStack().getItem() instanceof SpawnEggItem
+                || mc.player.getMainHandStack().getItem() == Items.TURTLE_EGG;
+    }
+
+    private boolean canChangeBlock(BlockPos pos){
+        return ((mc.world.getBlockState(pos).isOf(Blocks.GRASS_BLOCK) // Shovel
+                || mc.world.getBlockState(pos).isOf(Blocks.DIRT)
+                || mc.world.getBlockState(pos).isOf(Blocks.PODZOL))
+                && (mc.player.getMainHandStack().getItem() instanceof ShovelItem
+                || mc.player.getOffHandStack().getItem() instanceof ShovelItem))
+
+                || ((mc.world.getBlockState(pos).isOf(Blocks.ACACIA_LOG) // Axe
+                || mc.world.getBlockState(pos).isOf(Blocks.BIRCH_LOG)
+                || mc.world.getBlockState(pos).isOf(Blocks.DARK_OAK_LOG)
+                || mc.world.getBlockState(pos).isOf(Blocks.JUNGLE_LOG)
+                || mc.world.getBlockState(pos).isOf(Blocks.MANGROVE_LOG)
+                || mc.world.getBlockState(pos).isOf(Blocks.OAK_LOG)
+                || mc.world.getBlockState(pos).isOf(Blocks.SPRUCE_LOG)
+                || mc.world.getBlockState(pos).isOf(Blocks.ACACIA_WOOD)
+                || mc.world.getBlockState(pos).isOf(Blocks.BIRCH_WOOD)
+                || mc.world.getBlockState(pos).isOf(Blocks.DARK_OAK_WOOD)
+                || mc.world.getBlockState(pos).isOf(Blocks.JUNGLE_WOOD)
+                || mc.world.getBlockState(pos).isOf(Blocks.MANGROVE_WOOD)
+                || mc.world.getBlockState(pos).isOf(Blocks.OAK_WOOD)
+                || mc.world.getBlockState(pos).isOf(Blocks.SPRUCE_WOOD))
+                && (mc.player.getMainHandStack().getItem() instanceof AxeItem
+                || mc.player.getOffHandStack().getItem() instanceof AxeItem));
     }
 
     private boolean isRideable(Entity hit) {
@@ -110,6 +176,10 @@ public class OneClickEat extends Module {
                 || hit instanceof StriderEntity;
     }
 
+    private boolean isPlayer(Entity hit) {
+        return  hit instanceof PlayerEntity;
+    }
+
     @EventHandler
     private void onTick(TickEvent.Pre event) {
         assert mc.player != null;
@@ -117,35 +187,53 @@ public class OneClickEat extends Module {
 
         if (onlyGround.get() && !mc.player.isOnGround()) return;
 
-        if ((foodList.get().contains(mc.player.getMainHandStack().getItem()) || foodList.get().contains(mc.player.getOffHandStack().getItem()))
-                || (usePotions.get() && (mc.player.getMainHandStack().getItem() instanceof PotionItem || mc.player.getOffHandStack().getItem() instanceof PotionItem))) {
-
-            if(!mc.options.useKey.isPressed()) {
-                pressed = false;
-            }
-
-            if (mc.options.useKey.isPressed() && !isUsing && !pressed) {
-                pressed = true;
-
-                //TODO: add a entity check that works, im fucking coping rn
-                //TODO: add a if food in offhand check mainhand for usable items (blocks and shit)
-
-                if (mc.crosshairTarget.getType() == HitResult.Type.BLOCK) {
-                    if (BlockUtils.isClickable(mc.world.getBlockState(((BlockHitResult) mc.crosshairTarget).getBlockPos()).getBlock())) return;
-                    if (isBerry() && canPlantBerry(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
-                    if ((isPotato() || isCarrot()) && isFarmland(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
-                }
-
-                if (!mc.player.getHungerManager().isNotFull() && !canEatFull()) return;
-
-                mc.options.useKey.setPressed(true);
-                isUsing = true;
-            }
-
-            if (isUsing) mc.options.useKey.setPressed(true);
+        if(!mc.options.useKey.isPressed()) {
+            pressed = false;
         }
+
+        if (mc.options.useKey.isPressed() && !isUsing && !pressed) {
+            pressed = true;
+
+            //TODO: add a better entity check.
+
+            if (mc.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+                if (BlockUtils.isClickable(mc.world.getBlockState(((BlockHitResult) mc.crosshairTarget).getBlockPos()).getBlock())) return;
+                if (isBerry() && canPlantBerry(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
+                if ((isPotato() || isCarrot()) && isFarmland(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
+            }
+
+            if (mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
+                if (ignoreMobs.get() && !isPlayer(((EntityHitResult) mc.crosshairTarget).getEntity())) return;
+            }
+
+            if (!mc.player.getHungerManager().isNotFull() && !canEatFull()) return;
+
+            //main hand
+            if (foodList.get().contains(mc.player.getMainHandStack().getItem()) || (usePotions.get() && mc.player.getMainHandStack().getItem() instanceof PotionItem)){
+                eat();
+            }
+
+            //offhand
+            else if (foodList.get().contains(mc.player.getOffHandStack().getItem()) || (usePotions.get() && mc.player.getOffHandStack().getItem() instanceof PotionItem)){
+                if (!mainHandFull()){
+
+                    if (mc.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+                        if (isGround(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
+                        if (canChangeBlock(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
+                    }
+
+                    eat();
+                }
+            }
+        }
+
+        if (isUsing) mc.options.useKey.setPressed(true);
     }
 
+    private void eat(){
+        mc.options.useKey.setPressed(true);
+        isUsing = true;
+    }
 
     @Override
     public void onDeactivate() {
