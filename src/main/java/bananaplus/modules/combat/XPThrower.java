@@ -74,12 +74,13 @@ public class XPThrower extends Module {
             .build()
     );
 
-    public final Setting<Boolean> heldItem = sgGeneral.add(new BoolSetting.Builder()
-            .name("repair held")
+    public final Setting<Boolean> repairHeld = sgGeneral.add(new BoolSetting.Builder()
+            .name("repair-held")
             .description("Repairs the item you are holding in your main hand.")
             .defaultValue(false)
             .build()
     );
+
 
     // Player
     private final Setting<SwitchMode> autoSwitch = sgPlayer.add(new EnumSetting.Builder<SwitchMode> ()
@@ -153,7 +154,7 @@ public class XPThrower extends Module {
     private final Setting<Boolean> minePause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-mine")
             .description("Whether to pause while eating.")
-            .defaultValue(true)
+            .defaultValue(false)
             .build()
     );
 
@@ -250,7 +251,7 @@ public class XPThrower extends Module {
             bootsRepaired = (float) (boots.getMaxDamage() - boots.getDamage()) / boots.getMaxDamage() * 100 >= maxThreshold.get();
         } else bootsRepaired = true;
 
-        if (heldItem.get()) {
+        if (repairHeld.get()) {
             if (EnchantmentHelper.getLevel(Enchantments.MENDING, tool) > 0) {
                 toolsRepaired = (float) (tool.getMaxDamage() - tool.getDamage()) / tool.getMaxDamage() * 100 >= maxThreshold.get();
             } else toolsRepaired = true;

@@ -40,13 +40,15 @@ public class CevBreaker extends Module {
         Instant
     }
 
+
     private final SettingGroup sgGeneral = settings.createGroup("General");
     private final SettingGroup sgBreaking = settings.createGroup("Breaking");
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgPause = settings.createGroup("Pause");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    //general
+
+    // General
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Whether to rotate or not.")
@@ -56,14 +58,14 @@ public class CevBreaker extends Module {
 
     private final Setting<Boolean> toggleModules = sgGeneral.add(new BoolSetting.Builder()
             .name("toggle-modules")
-            .description("Turn off other modules when surround is activated.")
+            .description("Turn off other modules when Cev Breaker is activated.")
             .defaultValue(false)
             .build()
     );
 
     private final Setting<Boolean> toggleBack = sgGeneral.add(new BoolSetting.Builder()
             .name("toggle-back-on")
-            .description("Turn the other modules back on when surround is deactivated.")
+            .description("Turn the modules back on when Cev Breaker is deactivated.")
             .defaultValue(false)
             .visible(toggleModules::get)
             .build()
@@ -71,7 +73,7 @@ public class CevBreaker extends Module {
 
     private final Setting<List<Module>> modules = sgGeneral.add(new ModuleListSetting.Builder()
             .name("modules")
-            .description("Which modules to disable on activation.")
+            .description("Which modules to toggle.")
             /*.defaultValue(new ArrayList<>() {{
                 add(Modules.get().get(Step.class));
                 add(Modules.get().get(StepPlus.class));
@@ -81,6 +83,7 @@ public class CevBreaker extends Module {
             .visible(toggleModules::get)
             .build()
     );
+
 
     // Breaking
     private final Setting<Mode> mode = sgBreaking.add(new EnumSetting.Builder<Mode>()
@@ -107,6 +110,7 @@ public class CevBreaker extends Module {
             .visible(() -> mode.get() == Mode.Packet)
             .build()
     );
+
 
     // Placing
     private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
@@ -146,6 +150,7 @@ public class CevBreaker extends Module {
             .build()
     );
 
+
     // Pause
     private final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
             .name("pause-health")
@@ -169,17 +174,18 @@ public class CevBreaker extends Module {
             .build()
     );
 
+
     // Render
     private final Setting<Boolean> swing = sgRender.add(new BoolSetting.Builder()
-            .name("swing")
+            .name("render-swing")
             .description("Renders your swing client-side.")
             .defaultValue(true)
             .build()
     );
 
     private final Setting<Boolean> info = sgRender.add(new BoolSetting.Builder()
-            .name("info")
-            .description("idk info")
+            .name("chat-info")
+            .description("Send info about Cev Breaker in the chat.")
             .defaultValue(true)
             .build()
     );
