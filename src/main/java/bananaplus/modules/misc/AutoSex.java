@@ -24,9 +24,9 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 
 public class AutoSex extends Module{
     public enum Mode {
-        MiddleClickToFollow,
-        FollowPlayer,
-        BindClickFollow
+        MiddleClick,
+        BindClick,
+        Automatic
     }
 
 
@@ -35,50 +35,18 @@ public class AutoSex extends Module{
 
 
     // General
-    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
-            .name("Mode")
+    private final Setting<Mode> targetMode = sgGeneral.add(new EnumSetting.Builder<Mode>()
+            .name("target-mode")
             .description("The mode at which to follow the player.")
-            .defaultValue(Mode.BindClickFollow)
+            .defaultValue(Mode.BindClick)
             .build()
     );
 
     private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
-            .name("follow-keybind")
+            .name("keybind")
             .description("What key to press to start following someone")
             .defaultValue(Keybind.fromKey(-1))
-            .visible(() -> mode.get() == Mode.BindClickFollow)
-            .build()
-    );
-
-    private final Setting<Boolean> onlyFriend = sgGeneral.add(new BoolSetting.Builder()
-            .name("only-follow-friends")
-            .description("Whether or not to only follow friends.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> onlyOther = sgGeneral.add(new BoolSetting.Builder()
-            .name("don't-follow-friends")
-            .description("Whether or not to follow friends.")
-            .defaultValue(false)
-            .visible(() -> mode.get() != Mode.FollowPlayer)
-            .build()
-    );
-
-    private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
-            .name("Range")
-            .description("The range in which it follows a random player")
-            .defaultValue(20)
-            .min(0)
-            .sliderMax(200)
-            .visible(() -> mode.get() == Mode.FollowPlayer)
-            .build()
-    );
-
-    private final Setting<Boolean> ignoreRange = sgGeneral.add(new BoolSetting.Builder()
-            .name("keep-Following")
-            .description("follow the player even if they are out of range")
-            .defaultValue(false).visible(() -> mode.get() == Mode.FollowPlayer)
+            .visible(() -> targetMode.get() == Mode.BindClick)
             .build()
     );
 
@@ -86,9 +54,42 @@ public class AutoSex extends Module{
             .name("target-priority")
             .description("How to select the player to target.")
             .defaultValue(SortPriority.LowestDistance)
-            .visible(() -> mode.get() == Mode.FollowPlayer)
+            .visible(() -> targetMode.get() == Mode.Automatic)
             .build()
     );
+
+    private final Setting<Boolean> ignoreRange = sgGeneral.add(new BoolSetting.Builder()
+            .name("ignore-range")
+            .description("follow the player even if they are out of range")
+            .defaultValue(false)
+            .visible(() -> targetMode.get() == Mode.Automatic)
+            .build()
+    );
+
+    private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
+            .name("target-range")
+            .description("The range in which it follows a random player")
+            .defaultValue(10)
+            .range(1,50)
+            .visible(() -> targetMode.get() == Mode.Automatic && !ignoreRange.get())
+            .build()
+    );
+
+    private final Setting<Boolean> onlyFriend = sgGeneral.add(new BoolSetting.Builder()
+            .name("only-friends")
+            .description("Whether or not to only follow friends.")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Boolean> onlyOther = sgGeneral.add(new BoolSetting.Builder()
+            .name("ignore-friends")
+            .description("Whether or not to follow friends.")
+            .defaultValue(false)
+            .visible(() -> targetMode.get() != Mode.Automatic)
+            .build()
+    );
+
 
     private final Setting<Boolean> message = sgGeneral.add(new BoolSetting.Builder()
             .name("message")
@@ -152,11 +153,15 @@ public class AutoSex extends Module{
             .name("messages")
             .description("Messages to use for dirty talk.")
             .defaultValue(List.of(
-                   "Please cum inside me (enemy)!",
-                   "Ahhh harder daddy (enemy)",
-                   "Put your cock inside me (enemy)!",
-                   "Let me swallow ur babies (enemy)",
-                   "Haah... Uugh.. Aaah..."
+                    "God, I love you so much (enemy)~",
+                    "Ahhhh! Fuck me harder (enemy)!",
+                    "Please put your cock inside me (enemy)!",
+                    "I want to choke on your cock (enemy)!",
+                    "Oh god, you're so big (enemy)!",
+                    "Treat me like a whore!",
+                    "Ahhhhn! Fuck me deeper (enemy)!",
+                    "Fill me with your spunk (enemy)~!",
+                    "Demolish my bussy (enemy)!~"
                     )
             )
             .visible(message::get)
@@ -186,7 +191,7 @@ public class AutoSex extends Module{
     //middle click mode
     @EventHandler
     private void onMouseButton(MouseButtonEvent event) {
-        if(mode.get() == Mode.MiddleClickToFollow){
+        if(targetMode.get() == Mode.MiddleClick){
             if (event.action == KeyAction.Press && event.button == GLFW_MOUSE_BUTTON_MIDDLE && mc.currentScreen == null && mc.targetedEntity != null && mc.targetedEntity instanceof PlayerEntity) {
                 if (!isFollowing) {
 
@@ -233,7 +238,7 @@ public class AutoSex extends Module{
     @EventHandler (priority = EventPriority.LOW)
     private void onTick(TickEvent.Post event) {
 
-        if(mode.get() == Mode.BindClickFollow && keybind != null)
+        if(targetMode.get() == Mode.BindClick && keybind != null)
         {
             if(keybind.get().isPressed() && !pressed && !alternate)
             {
@@ -280,10 +285,10 @@ public class AutoSex extends Module{
             }
         }
 
-        if(mode.get() == Mode.FollowPlayer){
+        if(targetMode.get() == Mode.Automatic){
 
             if (!isFollowing) {
-                playerEntity = TargetUtils.getPlayerTarget(range.get(), priority.get());
+                playerEntity = TargetUtils.getPlayerTarget(targetRange.get(), priority.get());
                 if (playerEntity == null) return;
                 playerName = playerEntity.getEntityName();
 
@@ -298,7 +303,7 @@ public class AutoSex extends Module{
                 isFollowing = true;
             }
 
-            if (!playerEntity.isAlive() || (playerEntity.distanceTo(mc.player) > range.get() && !ignoreRange.get())) {
+            if (!playerEntity.isAlive() || (playerEntity.distanceTo(mc.player) > targetRange.get() && !ignoreRange.get())) {
                 if (message.get()) {
                     endMsg();
                 }

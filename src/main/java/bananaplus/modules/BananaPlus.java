@@ -93,7 +93,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AntiGlitchBlock());
 		Modules.get().add(new AutoFollow());
 		Modules.get().add(new AutoSex());
-		Modules.get().add(new Presence());
 		Modules.get().add(new BindClickExtra());
 		Modules.get().add(new BPrefix());
 		Modules.get().add(new BindClickFriend());
@@ -102,6 +101,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new MonkeFlight());
 		Modules.get().add(new OneClickEat());
 		Modules.get().add(new Platform());
+		Modules.get().add(new Presence());
 		Modules.get().add(new SkinBlinker());
 		Modules.get().add(new TimeAnimator());
 		Modules.get().add(new TPSSync());
