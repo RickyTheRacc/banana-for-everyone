@@ -12,7 +12,6 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.world.BlockUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.SkeletonHorseEntity;
@@ -49,13 +48,6 @@ public class OneClickEat extends Module {
             .build()
     );
 
-    private final Setting<Boolean> ignoreMobs = sgGeneral.add(new BoolSetting.Builder()
-            .name("ignore-Mobs")
-            .description("Dose not let u eat if u are looking at mobs (players not included). Will make a better solution later.")
-            .defaultValue(false)
-            .build()
-    );
-
     private final Setting<Boolean> onlyGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Only allows you to one click eat on ground.")
@@ -70,10 +62,6 @@ public class OneClickEat extends Module {
 
     private boolean isUsing;
     private boolean pressed;
-
-    private boolean isBerry() {
-        return mc.player.getMainHandStack().getItem() == Items.SWEET_BERRIES || mc.player.getOffHandStack().getItem() == Items.SWEET_BERRIES || mc.player.getMainHandStack().getItem() == Items.GLOW_BERRIES || mc.player.getOffHandStack().getItem() == Items.GLOW_BERRIES;
-    }
 
     private boolean isPotato() {
         return mc.player.getMainHandStack().getItem() == Items.POTATO || mc.player.getOffHandStack().getItem() == Items.POTATO;
@@ -94,11 +82,15 @@ public class OneClickEat extends Module {
     }
 
     private boolean canPlantBerry(BlockPos pos){
-        return mc.world.getBlockState(pos).isOf(Blocks.GRASS_BLOCK)
+        return ((mc.player.getMainHandStack().getItem() == Items.GLOW_BERRIES || mc.player.getOffHandStack().getItem() == Items.GLOW_BERRIES)
+                && !mc.world.getBlockState(pos).isOf(Blocks.AIR))
+
+                || ((mc.player.getMainHandStack().getItem() == Items.SWEET_BERRIES || mc.player.getOffHandStack().getItem() == Items.SWEET_BERRIES)
+                && (mc.world.getBlockState(pos).isOf(Blocks.GRASS_BLOCK)
                 || mc.world.getBlockState(pos).isOf(Blocks.DIRT)
                 || mc.world.getBlockState(pos).isOf(Blocks.PODZOL)
                 || mc.world.getBlockState(pos).isOf(Blocks.COARSE_DIRT)
-                || mc.world.getBlockState(pos).isOf(Blocks.FARMLAND);
+                || mc.world.getBlockState(pos).isOf(Blocks.FARMLAND)));
     }
 
     private boolean isGround(BlockPos pos){
@@ -176,6 +168,20 @@ public class OneClickEat extends Module {
                 || hit instanceof StriderEntity;
     }
 
+    private boolean canFeed(Entity hit) {
+        return ((hit instanceof HorseEntity
+                || hit instanceof DonkeyEntity
+                || hit instanceof MuleEntity)
+                && ((mc.player.getMainHandStack().getItem() == Items.APPLE || mc.player.getOffHandStack().getItem() == Items.APPLE)
+                || (mc.player.getMainHandStack().getItem() == Items.ENCHANTED_GOLDEN_APPLE || mc.player.getOffHandStack().getItem() == Items.ENCHANTED_GOLDEN_APPLE)
+                || (mc.player.getMainHandStack().getItem() == Items.GOLDEN_APPLE || mc.player.getOffHandStack().getItem() == Items.GOLDEN_APPLE)
+                || (mc.player.getMainHandStack().getItem() == Items.GOLDEN_CARROT || mc.player.getOffHandStack().getItem() == Items.GOLDEN_CARROT)))
+                || ((hit instanceof PigEntity)
+                && ((mc.player.getMainHandStack().getItem() == Items.BEETROOT || mc.player.getOffHandStack().getItem() == Items.BEETROOT)
+                || (mc.player.getMainHandStack().getItem() == Items.CARROT || mc.player.getOffHandStack().getItem() == Items.CARROT)
+                || (mc.player.getMainHandStack().getItem() == Items.POTATO || mc.player.getOffHandStack().getItem() == Items.POTATO)));
+    }
+
     private boolean isPlayer(Entity hit) {
         return  hit instanceof PlayerEntity;
     }
@@ -194,16 +200,14 @@ public class OneClickEat extends Module {
         if (mc.options.useKey.isPressed() && !isUsing && !pressed) {
             pressed = true;
 
-            //TODO: add a better entity check.
-
             if (mc.crosshairTarget.getType() == HitResult.Type.BLOCK) {
                 if (BlockUtils.isClickable(mc.world.getBlockState(((BlockHitResult) mc.crosshairTarget).getBlockPos()).getBlock())) return;
-                if (isBerry() && canPlantBerry(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
+                if (canPlantBerry(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
                 if ((isPotato() || isCarrot()) && isFarmland(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
             }
 
             if (mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
-                if (ignoreMobs.get() && !isPlayer(((EntityHitResult) mc.crosshairTarget).getEntity())) return;
+                if (isRideable(((EntityHitResult) mc.crosshairTarget).getEntity()) || canFeed(((EntityHitResult) mc.crosshairTarget).getEntity())) return;
             }
 
             if (!mc.player.getHungerManager().isNotFull() && !canEatFull()) return;
