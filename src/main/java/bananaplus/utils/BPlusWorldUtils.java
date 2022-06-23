@@ -40,29 +40,6 @@ public class BPlusWorldUtils  {
 
     private static final Vec3d hitPos = new Vec3d(0, 0, 0);
 
-    // Placing
-/*
-    public static boolean place(BlockPos blockPos, FindItemResult findItemResult, int rotationPriority) {
-        return place(blockPos, findItemResult, rotationPriority, true);
-    }
-
-    public static boolean place(BlockPos blockPos, FindItemResult findItemResult, boolean rotate, int rotationPriority) {
-        return place(blockPos, findItemResult, rotate, rotationPriority, true);
-    }
-
-    public static boolean place(BlockPos blockPos, FindItemResult findItemResult, boolean rotate, int rotationPriority, boolean checkEntities) {
-        return place(blockPos, findItemResult, rotate, rotationPriority, true, checkEntities);
-    }
-
-    public static boolean place(BlockPos blockPos, FindItemResult findItemResult, int rotationPriority, boolean checkEntities) {
-        return place(blockPos, findItemResult, true, rotationPriority, true, checkEntities);
-    }
-
-    public static boolean place(BlockPos blockPos, FindItemResult findItemResult, boolean rotate, int rotationPriority, boolean swingHand, boolean checkEntities) {
-        return place(blockPos, findItemResult, rotate, rotationPriority, swingHand, checkEntities, true);
-    }
- */
-
     public static boolean place(BlockPos blockPos, FindItemResult findItemResult, boolean rotate, int rotationPriority, SwitchMode switchMode, PlaceMode placeMode, boolean onlyAirplace, AirPlaceDirection airPlaceDirection, boolean swingHand, boolean checkEntities, boolean swapBack) {
         if (findItemResult.isOffhand()) {
             return place(blockPos, Hand.OFF_HAND, mc.player.getInventory().selectedSlot, mc.player.getInventory().selectedSlot, rotate, rotationPriority, switchMode, placeMode, onlyAirplace, airPlaceDirection, swingHand, checkEntities, swapBack);
@@ -92,9 +69,7 @@ public class BPlusWorldUtils  {
 
         Direction s = side;
 
-        if (rotate) Rotations.rotate(Rotations.getYaw(hitPos), Rotations.getPitch(hitPos), rotationPriority, () -> {
-            place(new BlockHitResult(hitPos, s, neighbour, false), hand, oldSlot, targetSlot, switchMode, placeMode, swingHand, swapBack);
-        });
+        if (rotate) Rotations.rotate(Rotations.getYaw(hitPos), Rotations.getPitch(hitPos), rotationPriority, () -> place(new BlockHitResult(hitPos, s, neighbour, false), hand, oldSlot, targetSlot, switchMode, placeMode, swingHand, swapBack));
         else place(new BlockHitResult(hitPos, s, neighbour, false), hand, oldSlot, targetSlot, switchMode, placeMode, swingHand, swapBack);
 
         return true;
@@ -184,11 +159,6 @@ public class BPlusWorldUtils  {
     public static void rotate(double[] rotations) {
         mc.player.setYaw((float) rotations[0]);
         mc.player.setPitch((float) rotations[1]);
-    }
-
-    public static void snapPlayer() {
-        BlockPos lastPos = mc.player.isOnGround() ? roundBlockPos(mc.player.getPos()) : mc.player.getBlockPos();
-        snapPlayer(lastPos);
     }
 
     public static void snapPlayer(BlockPos lastPos) {
