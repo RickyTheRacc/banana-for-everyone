@@ -359,10 +359,6 @@ public class MonkeTotem extends Module {
         return 0;
     }
 
-    public boolean isLocked() {
-        return isActive() && locked;
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     private void onReceivePacket(PacketEvent.Receive event) {
         if (!(event.packet instanceof EntityStatusS2CPacket p)) return;
@@ -372,6 +368,10 @@ public class MonkeTotem extends Module {
         if (entity == null || !(entity.equals(mc.player))) return;
 
         poppedTimer.reset();
+    }
+
+    public boolean isLocked() {
+        return isActive() && locked;
     }
 
     @Override

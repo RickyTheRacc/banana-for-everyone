@@ -135,6 +135,14 @@ public class XPThrower extends Module {
             .build()
     );
 
+    private final Setting<Boolean> allowDoubles = sgPlayer.add(new BoolSetting.Builder()
+            .name("allow-doubles")
+            .description("Allows double holes to count as holes.")
+            .defaultValue(false)
+            .visible(onlyInHole::get)
+            .build()
+    );
+
 
     //Pause
     private final Setting<Boolean> eatPause = sgPause.add(new BoolSetting.Builder()
@@ -160,7 +168,7 @@ public class XPThrower extends Module {
 
     private final Setting<Double> minHealth = sgPause.add(new DoubleSetting.Builder()
             .name("min-health")
-            .description("Minimum health to throw XP.")
+            .description("How much health you must have to throw XP.")
             .defaultValue(10)
             .range(1,36)
             .sliderRange(1,36)
@@ -264,10 +272,8 @@ public class XPThrower extends Module {
         if (PlayerUtils.shouldPause(minePause.get(), drinkPause.get(), eatPause.get())) return true;
 
         if (onlyOnGround.get() && !mc.player.isOnGround()) return true;
-        if (onlyInHole.get()  && !BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)) return true;
+        if (allowDoubles.get()  && !BPlusEntityUtils.isInHole(mc.player, allowDoubles.get(), BPlusEntityUtils.BlastResistantType.Any)) return true;
         return (PlayerUtils.getTotalHealth() <= minHealth.get());
-
-
     }
 
     private void throwXP(FindItemResult hotbarExp) {
