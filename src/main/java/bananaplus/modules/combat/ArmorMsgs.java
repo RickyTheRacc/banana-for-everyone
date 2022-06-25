@@ -84,8 +84,6 @@ public class ArmorMsgs extends Module {
         boots.clear();
     }
 
-    //TODO: maybe add msg per tick.
-
     @EventHandler
     private void onTick(TickEvent.Post event) {
 
