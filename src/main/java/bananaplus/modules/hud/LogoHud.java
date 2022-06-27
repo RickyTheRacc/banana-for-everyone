@@ -83,7 +83,7 @@ public class LogoHud extends HudElement {
 
 
     public LogoHud(HUD hud) {
-        super(hud, "banana+-logo", "Displays the Banana+ logo");
+        super(hud, "banana+-logo", "Displays the Banana+ logo.");
     }
 
 

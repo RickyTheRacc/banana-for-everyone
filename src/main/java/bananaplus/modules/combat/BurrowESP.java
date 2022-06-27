@@ -44,7 +44,7 @@ public class BurrowESP extends Module {
 
     private final Setting<Boolean> renderWebbed = sgRender.add(new BoolSetting.Builder()
             .name("Render webbed")
-            .description("Will render if the target is webbed")
+            .description("Will render if the target is webbed.")
             .defaultValue(true)
             .build()
     );

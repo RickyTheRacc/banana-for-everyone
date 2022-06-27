@@ -44,7 +44,7 @@ public class AutoSex extends Module{
 
     private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
             .name("keybind")
-            .description("What key to press to start following someone")
+            .description("What key to press to start following someone.")
             .defaultValue(Keybind.fromKey(-1))
             .visible(() -> targetMode.get() == Mode.BindClick)
             .build()
@@ -60,7 +60,7 @@ public class AutoSex extends Module{
 
     private final Setting<Boolean> ignoreRange = sgGeneral.add(new BoolSetting.Builder()
             .name("ignore-range")
-            .description("follow the player even if they are out of range")
+            .description("Follow the player even if they are out of range.")
             .defaultValue(false)
             .visible(() -> targetMode.get() == Mode.Automatic)
             .build()
@@ -68,7 +68,7 @@ public class AutoSex extends Module{
 
     private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
-            .description("The range in which it follows a random player")
+            .description("The range in which it follows a random player.")
             .defaultValue(10)
             .range(1,50)
             .visible(() -> targetMode.get() == Mode.Automatic && !ignoreRange.get())
@@ -102,14 +102,14 @@ public class AutoSex extends Module{
     // Sex
     private final Setting<Boolean> twerkWhenClose = sgSex.add(new BoolSetting.Builder()
             .name("auto-hump")
-            .description("Crouch against the target to give the appearance of sex OwO")
+            .description("Crouch against the target to give the appearance of sex OwO.")
             .defaultValue(false)
             .build()
     );
 
     private final Setting<Boolean> dirtyTalk = sgSex.add(new BoolSetting.Builder()
             .name("dirty-talk")
-            .description("Whisper naughty things in your enemy's ear")
+            .description("Whisper naughty things in your enemy's ear.")
             .defaultValue(true)
             .visible(message::get)
             .build()
@@ -117,7 +117,7 @@ public class AutoSex extends Module{
 
     private final Setting<Boolean> dm = sgGeneral.add(new BoolSetting.Builder()
             .name("private-msg")
-            .description("sends a private chat msg to the person")
+            .description("Sends a private chat msg to the person.")
             .defaultValue(false)
             .visible(message::get)
             .build()
@@ -125,7 +125,7 @@ public class AutoSex extends Module{
 
     private final Setting<Boolean> pm = sgGeneral.add(new BoolSetting.Builder()
             .name("public-msg")
-            .description("sends a public chat msg")
+            .description("Sends a public chat msg.")
             .defaultValue(false)
             .visible(message::get)
             .build()

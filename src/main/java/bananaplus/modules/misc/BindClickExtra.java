@@ -64,7 +64,7 @@ public class BindClickExtra extends Module {
 
     private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
             .name("follow-keybind")
-            .description("What key to press to start following someone")
+            .description("What key to press to start following someone.")
             .defaultValue(Keybind.fromKey(-1))
             .visible(() -> mMode.get() == MMode.BindClickFollow)
             .build()
@@ -86,7 +86,7 @@ public class BindClickExtra extends Module {
 
     private final Setting<Boolean> onlyWhenItemHeld = sgGeneral.add(new BoolSetting.Builder()
             .name("onlyHeldItem")
-            .description("will only use the item when its held")
+            .description("will only use the item when its held.")
             .defaultValue(false)
             .build()
     );

@@ -40,14 +40,14 @@ public class BindsHud extends HudElement {
 
     private final Setting<Boolean> outlines = sgGeneral.add(new BoolSetting.Builder()
             .name("outlines")
-            .description("Whether or not to render outlines")
+            .description("Whether or not to render outlines.")
             .defaultValue(false)
             .build()
     );
 
     private final Setting<Integer> outlineWidth = sgGeneral.add(new IntSetting.Builder()
             .name("outline-width")
-            .description("Outline width")
+            .description("Outline width.")
             .defaultValue(4)
             .min(1)
             .sliderMin(1)

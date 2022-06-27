@@ -316,7 +316,7 @@ public class MonkeFlight extends Module {
 
 
     public MonkeFlight() {
-        super(BananaPlus.MISC, "monke-flight", "Reminds of the wakanda airforce");
+        super(BananaPlus.MISC, "monke-flight", "Reminds of the wakanda airforce.");
     }
 
 

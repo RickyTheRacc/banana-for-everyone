@@ -49,7 +49,7 @@ public class SmartHoleFill extends Module {
 
     private final Setting<Double> fillRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("fill-range")
-            .description("Range from target to hole for it to fill")
+            .description("Range from target to hole for it to fill.")
             .defaultValue(1.5)
             .min(0)
             .sliderMin(0.5)

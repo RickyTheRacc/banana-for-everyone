@@ -71,7 +71,7 @@ public class AutoTrapPlus extends Module {
     // General
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("primary-blocks")
-            .description("What blocks to use for Auto Trap+")
+            .description("What blocks to use for Auto Trap+.")
             .defaultValue(Blocks.OBSIDIAN)
             .filter(this::blockFilter)
             .build()

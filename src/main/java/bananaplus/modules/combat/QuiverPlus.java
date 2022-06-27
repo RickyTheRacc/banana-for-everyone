@@ -26,7 +26,7 @@ public class QuiverPlus extends Module {
     // General
     private final Setting<Double> holdTime = sgGeneral.add(new DoubleSetting.Builder()
             .name("hold-time")
-            .description("How long to hold the bow for before releasing it")
+            .description("How long to hold the bow for before releasing it.")
             .defaultValue(0.14)
             .range(0.12,0.26)
             .sliderRange(0.12,0.26)

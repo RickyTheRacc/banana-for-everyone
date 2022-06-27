@@ -39,7 +39,7 @@ public class AutoFollow extends Module {
 
     private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
             .name("follow-keybind")
-            .description("What key to press to start following someone")
+            .description("What key to press to start following someone.")
             .defaultValue(Keybind.fromKey(-1))
             .visible(() -> mode.get() == Mode.BindClickFollow)
             .build()
@@ -62,7 +62,7 @@ public class AutoFollow extends Module {
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
             .name("Range")
-            .description("The range in which it follows a random player")
+            .description("The range in which it follows a random player.")
             .defaultValue(20)
             .min(0)
             .sliderMax(200)
@@ -72,7 +72,7 @@ public class AutoFollow extends Module {
 
     private final Setting<Boolean> ignoreRange = sgGeneral.add(new BoolSetting.Builder()
             .name("keep-Following")
-            .description("follow the player even if they are out of range")
+            .description("Follow the player even if they are out of range.")
             .defaultValue(false)
             .visible(() -> mode.get() == Mode.FollowPlayer)
             .build()
@@ -95,7 +95,7 @@ public class AutoFollow extends Module {
 
     private final Setting<Boolean> dm = sgGeneral.add(new BoolSetting.Builder()
             .name("private-msg")
-            .description("sends a private chat msg to the person")
+            .description("Sends a private chat msg to the person.")
             .defaultValue(false)
             .visible(message::get)
             .build()
@@ -103,14 +103,14 @@ public class AutoFollow extends Module {
 
     private final Setting<Boolean> pm = sgGeneral.add(new BoolSetting.Builder()
             .name("public-msg")
-            .description("sends a public chat msg")
+            .description("Sends a public chat msg.")
             .defaultValue(false).visible(message::get)
             .build()
     );
 
 
     public AutoFollow() {
-        super(BananaPlus.MISC, "auto-Follow", "Follow another player in different ways");
+        super(BananaPlus.MISC, "auto-Follow", "Follow another player in different ways.");
     }
 
 

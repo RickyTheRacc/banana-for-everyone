@@ -25,7 +25,7 @@ public class ReverseStepTimer extends Module {
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
-            .description("Mode to use to bypass reverse step")
+            .description("Mode to use to bypass reverse step.")
             .defaultValue(Mode.Packet)
             .build()
     );

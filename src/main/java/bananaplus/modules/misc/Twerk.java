@@ -16,7 +16,7 @@ public class Twerk extends Module {
     // General
     private final Setting<Double> twerkDelay = sgGeneral.add(new DoubleSetting.Builder()
             .name("Twerk Delay")
-            .description("In Millis")
+            .description("In Millis.")
             .defaultValue(4)
             .min(2)
             .sliderRange(2,100)
@@ -25,7 +25,7 @@ public class Twerk extends Module {
 
 
     public Twerk() {
-        super(BananaPlus.MISC, "twerk", "Twerk like the true queen Miley Cyrus");
+        super(BananaPlus.MISC, "twerk", "Twerk like the true queen Miley Cyrus.");
     }
 
 

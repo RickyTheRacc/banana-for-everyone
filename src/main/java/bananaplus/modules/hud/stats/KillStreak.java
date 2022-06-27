@@ -6,7 +6,7 @@ import meteordevelopment.meteorclient.systems.hud.modules.DoubleTextHudElement;
 
 public class KillStreak extends DoubleTextHudElement {
     public KillStreak(HUD hud) {
-        super(hud, "KillStreak", "Displays your current killStreak", "KillStreak: ");
+        super(hud, "KillStreak", "Displays your current killStreak.", "KillStreak: ");
     }
 
     @Override

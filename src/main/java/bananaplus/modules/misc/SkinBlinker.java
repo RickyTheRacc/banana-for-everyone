@@ -176,7 +176,7 @@ public class SkinBlinker extends Module {
 
 
     public SkinBlinker() {
-        super(BananaPlus.MISC, "skin-blinker", "Blinks different parts of your skin :)");
+        super(BananaPlus.MISC, "skin-blinker", "Blinks different parts of your skin :).");
     }
 
 
