@@ -268,7 +268,7 @@ public class SurroundPlus extends Module {
     // Force keybinds
     private final Setting<Keybind> russianKeybind = sgForce.add(new KeybindSetting.Builder()
             .name("russian-keybind")
-            .description("Turns on Russian surround when held")
+            .description("Turns on Russian surround when held.")
             .defaultValue(Keybind.none())
             .build()
     );
@@ -282,7 +282,7 @@ public class SurroundPlus extends Module {
 
     private final Setting<Keybind> centerKeybind = sgForce.add(new KeybindSetting.Builder()
             .name("center-keybind")
-            .description("Re-center you when held")
+            .description("Re-center you when held.")
             .defaultValue(Keybind.none())
             .build()
     );

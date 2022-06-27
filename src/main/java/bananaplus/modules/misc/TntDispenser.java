@@ -75,7 +75,7 @@ public class TntDispenser extends Module {
 
     private final Setting<Boolean> faceTrap = sgTrap.add(new BoolSetting.Builder()
             .name("face-trap")
-            .description("Whether to trap their face or not")
+            .description("Whether to trap their face or not.")
             .defaultValue(true)
             .build()
     );
@@ -125,14 +125,14 @@ public class TntDispenser extends Module {
     // Toggle
     private final Setting<Boolean> disableTarget = sgToggle.add(new BoolSetting.Builder()
             .name("disable-on-no-target")
-            .description("Automatically toggles off if no target is found")
+            .description("Automatically toggles off if no target is found.")
             .defaultValue(true)
             .build()
     );
 
     private final Setting<Boolean> disableObby = sgToggle.add(new BoolSetting.Builder()
             .name("disable-on-no-obsidian")
-            .description("Automatically toggles off if no obsidian is found")
+            .description("Automatically toggles off if no obsidian is found.")
             .defaultValue(true)
             .build()
     );
@@ -146,7 +146,7 @@ public class TntDispenser extends Module {
 
     private final Setting<Boolean> disableTNT = sgToggle.add(new BoolSetting.Builder()
             .name("disable-on-no-TNT")
-            .description("Automatically toggles off if no TNT is found")
+            .description("Automatically toggles off if no TNT is found.")
             .defaultValue(false)
             .build()
     );
@@ -155,14 +155,14 @@ public class TntDispenser extends Module {
     // Pause
     private final Setting<Boolean> onlyHole = sgPause.add(new BoolSetting.Builder()
             .name("only-in-hole")
-            .description("Only continues the module if you are in a safe hole")
+            .description("Only continues the module if you are in a safe hole.")
             .defaultValue(true)
             .build()
     );
 
     private final Setting<Boolean> antiSelf = sgPause.add(new BoolSetting.Builder()
             .name("anti-self")
-            .description("Prevents performing the module on yourself")
+            .description("Prevents performing the module on yourself.")
             .defaultValue(true)
             .build()
     );
@@ -176,7 +176,7 @@ public class TntDispenser extends Module {
 
     private final Setting<Boolean> burrowPause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-burrow")
-            .description("Pauses if target is burrowed")
+            .description("Pauses if target is burrowed.")
             .defaultValue(true)
             .build()
     );

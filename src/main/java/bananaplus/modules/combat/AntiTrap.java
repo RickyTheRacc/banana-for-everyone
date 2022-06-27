@@ -103,7 +103,7 @@ public class AntiTrap extends Module {
 
     private final Setting<Boolean> autoMove = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-move")
-            .description("Puts a chorus into a selected slot if you don't have one in your hotbar")
+            .description("Puts a chorus into a selected slot if you don't have one in your hotbar.")
             .defaultValue(true)
             .visible(() -> mode.get() == Mode.Chorus)
             .build()

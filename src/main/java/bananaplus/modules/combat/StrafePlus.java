@@ -54,7 +54,7 @@ public class StrafePlus extends Module {
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
-            .description("Behaviour of your movements")
+            .description("Behaviour of your movements.")
             .defaultValue(Mode.Smart)
             .build()
     );
@@ -77,7 +77,7 @@ public class StrafePlus extends Module {
 
     private final Setting<Boolean> autoSprint = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-sprint")
-            .description("Makes you sprint if you are moving forward")
+            .description("Makes you sprint if you are moving forward.")
             .defaultValue(false)
             .build()
     );
@@ -288,7 +288,7 @@ public class StrafePlus extends Module {
 
     private final Setting<Boolean> hungerCheck = sgAC.add(new BoolSetting.Builder()
             .name("hunger-check")
-            .description("Pauses when hunger reaches 3 or less drumsticks")
+            .description("Pauses when hunger reaches 3 or less drumsticks.")
             .defaultValue(true)
             .build()
     );

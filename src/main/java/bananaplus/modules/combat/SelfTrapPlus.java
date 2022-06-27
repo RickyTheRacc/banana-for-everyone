@@ -62,7 +62,7 @@ public class SelfTrapPlus extends Module {
     // General
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("primary-blocks")
-            .description("What blocks to use for Self Trap+")
+            .description("What blocks to use for Self Trap+.")
             .defaultValue(Blocks.OBSIDIAN)
             .filter(this::blockFilter)
             .build()

@@ -6,7 +6,7 @@ import meteordevelopment.meteorclient.systems.hud.modules.DoubleTextHudElement;
 
 public class Kills extends DoubleTextHudElement {
     public Kills(HUD hud) {
-        super(hud, "Kills", "Displays your total kill count", "Kills: ");
+        super(hud, "Kills", "Displays your total kill count.", "Kills: ");
     }
 
     @Override

@@ -31,7 +31,7 @@ public class ItemCounter extends HudElement {
 
     private final Setting<List<Item>> items = sgGeneral.add(new ItemListSetting.Builder()
             .name("items")
-            .description("Which items to display in the counter list")
+            .description("Which items to display in the counter list.")
             .defaultValue(new ArrayList<>(0))
             .build()
     );

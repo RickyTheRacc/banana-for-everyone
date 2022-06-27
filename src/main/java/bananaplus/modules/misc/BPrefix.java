@@ -19,42 +19,42 @@ public class BPrefix extends Module {
     // General
     private final Setting<String> prefix = sgGeneral.add(new StringSetting.Builder()
             .name("prefix")
-            .description("What to be displayed as Banana+ Prefix")
+            .description("What to be displayed as Banana+ Prefix.")
             .defaultValue("Banana+")
             .build()
     );
 
     private final Setting<SettingColor> prefixColors = sgGeneral.add(new ColorSetting.Builder()
             .name("prefix-color")
-            .description("Color display for the prefix")
+            .description("Color display for the prefix.")
             .defaultValue(new SettingColor(255,193,0,255))
             .build()
     );
 
     private final Setting<String> leftBracket = sgGeneral.add(new StringSetting.Builder()
             .name("left-bracket")
-            .description("What to be displayed as left bracket for the prefix")
+            .description("What to be displayed as left bracket for the prefix.")
             .defaultValue("[")
             .build()
     );
 
     private final Setting<String> rightBracket = sgGeneral.add(new StringSetting.Builder()
             .name("right-bracket")
-            .description("What to be displayed as right bracket for the prefix")
+            .description("What to be displayed as right bracket for the prefix.")
             .defaultValue("]")
             .build()
     );
 
     private final Setting<SettingColor> leftBracketColor = sgGeneral.add(new ColorSetting.Builder()
             .name("left-bracket-color")
-            .description("Color display for the left bracket")
+            .description("Color display for the left bracket.")
             .defaultValue(new SettingColor(150,150,150,255))
             .build()
     );
 
     private final Setting<SettingColor> rightBracketColor = sgGeneral.add(new ColorSetting.Builder()
             .name("right-bracket-color")
-            .description("Color display for the right bracket")
+            .description("Color display for the right bracket.")
             .defaultValue(new SettingColor(150,150,150,255))
             .build()
     );

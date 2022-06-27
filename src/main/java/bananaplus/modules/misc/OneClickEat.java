@@ -57,7 +57,7 @@ public class OneClickEat extends Module {
 
 
     public OneClickEat() {
-        super(BananaPlus.MISC, "one-click-eat", "Allows you to eat a consumable with one click");
+        super(BananaPlus.MISC, "one-click-eat", "Allows you to eat a consumable with one click.");
     }
 
     private boolean isUsing;

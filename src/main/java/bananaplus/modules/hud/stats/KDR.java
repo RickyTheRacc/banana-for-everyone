@@ -6,7 +6,7 @@ import meteordevelopment.meteorclient.systems.hud.modules.DoubleTextHudElement;
 
 public class KDR extends DoubleTextHudElement {
     public KDR(HUD hud) {
-        super(hud, "Kill/Death", "Displays your kills to death ratio", "K/D: ");
+        super(hud, "Kill/Death", "Displays your kills to death ratio.", "K/D: ");
     }
 
     @Override
