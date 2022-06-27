@@ -1,5 +1,5 @@
 Ben's List
-- make a armor message module 
+- add old animations 
 - auto city ready progress and enum switcher (rewrite?)
 - put all the other features in sniper in (maybe)
 - rgb logo (hmmm)
