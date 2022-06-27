@@ -14,6 +14,7 @@ import meteordevelopment.meteorclient.utils.world.BlockUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.mob.SkeletonHorseEntity;
 import net.minecraft.entity.mob.ZombieHorseEntity;
 import net.minecraft.entity.passive.*;
@@ -62,6 +63,8 @@ public class OneClickEat extends Module {
 
     private boolean isUsing;
     private boolean pressed;
+
+    private Item currentItem;
 
     private boolean isPotato() {
         return mc.player.getMainHandStack().getItem() == Items.POTATO || mc.player.getOffHandStack().getItem() == Items.POTATO;
@@ -182,6 +185,10 @@ public class OneClickEat extends Module {
                 || (mc.player.getMainHandStack().getItem() == Items.POTATO || mc.player.getOffHandStack().getItem() == Items.POTATO)));
     }
 
+    private boolean canPlaceCrystal(BlockPos pos){
+        return (mc.world.getBlockState(pos).isOf(Blocks.OBSIDIAN) || mc.world.getBlockState(pos).isOf(Blocks.BEDROCK)) && mc.player.getMainHandStack().getItem() == Items.END_CRYSTAL;
+    }
+
     private boolean isPlayer(Entity hit) {
         return  hit instanceof PlayerEntity;
     }
@@ -224,7 +231,11 @@ public class OneClickEat extends Module {
                     if (mc.crosshairTarget.getType() == HitResult.Type.BLOCK) {
                         if (isGround(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
                         if (canChangeBlock(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
+                        if (canPlaceCrystal(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
                     }
+
+
+                    if (mc.player.getOffHandStack().getItem() != currentItem) stopIfUsing();
 
                     eat();
                 }
