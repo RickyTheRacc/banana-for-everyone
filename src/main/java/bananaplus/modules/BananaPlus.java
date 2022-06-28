@@ -14,30 +14,27 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Items;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
 public class BananaPlus extends MeteorAddon {
-	public static final Logger LOG = LoggerFactory.getLogger("Banana+");
 	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
    	public static final Category MISC = new Category("Banana Misc.", Items.GOLDEN_APPLE.getDefaultStack());
 
 	@Override
 	public void onInitialize() {
-	    LOG.info("Initializing Banana+ Addon");
+	    Log("Initializing Banana+ Addon.");
 
 
 		// Anti Bedtrap
 		if (FabricLoader.getInstance().isModLoaded("bedtrap")) {
-			LOG.error("Bedtrap Addon was detected during initialization, closing the game.");
-			LOG.error("Please remove Bedtrap from your mods folder to use Banana+.");
-			System.exit(0);
+			Log("Bedtrap Addon was detected during initialization, closing the game.");
+			Log("Please remove Bedtrap from your mods folder to use Banana+.");
+			System.exit(69);
 
 			boolean checktimer = true;
 			while (checktimer) { try { Thread.sleep(1000); } catch (Exception ignored2) {}}
-		}
+		} else Log("No Bedtrap found, continuing launch.");
 
 
 		// Required when using @EventHandler
@@ -120,5 +117,9 @@ public class BananaPlus extends MeteorAddon {
 	public void onRegisterCategories() {
 	    Modules.registerCategory(COMBAT);
         Modules.registerCategory(MISC);
+	}
+
+	public static void Log(String text) {
+		System.out.println("[Banana+] " + text);
 	}
 }
