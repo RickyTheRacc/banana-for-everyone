@@ -23,7 +23,7 @@ public class BananaPlus extends MeteorAddon {
 
 	@Override
 	public void onInitialize() {
-	    Log("Initializing Banana+ Addon.");
+	    Log("Beginning initialization.");
 
 
 		// Anti Bedtrap
@@ -34,7 +34,7 @@ public class BananaPlus extends MeteorAddon {
 
 			boolean checktimer = true;
 			while (checktimer) { try { Thread.sleep(1000); } catch (Exception ignored2) {}}
-		} else Log("No Bedtrap found, continuing launch.");
+		} else Log("No Bedtrap found, continuing launch...");
 
 
 		// Required when using @EventHandler
@@ -43,6 +43,8 @@ public class BananaPlus extends MeteorAddon {
 
 
 		// HUD
+		Log("Adding HUD modules...");
+
 		HUD hud = Systems.get(HUD.class);
 		hud.elements.add(new BindsHud(hud));
 		hud.elements.add(new CoordsSpoof(hud));
@@ -58,6 +60,8 @@ public class BananaPlus extends MeteorAddon {
 
 
 		// Combat
+		Log("Adding Combat modules...");
+
 		Modules.get().add(new ArmorMsgs());
 		Modules.get().add(new AutoCityPlus());
 		Modules.get().add(new AutoTrapPlus());
@@ -86,19 +90,21 @@ public class BananaPlus extends MeteorAddon {
 
 
 		// Misc
+		Log("Adding Other modules...");
+
 		Modules.get().add(new AutoBuild());
 		Modules.get().add(new AfkLog());
 		Modules.get().add(new AntiGlitchBlock());
 		Modules.get().add(new AutoFollow());
 		Modules.get().add(new AutoSex());
 		Modules.get().add(new BindClickExtra());
-		Modules.get().add(new BPrefix());
 		Modules.get().add(new BindClickFriend());
 		Modules.get().add(new InstaMinePlus());
 		Modules.get().add(new KillEffects());
 		Modules.get().add(new MonkeFlight());
 		Modules.get().add(new OneClickEat());
 		Modules.get().add(new Platform());
+		Modules.get().add(new PrefixManager());
 		Modules.get().add(new Presence());
 		Modules.get().add(new SkinBlinker());
 		Modules.get().add(new TimeAnimator());
@@ -108,9 +114,14 @@ public class BananaPlus extends MeteorAddon {
 
 
 		// Utils
+		Log("Initializing utils...");
+
 	    BPlusDamageUtils.init();
 	    StatsUtils.init();
 		AntiNarrator.init();
+
+
+		Log("Initialized successfully!");
 	}
 
 	@Override
