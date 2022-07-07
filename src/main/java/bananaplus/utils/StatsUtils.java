@@ -9,6 +9,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
+import meteordevelopment.starscript.value.Value;
 import net.minecraft.item.Items;
 
 import static bananaplus.utils.BPlusEntityUtils.deadEntity;
@@ -20,7 +21,7 @@ public class StatsUtils {
         MeteorClient.EVENT_BUS.subscribe(StatsUtils.class);
     }
 
-
+    // Fields
     public static Integer kills = 0;
     public static Integer deaths = 0;
     public static Integer highScore = 0;
@@ -31,14 +32,28 @@ public class StatsUtils {
     public static int first;
 
 
-    public static String KDR() {
-        if (StatsUtils.deaths < 2) return StatsUtils.kills + ".00";
-        else {
-            Double doubleKD = (double) StatsUtils.kills / StatsUtils.deaths;
-            return String.format("%.2f", doubleKD);
-        }
+    // Starscript Methods
+    public static Value getKills() {
+        return Value.number(kills);
+    }
+    public static Value getDeaths() {
+        return Value.number(kills);
+    }
+    public static Value getKDR() {
+        return Value.string(KDR());
+    }
+    public static Value getKillstreak() {
+        return Value.number(killStreak);
+    }
+    public static Value getHighscore() {
+        return Value.number(highScore);
+    }
+    public static Value getCrystalsPs() {
+        return Value.number(crystalsPerSec);
     }
 
+
+    // Kill Stats
     public static boolean isTarget() {
         for (Module module : Modules.get().getAll()) {
             if (module.getInfoString() != null) {
@@ -48,8 +63,6 @@ public class StatsUtils {
         return false;
     }
 
-
-    // Kill Stats
     @EventHandler
     private static void onReceivePacket(PacketEvent.Receive event) {
         if (isDeathPacket(event)) {
@@ -63,6 +76,14 @@ public class StatsUtils {
                 killStreak++;
                 highScore++;
             }
+        }
+    }
+
+    public static String KDR() {
+        if (StatsUtils.deaths < 2) return StatsUtils.kills + ".00";
+        else {
+            Double doubleKD = (double) StatsUtils.kills / StatsUtils.deaths;
+            return String.format("%.2f", doubleKD);
         }
     }
 

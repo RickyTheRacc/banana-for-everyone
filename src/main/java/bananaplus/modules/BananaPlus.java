@@ -12,6 +12,8 @@ import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.systems.hud.HUD;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
+import meteordevelopment.starscript.value.ValueMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Items;
 
@@ -111,6 +113,19 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new TPSSync());
 		Modules.get().add(new Twerk());
 		Modules.get().add(new WebNoSlow());
+
+
+		// Starscript Placeholders
+		Log("Adding Starscript placholders...");
+		MeteorStarscript.ss.set("banana", new ValueMap()
+				.set("kills", StatsUtils::getKills)
+				.set("deaths", StatsUtils::getDeaths)
+				.set("kdr", StatsUtils::getKDR)
+				.set("killstreak", StatsUtils::getKillstreak)
+				.set("highscore", StatsUtils::getHighscore)
+				.set("crystalsps", StatsUtils::getCrystalsPs)
+				.set("discord", "https://discord.gg/tByq7JXakQ")
+		);
 
 
 		// Utils

@@ -54,8 +54,8 @@ public class Presence extends Module {
             .description("Messages used for the first line.")
             .defaultValue(
                     "Owning with Banana+",
-                    "(kills) opps smoked",
-                    "Whipping that (KDR) KDR",
+                    "{banana.kills} opps smoked",
+                    "Whipping that {banana.kdr} KDR",
                     "Could it be any easier?"
             )
             .onChanged(strings -> recompileLine1())
@@ -84,7 +84,7 @@ public class Presence extends Module {
             .name("line-2-messages")
             .description("Messages used for the second line.")
             .defaultValue(
-                    "(invite)",
+                    "{banana.discord}",
                     "Banana+ on top!"
             )
             .onChanged(strings -> recompileLine2())
@@ -109,7 +109,7 @@ public class Presence extends Module {
 
 
     public Presence() {
-        super(BananaPlus.MISC, "discord-rpc", "Displays Banana+ as your presence on Discord.");
+        super(BananaPlus.MISC, "banana-rpc", "Displays Banana+ as your presence on Discord.");
 
         runInMainMenu = true;
     }
@@ -211,13 +211,7 @@ public class Presence extends Module {
                     }
 
                     try {
-                        rpc.setDetails(MeteorStarscript.ss.run(line1Scripts.get(i))
-                                .replace("(killstreak)", StatsUtils.killStreak.toString())
-                                .replace("(KDR)", StatsUtils.KDR())
-                                .replace("(kills)", StatsUtils.kills.toString())
-                                .replace("(deaths)", StatsUtils.deaths.toString())
-                                .replace("(invite)", "https://discord.gg/tByq7JXakQ")
-                                .replace("(highscore)", StatsUtils.highScore.toString()));
+                        rpc.setDetails(MeteorStarscript.ss.run(line1Scripts.get(i)).toString());
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
@@ -237,13 +231,7 @@ public class Presence extends Module {
                     }
 
                     try {
-                        rpc.setState(MeteorStarscript.ss.run(line2Scripts.get(i))
-                                .replace("(killstreak)", StatsUtils.killStreak.toString())
-                                .replace("(KDR)", StatsUtils.KDR())
-                                .replace("(kills)", StatsUtils.kills.toString())
-                                .replace("(deaths)", StatsUtils.deaths.toString())
-                                .replace("(invite)", "https://discord.gg/tByq7JXakQ")
-                                .replace("(highscore)", StatsUtils.highScore.toString()));
+                        rpc.setDetails(MeteorStarscript.ss.run(line2Scripts.get(i)).toString());
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
