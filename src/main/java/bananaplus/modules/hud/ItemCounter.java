@@ -1,9 +1,11 @@
 package bananaplus.modules.hud;
 
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.hud.HUD;
+import meteordevelopment.meteorclient.systems.hud.HudElement;
+import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
-import meteordevelopment.meteorclient.systems.hud.modules.HudElement;
+import meteordevelopment.meteorclient.systems.hud.elements.TextHud;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.Names;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
@@ -12,6 +14,8 @@ import net.minecraft.item.*;
 import java.util.*;
 
 public class ItemCounter extends HudElement {
+    public static final HudElementInfo<ItemCounter> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "item-counter", "Count different items in text.", ItemCounter::new);
+
     public enum SortMode {
         Longest,
         Shortest
@@ -37,8 +41,8 @@ public class ItemCounter extends HudElement {
     );
 
 
-    public ItemCounter(HUD hud) {
-        super(hud, "item-counter", "Display the amount of selected items in your inventory.", false);
+    public ItemCounter() {
+        super(INFO);
     }
 
 
@@ -46,7 +50,7 @@ public class ItemCounter extends HudElement {
     private final HashMap<Item, Integer> itemCounts = new HashMap<Item, Integer>();
 
     @Override
-    public void update(HudRenderer renderer) {
+    public void tick(HudRenderer renderer) {
         if (!Utils.canUpdate()) return;
 
         updateCounter();
@@ -76,16 +80,16 @@ public class ItemCounter extends HudElement {
 
         updateCounter();
 
-        double x = box.getX();
-        double y = box.getY();
+        double x = this.x;
+        double y = this.y;
         int i = 0;
 
         if (itemCounter.isEmpty()) {
             String t = "Item Counter";
-            renderer.text(t, x + box.alignX(renderer.textWidth(t)), y, hud.secondaryColor.get());
+//            renderer.text(t, x + box.alignX(renderer.textWidth(t)), y, TextHud.getSectionColor(0), true);
         } else {
             for (String counter: itemCounter) {
-                renderer.text(counter, x + box.alignX(renderer.textWidth(counter)), y, hud.secondaryColor.get());
+//                renderer.text(counter, x + box.alignX(renderer.textWidth(counter)), y, TextHud.getSectionColor(0), true);
                 y += renderer.textHeight();
                 if (i > 0) y += 2;
                 i++;
