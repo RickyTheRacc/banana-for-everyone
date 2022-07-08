@@ -63,7 +63,6 @@ public class BananaPlus extends MeteorAddon {
 
 		Hud.get().register(TextPresets.INFO);
 //		Hud.get().register(ItemCounter.INFO);
-//		Hud.get().register(CoordsSpoof.INFO);
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(WelcomeHud.INFO);
