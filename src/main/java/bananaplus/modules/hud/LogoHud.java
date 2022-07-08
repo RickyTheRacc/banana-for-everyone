@@ -1,11 +1,12 @@
 package bananaplus.modules.hud;
 
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.renderer.GL;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.hud.HUD;
+import meteordevelopment.meteorclient.systems.hud.HudElement;
+import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
-import meteordevelopment.meteorclient.systems.hud.modules.HudElement;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.util.Identifier;
@@ -13,6 +14,8 @@ import net.minecraft.util.Identifier;
 import java.util.Calendar;
 
 public class LogoHud extends HudElement {
+    public static final HudElementInfo<LogoHud> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "logo-hud", "Display the Banana+ logo.", LogoHud::new);
+
     public enum Logo {
         Default,
         British,
@@ -82,8 +85,8 @@ public class LogoHud extends HudElement {
     );
 
 
-    public LogoHud(HUD hud) {
-        super(hud, "banana+-logo", "Displays the Banana+ logo.");
+    public LogoHud() {
+        super(INFO);
     }
 
 
@@ -132,7 +135,7 @@ public class LogoHud extends HudElement {
     }
 
     @Override
-    public void update(HudRenderer renderer) {
+    public void tick(HudRenderer renderer) {
         box.setSize(90 * scale.get(), 90 * scale.get());
     }
 
@@ -140,10 +143,10 @@ public class LogoHud extends HudElement {
     public void render(HudRenderer renderer) {
         if (!Utils.canUpdate()) return;
 
-        double x = box.getX();
-        double y = box.getY();
-        int w = (int) box.width;
-        int h = (int) box.height;
+        double x = this.x;
+        double y = this.y;
+        int w = this.getWidth();
+        int h = this.getHeight();
         Color color = new Color (255, 255, 255);
 
         if (events.get()) {

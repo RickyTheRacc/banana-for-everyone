@@ -1,10 +1,9 @@
 package bananaplus.modules.hud;
 
-import meteordevelopment.meteorclient.renderer.Renderer2D;
+import bananaplus.modules.BananaPlus;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.hud.HUD;
-import meteordevelopment.meteorclient.systems.hud.HudRenderer;
-import meteordevelopment.meteorclient.systems.hud.modules.HudElement;
+import meteordevelopment.meteorclient.systems.hud.*;
+import meteordevelopment.meteorclient.systems.hud.elements.TextHud;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.render.color.Color;
@@ -14,10 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BindsHud extends HudElement {
+    public static final HudElementInfo<BindsHud> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "binds-hud", "Displays modules you've binded keys to.", BindsHud::new);
+
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    private final Setting<Sort> sort = sgGeneral.add(new EnumSetting.Builder<Sort>()
-            .name("sort")
+
+    // General Settings
+    private final Setting<Sort> sortMode = sgGeneral.add(new EnumSetting.Builder<Sort>()
+            .name("sort-mode")
             .description("How to sort active modules.")
             .defaultValue(Sort.Biggest)
             .build()
@@ -27,31 +31,6 @@ public class BindsHud extends HudElement {
             .name("color-mode")
             .description("What color to use for active modules.")
             .defaultValue(ColorMode.Rainbow)
-            .build()
-    );
-
-    private final Setting<SettingColor> flatColor = sgGeneral.add(new ColorSetting.Builder()
-            .name("flat-color")
-            .description("Color for flat color mode.")
-            .defaultValue(new SettingColor(225, 25, 25))
-            .visible(() -> colorMode.get() == ColorMode.Flat)
-            .build()
-    );
-
-    private final Setting<Boolean> outlines = sgGeneral.add(new BoolSetting.Builder()
-            .name("outlines")
-            .description("Whether or not to render outlines.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Integer> outlineWidth = sgGeneral.add(new IntSetting.Builder()
-            .name("outline-width")
-            .description("Outline width.")
-            .defaultValue(4)
-            .min(1)
-            .sliderMin(1)
-            .visible(outlines::get)
             .build()
     );
 
@@ -77,24 +56,65 @@ public class BindsHud extends HudElement {
             .build()
     );
 
+    private final Setting<SettingColor> flatColor = sgGeneral.add(new ColorSetting.Builder()
+            .name("flat-color")
+            .description("Color for flat color mode.")
+            .defaultValue(new SettingColor(225, 25, 25))
+            .visible(() -> colorMode.get() == ColorMode.Flat)
+            .build()
+    );
+
+    private final Setting<Boolean> outlines = sgGeneral.add(new BoolSetting.Builder()
+            .name("outlines")
+            .description("Whether or not to render outlines")
+            .defaultValue(false)
+            .build()
+    );
+
+    private final Setting<Integer> outlineWidth = sgGeneral.add(new IntSetting.Builder()
+            .name("outline-width")
+            .description("Outline width")
+            .defaultValue(2)
+            .min(1)
+            .sliderMin(1)
+            .visible(outlines::get)
+            .build()
+    );
+
+    private final Setting<Boolean> shadow = sgGeneral.add(new BoolSetting.Builder()
+            .name("shadow")
+            .description("Renders shadow behind text.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<Alignment> alignment = sgGeneral.add(new EnumSetting.Builder<Alignment>()
+            .name("alignment")
+            .description("Horizontal alignment.")
+            .defaultValue(Alignment.Auto)
+            .build()
+    );
+
+
+    public BindsHud() {
+        super(INFO);
+    }
+
+
     private final List<Module> modules = new ArrayList<>();
 
     private final Color rainbow = new Color(255, 255, 255);
     private double rainbowHue1, rainbowHue2;
 
-    private double prevX, prevY;
+    private double prevX;
     private double prevTextLength;
     private Color prevColor = new Color();
 
-    public BindsHud(HUD hud) {
-        super(hud, "hud-binds", "Displays your binds.");
-    }
 
     @Override
-    public void update(HudRenderer renderer) {
-
+    public void tick(HudRenderer renderer) {
         if (Modules.get() == null) {
-            box.setSize(renderer.textWidth("Active Modules"), renderer.textHeight());
+            box.setSize(renderer.textWidth("Keybind List"), renderer.textHeight());
             return;
         }
 
@@ -106,7 +126,7 @@ public class BindsHud extends HudElement {
             double _1 = getModuleWidth(renderer, o1);
             double _2 = getModuleWidth(renderer, o2);
 
-            if (sort.get() == Sort.Smallest) {
+            if (sortMode.get() == Sort.Smallest) {
                 double temp = _1;
                 _1 = _2;
                 _2 = temp;
@@ -124,7 +144,7 @@ public class BindsHud extends HudElement {
             Module module = modules.get(i);
 
             width = Math.max(width, getModuleWidth(renderer, module));
-            height += renderer.textHeight();
+            height += renderer.textHeight(shadow.get());
             if (i > 0) height += 2;
         }
 
@@ -133,11 +153,11 @@ public class BindsHud extends HudElement {
 
     @Override
     public void render(HudRenderer renderer) {
-        double x = box.getX();
-        double y = box.getY();
+        double x = this.x;
+        double y = this.y;
 
         if (Modules.get() == null) {
-            renderer.text("Active Modules", x, y, hud.primaryColor.get());
+            renderer.text("Keybind List", x, y, TextHud.getSectionColor(0), shadow.get());
             return;
         }
 
@@ -148,17 +168,14 @@ public class BindsHud extends HudElement {
         rainbowHue2 = rainbowHue1;
 
         prevX = x;
-        prevY = y;
-        Renderer2D.COLOR.begin();
+
         for (int i = 0; i < modules.size(); i++) {
-            renderModule(renderer, modules, i, x + box.alignX(getModuleWidth(renderer, modules.get(i))), y);
+            double offset = alignX(getModuleWidth(renderer, modules.get(i)), alignment.get());
+            renderModule(renderer, modules, i, x + offset, y);
 
-            prevX = x + box.alignX(getModuleWidth(renderer, modules.get(i)));
-            prevY = y;
-
-            y += 2 + renderer.textHeight();
+            prevX = x + offset;
+            y += 2 + renderer.textHeight(shadow.get());
         }
-        Renderer2D.COLOR.render(null);
     }
 
     private void renderModule(HudRenderer renderer, List<Module> modules, int index, double x, double y) {
@@ -178,43 +195,43 @@ public class BindsHud extends HudElement {
             color = rainbow;
         }
 
-        renderer.text(module.title, x, y, color);
+        renderer.text(module.title, x, y, color, shadow.get());
 
-        double textLength = renderer.textWidth(module.title);
+        double textHeight = renderer.textHeight(shadow.get());
+        double textLength = renderer.textWidth(module.title, shadow.get());
 
         String info = module.keybind.toString();
-        renderer.text(info, x + renderer.textWidth(module.title) + renderer.textWidth(" "), y, hud.secondaryColor.get());
+        renderer.text(info, x + renderer.textWidth(module.title) + renderer.textWidth(" "), y, TextHud.getSectionColor(1), shadow.get());
         textLength += renderer.textWidth(" ") + renderer.textWidth(info);
 
         if (outlines.get()) {
             if (index == 0) {
-                Renderer2D.COLOR.quad(x - 2 - outlineWidth.get(), y - 2, outlineWidth.get(), renderer.textHeight() + 4, prevColor, prevColor, color, color); // Left quad
-                Renderer2D.COLOR.quad(x + textLength + 2, y - 2, outlineWidth.get(), renderer.textHeight() + 4, prevColor, prevColor, color, color); // Right quad
+                renderer.quad(x - 2 - outlineWidth.get(), y - 2, outlineWidth.get(), textHeight + 4, prevColor, prevColor, color, color); // Left quad
+                renderer.quad(x + textLength + 2, y - 2, outlineWidth.get(), textHeight + 4, prevColor, prevColor, color, color); // Right quad
 
-                Renderer2D.COLOR.quad(x - 2 - outlineWidth.get(), y - 2 - outlineWidth.get(), textLength + 4 + (outlineWidth.get() * 2), outlineWidth.get(), prevColor, prevColor, color, color); // Top quad
+                renderer.quad(x - 2 - outlineWidth.get(), y - 2 - outlineWidth.get(), textLength + 4 + (outlineWidth.get() * 2), outlineWidth.get(), prevColor, prevColor, color, color); // Top quad
 
             } else if (index == modules.size() - 1) {
-                Renderer2D.COLOR.quad(x - 2 - outlineWidth.get(), y, outlineWidth.get(), renderer.textHeight() + 2 + outlineWidth.get(), prevColor, prevColor, color, color); // Left quad
-                Renderer2D.COLOR.quad(x + textLength + 2, y, outlineWidth.get(), renderer.textHeight() + 2 + outlineWidth.get(), prevColor, prevColor, color, color); // Right quad
+                renderer.quad(x - 2 - outlineWidth.get(), y, outlineWidth.get(), textHeight + 2 + outlineWidth.get(), prevColor, prevColor, color, color); // Left quad
+                renderer.quad(x + textLength + 2, y, outlineWidth.get(), textHeight + 2 + outlineWidth.get(), prevColor, prevColor, color, color); // Right quad
 
-                Renderer2D.COLOR.quad(x - 2 - outlineWidth.get(), y + renderer.textHeight() + 2, textLength + 4 + (outlineWidth.get() * 2), outlineWidth.get(), prevColor, prevColor, color, color); // Bottom quad
+                renderer.quad(x - 2 - outlineWidth.get(), y + textHeight + 2, textLength + 4 + (outlineWidth.get() * 2), outlineWidth.get(), prevColor, prevColor, color, color); // Bottom quad
             }
 
             if (index > 0) {
                 if (index < modules.size() - 1) {
 
-                    Renderer2D.COLOR.quad(x - 2 - outlineWidth.get(), y, outlineWidth.get(), renderer.textHeight() + 2, prevColor, prevColor, color, color); // Left quad
-                    Renderer2D.COLOR.quad(x + textLength + 2, y, outlineWidth.get(), renderer.textHeight() + 2, prevColor, prevColor, color, color); // Right quad
-
+                    renderer.quad(x - 2 - outlineWidth.get(), y, outlineWidth.get(), textHeight + 2, prevColor, prevColor, color, color); // Left quad
+                    renderer.quad(x + textLength + 2, y, outlineWidth.get(), textHeight + 2, prevColor, prevColor, color, color); // Right quad
                 }
 
-                Renderer2D.COLOR.quad(Math.min(prevX, x) - 2 - outlineWidth.get(), Math.max(prevX, x) == x ? y : y - outlineWidth.get(),
+                renderer.quad(Math.min(prevX, x) - 2 - outlineWidth.get(), Math.max(prevX, x) == x ? y : y - outlineWidth.get(),
                         (Math.max(prevX, x) - 2) - (Math.min(prevX, x) - 2 - outlineWidth.get()), outlineWidth.get(),
-                        prevColor, prevColor, color, color); // Left between quad
+                        prevColor, prevColor, color, color); // Left inbetween quad
 
-                Renderer2D.COLOR.quad(Math.min(prevX + prevTextLength, x + textLength) + 2, Math.min(prevX + prevTextLength, x + textLength) == x + textLength ? y : y - outlineWidth.get(),
+                renderer.quad(Math.min(prevX + prevTextLength, x + textLength) + 2, Math.min(prevX + prevTextLength, x + textLength) == x + textLength ? y : y - outlineWidth.get(),
                         (Math.max(prevX + prevTextLength, x + textLength) + 2 + outlineWidth.get()) - (Math.min(prevX + prevTextLength, x + textLength) + 2), outlineWidth.get(),
-                        prevColor, prevColor, color, color); // Right between quad
+                        prevColor, prevColor, color, color); // Right inbetween quad
             }
         }
 
@@ -242,3 +259,15 @@ public class BindsHud extends HudElement {
         Rainbow
     }
 }
+
+
+//    private double getModuleWidth(HudRenderer renderer, Module module) {
+//        double width = renderer.textWidth(module.title);
+//
+//        String info = module.keybind.toString();
+//        width += renderer.textWidth(" ") + renderer.textWidth(info);
+//
+//        return width;
+//    }
+//
+//    // modules.addAll(Modules.get().getAll().stream().filter(module -> module.keybind.isSet()).toList());

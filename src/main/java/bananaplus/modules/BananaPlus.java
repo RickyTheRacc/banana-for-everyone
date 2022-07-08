@@ -2,14 +2,13 @@ package bananaplus.modules;
 
 import bananaplus.modules.combat.*;
 import bananaplus.modules.hud.*;
-import bananaplus.modules.hud.stats.*;
 import bananaplus.modules.misc.*;
 import bananaplus.utils.*;
 import bananaplus.utils.AntiNarrator;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
-import meteordevelopment.meteorclient.systems.Systems;
-import meteordevelopment.meteorclient.systems.hud.HUD;
+import meteordevelopment.meteorclient.systems.hud.Hud;
+import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
@@ -22,6 +21,7 @@ import java.lang.invoke.MethodHandles;
 public class BananaPlus extends MeteorAddon {
 	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
    	public static final Category MISC = new Category("Banana Misc.", Items.GOLDEN_APPLE.getDefaultStack());
+	public static final HudGroup HUD_GROUP = new HudGroup("Banana+");
 
 	@Override
 	public void onInitialize() {
@@ -62,6 +62,8 @@ public class BananaPlus extends MeteorAddon {
 		Log("Adding HUD modules...");
 
 		Hud.get().register(TextPresets.INFO);
+//		Hud.get().register(ItemCounter.INFO);
+//		Hud.get().register(CoordsSpoof.INFO);
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(WelcomeHud.INFO);
