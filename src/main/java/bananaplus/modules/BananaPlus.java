@@ -44,21 +44,27 @@ public class BananaPlus extends MeteorAddon {
 		MeteorClient.EVENT_BUS.registerLambdaFactory("bananaplus.utils", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
 
 
+		// Starscript Placeholders
+		Log("Adding Starscript placholders...");
+
+		MeteorStarscript.ss.set("banana", new ValueMap()
+				.set("kills", StatsUtils::getKills)
+				.set("deaths", StatsUtils::getDeaths)
+				.set("kdr", StatsUtils::getKDR)
+				.set("killstreak", StatsUtils::getKillstreak)
+				.set("highscore", StatsUtils::getHighscore)
+				.set("crystalsps", StatsUtils::getCrystalsPs)
+				.set("discord", "https://discord.gg/tByq7JXakQ")
+		);
+
+
 		// HUD
 		Log("Adding HUD modules...");
 
-		HUD hud = Systems.get(HUD.class);
-		hud.elements.add(new BindsHud(hud));
-		hud.elements.add(new CoordsSpoof(hud));
-		hud.elements.add(new CrystalsPs(hud));
-		hud.elements.add(new Deaths(hud));
-		hud.elements.add(new HighScore(hud));
-		hud.elements.add(new ItemCounter(hud));
-		hud.elements.add(new LogoHud(hud));
-		hud.elements.add(new KDR(hud));
-		hud.elements.add(new Kills(hud));
-		hud.elements.add(new KillStreak(hud));
-		hud.elements.add(new WelcomeHud(hud));
+		Hud.get().register(TextPresets.INFO);
+		Hud.get().register(BindsHud.INFO);
+		Hud.get().register(LogoHud.INFO);
+		Hud.get().register(WelcomeHud.INFO);
 
 
 		// Combat
@@ -115,17 +121,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new WebNoSlow());
 
 
-		// Starscript Placeholders
-		Log("Adding Starscript placholders...");
-		MeteorStarscript.ss.set("banana", new ValueMap()
-				.set("kills", StatsUtils::getKills)
-				.set("deaths", StatsUtils::getDeaths)
-				.set("kdr", StatsUtils::getKDR)
-				.set("killstreak", StatsUtils::getKillstreak)
-				.set("highscore", StatsUtils::getHighscore)
-				.set("crystalsps", StatsUtils::getCrystalsPs)
-				.set("discord", "https://discord.gg/tByq7JXakQ")
-		);
+
 
 
 		// Utils
