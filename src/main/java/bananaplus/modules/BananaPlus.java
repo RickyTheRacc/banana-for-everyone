@@ -61,11 +61,11 @@ public class BananaPlus extends MeteorAddon {
 		// HUD
 		Log("Adding HUD modules...");
 
-		Hud.get().register(TextPresets.INFO);
 //		Hud.get().register(ItemCounter.INFO);
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(WelcomeHud.INFO);
+		Hud.get().register(TextPresets.INFO);
 
 
 		// Combat
