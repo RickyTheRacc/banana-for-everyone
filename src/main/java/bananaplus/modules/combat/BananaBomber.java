@@ -1090,6 +1090,17 @@ public class BananaBomber extends Module {
 
     @EventHandler(priority = EventPriority.HIGH)
     private void onPreTick(TickEvent.Pre event) {
+        // Decrement render timers
+        if (renderTimer > 0) renderTimer--;
+        if (breakRenderTimer > 0) breakRenderTimer--;
+
+        // Ticking fade animation
+        renderBlocks.forEach(RenderBlock::tick);
+        renderBlocks.removeIf(renderBlock -> renderBlock.ticks <= 0);
+
+        renderBreakBlocks.forEach(RenderBlock::tick);
+        renderBreakBlocks.removeIf(renderBlock -> renderBlock.ticks <= 0);
+
         // Update last rotation
         didRotateThisTick = false;
         lastRotationTimer++;
@@ -1114,10 +1125,6 @@ public class BananaBomber extends Module {
         if (breakTimer > 0) breakTimer--;
         if (placeTimer > 0) placeTimer--;
         if (switchTimer > 0) switchTimer--;
-
-        // Decrement render timers
-        if (renderTimer > 0) renderTimer--;
-        if (breakRenderTimer > 0) breakRenderTimer--;
 
         // Update waiting to explode crystals and mark them as existing if reached threshold
         for (IntIterator it = waitingToExplode.keySet().iterator(); it.hasNext();) {
@@ -1154,13 +1161,6 @@ public class BananaBomber extends Module {
             removed.forEach((java.util.function.IntConsumer) id -> Objects.requireNonNull(mc.world.getEntityById(id)).kill());
             removed.clear();
         }
-
-        // Ticking fade animation
-        renderBlocks.forEach(RenderBlock::tick);
-        renderBlocks.removeIf(renderBlock -> renderBlock.ticks <= 0);
-
-        renderBreakBlocks.forEach(RenderBlock::tick);
-        renderBreakBlocks.removeIf(renderBlock -> renderBlock.ticks <= 0);
     }
 
     @EventHandler(priority = EventPriority.LOWEST - 666)
