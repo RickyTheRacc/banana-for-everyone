@@ -91,23 +91,23 @@ public class LogoHud extends HudElement {
 
 
     // Normal Logos
-    private static final Identifier LOGO = new Identifier("textures", "logo1.png");
-    private static final Identifier LOGO2 = new Identifier("textures", "logo2.png");
-    private static final Identifier LOGO3 = new Identifier("textures", "logo3.png");
-    private static final Identifier CIRCLE = new Identifier("textures", "circle.png");
+    private static final Identifier LOGO = new Identifier("assets", "logo1.png");
+    private static final Identifier LOGO2 = new Identifier("assets", "logo2.png");
+    private static final Identifier LOGO3 = new Identifier("assets", "logo3.png");
+    private static final Identifier CIRCLE = new Identifier("assets", "circle.png");
 
 
     // Seasonal Logos
-    private static final Identifier BRITISH = new Identifier("textures", "british.png");
-    private static final Identifier CHRISTMAS = new Identifier("textures", "christmas.png");
-    private static final Identifier HALLOWEEN = new Identifier("textures", "halloween1.png");
-    private static final Identifier HALLOWEEN2 = new Identifier("textures", "halloween2.png");
-    private static final Identifier HALLOWEEN3 = new Identifier("textures", "halloween3.png");
-    private static final Identifier MEXICO = new Identifier("textures", "mexican.png");
-    private static final Identifier PATRICK = new Identifier("textures", "patrick.png");
-    private static final Identifier PATRIOT = new Identifier("textures", "patriot.png");
-    private static final Identifier PRIDE = new Identifier("textures", "pride.png");
-    private static final Identifier SWEDEN = new Identifier("textures", "swedish.png");
+    private static final Identifier BRITISH = new Identifier("assets", "british.png");
+    private static final Identifier CHRISTMAS = new Identifier("assets", "christmas.png");
+    private static final Identifier HALLOWEEN = new Identifier("assets", "halloween1.png");
+    private static final Identifier HALLOWEEN2 = new Identifier("assets", "halloween2.png");
+    private static final Identifier HALLOWEEN3 = new Identifier("assets", "halloween3.png");
+    private static final Identifier MEXICO = new Identifier("assets", "mexican.png");
+    private static final Identifier PATRICK = new Identifier("assets", "patrick.png");
+    private static final Identifier PATRIOT = new Identifier("assets", "patriot.png");
+    private static final Identifier PRIDE = new Identifier("assets", "pride.png");
+    private static final Identifier SWEDEN = new Identifier("assets", "swedish.png");
 
     public Identifier getNormal() {
         if (normal.get() == Default.Default) return LOGO;
