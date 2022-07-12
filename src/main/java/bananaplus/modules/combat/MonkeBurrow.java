@@ -68,7 +68,7 @@ public class MonkeBurrow extends Module {
 
     private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
-            .description("Stops you from burrowing when not in a hole.")
+            .description("Stops you from burrowing when not on the ground.")
             .defaultValue(false)
             .build()
     );
