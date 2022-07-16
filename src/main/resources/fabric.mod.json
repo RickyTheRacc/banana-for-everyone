@@ -3,7 +3,7 @@
   "id": "bananaplus",
   "version": "${version}",
   "name": "Banana+",
-  "description": "Banana+ addon for the Meteor Addon API.",
+  "description": "Based PVP addon for Meteor Client.",
   "authors": [
     "Bennooo",
     "Necro",
