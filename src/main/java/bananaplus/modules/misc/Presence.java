@@ -231,7 +231,7 @@ public class Presence extends Module {
                     }
 
                     try {
-                        rpc.setDetails(MeteorStarscript.ss.run(line2Scripts.get(i)).toString());
+                        rpc.setState(MeteorStarscript.ss.run(line2Scripts.get(i)).toString());
                     } catch (StarscriptError e) {
                         ChatUtils.error("Starscript", e.getMessage());
                     }
