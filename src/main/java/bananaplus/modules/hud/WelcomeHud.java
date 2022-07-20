@@ -109,6 +109,11 @@ public class WelcomeHud extends HudElement {
         double x = this.x;
         double y = this.y;
 
+        if (isInEditor()) {
+            renderer.text("Welcome Hud", x, y, TextHud.getSectionColor(0), true);
+            return;
+        }
+
         renderer.text(leftText, x, y, TextHud.getSectionColor(0), true);
         renderer.text(rightText, x + leftWidth, y, TextHud.getSectionColor(1), true);
     }
