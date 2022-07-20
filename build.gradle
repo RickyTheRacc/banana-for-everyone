@@ -13,7 +13,6 @@ loom {
     accessWidenerPath = file("src/main/resources/accesswidener")
 }
 
-
 repositories {
     maven {
         name = "meteor-maven"
