@@ -7,10 +7,11 @@ Ben's List
 - add back auto ez
 - make a render utils and apply it for everything (fade, shrink and something else)
 
+
 Ricky's List
 - Combine middle click friend and extra
-- Make options for the discord presence to look like other clients trolla
 - Make kill and pop manager modules
 - Add auto cope to the auto respawn mixin
 - Fix anti surround toggling off and make it use other blocks
-- Add smart boost to Packet Fly
+- Finish Quiver Plus
+- Cool rainbow chat prefix but (big maybe this looks complicated)

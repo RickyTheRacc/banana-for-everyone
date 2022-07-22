@@ -6,6 +6,7 @@ import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
@@ -17,6 +18,7 @@ import static bananaplus.utils.BPlusEntityUtils.isDeathPacket;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class StatsUtils {
+    @PostInit
     public static void init() {
         MeteorClient.EVENT_BUS.subscribe(StatsUtils.class);
     }

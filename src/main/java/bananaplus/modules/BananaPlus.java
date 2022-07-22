@@ -4,8 +4,6 @@ import bananaplus.modules.combat.*;
 import bananaplus.modules.hud.*;
 import bananaplus.modules.misc.*;
 import bananaplus.utils.*;
-import bananaplus.utils.AntiNarrator;
-import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
@@ -13,10 +11,7 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
 import meteordevelopment.starscript.value.ValueMap;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Items;
-
-import java.lang.invoke.MethodHandles;
 
 public class BananaPlus extends MeteorAddon {
 	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
@@ -26,22 +21,6 @@ public class BananaPlus extends MeteorAddon {
 	@Override
 	public void onInitialize() {
 	    Log("Beginning initialization.");
-
-
-		// Anti Bedtrap
-		if (FabricLoader.getInstance().isModLoaded("bedtrap")) {
-			Log("Bedtrap Addon was detected during initialization, closing the game.");
-			Log("Please remove Bedtrap from your mods folder to use Banana+.");
-			System.exit(69);
-
-			boolean checktimer = true;
-			while (checktimer) { try { Thread.sleep(1000); } catch (Exception ignored2) {}}
-		} else Log("No Bedtrap found, continuing launch...");
-
-
-		// Required when using @EventHandler
-		MeteorClient.EVENT_BUS.registerLambdaFactory("bananaplus.modules", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
-		MeteorClient.EVENT_BUS.registerLambdaFactory("bananaplus.utils", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
 
 
 		// Starscript Placeholders
@@ -89,7 +68,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new MonkeTotem());
 		Modules.get().add(new PostTickKA());
 		Modules.get().add(new QuiverPlus());
-		Modules.get().add(new QuiverRewrite());
+		//Modules.get().add(new QuiverRewrite());
 		Modules.get().add(new SelfTrapPlus());
 		Modules.get().add(new SmartHoleFill());
 		Modules.get().add(new StepPlus());
@@ -123,17 +102,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new WebNoSlow());
 
 
-
-
-
-		// Utils
-		Log("Initializing utils...");
-
-	    BPlusDamageUtils.init();
-	    StatsUtils.init();
-		AntiNarrator.init();
-
-
 		Log("Initialized successfully!");
 	}
 
@@ -141,6 +109,11 @@ public class BananaPlus extends MeteorAddon {
 	public void onRegisterCategories() {
 	    Modules.registerCategory(COMBAT);
         Modules.registerCategory(MISC);
+	}
+
+	@Override
+	public String getPackage() {
+		return "bananaplus";
 	}
 
 	public static void Log(String text) {

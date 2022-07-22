@@ -6,6 +6,7 @@ import meteordevelopment.meteorclient.mixininterface.IExplosion;
 import meteordevelopment.meteorclient.mixininterface.IRaycastContext;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.systems.friends.Friends;
+import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
 import meteordevelopment.meteorclient.utils.entity.fakeplayer.FakePlayerEntity;
@@ -49,6 +50,7 @@ public class BPlusDamageUtils {
     private static Explosion explosion;
     private static RaycastContext raycastContext;
 
+    @PostInit
     public static void init() {
         MeteorClient.EVENT_BUS.subscribe(BPlusDamageUtils.class);
     }

@@ -31,5 +31,9 @@
     "java": ">=17",
     "minecraft": ">=1.19",
     "meteor-client": ">=0.4.9"
+  },
+  "breaks": {
+    "bedtrap": "*",
+    "splashhack": "*"
   }
 }
