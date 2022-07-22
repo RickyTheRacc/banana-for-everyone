@@ -1,3 +1,8 @@
+/*
+Modified from Meteor Client
+https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/meteordevelopment/meteorclient/systems/modules/combat/CrystalAura.java
+*/
+
 package bananaplus.modules.combat;
 
 import bananaplus.modules.BananaPlus;
