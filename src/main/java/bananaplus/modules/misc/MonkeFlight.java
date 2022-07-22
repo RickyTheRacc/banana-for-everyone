@@ -1,3 +1,8 @@
+/*
+Modified from Vector Addon
+https://github.com/cally72jhb/vector-addon/blob/main/src/main/java/cally72jhb/addon/system/modules/movement/PacketFly.java
+*/
+
 package bananaplus.modules.misc;
 
 import bananaplus.modules.BananaPlus;
@@ -35,10 +40,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
-// Originally taken from Future leak, then Konas, then used / modified by Vector Addon
-// Used with explicit permission from Cally72jhb, original code belongs to them!
-// Source can be found here: https://github.com/cally72jhb/vector-addon/blob/main/src/main/java/cally72jhb/addon/system/modules/movement/PacketFly.java
 
 public class MonkeFlight extends Module {
     public enum Type {
