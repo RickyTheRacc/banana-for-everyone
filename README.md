@@ -30,6 +30,7 @@ B+ on top, All love <3 -ben
 <br>
 ## Credits
 Packet Fly used with permission from [Cally72jhb](https://github.com/cally72jhb)<br>
-[Meteor Development](https://github.com/MeteorDevelopment) for [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)<br>
+[Meteor Development](https://github.com/MeteorDevelopment) for [Meteor Client](https://github.com/MeteorDevelopment/meteor-client) and the various modules that have been used and/or modified from it<br>
 The [Fabric Team](https://github.com/FabricMC) for [Fabric](https://github.com/FabricMC/fabric-loader) and [Yarn](https://github.com/FabricMC/yarn)
 
+Licensed under GPL v3.0
