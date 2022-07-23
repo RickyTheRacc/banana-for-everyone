@@ -204,7 +204,7 @@ public class XPThrower extends Module {
         if(shouldWait()) return;
 
         // Activate if the bind is pressed or if a piece of armor is below the threshold
-        if (throwBind.get().isPressed() && (!isRepaired() || justThrow.get())) {
+        if (throwBind.get().isPressed() && mc.currentScreen == null && (!isRepaired() || justThrow.get())) {
             isRepairing = true;
 
             FindItemResult XP = InvUtils.find(Items.EXPERIENCE_BOTTLE);
