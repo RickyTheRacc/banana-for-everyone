@@ -1,7 +1,6 @@
 package bananaplus.modules.misc;
 
-import bananaplus.modules.BananaPlus;
-import bananaplus.utils.StatsUtils;
+import bananaplus.BananaPlus;
 import meteordevelopment.discordipc.DiscordIPC;
 import meteordevelopment.discordipc.RichPresence;
 import meteordevelopment.meteorclient.events.game.OpenScreenEvent;

@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.BananaPlus;
+import bananaplus.BananaPlus;
 import bananaplus.utils.BPlusEntityUtils;
 import meteordevelopment.meteorclient.events.entity.player.CobwebEntityCollisionEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;

@@ -1,6 +1,6 @@
 package bananaplus.modules.combat;
 
-import bananaplus.modules.BananaPlus;
+import bananaplus.BananaPlus;
 import baritone.api.BaritoneAPI;
 import bananaplus.utils.BPlusPlayerUtils;
 import bananaplus.utils.TimerUtils;

@@ -1,6 +1,6 @@
 package bananaplus.mixins.meteor;
 
-import bananaplus.modules.BananaPlus;
+import bananaplus.BananaPlus;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;

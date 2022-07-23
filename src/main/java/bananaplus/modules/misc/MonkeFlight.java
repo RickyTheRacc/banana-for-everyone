@@ -5,7 +5,7 @@ https://github.com/cally72jhb/vector-addon/blob/main/src/main/java/cally72jhb/ad
 
 package bananaplus.modules.misc;
 
-import bananaplus.modules.BananaPlus;
+import bananaplus.BananaPlus;
 import bananaplus.utils.BPlusPlayerUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;

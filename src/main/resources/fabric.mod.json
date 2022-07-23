@@ -16,7 +16,7 @@
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "bananaplus.modules.BananaPlus"
+      "bananaplus.BananaPlus"
     ]
   },
   "mixins": [

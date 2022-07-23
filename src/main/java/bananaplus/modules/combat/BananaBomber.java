@@ -5,7 +5,7 @@ https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/met
 
 package bananaplus.modules.combat;
 
-import bananaplus.modules.BananaPlus;
+import bananaplus.BananaPlus;
 import bananaplus.utils.*;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.*;
