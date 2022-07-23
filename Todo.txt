@@ -14,4 +14,3 @@ Ricky's List
 - Add auto cope to the auto respawn mixin
 - Fix anti surround toggling off and make it use other blocks
 - Finish Quiver Plus
-- Cool rainbow chat prefix but (big maybe this looks complicated)
