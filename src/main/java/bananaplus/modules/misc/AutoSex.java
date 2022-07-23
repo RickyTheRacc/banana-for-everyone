@@ -162,8 +162,7 @@ public class AutoSex extends Module{
                     "Ahhhhn! Fuck me deeper (enemy)!",
                     "Fill me with your spunk (enemy)~!",
                     "Demolish my bussy (enemy)!~"
-                    )
-            )
+            ))
             .visible(message::get)
             .build()
     );
