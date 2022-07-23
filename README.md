@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/textures/logo1.png" alt="meteor-client-logo" width="35%"/>
+<img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/logo1.png" alt="banana+-logo" width="35%"/>
 </p>
 
 <h1 align="center">Banana+</h1>
