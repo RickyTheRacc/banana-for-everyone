@@ -169,7 +169,7 @@ public class AutoSex extends Module{
 
 
     public AutoSex() {
-        super(BananaPlus.MISC, "auto-Sex", "Tries to have sex whit the player in different ways.");
+        super(BananaPlus.MISC, "auto-Sex", "Tries to have sex with the player in different ways.");
     }
 
 
