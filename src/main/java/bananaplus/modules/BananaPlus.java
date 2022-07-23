@@ -24,7 +24,7 @@ public class BananaPlus extends MeteorAddon {
 
 
 		// Starscript Placeholders
-		Log("Adding Starscript placholders...");
+		Log("Adding Starscript placeholders...");
 
 		MeteorStarscript.ss.set("banana", new ValueMap()
 				.set("kills", StatsUtils::getKills)
