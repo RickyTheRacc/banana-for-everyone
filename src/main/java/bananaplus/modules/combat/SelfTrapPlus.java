@@ -296,6 +296,13 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
+    private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
+            .name("shape-mode")
+            .description("How the shapes are rendered.")
+            .defaultValue(ShapeMode.Lines)
+            .build()
+    );
+
     private final Setting<Boolean> renderPlace = sgRender.add(new BoolSetting.Builder()
             .name("render-place")
             .description("Will render where it is trying to place.")
@@ -307,7 +314,7 @@ public class SelfTrapPlus extends Module {
             .name("place-side-color")
             .description("The color of placing blocks.")
             .defaultValue(new SettingColor(255, 255, 255, 25))
-            .visible(renderPlace::get)
+            .visible(() -> renderPlace.get() && shapeMode.get() != ShapeMode.Lines)
             .build()
     );
 
@@ -315,7 +322,7 @@ public class SelfTrapPlus extends Module {
             .name("place-line-color")
             .description("The color of placing line.")
             .defaultValue(new SettingColor(255, 255, 255, 150))
-            .visible(renderPlace::get)
+            .visible(() -> renderPlace.get() && shapeMode.get() != ShapeMode.Sides)
             .build()
     );
 
@@ -346,26 +353,18 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-    private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
-            .name("shape-mode")
-            .description("How the shapes are rendered.")
-            .defaultValue(ShapeMode.Sides)
-            .visible(renderActive::get)
-            .build()
-    );
-
     private final Setting<SettingColor> safeSideColor = sgRender.add(new ColorSetting.Builder()
             .name("safe-side-color")
             .description("The side color for safe blocks.")
             .defaultValue(new SettingColor(13, 255, 0, 15))
-            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Sides)
+            .visible(() -> renderActive.get() && shapeMode.get() != ShapeMode.Lines)
             .build()
     );
 
     private final Setting<SettingColor> safeLineColor = sgRender.add(new ColorSetting.Builder()
             .name("safe-line-color")
             .description("The line color for safe blocks.")
-            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Lines)
+            .visible(() -> renderActive.get() && shapeMode.get() != ShapeMode.Sides)
             .build()
     );
 
@@ -373,7 +372,7 @@ public class SelfTrapPlus extends Module {
             .name("normal-side-color")
             .description("The side color for normal blocks.")
             .defaultValue(new SettingColor(0, 255, 238, 15))
-            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Sides)
+            .visible(() -> renderActive.get() && shapeMode.get() != ShapeMode.Lines)
             .build()
     );
 
@@ -381,7 +380,7 @@ public class SelfTrapPlus extends Module {
             .name("normal-line-color")
             .description("The line color for normal blocks.")
             .defaultValue(new SettingColor(0, 255, 238, 125))
-            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Lines)
+            .visible(() -> renderActive.get() && shapeMode.get() != ShapeMode.Sides)
             .build()
     );
 
@@ -389,7 +388,7 @@ public class SelfTrapPlus extends Module {
             .name("unsafe-side-color")
             .description("The side color for unsafe blocks.")
             .defaultValue(new SettingColor(204, 0, 0, 15))
-            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Sides)
+            .visible(() -> renderActive.get() && shapeMode.get() != ShapeMode.Lines)
             .build()
     );
 
@@ -397,7 +396,7 @@ public class SelfTrapPlus extends Module {
             .name("unsafe-line-color")
             .description("The line color for unsafe blocks.")
             .defaultValue(new SettingColor(204, 0, 0, 125))
-            .visible(() -> renderActive.get() && shapeMode.get() == ShapeMode.Lines)
+            .visible(() -> renderActive.get() && shapeMode.get() != ShapeMode.Sides)
             .build()
     );
 
