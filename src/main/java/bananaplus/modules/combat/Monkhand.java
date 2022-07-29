@@ -295,6 +295,11 @@ public class Monkhand extends Module {
         return mc.player.getMainHandStack().getItem() == Items.BOW
                 || mc.player.getMainHandStack().getItem() == Items.TRIDENT
                 || mc.player.getMainHandStack().getItem() == Items.CROSSBOW
+                || mc.player.getMainHandStack().getItem() == Items.ENDER_PEARL
+                //|| mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE ( this breaks offhand xp on AutoEXP I think :/ )
+                || mc.player.getMainHandStack().getItem() == Items.POTION
+                || mc.player.getMainHandStack().getItem() == Items.SNOWBALL
+                || mc.player.getMainHandStack().getItem() == Items.SPYGLASS
                 || mc.player.getMainHandStack().getItem().isFood();
     }
 
