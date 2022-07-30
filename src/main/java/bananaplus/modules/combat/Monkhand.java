@@ -206,8 +206,8 @@ public class Monkhand extends Module {
             if (!mc.options.swapHandsKey.isPressed()) key = false;
 
             if (mc.options.swapHandsKey.isPressed()
-                    && swapped == false
-                    && key == false
+                    && !swapped
+                    && !key
                     && (mc.player.getOffHandStack().getItem() == currentItem.item || mc.player.getOffHandStack().getItem() == fallbackItem.get().item)){
                 swapped = true;
                 key = true;
@@ -215,8 +215,8 @@ public class Monkhand extends Module {
             }
 
             if (mc.options.swapHandsKey.isPressed()
-                    && swapped == true
-                    && key == false
+                    && swapped
+                    && !key
                     && (mc.player.getMainHandStack().getItem() == currentItem.item || mc.player.getMainHandStack().getItem() == fallbackItem.get().item)){
                 swapped = false;
                 key = true;
@@ -247,7 +247,7 @@ public class Monkhand extends Module {
         else currentItem = item.get();
 
         // Checking offhand item
-        if (mc.player.getOffHandStack().getItem() != currentItem.item && (swapped == false || !allowSwap.get())) {
+        if (mc.player.getOffHandStack().getItem() != currentItem.item && (!swapped || !allowSwap.get())) {
             FindItemResult item = InvUtils.find(itemStack -> itemStack.getItem() == currentItem.item, hotbar.get() ? 0 : 9, 35);
 
             // No offhand item
@@ -296,7 +296,7 @@ public class Monkhand extends Module {
                 || mc.player.getMainHandStack().getItem() == Items.TRIDENT
                 || mc.player.getMainHandStack().getItem() == Items.CROSSBOW
                 || mc.player.getMainHandStack().getItem() == Items.ENDER_PEARL
-                //|| mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE ( this breaks offhand xp on AutoEXP I think :/ )
+                || mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE
                 || mc.player.getMainHandStack().getItem() == Items.POTION
                 || mc.player.getMainHandStack().getItem() == Items.SNOWBALL
                 || mc.player.getMainHandStack().getItem() == Items.SPYGLASS
