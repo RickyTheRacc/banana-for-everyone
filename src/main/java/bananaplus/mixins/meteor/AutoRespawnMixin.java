@@ -11,6 +11,7 @@ import meteordevelopment.meteorclient.systems.modules.render.WaypointsModule;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
 import net.minecraft.client.gui.screen.DeathScreen;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -125,7 +126,7 @@ public class AutoRespawnMixin extends Module{
     private void onTick(TickEvent.Post event) {
         if (rekitWait == 0 && shouldRekit) {
             if (chatInfo.get()) info("Rekitting with kit " + kitName.get() + ".");
-            mc.player.sendChatMessage("/kit " + kitName.get());
+            mc.player.sendChatMessage("/kit " + kitName.get(), Text.literal("/kit" + kitName.get()));
             shouldRekit = false;
             rekitWait = 60;
         } else if (rekitWait > 0) {
@@ -133,7 +134,7 @@ public class AutoRespawnMixin extends Module{
         }
 
         if (copeWait <= 0 && shouldCope) {
-            mc.player.sendChatMessage(getExcuseMessage());
+            mc.player.sendChatMessage(getExcuseMessage(), Text.literal(getExcuseMessage()));
             shouldCope = false;
         } else if (copeWait > 0) {
             copeWait--;

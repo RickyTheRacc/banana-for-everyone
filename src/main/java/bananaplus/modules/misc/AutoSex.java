@@ -17,6 +17,7 @@ import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -197,7 +198,7 @@ public class AutoSex extends Module{
                     if (!Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyFriend.get()) return;
                     if (Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyOther.get()) return;
 
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName());
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName(), Text.literal(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName()));
 
                     playerName = mc.targetedEntity.getEntityName();
                     playerEntity = mc.targetedEntity;
@@ -208,7 +209,7 @@ public class AutoSex extends Module{
 
                     isFollowing = true;
                 } else {
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
 
                     if (message.get()) {
                         endMsg();
@@ -219,7 +220,7 @@ public class AutoSex extends Module{
                 }
             }
             else if(event.action == KeyAction.Press && event.button == GLFW_MOUSE_BUTTON_MIDDLE && isFollowing){
-                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
 
                 if (message.get()) {
                     endMsg();
@@ -243,7 +244,7 @@ public class AutoSex extends Module{
             {
                 if (isFollowing)
                 {
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
 
                     if (message.get()) {
                         endMsg();
@@ -268,7 +269,7 @@ public class AutoSex extends Module{
                     if (!Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyFriend.get()) return;
                     if (Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyOther.get()) return;
 
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName());
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName(), Text.literal(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName()));
 
                     playerName = mc.targetedEntity.getEntityName();
                     playerEntity = mc.targetedEntity;
@@ -293,7 +294,7 @@ public class AutoSex extends Module{
 
                 if (!Friends.get().isFriend((PlayerEntity) playerEntity) && onlyFriend.get()) return;
 
-                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + playerName);
+                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + playerName, Text.literal(Config.get().prefix.get() + "baritone follow player " + playerName));
 
                 if (message.get()) {
                     startMsg();
@@ -307,7 +308,7 @@ public class AutoSex extends Module{
                     endMsg();
                 }
 
-                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
                 playerEntity = null;
                 playerName = null;
                 isFollowing = false;
@@ -360,7 +361,7 @@ public class AutoSex extends Module{
             if (Modules.get().get(Twerk.class).isActive())  Modules.get().get(Twerk.class).toggle();
         }
 
-        mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+        mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
         playerEntity = null;
         playerName = null;
         isFollowing = false;
@@ -370,19 +371,19 @@ public class AutoSex extends Module{
     {
         if (dirtyTalk.get()) {
             if (dm.get()) {
-                mc.player.sendChatMessage("/msg " + playerName + " Come here bby lets have sex uwu");
+                mc.player.sendChatMessage("/msg " + playerName + " Come here bby lets have sex uwu", Text.literal("/msg " + playerName + " Come here bby lets have sex uwu"));
             }
 
             if (pm.get()) {
-                mc.player.sendChatMessage("Come here " + playerName + " lets have sex uwu");
+                mc.player.sendChatMessage("Come here " + playerName + " lets have sex uwu", Text.literal("Come here " + playerName + " lets have sex uwu"));
             }
         } else {
             if (dm.get()) {
-                mc.player.sendChatMessage("/msg " + playerName + " I am now following you using Banana+");
+                mc.player.sendChatMessage("/msg " + playerName + " I am now following you using Banana+", Text.literal("/msg " + playerName + " I am now following you using Banana+"));
             }
 
             if (pm.get()) {
-                mc.player.sendChatMessage("I am now following " + playerName + " using Banana+");
+                mc.player.sendChatMessage("I am now following " + playerName + " using Banana+", Text.literal("I am now following " + playerName + " using Banana+"));
             }
         }
     }
@@ -390,11 +391,11 @@ public class AutoSex extends Module{
     public void followMsg()
     {
         if (dm.get()) {
-            mc.player.sendChatMessage("/msg " + playerName + " " + messages.get().get(iPublic).replace("(enemy)", playerName));
+            mc.player.sendChatMessage("/msg " + playerName + " " + messages.get().get(iPublic).replace("(enemy)", playerName), Text.literal("/msg " + playerName + " " + messages.get().get(iPublic).replace("(enemy)", playerName)));
         }
 
         if (pm.get()) {
-            mc.player.sendChatMessage(messages.get().get(iPublic).replace("(enemy)", playerName));
+            mc.player.sendChatMessage(messages.get().get(iPublic).replace("(enemy)", playerName), Text.literal(messages.get().get(iPublic).replace("(enemy)", playerName)));
         }
     }
 
@@ -402,19 +403,19 @@ public class AutoSex extends Module{
     {
         if (dirtyTalk.get()) {
             if (dm.get()) {
-                mc.player.sendChatMessage("/msg " + playerName + " See u later bby girl ;*");
+                mc.player.sendChatMessage("/msg " + playerName + " See u later bby girl ;*", Text.literal("/msg " + playerName + " See u later bby girl ;*"));
             }
 
             if (pm.get()) {
-                mc.player.sendChatMessage("See u later " + playerName + " xxx ;*");
+                mc.player.sendChatMessage("See u later " + playerName + " xxx ;*", Text.literal("See u later " + playerName + " xxx ;*"));
             }
         } else {
             if (dm.get()) {
-                mc.player.sendChatMessage("/msg " + playerName + " I am no longer following you");
+                mc.player.sendChatMessage("/msg " + playerName + " I am no longer following you", Text.literal("/msg " + playerName + " I am no longer following you"));
             }
 
             if (pm.get()) {
-                mc.player.sendChatMessage("I am no longer following " + playerName);
+                mc.player.sendChatMessage("I am no longer following " + playerName, Text.literal("I am no longer following " + playerName));
             }
         }
     }

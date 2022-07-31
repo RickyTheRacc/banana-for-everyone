@@ -15,6 +15,7 @@ import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 
@@ -131,7 +132,7 @@ public class AutoFollow extends Module {
                     if (!Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyFriend.get()) return;
                     if (Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyOther.get()) return;
 
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName());
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName(), Text.literal(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName()));
 
                     playerName = mc.targetedEntity.getEntityName();
                     playerEntity = mc.targetedEntity;
@@ -142,7 +143,7 @@ public class AutoFollow extends Module {
 
                     isFollowing = true;
                 } else {
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
 
                     if (message.get()) {
                         endMsg();
@@ -153,7 +154,7 @@ public class AutoFollow extends Module {
                 }
             }
             else if(event.action == KeyAction.Press && event.button == GLFW_MOUSE_BUTTON_MIDDLE && isFollowing){
-                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
 
                 if (message.get()) {
                     endMsg();
@@ -173,7 +174,7 @@ public class AutoFollow extends Module {
             {
                 if (isFollowing)
                 {
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
 
                     if (message.get()) {
                         endMsg();
@@ -198,7 +199,7 @@ public class AutoFollow extends Module {
                     if (!Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyFriend.get()) return;
                     if (Friends.get().isFriend((PlayerEntity) mc.targetedEntity) && onlyOther.get()) return;
 
-                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName());
+                    mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName(), Text.literal(Config.get().prefix.get() + "baritone follow player " + mc.targetedEntity.getEntityName()));
 
                     playerName = mc.targetedEntity.getEntityName();
                     playerEntity = mc.targetedEntity;
@@ -223,7 +224,7 @@ public class AutoFollow extends Module {
 
                 if (!Friends.get().isFriend((PlayerEntity) playerEntity) && onlyFriend.get()) return;
 
-                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + playerName);
+                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone follow player " + playerName, Text.literal(Config.get().prefix.get() + "baritone follow player " + playerName));
 
                 if (message.get()) {
                     startMsg();
@@ -237,7 +238,7 @@ public class AutoFollow extends Module {
                     endMsg();
                 }
 
-                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+                mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
                 playerEntity = null;
                 playerName = null;
                 isFollowing = false;
@@ -249,7 +250,7 @@ public class AutoFollow extends Module {
     @Override
     public void onDeactivate() {
 
-        mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop");
+        mc.player.sendChatMessage(Config.get().prefix.get() + "baritone stop", Text.literal(Config.get().prefix.get() + "baritone stop"));
         playerEntity = null;
         playerName = null;
         isFollowing = false;
@@ -258,11 +259,11 @@ public class AutoFollow extends Module {
     public void startMsg()
     {
         if (dm.get()) {
-            mc.player.sendChatMessage("/msg " + playerName + " I am now following you using Banana+");
+            mc.player.sendChatMessage("/msg " + playerName + " I am now following you using Banana+", Text.literal("/msg " + playerName + " I am now following you using Banana+"));
         }
 
         if (pm.get()) {
-            mc.player.sendChatMessage("I am now following " + playerName + " using Banana+");
+            mc.player.sendChatMessage("I am now following " + playerName + " using Banana+", Text.literal("I am now following " + playerName + " using Banana+"));
         }
     }
 
@@ -270,11 +271,11 @@ public class AutoFollow extends Module {
     public void endMsg()
     {
         if (dm.get()) {
-            mc.player.sendChatMessage("/msg " + playerName + " I am no longer following you");
+            mc.player.sendChatMessage("/msg " + playerName + " I am no longer following you", Text.literal("/msg " + playerName + " I am no longer following you"));
         }
 
         if (pm.get()) {
-            mc.player.sendChatMessage("I am no longer following " + playerName);
+            mc.player.sendChatMessage("I am no longer following " + playerName, Text.literal("I am no longer following " + playerName));
         }
     }
 }

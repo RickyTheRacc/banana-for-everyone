@@ -12,11 +12,12 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArmorMsgs extends Module {
+public class ArmorMessages extends Module {
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
@@ -53,11 +54,11 @@ public class ArmorMsgs extends Module {
             .build()
     );
 
-    public ArmorMsgs() {
-        super(BananaPlus.COMBAT, "armor-alert", "Alerts if ones armor is low or a friends armor.");
+    public ArmorMessages() {
+        super(BananaPlus.COMBAT, "armor-alert", "Send alerts to people with low armor.");
     }
 
-    private final List<String> msgs = new ArrayList<>();
+    private final List<String> messages = new ArrayList<>();
     private final List<PlayerEntity> helmet = new ArrayList<>();
     private final List<PlayerEntity> chestplate = new ArrayList<>();
     private final List<PlayerEntity> pants = new ArrayList<>();
@@ -95,15 +96,15 @@ public class ArmorMsgs extends Module {
             }
         }
 
-        if (!msgs.isEmpty()){
+        if (!messages.isEmpty()){
             if (timer <= 0) {
                 int i;
 
-                if (messageI >= msgs.size()) messageI = 0;
+                if (messageI >= messages.size()) messageI = 0;
                 i = messageI++;
 
-                mc.player.sendChatMessage(msgs.get(i));
-                msgs.remove(i);
+                mc.player.sendChatMessage(messages.get(i), Text.literal(messages.get(i)));
+                messages.remove(i);
 
                 timer = delay.get();
             } else {
@@ -117,7 +118,7 @@ public class ArmorMsgs extends Module {
 
         for (ItemStack armorPiece : armorPieces) {
 
-            if (checkDur(armorPiece, player)) {
+            if (checkDur(armorPiece)) {
                 if (armorPiece == player.getInventory().getArmorStack(3) && player.getInventory().getArmorStack(3) != null && !helmet.contains(player)) {
                     sendMsg("helmet", player);
                     helmet.add(player);
@@ -140,7 +141,7 @@ public class ArmorMsgs extends Module {
                     boots.add(player);
                 }
             }
-            if (!checkDur(armorPiece, player)) {
+            if (!checkDur(armorPiece)) {
                 if (armorPiece == player.getInventory().getArmorStack(3)) helmet.remove(player);
                 if (armorPiece == player.getInventory().getArmorStack(2)) chestplate.remove(player);
                 if (armorPiece == player.getInventory().getArmorStack(1)) pants.remove(player);
@@ -149,20 +150,20 @@ public class ArmorMsgs extends Module {
         }
     }
 
-    private boolean checkDur(ItemStack i, PlayerEntity player){
+    private boolean checkDur(ItemStack i){
         return (float) (i.getMaxDamage() - i.getDamage()) / i.getMaxDamage() * 100 <= durThreshold.get();
     }
 
     private void sendMsg(String armor, PlayerEntity player) {
 
-        String grammar = "";
+        String grammar;
         if (armor.endsWith("s")) grammar = " are low!"; else grammar = " is low!";
 
         if (player == mc.player){
-            info(" Your " + armor.toString() + grammar);
+            info(" Your " + armor + grammar);
         }
         else {
-            msgs.add("/msg " + player.getEntityName() + " Your " + armor.toString() + grammar);
+            messages.add("/msg " + player.getEntityName() + " Your " + armor + grammar);
         }
     }
 }

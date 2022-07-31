@@ -12,6 +12,7 @@ import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 
@@ -65,7 +66,7 @@ public class BindClickFriend extends Module{
         if (event.action == KeyAction.Press && event.button == GLFW_MOUSE_BUTTON_MIDDLE && mc.currentScreen == null && mc.targetedEntity != null && mc.targetedEntity instanceof PlayerEntity) {
             if (!Friends.get().isFriend((PlayerEntity) mc.targetedEntity)) {
                 Friends.get().add(new Friend((PlayerEntity) mc.targetedEntity));
-                if (message.get()) mc.player.sendChatMessage("/msg " + mc.targetedEntity.getEntityName() + " I just friended you on meteor.");
+                if (message.get()) mc.player.sendChatMessage("/msg " + mc.targetedEntity.getEntityName() + " I just friended you on meteor.", Text.literal("/msg " + mc.targetedEntity.getEntityName() + " I just friended you on meteor."));
             } else {
                 Friends.get().remove(Friends.get().get((PlayerEntity) mc.targetedEntity));
             }
@@ -85,7 +86,7 @@ public class BindClickFriend extends Module{
 
                 if (!Friends.get().isFriend((PlayerEntity) mc.targetedEntity)) {
                     Friends.get().add(new Friend((PlayerEntity) mc.targetedEntity));
-                    if (message.get()) mc.player.sendChatMessage("/msg " + mc.targetedEntity.getEntityName() + " I just friended you on Banana+.");
+                    if (message.get()) mc.player.sendChatMessage("/msg " + mc.targetedEntity.getEntityName() + " I just friended you on Banana+.", Text.literal("/msg " + mc.targetedEntity.getEntityName() + " I just friended you on Banana+."));
                 } else {
                     Friends.get().remove(Friends.get().get((PlayerEntity) mc.targetedEntity));
                 }
