@@ -7,6 +7,7 @@ import meteordevelopment.meteorclient.events.game.OpenScreenEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WidgetScreen;
+import meteordevelopment.meteorclient.gui.utils.StarscriptTextBoxRenderer;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
@@ -58,6 +59,7 @@ public class Presence extends Module {
                     "Could it be any easier?"
             )
             .onChanged(strings -> recompileLine1())
+            .renderer(StarscriptTextBoxRenderer.class)
             .build()
     );
 
@@ -87,6 +89,7 @@ public class Presence extends Module {
                     "Banana+ on top!"
             )
             .onChanged(strings -> recompileLine2())
+            .renderer(StarscriptTextBoxRenderer.class)
             .build()
     );
 
@@ -132,9 +135,7 @@ public class Presence extends Module {
         DiscordIPC.start(870386147069661274L, null);
 
         rpc.setStart(System.currentTimeMillis() / 1000L);
-
-        String largeText = "Banana+";
-        rpc.setLargeImage("banana_plus", largeText);
+        rpc.setLargeImage("banana_plus", "Banana+");
 
         recompileLine1();
         recompileLine2();
