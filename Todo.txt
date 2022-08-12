@@ -11,6 +11,5 @@ Ben's List
 Ricky's List
 - Combine middle click friend and extra
 - Make kill and pop manager modules
-- Add auto cope to the auto respawn mixin
 - Fix anti surround toggling off and make it use other blocks
 - Finish Quiver Plus
