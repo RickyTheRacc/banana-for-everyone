@@ -11,6 +11,8 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.world.Timer;
 import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.utils.entity.SortPriority;
+import meteordevelopment.meteorclient.utils.entity.TargetUtils;
 import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
@@ -29,6 +31,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class MonkeBurrow extends Module {
+    public enum Mode {
+        Normal,
+        Smart
+    }
+
     public enum RubberbandDirection {
         Up,
         Down
@@ -40,11 +47,39 @@ public class MonkeBurrow extends Module {
         None
     }
 
+    public enum Block {
+        EChest,
+        Obsidian,
+        Anvil,
+        AncientDebris,
+        Netherite,
+        Anchor,
+        EnchantingTable,
+        Held
+    }
+
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
 
     // General
+    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
+            .name("burrow-mode")
+            .description("How the module should function.")
+            .defaultValue(Mode.Normal)
+            .build()
+    );
+
+    private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
+            .name("smart-range")
+            .description("How close a player should get to burrow.")
+            .defaultValue(2.5)
+            .range(1,5)
+            .sliderRange(1,5)
+            .visible(() -> mode.get() == Mode.Smart)
+            .build()
+    );
+
     private final Setting<Block> block = sgGeneral.add(new EnumSetting.Builder<Block>()
             .name("block")
             .description("The block to use for Burrow.")
@@ -55,7 +90,7 @@ public class MonkeBurrow extends Module {
     private final Setting<Block> fallbackBlock = sgGeneral.add(new EnumSetting.Builder<Block>()
             .name("fallback-block")
             .description("The fallback block to use for Burrow.")
-            .defaultValue(Block.EChest)
+            .defaultValue(Block.Anvil)
             .build()
     );
 
@@ -69,20 +104,7 @@ public class MonkeBurrow extends Module {
     private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
             .name("only-on-ground")
             .description("Stops you from burrowing when not on the ground.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
-            .name("rotate")
-            .description("Faces the block you place server-side.")
             .defaultValue(true)
-            .build()
-    );
-
-    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
-            .name("debug")
-            .defaultValue(false)
             .build()
     );
 
@@ -92,6 +114,13 @@ public class MonkeBurrow extends Module {
             .name("center")
             .description("How it should center you before burrowing.")
             .defaultValue(CenterMode.Center)
+            .build()
+    );
+
+    private final Setting<Boolean> rotate = sgPlacing.add(new BoolSetting.Builder()
+            .name("rotate")
+            .description("Faces the block you place server-side.")
+            .defaultValue(false)
             .build()
     );
 
@@ -106,6 +135,7 @@ public class MonkeBurrow extends Module {
             .name("automatic")
             .description("Automatically burrows on activate rather than waiting for jump.")
             .defaultValue(true)
+            .visible(() -> mode.get() == Mode.Normal)
             .build()
     );
 
@@ -218,15 +248,20 @@ public class MonkeBurrow extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (!instant.get()) shouldBurrow = mc.player.getY() > blockPos.getY() + triggerHeight.get();
-        if (!shouldBurrow && instant.get()) blockPos.set(BPlusWorldUtils.roundBlockPos(mc.player.getPos()));
+        if (mode.get() == Mode.Smart) {
+            if (TargetUtils.getPlayerTarget(range.get(), SortPriority.LowestDistance) != null) burrow();
+        } else {
+            if (!instant.get()) shouldBurrow = mc.player.getY() > blockPos.getY() + triggerHeight.get();
+            if (!shouldBurrow && instant.get()) blockPos.set(BPlusWorldUtils.roundBlockPos(mc.player.getPos()));
 
-        if (shouldBurrow) {
-            if (rotate.get())
-                Rotations.rotate(Rotations.getYaw(BPlusWorldUtils.roundBlockPos(mc.player.getPos())), Rotations.getPitch(BPlusWorldUtils.roundBlockPos(mc.player.getPos())), 50, this::burrow);
-            else burrow();
 
-            toggle();
+            if (shouldBurrow) {
+                if (rotate.get())
+                    Rotations.rotate(Rotations.getYaw(BPlusWorldUtils.roundBlockPos(mc.player.getPos())), Rotations.getPitch(BPlusWorldUtils.roundBlockPos(mc.player.getPos())), 50, this::burrow);
+                else burrow();
+
+                toggle();
+            }
         }
     }
 
@@ -267,20 +302,19 @@ public class MonkeBurrow extends Module {
         if (instant.get()) {
             if (rubberbandDirection.get() == RubberbandDirection.Up) {
                 mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + upperSpace(), mc.player.getZ(), false));
-                if (debug.get()) info(String.valueOf(upperSpace()));
             } else {
                 mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + lowerSpace(), mc.player.getZ(), false));
-                if (debug.get()) info(String.valueOf(lowerSpace()));
             }
         } else {
             if (rubberbandDirection.get() == RubberbandDirection.Up) {
                 mc.player.updatePosition(mc.player.getX(), mc.player.getY() + upperSpace(), mc.player.getZ());
-                if (debug.get()) info(String.valueOf(upperSpace()));
             } else {
                 mc.player.updatePosition(mc.player.getX(), mc.player.getY() + upperSpace(), mc.player.getZ());
-                if (debug.get()) info(String.valueOf(lowerSpace()));
             }
         }
+
+        if (mode.get() == Mode.Smart) toggle();
+        info("bruh");
     }
 
     private FindItemResult getItem() {
@@ -349,14 +383,9 @@ public class MonkeBurrow extends Module {
         return 0;
     }
 
-    public enum Block {
-        EChest,
-        Obsidian,
-        Anvil,
-        AncientDebris,
-        Netherite,
-        Anchor,
-        EnchantingTable,
-        Held
+    @Override
+    public String getInfoString() {
+        if (mode.get() == Mode.Smart) return "Standby";
+        return null;
     }
 }
