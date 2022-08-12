@@ -29,9 +29,8 @@ public class CrystalUtils {
         // Attack
         mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(entity, mc.player.isSneaking()));
 
-        Hand hand = Hand.MAIN_HAND;
-        if (BBomber.renderSwing.get()) mc.player.swingHand(hand);
-        if (!BBomber.hideSwings.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));
+        if (BBomber.renderSwing.get()) mc.player.swingHand(Hand.MAIN_HAND);
+        if (!BBomber.hideSwings.get()) mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
         BBomber.attacks++;
 
         getBreakDelay();

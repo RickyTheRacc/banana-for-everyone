@@ -1384,7 +1384,9 @@ public class BananaBomber extends Module {
 
         // Find best position to place the crystal on
         BlockIterator.register((int) Math.ceil(placeRange.get()), (int) Math.ceil(placeRange.get()), (bp, blockState) -> {
-            // Todo : implement a method to check more efficiently instead of using the blockstate check, maybe another check can come in before them to see if they're a solid block or not since it takes too many resources (maybe a fullcube check?)
+            // Todo : implement a method to check more efficiently instead of using the blockstate check,
+            //  maybe another check can come in before them to see if they're a solid block or not since
+            //  it takes too many resources (maybe a fullcube check?)
 
             // Check if its bedrock or obsidian and return if isSupport is false
             boolean hasBlock = blockState.isOf(Blocks.BEDROCK) || blockState.isOf(Blocks.OBSIDIAN);
@@ -1611,7 +1613,7 @@ public class BananaBomber extends Module {
         for (PlayerEntity target : targets) {
             double distance = target.squaredDistanceTo(mc.player);
 
-            if (distance < nearestDistance) {
+            if (distance < nearestDistance * nearestDistance) {
                 nearestTarget = target;
                 nearestDistance = distance;
             }
