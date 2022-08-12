@@ -7,7 +7,7 @@ import net.minecraft.util.math.Vec3d;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-public class BPlusPlayerUtils {
+public class BPlayerUtils {
     public static Vec3d playerEyePos() {
         return new Vec3d(mc.player.getX(), mc.player.getY() + mc.player.getEyeHeight(mc.player.getPose()), mc.player.getZ());
     }

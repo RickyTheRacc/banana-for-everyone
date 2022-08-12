@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusWorldUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -113,17 +113,17 @@ public class CevBreaker extends Module {
 
 
     // Placing
-    private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
+    private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
-            .defaultValue(BPlusWorldUtils.SwitchMode.Both)
+            .defaultValue(BWorldUtils.SwitchMode.Both)
             .build()
     );
 
-    private final Setting<BPlusWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.PlaceMode>()
+    private final Setting<BWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.PlaceMode>()
             .name("place-mode")
             .description("How to switch to your target block.")
-            .defaultValue(BPlusWorldUtils.PlaceMode.Both)
+            .defaultValue(BWorldUtils.PlaceMode.Both)
             .build()
     );
 
@@ -134,10 +134,10 @@ public class CevBreaker extends Module {
             .build()
     );
 
-    private final Setting<BPlusWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.AirPlaceDirection>()
+    private final Setting<BWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.AirPlaceDirection>()
             .name("place-direction")
             .description("Side to try to place at when you are trying to air place.")
-            .defaultValue(BPlusWorldUtils.AirPlaceDirection.Down)
+            .defaultValue(BWorldUtils.AirPlaceDirection.Down)
             .build()
     );
 
@@ -278,7 +278,7 @@ public class CevBreaker extends Module {
 
         //Placing obby
         if(!blockState.isOf(Blocks.OBSIDIAN) && !crystalThere && (mc.player.getMainHandStack().getItem().equals(Items.OBSIDIAN) || switchDelayLeft <= 0)) {
-            if(!BPlusWorldUtils.place(blockPos, InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), swing.get(), true, true)) {
+            if(!BWorldUtils.place(blockPos, InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), swing.get(), true, true)) {
                 blacklisted.add(closestTarget);
                 getEntities();
                 if(closestTarget == null) {
@@ -323,7 +323,7 @@ public class CevBreaker extends Module {
         //Breaking obby
         if(blockState.isAir() && mode.get() == Mode.Packet) startedYet = false;
         if((mc.player.getInventory().selectedSlot == pickSlot || switchDelayLeft <= 0) && crystalThere && blockState.isOf(Blocks.OBSIDIAN)) {
-            Direction direction = BPlusEntityUtils.rayTraceCheck(blockPos, true);
+            Direction direction = BEntityUtils.rayTraceCheck(blockPos, true);
             if(mode.get() == Mode.Instant) {
                 if(!startedYet) {
                     mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, blockPos, direction));
@@ -339,7 +339,7 @@ public class CevBreaker extends Module {
                 mc.interactionManager.updateBlockBreakingProgress(blockPos, direction);
             }
             else if(mode.get() == Mode.Packet) {
-                timer = startedYet ? timer : BPlusEntityUtils.getBlockBreakingSpeed(blockState, blockPos, pickSlot);
+                timer = startedYet ? timer : BEntityUtils.getBlockBreakingSpeed(blockState, blockPos, pickSlot);
                 if(!startedYet) {
                     mine(blockPos, swing.get(), rotate.get());
                     startedYet = true;
@@ -356,7 +356,7 @@ public class CevBreaker extends Module {
             if (mode.get() == Mode.Packet && breakDelayLeft >= 0) return;
             for(EndCrystalEntity crystal : crystals) {
                 if(DamageUtils.crystalDamage(closestTarget, crystal.getPos()) >= 6) {
-                    float[] breakRotation = PlayerUtils.calculateAngle(BPlusEntityUtils.crystalEdgePos(crystal));
+                    float[] breakRotation = PlayerUtils.calculateAngle(BEntityUtils.crystalEdgePos(crystal));
                     if(swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
                     else mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
                     if(rotate.get()) Rotations.rotate(breakRotation[0], breakRotation[1], 30, () -> mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(crystal, false)));

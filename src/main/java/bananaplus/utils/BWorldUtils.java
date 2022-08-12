@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-public class BPlusWorldUtils  {
+public class BWorldUtils {
 
     public enum SwitchMode {
         Packet,

@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusWorldUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BWorldUtils;
 import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -170,10 +170,10 @@ public class SurroundPlus extends Module {
 
 
     // Placing
-    private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
+    private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
-            .defaultValue(BPlusWorldUtils.SwitchMode.Both)
+            .defaultValue(BWorldUtils.SwitchMode.Both)
             .build()
     );
 
@@ -184,10 +184,10 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-    private final Setting<BPlusWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.PlaceMode>()
+    private final Setting<BWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.PlaceMode>()
             .name("place-mode")
             .description("How to switch to your target block.")
-            .defaultValue(BPlusWorldUtils.PlaceMode.Both)
+            .defaultValue(BWorldUtils.PlaceMode.Both)
             .build()
     );
 
@@ -213,10 +213,10 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-    private final Setting<BPlusWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.AirPlaceDirection>()
+    private final Setting<BWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.AirPlaceDirection>()
             .name("place-direction")
             .description("Side to try to place at when you are trying to air place.")
-            .defaultValue(BPlusWorldUtils.AirPlaceDirection.Up)
+            .defaultValue(BWorldUtils.AirPlaceDirection.Up)
             .visible(airPlace::get)
             .build()
     );
@@ -474,12 +474,12 @@ public class SurroundPlus extends Module {
         blocksPlaced = 0;
 
         centered = false;
-        playerPos = BPlusEntityUtils.playerPos(mc.player);
+        playerPos = BEntityUtils.playerPos(mc.player);
 
         toActivate = new ArrayList<>();
 
         if (centerMode.get() != CenterMode.None) {
-            if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
+            if (centerMode.get() == CenterMode.Snap) BWorldUtils.snapPlayer(playerPos);
             else PlayerUtils.centerPlayer();
         }
 
@@ -530,10 +530,10 @@ public class SurroundPlus extends Module {
         }
 
         // Update player position
-        playerPos = BPlusEntityUtils.playerPos(mc.player);
+        playerPos = BEntityUtils.playerPos(mc.player);
 
         if (centerMode.get() != CenterMode.None && !centered && mc.player.isOnGround()) {
-            if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
+            if (centerMode.get() == CenterMode.Snap) BWorldUtils.snapPlayer(playerPos);
             else PlayerUtils.centerPlayer();
 
             centered = true;
@@ -563,7 +563,7 @@ public class SurroundPlus extends Module {
         if (ticksPassed <= 0) {
             for (BlockPos pos : centerPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BPlusWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }
@@ -571,7 +571,7 @@ public class SurroundPlus extends Module {
 
             for (BlockPos pos : extraPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BPlusWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), true, switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), true, switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }
@@ -586,7 +586,7 @@ public class SurroundPlus extends Module {
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (centerKeybind.get().isPressed()) {
-            if (centerMode.get() == CenterMode.Snap) BPlusWorldUtils.snapPlayer(playerPos);
+            if (centerMode.get() == CenterMode.Snap) BWorldUtils.snapPlayer(playerPos);
             else PlayerUtils.centerPlayer();
         }
     }

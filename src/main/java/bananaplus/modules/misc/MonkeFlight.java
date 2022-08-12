@@ -6,7 +6,7 @@ https://github.com/cally72jhb/vector-addon/blob/main/src/main/java/cally72jhb/ad
 package bananaplus.modules.misc;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusPlayerUtils;
+import bananaplus.utils.BPlayerUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
@@ -624,7 +624,7 @@ public class MonkeFlight extends Module {
                 if (!isMoving()) break;
                 Vec3d vel = mc.player.getVelocity();
                 for (double i = 0.0625; i < speed.get(); i += 0.262) {
-                    double[] dir = BPlusPlayerUtils.directionSpeed((float) i);
+                    double[] dir = BPlayerUtils.directionSpeed((float) i);
                     mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX() + dir[0], mc.player.getY(), mc.player.getZ() + dir[1], mc.player.isOnGround()));
                 }
                 if (bypass.get() == Bypass.DEFAULT)

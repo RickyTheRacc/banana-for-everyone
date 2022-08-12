@@ -2,7 +2,7 @@ package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
 import baritone.api.BaritoneAPI;
-import bananaplus.utils.BPlusPlayerUtils;
+import bananaplus.utils.BPlayerUtils;
 import bananaplus.utils.TimerUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -314,10 +314,10 @@ public class PostTickKA extends Module {
     private boolean entityCheck(Entity entity) {
         if (entity.equals(mc.player) || entity.equals(mc.cameraEntity)) return false;
         if ((entity instanceof LivingEntity && ((LivingEntity) entity).isDead()) || !entity.isAlive()) return false;
-        if (BPlusPlayerUtils.distanceFromEye(entity) > range.get()) return false;
+        if (BPlayerUtils.distanceFromEye(entity) > range.get()) return false;
         if (!entities.get().getBoolean(entity.getType())) return false;
         if (!nametagged.get() && entity.hasCustomName()) return false;
-        if (!PlayerUtils.canSeeEntity(entity) && BPlusPlayerUtils.distanceFromEye(entity) > wallsRange.get()) return false;
+        if (!PlayerUtils.canSeeEntity(entity) && BPlayerUtils.distanceFromEye(entity) > wallsRange.get()) return false;
         if (ignoreTamed.get()) {
             if (entity instanceof Tameable tameable
                     && tameable.getOwnerUuid() != null

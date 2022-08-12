@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.entity.player.CobwebEntityCollisionEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -63,7 +63,7 @@ public class WebNoSlow extends Module {
 
     @EventHandler
     private void onWebEntityCollision(CobwebEntityCollisionEvent event) {
-        if ((BPlusEntityUtils.isWebbed(mc.player))) {
+        if ((BEntityUtils.isWebbed(mc.player))) {
             if (web.get() == WebMode.Vanilla) event.cancel();
             if (web.get() == WebMode.Adaptive && mc.player.isOnGround()) event.cancel();
         }
@@ -71,13 +71,13 @@ public class WebNoSlow extends Module {
 
     @EventHandler
     private void onPreTick(TickEvent.Pre event) {
-        if (BPlusEntityUtils.isWebbed(mc.player)) {
+        if (BEntityUtils.isWebbed(mc.player)) {
             if (chatInfo.get() && !sentMessage) error("You are webbed!");
             sentMessage = true;
         } else { sentMessage = false; }
 
         if (web.get() != WebMode.Vanilla) {
-            if (BPlusEntityUtils.isWebbed(mc.player) && !mc.player.isOnGround()) {
+            if (BEntityUtils.isWebbed(mc.player) && !mc.player.isOnGround()) {
                 resetTimer = false;
                 Modules.get().get(Timer.class).setOverride(webTimer.get());
             } else if (!resetTimer) {

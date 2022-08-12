@@ -1,8 +1,9 @@
 package bananaplus.utils;
 
+import bananaplus.modules.combat.BananaBomber;
 import bananaplus.modules.combat.CevBreaker;
 import bananaplus.modules.combat.PostTickKA;
-import bananaplus.modules.combat.BananaBomber;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.combat.KillAura;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
@@ -50,13 +51,13 @@ public class CrystalUtils {
 
     public static boolean shouldIgnoreSelfPlaceDamage() {
         return (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.Always
-                || (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any) || BPlusEntityUtils.isBurrowed(mc.player, BPlusEntityUtils.BlastResistantType.Any)))
+                || (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any) || BEntityUtils.isBurrowed(mc.player, BEntityUtils.BlastResistantType.Any)))
                 || (BBomber.selfPopInvincibility.get() && BBomber.selfPopIgnore.get() != BananaBomber.SelfPopIgnore.Break && !BBomber.selfPoppedTimer.passedMillis(BBomber.selfPopInvincibilityTime.get())));
     }
 
     public static boolean shouldIgnoreSelfBreakDamage() {
         return (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.Always
-                || (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any) || BPlusEntityUtils.isBurrowed(mc.player, BPlusEntityUtils.BlastResistantType.Any)))
+                || (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any) || BEntityUtils.isBurrowed(mc.player, BEntityUtils.BlastResistantType.Any)))
                 || (BBomber.selfPopInvincibility.get() && BBomber.selfPopIgnore.get() != BananaBomber.SelfPopIgnore.Place && !BBomber.selfPoppedTimer.passedMillis(BBomber.selfPopInvincibilityTime.get())));
     }
 
@@ -75,7 +76,7 @@ public class CrystalUtils {
             BlockPos pos = target.getBlockPos();
             if (BBomber.CevPause.get() && Modules.get().isActive(CevBreaker.class)) return false;
             if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class) || Modules.get().isActive(PostTickKA.class))) return false;
-            if (BPlusEntityUtils.isFaceSurrounded(target, BPlusEntityUtils.BlastResistantType.Any)) return false;
+            if (BEntityUtils.isFaceSurrounded(target, BEntityUtils.BlastResistantType.Any)) return false;
             if (BBomber.surrHoldPause.get() && isSurroundHolding()) return false;
 
             if (crystal.getY() == pos.getY() + 1 && Math.abs(pos.getX() - crystal.getX()) <= 1 && Math.abs(pos.getZ() - crystal.getZ()) <= 1) {
@@ -111,19 +112,19 @@ public class CrystalUtils {
 
     public static boolean isBurrowBreaking() {
         if (BBomber.burrowBreak.get() || BBomber.forceBurrowBreak.get().isPressed()) {
-            if (BBomber.bestTarget != null && BPlusEntityUtils.isBurrowed(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Mineable)) {
+            if (BBomber.bestTarget != null && BEntityUtils.isBurrowed(BBomber.bestTarget, BEntityUtils.BlastResistantType.Mineable)) {
                 switch (BBomber.burrowBWhen.get()) {
                     case BothTrapped -> {
-                        return BPlusEntityUtils.isBothTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isBothTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case AnyTrapped -> {
-                        return BPlusEntityUtils.isAnyTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isAnyTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case TopTrapped -> {
-                        return BPlusEntityUtils.isTopTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isTopTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case FaceTrapped -> {
-                        return BPlusEntityUtils.isFaceSurrounded(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isFaceSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case Always -> {
                         return true;
@@ -147,25 +148,25 @@ public class CrystalUtils {
 
         // Checking valid crystal position
         return
-                (!BPlusEntityUtils.isBedrock(pos.north(1))
+                (!BEntityUtils.isBedrock(pos.north(1))
                         && (crystal.equals(pos.north(2))
                         || (BBomber.surroundBHorse.get() && (crystal.equals(pos.north(2).west()) || crystal.equals(pos.north(2).east())))
                         || (BBomber.surroundBDiagonal.get() && (crystal.equals(pos.north().west()) || crystal.equals(pos.north().east())))
                 ))
 
-                        || (!BPlusEntityUtils.isBedrock(pos.south(1))
+                        || (!BEntityUtils.isBedrock(pos.south(1))
                         && (crystal.equals(pos.south(2))
                         || (BBomber.surroundBHorse.get() && (crystal.equals(pos.south(2).west()) || crystal.equals(pos.south(2).east())))
                         || (BBomber.surroundBDiagonal.get() && (crystal.equals(pos.south().west()) || crystal.equals(pos.south().east())))
                 ))
 
-                        || (!BPlusEntityUtils.isBedrock(pos.west(1))
+                        || (!BEntityUtils.isBedrock(pos.west(1))
                         && (crystal.equals(pos.west(2))
                         || (BBomber.surroundBHorse.get() && (crystal.equals(pos.west(2).north()) || crystal.equals(pos.west(2).south())))
                         || (BBomber.surroundBDiagonal.get() && (crystal.equals(pos.west().north()) || crystal.equals(pos.west().south())))
                 ))
 
-                        || (!BPlusEntityUtils.isBedrock(pos.east(1))
+                        || (!BEntityUtils.isBedrock(pos.east(1))
                         && (crystal.equals(pos.east(2))
                         || (BBomber.surroundBHorse.get() && (crystal.equals(pos.east(2).north()) || crystal.equals(pos.east(2).south())))
                         || (BBomber.surroundBDiagonal.get() && (crystal.equals(pos.east().north()) || crystal.equals(pos.east().south())))
@@ -187,19 +188,19 @@ public class CrystalUtils {
 
     public static boolean isSurroundBreaking() {
         if (BBomber.surroundBreak.get() || BBomber.forceSurroundBreak.get().isPressed()) {
-            if (BBomber.bestTarget != null && BPlusEntityUtils.isSurrounded(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Mineable)) {
+            if (BBomber.bestTarget != null && BEntityUtils.isSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Mineable)) {
                 switch (BBomber.surroundBWhen.get()) {
                     case BothTrapped -> {
-                        return BPlusEntityUtils.isBothTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isBothTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case AnyTrapped -> {
-                        return BPlusEntityUtils.isAnyTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isAnyTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case TopTrapped -> {
-                        return BPlusEntityUtils.isTopTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isTopTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case FaceTrapped -> {
-                        return BPlusEntityUtils.isFaceSurrounded(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isFaceSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case Always -> {
                         return true;
@@ -212,19 +213,19 @@ public class CrystalUtils {
     }
 
     public static boolean isSurroundHolding() {
-        if (BBomber.surroundHold.get() && BBomber.bestTarget != null && BPlusEntityUtils.isSurroundBroken(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any)) {
+        if (BBomber.surroundHold.get() && BBomber.bestTarget != null && BEntityUtils.isSurroundBroken(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any)) {
             switch (BBomber.surroundHWhen.get()) {
                 case BothTrapped -> {
-                    return BPlusEntityUtils.isBothTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                    return BEntityUtils.isBothTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                 }
                 case AnyTrapped -> {
-                    return BPlusEntityUtils.isAnyTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                    return BEntityUtils.isAnyTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                 }
                 case TopTrapped -> {
-                    return BPlusEntityUtils.isTopTrapped(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                    return BEntityUtils.isTopTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                 }
                 case FaceTrapped -> {
-                    return BPlusEntityUtils.isFaceSurrounded(BBomber.bestTarget, BPlusEntityUtils.BlastResistantType.Any);
+                    return BEntityUtils.isFaceSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                 }
                 case Always -> {
                     return true;

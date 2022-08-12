@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusWorldUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.entity.player.ItemUseCrosshairTargetEvent;
 import meteordevelopment.meteorclient.events.entity.player.StoppedUsingItemEvent;
@@ -158,10 +158,10 @@ public class AntiTrap extends Module {
     private void onTick(TickEvent.Post event) {
         assert mc.player != null;
 
-        blockPos.set(BPlusWorldUtils.roundBlockPos(mc.player.getPos()));
+        blockPos.set(BWorldUtils.roundBlockPos(mc.player.getPos()));
 
         if (onlyOnGround.get() && !mc.player.isOnGround()) return;
-        if (onlyInHole.get() && !BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)) return;
+        if (onlyInHole.get() && !BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any)) return;
 
         if (isTrapped()) {
             if (mode.get() == Mode.VClip) doVClip();
@@ -173,16 +173,16 @@ public class AntiTrap extends Module {
     private boolean isTrapped() {
         switch (trappedWhen.get()) {
             case BothTrapped -> {
-                return BPlusEntityUtils.isBothTrapped(mc.player, BPlusEntityUtils.BlastResistantType.Any);
+                return BEntityUtils.isBothTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
             }
             case AnyTrapped -> {
-                return BPlusEntityUtils.isAnyTrapped(mc.player, BPlusEntityUtils.BlastResistantType.Any);
+                return BEntityUtils.isAnyTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
             }
             case TopTrapped -> {
-                return BPlusEntityUtils.isTopTrapped(mc.player, BPlusEntityUtils.BlastResistantType.Any);
+                return BEntityUtils.isTopTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
             }
             case FaceTrapped -> {
-                return BPlusEntityUtils.isFaceSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any);
+                return BEntityUtils.isFaceSurrounded(mc.player, BEntityUtils.BlastResistantType.Any);
             }
         }
 

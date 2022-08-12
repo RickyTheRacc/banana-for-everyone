@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
@@ -305,10 +305,10 @@ public class Monkhand extends Module {
 
     private boolean allowGap() {
         if (!smartGap.get()) return true;
-        else if (inSingleBedrock.get() && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Unbreakable)) return true;
-        else if (inSingleHole.get() && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any)) return true;
-        else if (inDoubleBedrock.get() && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Unbreakable)) return true;
-        else return inDoubleHole.get() && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any);
+        else if (inSingleBedrock.get() && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Unbreakable)) return true;
+        else if (inSingleHole.get() && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any)) return true;
+        else if (inDoubleBedrock.get() && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Unbreakable)) return true;
+        else return inDoubleHole.get() && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package bananaplus.modules.misc;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusWorldUtils;
+import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -11,8 +11,8 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 
-import static bananaplus.utils.BPlusEntityUtils.deadEntity;
-import static bananaplus.utils.BPlusEntityUtils.isDeathPacket;
+import static bananaplus.utils.BEntityUtils.deadEntity;
+import static bananaplus.utils.BEntityUtils.isDeathPacket;
 
 public class KillEffects extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -51,7 +51,7 @@ public class KillEffects extends Module {
             double playerY = player.getY();
             double playerZ = player.getZ();
 
-            BPlusWorldUtils.spawnLightning(playerX, playerY, playerZ);
+            BWorldUtils.spawnLightning(playerX, playerY, playerZ);
         }
     }
 

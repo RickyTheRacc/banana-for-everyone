@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusWorldUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -339,8 +339,8 @@ public class StrafePlus extends Module {
         if (flightPause.get() && flight.isActive()) return;
         if (eFlyPause.get() && efly.isActive()) return;
 
-        if (BPlusEntityUtils.isWebbed(mc.player) && webbedPause.get() == WebbedPause.Always) return;
-        if (BPlusEntityUtils.isWebbed(mc.player) && !mc.player.isOnGround() && webbedPause.get() == WebbedPause.OnAir) return;
+        if (BEntityUtils.isWebbed(mc.player) && webbedPause.get() == WebbedPause.Always) return;
+        if (BEntityUtils.isWebbed(mc.player) && !mc.player.isOnGround() && webbedPause.get() == WebbedPause.OnAir) return;
 
         if (mc.player.isOnGround()) {
            timerClass.setOverride(PlayerUtils.isMoving() ? (groundTimer.get() * getTPSMatch(TPSSync.get())) : Timer.OFF);
@@ -540,8 +540,8 @@ public class StrafePlus extends Module {
         if (flightPause.get() && flight.isActive()) return;
         if (eFlyPause.get() && efly.isActive()) return;
 
-        if (BPlusWorldUtils.doesBoxTouchBlock(mc.player.getBoundingBox(), Blocks.COBWEB) && webbedPause.get() == WebbedPause.Always) return;
-        if (BPlusWorldUtils.doesBoxTouchBlock(mc.player.getBoundingBox(), Blocks.COBWEB) && !mc.player.isOnGround() && webbedPause.get() == WebbedPause.OnAir) return;
+        if (BWorldUtils.doesBoxTouchBlock(mc.player.getBoundingBox(), Blocks.COBWEB) && webbedPause.get() == WebbedPause.Always) return;
+        if (BWorldUtils.doesBoxTouchBlock(mc.player.getBoundingBox(), Blocks.COBWEB) && !mc.player.isOnGround() && webbedPause.get() == WebbedPause.OnAir) return;
 
         if (mc.player.forwardSpeed > 0 && autoSprint.get()) mc.player.setSprinting(true);
 

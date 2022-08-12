@@ -30,7 +30,7 @@ import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-public class BPlusEntityUtils {
+public class BEntityUtils {
     public static Entity deadEntity;
     public static boolean isDeathPacket(PacketEvent.Receive event) {
         if (event.packet instanceof EntityStatusS2CPacket packet) {
@@ -179,7 +179,7 @@ public class BPlusEntityUtils {
 
     public static BlockPos getCityBlock(PlayerEntity player) {
         List<BlockPos> posList = getSurroundBlocks(player);
-        posList.sort(Comparator.comparingDouble(BPlusPlayerUtils::distanceFromEye));
+        posList.sort(Comparator.comparingDouble(BPlayerUtils::distanceFromEye));
         return posList.isEmpty() ? null : posList.get(0);
     }
 
@@ -215,7 +215,7 @@ public class BPlusEntityUtils {
     }
 
     public static BlockPos playerPos(PlayerEntity targetEntity) {
-        return BPlusWorldUtils.roundBlockPos(targetEntity.getPos());
+        return BWorldUtils.roundBlockPos(targetEntity.getPos());
     }
 
     public static boolean isTopTrapped(PlayerEntity targetEntity, BlastResistantType type) {
@@ -267,13 +267,13 @@ public class BPlusEntityUtils {
     }
 
     public static boolean isBurrowed(PlayerEntity targetEntity, BlastResistantType type) {
-        BlockPos playerPos = BPlusWorldUtils.roundBlockPos(new Vec3d(targetEntity.getX(), targetEntity.getY() + 0.4, targetEntity.getZ()));
+        BlockPos playerPos = BWorldUtils.roundBlockPos(new Vec3d(targetEntity.getX(), targetEntity.getY() + 0.4, targetEntity.getZ()));
         // Adding a 0.4 to the Y check since sometimes when the player moves around weirdly/ after chorusing they tend to clip into the block under them
         return isBlastResistant(playerPos, type);
     }
 
     public static boolean isWebbed(PlayerEntity targetEntity) {
-        return BPlusWorldUtils.doesBoxTouchBlock(targetEntity.getBoundingBox(), Blocks.COBWEB);
+        return BWorldUtils.doesBoxTouchBlock(targetEntity.getBoundingBox(), Blocks.COBWEB);
     }
 
     public static boolean isInHole(PlayerEntity targetEntity, boolean doubles, BlastResistantType type) {

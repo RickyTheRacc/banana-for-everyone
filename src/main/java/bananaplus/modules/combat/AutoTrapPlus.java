@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusWorldUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BWorldUtils;
 import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -158,10 +158,10 @@ public class AutoTrapPlus extends Module {
 
 
     // Placing
-    private final Setting<BPlusWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.SwitchMode>()
+    private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
-            .defaultValue(BPlusWorldUtils.SwitchMode.Both)
+            .defaultValue(BWorldUtils.SwitchMode.Both)
             .build()
     );
 
@@ -172,10 +172,10 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-    private final Setting<BPlusWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.PlaceMode>()
+    private final Setting<BWorldUtils.PlaceMode> placeMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.PlaceMode>()
             .name("place-mode")
             .description("How to switch to your target block.")
-            .defaultValue(BPlusWorldUtils.PlaceMode.Both)
+            .defaultValue(BWorldUtils.PlaceMode.Both)
             .build()
     );
 
@@ -201,10 +201,10 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-    private final Setting<BPlusWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BPlusWorldUtils.AirPlaceDirection>()
+    private final Setting<BWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.AirPlaceDirection>()
             .name("fail-direction")
             .description("Side to try to place at when you are trying to air place.")
-            .defaultValue(BPlusWorldUtils.AirPlaceDirection.Down)
+            .defaultValue(BWorldUtils.AirPlaceDirection.Down)
             .visible(airPlace::get)
             .build()
     );
@@ -386,7 +386,7 @@ public class AutoTrapPlus extends Module {
         if (target == null) return;
 
         // Update player position
-        playerPos = BPlusEntityUtils.playerPos(target);
+        playerPos = BEntityUtils.playerPos(target);
 
         if (toggleOnComplete.get()) {
             if (PositionUtils.allPlaced(placePos())) {
@@ -400,7 +400,7 @@ public class AutoTrapPlus extends Module {
         if (ticksPassed <= 0) {
             for (BlockPos pos : centerPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BPlusWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }
@@ -408,7 +408,7 @@ public class AutoTrapPlus extends Module {
 
             for (BlockPos pos : extraPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BPlusWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), true, switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), true, switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }

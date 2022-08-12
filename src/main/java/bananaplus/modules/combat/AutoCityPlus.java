@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusPlayerUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BPlayerUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -267,16 +267,16 @@ public class AutoCityPlus extends Module {
                 return;
             }
 
-            if (prioBurrowed.get() && BPlusEntityUtils.isBurrowed(target, BPlusEntityUtils.BlastResistantType.Mineable)) {
+            if (prioBurrowed.get() && BEntityUtils.isBurrowed(target, BEntityUtils.BlastResistantType.Mineable)) {
                 blockPosTarget = target.getBlockPos();
                 if (!burrowMessage && chatInfo.get()) {
                     warning("Mining %s's burrow.", target.getEntityName());
                     burrowMessage = true;
                 }
             } else if (avoidSelf.get()) {
-                blockPosTarget = BPlusEntityUtils.getTargetBlock(target);
-                if (blockPosTarget == null && lastResort.get()) blockPosTarget = BPlusEntityUtils.getCityBlock(target);
-            } else blockPosTarget = BPlusEntityUtils.getCityBlock(target);
+                blockPosTarget = BEntityUtils.getTargetBlock(target);
+                if (blockPosTarget == null && lastResort.get()) blockPosTarget = BEntityUtils.getCityBlock(target);
+            } else blockPosTarget = BEntityUtils.getCityBlock(target);
         }
     }
 
@@ -306,21 +306,21 @@ public class AutoCityPlus extends Module {
                 return;
             }
 
-            if (prioBurrowed.get() && BPlusEntityUtils.isBurrowed(target, BPlusEntityUtils.BlastResistantType.Mineable)) {
+            if (prioBurrowed.get() && BEntityUtils.isBurrowed(target, BEntityUtils.BlastResistantType.Mineable)) {
                 blockPosTarget = target.getBlockPos();
                 if (!burrowMessage && chatInfo.get()) {
                     warning("Mining %s's burrow.", target.getEntityName());
                     burrowMessage = true;
                 }
-            } else if (noCitySurrounded.get() && !BPlusEntityUtils.isSurrounded(target, BPlusEntityUtils.BlastResistantType.Any)) {
+            } else if (noCitySurrounded.get() && !BEntityUtils.isSurrounded(target, BEntityUtils.BlastResistantType.Any)) {
                 warning("%s is not surrounded... disabling", target.getEntityName());
                 blockPosTarget = null;
                 toggle();
                 return;
             } else if (avoidSelf.get()) {
-                blockPosTarget = BPlusEntityUtils.getTargetBlock(target);
-                if (blockPosTarget == null && lastResort.get()) blockPosTarget = BPlusEntityUtils.getCityBlock(target);
-            } else blockPosTarget = BPlusEntityUtils.getCityBlock(target);
+                blockPosTarget = BEntityUtils.getTargetBlock(target);
+                if (blockPosTarget == null && lastResort.get()) blockPosTarget = BEntityUtils.getCityBlock(target);
+            } else blockPosTarget = BEntityUtils.getCityBlock(target);
         }
 
         if (blockPosTarget == null) {
@@ -333,7 +333,7 @@ public class AutoCityPlus extends Module {
             sentMessage = true;
         }
 
-        if (BPlusPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get()) {
+        if (BPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get()) {
             error("Target block out of reach... disabling.");
             toggle();
             return;
@@ -355,8 +355,8 @@ public class AutoCityPlus extends Module {
             return;
         }
 
-        if (support.get() && !BPlusEntityUtils.isBurrowed(target, BPlusEntityUtils.BlastResistantType.Any)) {
-            if (BPlusPlayerUtils.distanceFromEye(blockPosTarget.down(1)) < supportRange.get()) {
+        if (support.get() && !BEntityUtils.isBurrowed(target, BEntityUtils.BlastResistantType.Any)) {
+            if (BPlayerUtils.distanceFromEye(blockPosTarget.down(1)) < supportRange.get()) {
                 BlockUtils.place(blockPosTarget.down(1), InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), 0, true);
             } else if (!supportMessage && blockPosTarget != target.getBlockPos()) {
                 warning("Unable to support %s... mining anyway.", target.getEntityName());
@@ -376,7 +376,7 @@ public class AutoCityPlus extends Module {
                 toggle();
             }
 
-            direction = BPlusEntityUtils.rayTraceCheck(blockPosTarget, true);
+            direction = BEntityUtils.rayTraceCheck(blockPosTarget, true);
             if (!mc.world.isAir(blockPosTarget)) {
                 instamine(blockPosTarget);
             } else ++count;

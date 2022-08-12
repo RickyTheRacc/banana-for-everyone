@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusPlayerUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BPlayerUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -155,8 +155,8 @@ public class BurrowMiner extends Module {
             return;
         }
 
-        if (BPlusEntityUtils.isBurrowed(target, BPlusEntityUtils.BlastResistantType.Mineable)) {
-            blockPosTarget = BPlusEntityUtils.playerPos(target);
+        if (BEntityUtils.isBurrowed(target, BEntityUtils.BlastResistantType.Mineable)) {
+            blockPosTarget = BEntityUtils.playerPos(target);
         } else blockPosTarget = null;
 
         if (blockPosTarget == null) {
@@ -167,7 +167,7 @@ public class BurrowMiner extends Module {
             return;
         }
 
-        if (BPlusPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get()) {
+        if (BPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get()) {
             error("Target block out of reach... disabling.");
             toggle();
             return;

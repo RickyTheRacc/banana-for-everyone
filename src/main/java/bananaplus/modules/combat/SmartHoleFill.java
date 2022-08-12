@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
 import meteordevelopment.meteorclient.settings.*;
@@ -213,7 +213,7 @@ public class SmartHoleFill extends Module {
     private void onTick(TickEvent.Pre event) {
         target = TargetUtils.getPlayerTarget(range.get(), priority.get());
 
-        if ((onlyInHole.get() && (BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any) || (BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)))) || (!onlyInHole.get())){
+        if ((onlyInHole.get() && (BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any) || (BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any)))) || (!onlyInHole.get())){
             for (Hole hole : holes) {
 
                 if (target != null){

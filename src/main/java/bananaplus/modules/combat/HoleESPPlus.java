@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
@@ -174,15 +174,15 @@ public class HoleESPPlus extends Module {
             for (Direction direction : Direction.values()) {
                 if (direction == Direction.UP) continue;
 
-                if (BPlusEntityUtils.isBlastResistant(blockPos.offset(direction), BPlusEntityUtils.BlastResistantType.Unbreakable)) bedrock++;
-                else if (BPlusEntityUtils.isBlastResistant(blockPos.offset(direction), BPlusEntityUtils.BlastResistantType.Mineable)) blastproof++;
+                if (BEntityUtils.isBlastResistant(blockPos.offset(direction), BEntityUtils.BlastResistantType.Unbreakable)) bedrock++;
+                else if (BEntityUtils.isBlastResistant(blockPos.offset(direction), BEntityUtils.BlastResistantType.Mineable)) blastproof++;
                 else if (direction == Direction.DOWN) return;
                 else if (validHole(blockPos.offset(direction)) && air == null) {
                     for (Direction dir : Direction.values()) {
                         if (dir == direction.getOpposite() || dir == Direction.UP) continue;
 
-                        if (BPlusEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir), BPlusEntityUtils.BlastResistantType.Unbreakable)) bedrock++;
-                        else if (BPlusEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir), BPlusEntityUtils.BlastResistantType.Mineable)) blastproof++;
+                        if (BEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir), BEntityUtils.BlastResistantType.Unbreakable)) bedrock++;
+                        else if (BEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir), BEntityUtils.BlastResistantType.Mineable)) blastproof++;
                         else return;
                     }
 

@@ -6,6 +6,7 @@ https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/met
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.utils.CrystalUtils;
 import bananaplus.utils.*;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.*;
@@ -124,6 +125,12 @@ public class BananaBomber extends Module {
         Always
     }
 
+    public enum FacePlaceMode {
+        Normal,
+        Slow,
+        None
+    }
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlace = settings.createGroup("Place");
     private final SettingGroup sgFacePlace = settings.createGroup("Face Place");
@@ -231,14 +238,14 @@ public class BananaBomber extends Module {
 
 
     // Place
-    private final Setting<Boolean> doPlace = sgPlace.add(new BoolSetting.Builder()
+    public final Setting<Boolean> doPlace = sgPlace.add(new BoolSetting.Builder()
             .name("place")
             .description("If the CA should place crystals.")
             .defaultValue(true)
             .build()
     );
 
-    private final Setting<Double> PminDamage = sgPlace.add(new DoubleSetting.Builder()
+    public final Setting<Double> PminDamage = sgPlace.add(new DoubleSetting.Builder()
             .name("min-place-damage")
             .description("Minimum place damage the crystal needs to deal to your target.")
             .defaultValue(6)
@@ -255,7 +262,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Double> PmaxDamage = sgPlace.add(new DoubleSetting.Builder()
+    public final Setting<Double> PmaxDamage = sgPlace.add(new DoubleSetting.Builder()
             .name("max-place-damage")
             .description("Maximum place damage crystals can deal to yourself.")
             .defaultValue(6)
@@ -265,7 +272,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> PantiSuicide = sgPlace.add(new BoolSetting.Builder()
+    public final Setting<Boolean> PantiSuicide = sgPlace.add(new BoolSetting.Builder()
             .name("anti-suicide-place")
             .description("Will not place crystals if they will pop / kill you.")
             .defaultValue(true)
@@ -283,7 +290,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Double> placeRange = sgPlace.add(new DoubleSetting.Builder()
+    public final Setting<Double> placeRange = sgPlace.add(new DoubleSetting.Builder()
             .name("place-range")
             .description("How far away you can place crystals.")
             .defaultValue(4)
@@ -293,7 +300,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Double> placeWallsRange = sgPlace.add(new DoubleSetting.Builder()
+    public final Setting<Double> placeWallsRange = sgPlace.add(new DoubleSetting.Builder()
             .name("place-walls-range")
             .description("How far away you can place crystals through blocks.")
             .defaultValue(4)
@@ -303,7 +310,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> placement112 = sgPlace.add(new BoolSetting.Builder()
+    public final Setting<Boolean> placement112 = sgPlace.add(new BoolSetting.Builder()
             .name("1.12-placement")
             .description("Uses 1.12 crystal placement.")
             .defaultValue(false)
@@ -311,7 +318,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> smallBox = sgPlace.add(new BoolSetting.Builder()
+    public final Setting<Boolean> smallBox = sgPlace.add(new BoolSetting.Builder()
             .name("small-box")
             .description("Allows you to place in 1x1x1 box instead of 1x2x1 boxes.")
             .defaultValue(false)
@@ -574,7 +581,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> onlyBreakOwn = sgBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> onlyBreakOwn = sgBreak.add(new BoolSetting.Builder()
             .name("only-own")
             .description("Only break crystals that you placed.")
             .defaultValue(false)
@@ -582,7 +589,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> antiWeakness = sgBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> antiWeakness = sgBreak.add(new BoolSetting.Builder()
             .name("anti-weakness")
             .description("Switches to tools with high enough damage to explode the crystal with weakness effect.")
             .defaultValue(true)
@@ -608,7 +615,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Double> BmaxDamage = sgBreak.add(new DoubleSetting.Builder()
+    public final Setting<Double> BmaxDamage = sgBreak.add(new DoubleSetting.Builder()
             .name("max-break-damage")
             .description("Maximum break damage crystals can deal to yourself.")
             .defaultValue(6)
@@ -618,7 +625,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Integer> attackFrequency = sgBreak.add(new IntSetting.Builder()
+    public final Setting<Integer> attackFrequency = sgBreak.add(new IntSetting.Builder()
             .name("attack-frequency")
             .description("Maximum hits to do per second.")
             .defaultValue(25)
@@ -628,7 +635,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> BantiSuicide = sgBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> BantiSuicide = sgBreak.add(new BoolSetting.Builder()
             .name("anti-suicide-break")
             .description("Will not break crystals if they will pop or kill you.")
             .defaultValue(true)
@@ -636,7 +643,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<CancelCrystalMode> cancelCrystalMode = sgBreak.add(new EnumSetting.Builder<CancelCrystalMode>()
+    public final Setting<CancelCrystalMode> cancelCrystalMode = sgBreak.add(new EnumSetting.Builder<CancelCrystalMode>()
             .name("cancel-mode")
             .description("Mode to use for the crystals to be removed from the world.")
             .defaultValue(CancelCrystalMode.NoDesync)
@@ -644,7 +651,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Integer> cancelTicks = sgBreak.add(new IntSetting.Builder()
+    public final Setting<Integer> cancelTicks = sgBreak.add(new IntSetting.Builder()
             .name("cancel-ticks")
             .description("How long a tick should exist before being canceled.")
             .defaultValue(3)
@@ -664,7 +671,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> smartDelay = sgBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> smartDelay = sgBreak.add(new BoolSetting.Builder()
             .name("smart-delay")
             .description("Only breaks crystals when the target can receive damage.")
             .defaultValue(false)
@@ -672,7 +679,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Integer> switchDelay = sgBreak.add(new IntSetting.Builder()
+    public final Setting<Integer> switchDelay = sgBreak.add(new IntSetting.Builder()
             .name("switch-delay")
             .description("The delay in ticks to wait to break a crystal after switching hotbar slot.")
             .defaultValue(0)
@@ -682,7 +689,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Double> breakRange = sgBreak.add(new DoubleSetting.Builder()
+    public final Setting<Double> breakRange = sgBreak.add(new DoubleSetting.Builder()
             .name("break-range")
             .description("Range in which to break crystals.")
             .defaultValue(4)
@@ -692,7 +699,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Double> breakWallsRange = sgBreak.add(new DoubleSetting.Builder()
+    public final Setting<Double> breakWallsRange = sgBreak.add(new DoubleSetting.Builder()
             .name("break-walls-range")
             .description("Range in which to break crystals when behind blocks.")
             .defaultValue(4)
@@ -702,7 +709,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> attemptCheck = sgBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> attemptCheck = sgBreak.add(new BoolSetting.Builder()
             .name("break-attempt-check")
             .description("Whether to account for how many times you try to hit a crystal.")
             .defaultValue(false)
@@ -710,7 +717,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Integer> breakAttempts = sgBreak.add(new IntSetting.Builder()
+    public final Setting<Integer> breakAttempts = sgBreak.add(new IntSetting.Builder()
             .name("break-attempts")
             .description("How many times to hit a crystal before finding a new placement.")
             .defaultValue(2)
@@ -719,7 +726,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> ageCheck = sgBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> ageCheck = sgBreak.add(new BoolSetting.Builder()
             .name("crystal-age-check")
             .description("To check how old a crystal is server-side.")
             .defaultValue(true)
@@ -727,7 +734,7 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Integer> ticksExisted = sgBreak.add(new IntSetting.Builder()
+    public final Setting<Integer> ticksExisted = sgBreak.add(new IntSetting.Builder()
             .name("ticks-existed")
             .description("Amount of ticks a crystal needs to have existed for it to be attacked.")
             .defaultValue(1)
@@ -738,14 +745,14 @@ public class BananaBomber extends Module {
 
 
     // Fast break
-    private final Setting<Boolean> fastBreak = sgFastBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> fastBreak = sgFastBreak.add(new BoolSetting.Builder()
             .name("fast-break")
             .description("Ignores break delay and tries to break the crystal as soon as it's spawned in the world.")
             .defaultValue(true)
             .build()
     );
 
-    private final Setting<Boolean> freqCheck = sgFastBreak.add(new BoolSetting.Builder()
+    public final Setting<Boolean> freqCheck = sgFastBreak.add(new BoolSetting.Builder()
             .name("frequency-check")
             .description("Will not try to fast break if your attack exceeds the attack frequency.")
             .defaultValue(true)
@@ -753,17 +760,17 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    private final Setting<Boolean> smartCheck = sgFastBreak.add(new BoolSetting.Builder()
-            .name("smart-check")
-            .description("Will not try to fast break for slow face place / surround hold.")
+    public final Setting<Boolean> damageCheck = sgFastBreak.add(new BoolSetting.Builder()
+            .name("damage-check")
+            .description("Check if the crystal meets min damage first.")
             .defaultValue(true)
             .visible(fastBreak::get)
             .build()
     );
 
-    private final Setting<Boolean> minDcheck = sgFastBreak.add(new BoolSetting.Builder()
-            .name("damage-check")
-            .description("Check if the crystal meets min damage first.")
+    public final Setting<Boolean> smartCheck = sgFastBreak.add(new BoolSetting.Builder()
+            .name("smart-check")
+            .description("Will not try to fast break for slow face place / surround hold.")
             .defaultValue(true)
             .visible(fastBreak::get)
             .build()
@@ -821,7 +828,7 @@ public class BananaBomber extends Module {
 
 
     // Pause
-    private final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
+    public final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
             .name("pause-health")
             .description("Pauses when you go below a certain health.")
             .defaultValue(5)
@@ -1001,13 +1008,13 @@ public class BananaBomber extends Module {
     private final Vec3d vec3dRayTraceEnd = new Vec3d(0, 0, 0);
     private RaycastContext raycastContext;
 
-    private final IntSet placedCrystals = new IntOpenHashSet();
+    public final IntSet placedCrystals = new IntOpenHashSet();
     private boolean placing;
     private int placingTimer;
     public final BlockPos.Mutable placingCrystalBlockPos = new BlockPos.Mutable();
 
-    private final IntSet removed = new IntOpenHashSet();
-    private final Int2IntMap attemptedBreaks = new Int2IntOpenHashMap();
+    public final IntSet removed = new IntOpenHashSet();
+    public final Int2IntMap attemptedBreaks = new Int2IntOpenHashMap();
     private final Int2IntMap waitingToExplode = new Int2IntOpenHashMap();
     public int attacks;
 
@@ -1196,7 +1203,7 @@ public class BananaBomber extends Module {
             }
 
             float damage = getBreakDamage(event.entity, false);
-            if (minDcheck.get()) {
+            if (damageCheck.get()) {
                 if (damage < BminDamage.get()) return;
             }
 
@@ -1282,7 +1289,7 @@ public class BananaBomber extends Module {
         blockPos.set(entity.getBlockPos()).move(0, -1, 0);
 
         if (!CrystalUtils.shouldIgnoreSelfBreakDamage()) {
-            float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, entity.getPos(), predictMovement.get(), breakRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+            float selfDamage = BDamageUtils.crystalDamage(mc.player, entity.getPos(), predictMovement.get(), breakRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
             if (selfDamage > BmaxDamage.get() || (BantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                 return 0;
         } else if (debug.get()) warning("Ignoring self break dmg");
@@ -1423,7 +1430,7 @@ public class BananaBomber extends Module {
 
             // Check damage to self and anti suicide
             if (!CrystalUtils.shouldIgnoreSelfPlaceDamage()) {
-                float selfDamage = BPlusDamageUtils.crystalDamage(mc.player, vec3d, predictMovement.get(), placeRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+                float selfDamage = BDamageUtils.crystalDamage(mc.player, vec3d, predictMovement.get(), placeRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
                 if (selfDamage > PmaxDamage.get() || (PantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
                     return;
             } else if (debug.get()) warning("Ignoring self place dmg");
@@ -1601,7 +1608,7 @@ public class BananaBomber extends Module {
 
     private boolean isOutOfBreakRange(Entity entity) {
         boolean behindWall = !mc.player.canSee(entity);
-        double distance = BPlusPlayerUtils.distanceFromEye(entity);
+        double distance = BPlayerUtils.distanceFromEye(entity);
 
         return distance > (behindWall ? breakWallsRange.get() : breakRange.get());
     }
@@ -1613,7 +1620,7 @@ public class BananaBomber extends Module {
         for (PlayerEntity target : targets) {
             double distance = target.squaredDistanceTo(mc.player);
 
-            if (distance < nearestDistance * nearestDistance) {
+            if (distance < nearestDistance) {
                 nearestTarget = target;
                 nearestDistance = distance;
             }
@@ -1627,13 +1634,13 @@ public class BananaBomber extends Module {
 
         if (fast) {
             PlayerEntity target = getNearestTarget();
-            if (!(smartDelay.get() && breaking && target.hurtTime > 0)) damage = BPlusDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+            if (!(smartDelay.get() && breaking && target.hurtTime > 0)) damage = BDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
         }
         else {
             for (PlayerEntity target : targets) {
                 if (smartDelay.get() && breaking && target.hurtTime > 0) continue;
 
-                float dmg = BPlusDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+                float dmg = BDamageUtils.crystalDamage(target, vec3d, predictMovement.get(), explosionRadiusToTarget.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
 
                 // Update best target
                 if (dmg > bestTargetDamage) {

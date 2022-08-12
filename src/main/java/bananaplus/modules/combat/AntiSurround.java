@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
-import bananaplus.utils.BPlusPlayerUtils;
+import bananaplus.utils.BEntityUtils;
+import bananaplus.utils.BPlayerUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -180,7 +180,7 @@ public class AntiSurround extends Module {
 
             if (delay >= delaySetting.get() && placePositions.size() > 0) {
                 BlockPos blockPos = placePositions.get(placePositions.size() - 1);
-                if (BPlusPlayerUtils.distanceFromEye(blockPos) > placeRange.get()) return;
+                if (BPlayerUtils.distanceFromEye(blockPos) > placeRange.get()) return;
 
                 if (BlockUtils.place(blockPos, button, rotate.get(), 50, renderSwing.get(), checkEntity.get(), swapBack.get()))
                     placePositions.remove(blockPos);
@@ -225,16 +225,16 @@ public class AntiSurround extends Module {
     private boolean isTrapped(PlayerEntity target) {
         switch (when.get()) {
             case BothTrapped -> {
-                return BPlusEntityUtils.isBothTrapped(target, BPlusEntityUtils.BlastResistantType.NotAir);
+                return BEntityUtils.isBothTrapped(target, BEntityUtils.BlastResistantType.NotAir);
             }
             case AnyTrapped -> {
-                return BPlusEntityUtils.isAnyTrapped(target, BPlusEntityUtils.BlastResistantType.NotAir);
+                return BEntityUtils.isAnyTrapped(target, BEntityUtils.BlastResistantType.NotAir);
             }
             case TopTrapped -> {
-                return BPlusEntityUtils.isTopTrapped(target, BPlusEntityUtils.BlastResistantType.NotAir);
+                return BEntityUtils.isTopTrapped(target, BEntityUtils.BlastResistantType.NotAir);
             }
             case FaceTrapped -> {
-                return BPlusEntityUtils.isFaceSurrounded(target, BPlusEntityUtils.BlastResistantType.NotAir);
+                return BEntityUtils.isFaceSurrounded(target, BEntityUtils.BlastResistantType.NotAir);
             }
             case Always -> {
                 return true;

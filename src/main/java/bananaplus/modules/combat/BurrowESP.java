@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -81,14 +81,14 @@ public class BurrowESP extends Module {
 
         if (TargetUtils.isBadTarget(targetEntity, mc.interactionManager.getReachDistance() + 2)) {
             target = null;
-        } else if (renderWebbed.get() && BPlusEntityUtils.isWebbed(targetEntity)) {
+        } else if (renderWebbed.get() && BEntityUtils.isWebbed(targetEntity)) {
             target = targetEntity.getBlockPos();
-        } else if (BPlusEntityUtils.isBurrowed(targetEntity, BPlusEntityUtils.BlastResistantType.Any)) {
+        } else if (BEntityUtils.isBurrowed(targetEntity, BEntityUtils.BlastResistantType.Any)) {
             target = targetEntity.getBlockPos();
         } else target = null;
 
-        isTargetWebbed = (target != null && BPlusEntityUtils.isWebbed(targetEntity));
-        isTargetBurrowed = (target != null && BPlusEntityUtils.isBurrowed(targetEntity, BPlusEntityUtils.BlastResistantType.Any));
+        isTargetWebbed = (target != null && BEntityUtils.isWebbed(targetEntity));
+        isTargetBurrowed = (target != null && BEntityUtils.isBurrowed(targetEntity, BEntityUtils.BlastResistantType.Any));
     }
 
     @EventHandler

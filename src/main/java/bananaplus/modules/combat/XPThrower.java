@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -272,7 +272,7 @@ public class XPThrower extends Module {
         if (PlayerUtils.shouldPause(minePause.get(), drinkPause.get(), eatPause.get())) return true;
 
         if (onlyOnGround.get() && !mc.player.isOnGround()) return true;
-        if (allowDoubles.get()  && !BPlusEntityUtils.isInHole(mc.player, allowDoubles.get(), BPlusEntityUtils.BlastResistantType.Any)) return true;
+        if (allowDoubles.get()  && !BEntityUtils.isInHole(mc.player, allowDoubles.get(), BEntityUtils.BlastResistantType.Any)) return true;
         return (PlayerUtils.getTotalHealth() <= minHealth.get());
     }
 

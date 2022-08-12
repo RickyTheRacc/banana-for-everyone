@@ -13,8 +13,8 @@ import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.starscript.value.Value;
 import net.minecraft.item.Items;
 
-import static bananaplus.utils.BPlusEntityUtils.deadEntity;
-import static bananaplus.utils.BPlusEntityUtils.isDeathPacket;
+import static bananaplus.utils.BEntityUtils.deadEntity;
+import static bananaplus.utils.BEntityUtils.isDeathPacket;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class StatsUtils {

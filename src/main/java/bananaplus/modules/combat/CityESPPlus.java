@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -93,14 +93,14 @@ public class CityESPPlus extends Module {
 
         if (TargetUtils.isBadTarget(targetEntity, range.get())) {
             target = null;
-        } else if (prioBurrowed.get() && BPlusEntityUtils.isBurrowed(targetEntity, BPlusEntityUtils.BlastResistantType.Mineable)) {
+        } else if (prioBurrowed.get() && BEntityUtils.isBurrowed(targetEntity, BEntityUtils.BlastResistantType.Mineable)) {
             target = targetEntity.getBlockPos();
-        } else if (noRenderSurrounded.get() && !BPlusEntityUtils.isSurrounded(targetEntity, BPlusEntityUtils.BlastResistantType.Any)) {
+        } else if (noRenderSurrounded.get() && !BEntityUtils.isSurrounded(targetEntity, BEntityUtils.BlastResistantType.Any)) {
             target = null;
         } else if (avoidSelf.get()) {
-            target = BPlusEntityUtils.getTargetBlock(targetEntity);
-                if (target == null && lastResort.get()) target = BPlusEntityUtils.getCityBlock(targetEntity);
-        } else target = BPlusEntityUtils.getCityBlock(targetEntity);
+            target = BEntityUtils.getTargetBlock(targetEntity);
+                if (target == null && lastResort.get()) target = BEntityUtils.getCityBlock(targetEntity);
+        } else target = BEntityUtils.getCityBlock(targetEntity);
     }
 
     @EventHandler

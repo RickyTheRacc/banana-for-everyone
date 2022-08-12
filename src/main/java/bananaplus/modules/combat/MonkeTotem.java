@@ -1,8 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusDamageUtils;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BDamageUtils;
+import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -247,7 +247,7 @@ public class MonkeTotem extends Module {
         if (mc.currentScreen instanceof GenericContainerScreen) return;
 
         // Check if your health is low or mode is on strict
-        boolean low = Math.min(mc.player.getHealth(), redHealth.get()) + Math.min(mc.player.getAbsorptionAmount(), yellowHealth.get()) - BPlusDamageUtils.possibleHealthReductions(crystals.get(), explosionRadius.get().floatValue(), swords.get(), swordsRadius.get().floatValue()) <= minHealth.get() + armorModifier() - holeModifier();
+        boolean low = Math.min(mc.player.getHealth(), redHealth.get()) + Math.min(mc.player.getAbsorptionAmount(), yellowHealth.get()) - BDamageUtils.possibleHealthReductions(crystals.get(), explosionRadius.get().floatValue(), swords.get(), swordsRadius.get().floatValue()) <= minHealth.get() + armorModifier() - holeModifier();
         locked = (mode.get() == Mode.Strict || (mode.get() == Mode.Smart && low) && totems > 0);
 
         // We find a totem from the inventory not only if our health is low, so we know exactly where to pick up another totem immediately
@@ -296,10 +296,10 @@ public class MonkeTotem extends Module {
         // Also you have to check for single holes first before doing the doubles
 
         if (debug.get() && mode.get() == Mode.Smart) {
-            if (inSingleBedrock.get() > 0 && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Unbreakable)) info("Is in single bedrock");
-            else if (inSingleHole.get() > 0 && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any)) info("In in single hole");
-            else if (inDoubleBedrock.get() > 0 && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Unbreakable)) info("Is in double bedrock");
-            else if (inDoubleHole.get() > 0 && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)) info("Is in double hole");
+            if (inSingleBedrock.get() > 0 && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Unbreakable)) info("Is in single bedrock");
+            else if (inSingleHole.get() > 0 && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any)) info("In in single hole");
+            else if (inDoubleBedrock.get() > 0 && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Unbreakable)) info("Is in double bedrock");
+            else if (inDoubleHole.get() > 0 && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any)) info("Is in double hole");
 
             warning("True min health = " + minHealth.get() + " + " + armorModifier() + " - " + holeModifier() + " = " + (minHealth.get() + armorModifier() - holeModifier()));
         }
@@ -314,7 +314,7 @@ public class MonkeTotem extends Module {
 
         // Changed it to like this instead of using && to save fps
         if (missingHelmet.get() > 0) {
-             if (BPlusEntityUtils.isHelmet(helmet)) helmetModifier = 0;
+             if (BEntityUtils.isHelmet(helmet)) helmetModifier = 0;
              else {
                  helmetModifier = missingHelmet.get().floatValue();
                  if (debug.get() && mode.get() == Mode.Smart) info("Helmet missing");
@@ -322,7 +322,7 @@ public class MonkeTotem extends Module {
         }
 
         if (missingChestplate.get() > 0) {
-            if (BPlusEntityUtils.isChestplate(chestplate)) chestplateModifier = 0;
+            if (BEntityUtils.isChestplate(chestplate)) chestplateModifier = 0;
             else {
                 chestplateModifier = missingHelmet.get().floatValue();
                 if (debug.get() && mode.get() == Mode.Smart) info("Chestplate missing");
@@ -330,7 +330,7 @@ public class MonkeTotem extends Module {
         }
 
         if (missingLeggings.get().floatValue() > 0) {
-            if (BPlusEntityUtils.isLeggings(leggings)) leggingsModifier = 0;
+            if (BEntityUtils.isLeggings(leggings)) leggingsModifier = 0;
             else {
                 leggingsModifier = missingLeggings.get().floatValue();
                 if (debug.get() && mode.get() == Mode.Smart) info("Leggings missing");
@@ -338,7 +338,7 @@ public class MonkeTotem extends Module {
         }
 
         if (missingBoots.get() > 0) {
-            if (BPlusEntityUtils.isBoots(boots)) bootsModifier = 0;
+            if (BEntityUtils.isBoots(boots)) bootsModifier = 0;
             else {
                 bootsModifier = missingBoots.get().floatValue();
                 if (debug.get() && mode.get() == Mode.Smart) info("Boots missing");
@@ -351,10 +351,10 @@ public class MonkeTotem extends Module {
     private float holeModifier() {
         // Todo : implement the ping sync util from serverutils
 
-        if (inSingleBedrock.get() > 0 && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Unbreakable)) return inSingleBedrock.get().floatValue();
-        else if (inSingleHole.get() > 0 && BPlusEntityUtils.isSurrounded(mc.player, BPlusEntityUtils.BlastResistantType.Any)) return inSingleHole.get().floatValue();
-        else if (inDoubleBedrock.get() > 0 && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Unbreakable)) return inDoubleBedrock.get().floatValue();
-        else if (inDoubleHole.get() > 0 && BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any)) return inDoubleHole.get().floatValue();
+        if (inSingleBedrock.get() > 0 && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Unbreakable)) return inSingleBedrock.get().floatValue();
+        else if (inSingleHole.get() > 0 && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any)) return inSingleHole.get().floatValue();
+        else if (inDoubleBedrock.get() > 0 && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Unbreakable)) return inDoubleBedrock.get().floatValue();
+        else if (inDoubleHole.get() > 0 && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any)) return inDoubleHole.get().floatValue();
 
         return 0;
     }
