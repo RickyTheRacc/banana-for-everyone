@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlusEntityUtils;
+import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.meteor.KeyEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
@@ -13,7 +13,14 @@ import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.potion.PotionUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuiverRewrite extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -35,6 +42,13 @@ public class QuiverRewrite extends Module {
             .build()
     );
 
+    private final Setting<Boolean> checkEffects = sgGeneral.add(new BoolSetting.Builder()
+            .name("check-effects")
+            .description("Don't quiver if you already have the potion effect.")
+            .defaultValue(false)
+            .build()
+    );
+
     private final Setting<Integer> effectDelay = sgGeneral.add(new IntSetting.Builder()
             .name("use-delay")
             .description("How long to wait between shooting arrows.")
@@ -46,7 +60,7 @@ public class QuiverRewrite extends Module {
 
     private final Setting<Boolean> autoSwap = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-swap")
-            .description("Will move a bow from your inventory to and from your hotbar as required.")
+            .description("Move a bow to and from your inventory as required.")
             .defaultValue(false)
             .build()
     );
@@ -54,7 +68,7 @@ public class QuiverRewrite extends Module {
     private final Setting<Integer> bowSlot = sgGeneral.add(new IntSetting.Builder()
             .name("bow-slot")
             .description("What slot to move a bow to if no bow is found.")
-            .defaultValue(9)
+            .defaultValue(8)
             .range(1,9)
             .sliderRange(1,9)
             .visible(autoSwap::get)
@@ -71,7 +85,7 @@ public class QuiverRewrite extends Module {
     private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
             .name("chat-info")
             .description("Send messages in the chat when quivering.")
-            .defaultValue(true)
+            .defaultValue(false)
             .build()
     );
 
@@ -123,6 +137,8 @@ public class QuiverRewrite extends Module {
     private double cooldown;
     private int prevBowSlot;
 
+    private final List<Integer> queuedEffects = new ArrayList<>();
+
 
     @EventHandler
     public void onKeyPressed(KeyEvent event) {
@@ -137,7 +153,7 @@ public class QuiverRewrite extends Module {
                 return;
             }
 
-            if (!BPlusEntityUtils.isInHole(mc.player, true, BPlusEntityUtils.BlastResistantType.Any) && onlyInHole.get()) {
+            if (!BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any) && onlyInHole.get()) {
                 if (chatInfo.get()) error("You aren't in a hole.");
                 return;
             }
@@ -161,6 +177,32 @@ public class QuiverRewrite extends Module {
                 prevBowSlot = bow.slot();
                 InvUtils.move().from(bow.slot()).to((bowSlot.get() - 1));
             }
+
+            List<StatusEffect> usedEffects = new ArrayList<>();
+
+            for (int i = mc.player.getInventory().size(); i > 0; i--) {
+                // Bows aren't arrows
+                if (i == mc.player.getInventory().selectedSlot) continue;
+
+                // If it's not a tipped arrow skip
+                ItemStack item = mc.player.getInventory().getStack(i);
+                if (item.getItem() != Items.TIPPED_ARROW)  continue;
+
+                // If it doesn't have an effect somehow skip
+                List<StatusEffectInstance> effects = PotionUtil.getPotionEffects(item);
+                if (effects.isEmpty()) continue;
+
+                StatusEffect effect = effects.get(0).getEffectType();
+                if (event.key == speedBind.get().getValue() && (!hasEffect(effect) || !checkEffects.get())) {
+                    usedEffects.add(effect);
+                    queuedEffects.add(i);
+                }
+
+                if (event.key == strengthBind.get().getValue() && (!hasEffect(effect) || !checkEffects.get())) {
+                    usedEffects.add(effect);
+                    queuedEffects.add(i);
+                }
+            }
         }
     }
 
@@ -171,7 +213,9 @@ public class QuiverRewrite extends Module {
             return;
         } else cooldown--;
 
+        if (queuedEffects.isEmpty()) return;
 
+        boolean charging = mc.options.useKey.isPressed();
 
     }
 
@@ -184,5 +228,14 @@ public class QuiverRewrite extends Module {
         boolean air2 = !((AbstractBlockAccessor)pos2.getBlock()).isCollidable();
 
         return (air1 & air2);
+    }
+
+
+    private boolean hasEffect(StatusEffect effect) {
+        for (StatusEffectInstance statusEffect : mc.player.getStatusEffects()) {
+            if (statusEffect.getEffectType() == effect) return true;
+        }
+
+        return false;
     }
 }
