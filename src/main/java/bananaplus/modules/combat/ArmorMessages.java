@@ -47,7 +47,7 @@ public class ArmorMessages extends Module {
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
             .name("delay")
             .description("The delay between messages in ticks.")
-            .defaultValue(0)
+            .defaultValue(20)
             .min(0)
             .sliderMax(200)
             .visible(alertFriend::get)
@@ -58,6 +58,7 @@ public class ArmorMessages extends Module {
         super(BananaPlus.COMBAT, "armor-alert", "Send alerts to people with low armor.");
     }
 
+
     private final List<String> messages = new ArrayList<>();
     private final List<PlayerEntity> helmet = new ArrayList<>();
     private final List<PlayerEntity> chestplate = new ArrayList<>();
@@ -65,6 +66,7 @@ public class ArmorMessages extends Module {
     private final List<PlayerEntity> boots = new ArrayList<>();
 
     private int messageI, timer;
+
 
     @Override
     public void onActivate() {

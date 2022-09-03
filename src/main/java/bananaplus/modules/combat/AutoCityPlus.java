@@ -231,8 +231,9 @@ public class AutoCityPlus extends Module {
     }
 
 
-    private PlayerEntity target;
-    private BlockPos blockPosTarget;
+    private PlayerEntity playerTarget;
+    private BlockPos blockTarget;
+
     private boolean sentMessage;
     private boolean supportMessage;
     private boolean burrowMessage;
@@ -251,101 +252,100 @@ public class AutoCityPlus extends Module {
         count = 0;
         mining = false;
         delayLeft = 0;
-        blockPosTarget = null;
+        blockTarget = null;
 
         if (mode.get() == Mode.Instant) {
-            if (TargetUtils.isBadTarget(target, targetRange.get())) {
-                PlayerEntity search = TargetUtils.getPlayerTarget(targetRange.get(), SortPriority.LowestDistance);
-                if (search != target) sentMessage = false;
-                target = search;
+            if (TargetUtils.isBadTarget(playerTarget, targetRange.get())) {
+                PlayerEntity search = TargetUtils.getPlayerTarget(targetRange.get(), SortPriority.ClosestAngle);
+                if (search != playerTarget) sentMessage = false;
+                playerTarget = search;
             }
 
-            if (TargetUtils.isBadTarget(target, targetRange.get())) {
-                target = null;
-                blockPosTarget = null;
+            if (TargetUtils.isBadTarget(playerTarget, targetRange.get())) {
+                playerTarget = null;
+                blockTarget = null;
                 toggle();
                 return;
             }
 
-            if (prioBurrowed.get() && BEntityUtils.isBurrowed(target, BEntityUtils.BlastResistantType.Mineable)) {
-                blockPosTarget = target.getBlockPos();
+            if (prioBurrowed.get() && BEntityUtils.isBurrowed(playerTarget, BEntityUtils.BlastResistantType.Mineable)) {
+                blockTarget = playerTarget.getBlockPos();
                 if (!burrowMessage && chatInfo.get()) {
-                    warning("Mining %s's burrow.", target.getEntityName());
+                    warning("Mining %s's burrow.", playerTarget.getEntityName());
                     burrowMessage = true;
                 }
             } else if (avoidSelf.get()) {
-                blockPosTarget = BEntityUtils.getTargetBlock(target);
-                if (blockPosTarget == null && lastResort.get()) blockPosTarget = BEntityUtils.getCityBlock(target);
-            } else blockPosTarget = BEntityUtils.getCityBlock(target);
+                blockTarget = BEntityUtils.getTargetBlock(playerTarget);
+                if (blockTarget == null && lastResort.get()) blockTarget = BEntityUtils.getCityBlock(playerTarget);
+            } else blockTarget = BEntityUtils.getCityBlock(playerTarget);
         }
     }
 
     @Override
     public void onDeactivate() {
-        if (mode.get() == Mode.Instant && blockPosTarget != null) {
-            mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, blockPosTarget, direction));
+        if (mode.get() == Mode.Instant && blockTarget != null) {
+            mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, blockTarget, direction));
         }
-        blockPosTarget = null;
-        target = null;
+        blockTarget = null;
+        playerTarget = null;
     }
 
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
         if (mode.get() == Mode.Normal) {
-            if (TargetUtils.isBadTarget(target, targetRange.get())) {
+            if (TargetUtils.isBadTarget(playerTarget, targetRange.get())) {
                 PlayerEntity search = TargetUtils.getPlayerTarget(targetRange.get(), SortPriority.LowestDistance);
-                if (search != target) sentMessage = false;
-                target = search;
+                if (search != playerTarget) sentMessage = false;
+                playerTarget = search;
             }
 
-            if (TargetUtils.isBadTarget(target, targetRange.get())) {
-                target = null;
-                blockPosTarget = null;
+            if (TargetUtils.isBadTarget(playerTarget, targetRange.get())) {
+                playerTarget = null;
+                blockTarget = null;
                 toggle();
                 return;
             }
 
-            if (prioBurrowed.get() && BEntityUtils.isBurrowed(target, BEntityUtils.BlastResistantType.Mineable)) {
-                blockPosTarget = target.getBlockPos();
+            if (prioBurrowed.get() && BEntityUtils.isBurrowed(playerTarget, BEntityUtils.BlastResistantType.Mineable)) {
+                blockTarget = playerTarget.getBlockPos();
                 if (!burrowMessage && chatInfo.get()) {
-                    warning("Mining %s's burrow.", target.getEntityName());
+                    warning("Mining %s's burrow.", playerTarget.getEntityName());
                     burrowMessage = true;
                 }
-            } else if (noCitySurrounded.get() && !BEntityUtils.isSurrounded(target, BEntityUtils.BlastResistantType.Any)) {
-                warning("%s is not surrounded... disabling", target.getEntityName());
-                blockPosTarget = null;
+            } else if (noCitySurrounded.get() && !BEntityUtils.isSurrounded(playerTarget, BEntityUtils.BlastResistantType.Any)) {
+                warning("%s is not surrounded... disabling", playerTarget.getEntityName());
+                blockTarget = null;
                 toggle();
                 return;
             } else if (avoidSelf.get()) {
-                blockPosTarget = BEntityUtils.getTargetBlock(target);
-                if (blockPosTarget == null && lastResort.get()) blockPosTarget = BEntityUtils.getCityBlock(target);
-            } else blockPosTarget = BEntityUtils.getCityBlock(target);
+                blockTarget = BEntityUtils.getTargetBlock(playerTarget);
+                if (blockTarget == null && lastResort.get()) blockTarget = BEntityUtils.getCityBlock(playerTarget);
+            } else blockTarget = BEntityUtils.getCityBlock(playerTarget);
         }
 
-        if (blockPosTarget == null) {
+        if (blockTarget == null) {
             error("No target block found... disabling.");
             toggle();
-            target = null;
+            playerTarget = null;
             return;
-        } else if (!sentMessage && chatInfo.get() && blockPosTarget != target.getBlockPos()) {
-            warning("Attempting to city %s.", target.getEntityName());
+        } else if (!sentMessage && chatInfo.get() && blockTarget != playerTarget.getBlockPos()) {
+            warning("Attempting to city %s.", playerTarget.getEntityName());
             sentMessage = true;
         }
 
-        if (BPlayerUtils.distanceFromEye(blockPosTarget) > mineRange.get()) {
+        if (BPlayerUtils.distanceFromEye(blockTarget) > mineRange.get()) {
             error("Target block out of reach... disabling.");
             toggle();
             return;
         }
 
-        Modules modules = Modules.get();
-        if (turnOnBBomber.get() && blockPosTarget != null && !modules.get(BananaBomber.class).isActive())
-            modules.get(BananaBomber.class).toggle();
-        if (turnOnButtonTrap.get() && blockPosTarget != null && !modules.get(AntiSurround.class).isActive())
-            modules.get(AntiSurround.class).toggle();
-        if (turnOffInstaMine.get() && blockPosTarget != null && modules.get(InstaMine.class).isActive())
-            modules.get(InstaMine.class).toggle();
+        if (turnOnBBomber.get() && blockTarget != null && !Modules.get().get(BananaBomber.class).isActive())
+            Modules.get().get(BananaBomber.class).toggle();
+        if (turnOnButtonTrap.get() && blockTarget != null && !Modules.get().get(AntiSurround.class).isActive())
+            Modules.get().get(AntiSurround.class).toggle();
+        if (turnOffInstaMine.get() && blockTarget != null && Modules.get().get(InstaMine.class).isActive())
+            Modules.get().get(InstaMine.class).toggle();
 
         FindItemResult pickaxe = InvUtils.find(itemStack -> itemStack.getItem() == Items.DIAMOND_PICKAXE || itemStack.getItem() == Items.NETHERITE_PICKAXE);
 
@@ -355,11 +355,11 @@ public class AutoCityPlus extends Module {
             return;
         }
 
-        if (support.get() && !BEntityUtils.isBurrowed(target, BEntityUtils.BlastResistantType.Any)) {
-            if (BPlayerUtils.distanceFromEye(blockPosTarget.down(1)) < supportRange.get()) {
-                BlockUtils.place(blockPosTarget.down(1), InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), 0, true);
-            } else if (!supportMessage && blockPosTarget != target.getBlockPos()) {
-                warning("Unable to support %s... mining anyway.", target.getEntityName());
+        if (support.get() && !BEntityUtils.isBurrowed(playerTarget, BEntityUtils.BlastResistantType.Any)) {
+            if (BPlayerUtils.distanceFromEye(blockTarget.down(1)) < supportRange.get()) {
+                BlockUtils.place(blockTarget.down(1), InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), 0, true);
+            } else if (!supportMessage && blockTarget != playerTarget.getBlockPos()) {
+                warning("Unable to support %s... mining anyway.", playerTarget.getEntityName());
                 supportMessage = true;
             }
         }
@@ -367,18 +367,18 @@ public class AutoCityPlus extends Module {
         if (autoSwitch.get()) InvUtils.swap(pickaxe.slot(), false);
 
         if (mode.get() == Mode.Normal) {
-            if (rotate.get()) Rotations.rotate(Rotations.getYaw(blockPosTarget), Rotations.getPitch(blockPosTarget), () -> mine(blockPosTarget));
-            else mine(blockPosTarget);
+            if (rotate.get()) Rotations.rotate(Rotations.getYaw(blockTarget), Rotations.getPitch(blockTarget), () -> mine(blockTarget));
+            else mine(blockTarget);
         }
 
         if (mode.get() == Mode.Instant) {
-            if (target == null || !target.isAlive() || count >= instaToggle.get()) {
+            if (playerTarget == null || !playerTarget.isAlive() || count >= instaToggle.get()) {
                 toggle();
             }
 
-            direction = BEntityUtils.rayTraceCheck(blockPosTarget, true);
-            if (!mc.world.isAir(blockPosTarget)) {
-                instamine(blockPosTarget);
+            direction = BEntityUtils.rayTraceCheck(blockTarget, true);
+            if (!mc.world.isAir(blockTarget)) {
+                instamine(blockTarget);
             } else ++count;
         }
     }
@@ -399,14 +399,14 @@ public class AutoCityPlus extends Module {
     private void instamine(BlockPos blockPos) {
         --delayLeft;
         if (!mining) {
-            if (rotate.get()) Rotations.rotate(Rotations.getYaw(blockPosTarget), Rotations.getPitch(blockPosTarget));
+            if (rotate.get()) Rotations.rotate(Rotations.getYaw(blockTarget), Rotations.getPitch(blockTarget));
             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
             if (swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
             mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, blockPos, direction));
             mining = true;
         }
         if (delayLeft <= 0) {
-            if (rotate.get()) Rotations.rotate(Rotations.getYaw(blockPosTarget), Rotations.getPitch(blockPosTarget));
+            if (rotate.get()) Rotations.rotate(Rotations.getYaw(blockTarget), Rotations.getPitch(blockTarget));
             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
             mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, blockPos, direction));
             delayLeft = delay.get();
@@ -416,12 +416,12 @@ public class AutoCityPlus extends Module {
 
     @Override
     public String getInfoString() {
-        return EntityUtils.getName(target);
+        return EntityUtils.getName(playerTarget);
     }
 
     @EventHandler
     private void onRender(Render3DEvent event) {
-        if (!render.get() || blockPosTarget == null) return;
-        event.renderer.box(blockPosTarget, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+        if (!render.get() || blockTarget == null) return;
+        event.renderer.box(blockTarget, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
     }
 }

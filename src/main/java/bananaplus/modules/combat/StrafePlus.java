@@ -314,12 +314,11 @@ public class StrafePlus extends Module {
     private int jumpTicks;
     private boolean jumped;
 
-    Modules modules = Modules.get();
-    Timer timerClass = modules.get(Timer.class);
-    AnchorPlus anchor = modules.get(AnchorPlus.class);
-    LongJump longJump = modules.get(LongJump.class);
-    Flight flight = modules.get(Flight.class);
-    ElytraFly efly = modules.get(ElytraFly.class);
+    Timer timerClass = Modules.get().get(Timer.class);
+    AnchorPlus anchor = Modules.get().get(AnchorPlus.class);
+    LongJump longJump = Modules.get().get(LongJump.class);
+    Flight flight = Modules.get().get(Flight.class);
+    ElytraFly efly = Modules.get().get(ElytraFly.class);
 
 
     @Override

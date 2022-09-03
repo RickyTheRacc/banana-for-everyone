@@ -30,7 +30,7 @@
   "depends": {
     "java": ">=17",
     "minecraft": ">=1.19.1",
-    "meteor-client": ">=0.4.9"
+    "meteor-client": "*"
   },
   "breaks": {
     "bedtrap": "*",
