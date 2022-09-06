@@ -5,7 +5,7 @@
 <h1 align="center">Banana+</h1>
 
 <p align="center">Based addon for Meteor Client.</p>
-<p align="center"><i>By Bennooo, Necro, and RickyTheRacc</i></p>
+<p align="center"><i>By RickyTheRacc</i></p>
 
 ## How to use:
 - Download and open with GitHub Desktop
@@ -29,6 +29,7 @@ B+ on top, All love <3 -ben
 <br>
 <br>
 ## Credits
+Original creators of Banana+ now retired or cancelled: [Bennooo](https://github.com/Bennooo) and Necro
 Packet Fly used with permission from [Cally72jhb](https://github.com/cally72jhb)<br>
 [Meteor Development](https://github.com/MeteorDevelopment) for [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)<br>
 The [Fabric Team](https://github.com/FabricMC) for [Fabric](https://github.com/FabricMC/fabric-loader) and [Yarn](https://github.com/FabricMC/yarn)
