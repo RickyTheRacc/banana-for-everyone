@@ -5,21 +5,19 @@
 <h1 align="center">Banana+</h1>
 
 <p align="center">Based addon for Meteor Client.</p>
-<p align="center"><i>By RickyTheRacc</i></p>
+<p align="center"><i>Maintained by RickyTheRacc</i></p>
 
-## How to use:
+## How to Use:
 - Download and open with GitHub Desktop
 - Open the project through IntelliJ
 - Run the gradle `build` task and wait
 - Use the jar from the `build/libs` folder
 
-*You can also use the jars found in the releases page which are automatically built after every commit!*
+*You can also find automatically built jars in the releases tab after every commit!*
 <br>
 <br>
-## Suggestions and Bug Reports
-Should be recorded by opening an issue [here](https://github.com/Bennooo/banana-for-everyone/issues/new/choose).
-Keep in mind that this is a passion project above anything else, and the devs aren't guaranteed to add every feature.
-If you are submitting a bug report, be concise and clear about what causes the issue.
+## End of Life
+After almost a year and a half of updates, Banana+ has finally reached the end of active development. The addon will be kept available for the latest dev build while Ricky reaches out to AntiCope about giving them the code, but there will be no future updates to the client itself.
 <br>
 <br>
 ## Personal Note From Ben:
@@ -29,7 +27,7 @@ B+ on top, All love <3 -ben
 <br>
 <br>
 ## Credits
-Original creators of Banana+ now retired or cancelled: [Bennooo](https://github.com/Bennooo) and Necro<br>
+Creators (retired): [Bennooo](https://github.com/Bennooo) , [RickyTheRacc](https://github.com/RickyTheRacc), Necro <br>
 Packet Fly used with permission from [Cally72jhb](https://github.com/cally72jhb)<br>
 [Meteor Development](https://github.com/MeteorDevelopment) for [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)<br>
 The [Fabric Team](https://github.com/FabricMC) for [Fabric](https://github.com/FabricMC/fabric-loader) and [Yarn](https://github.com/FabricMC/yarn)
