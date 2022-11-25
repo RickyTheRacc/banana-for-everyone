@@ -2,11 +2,11 @@ package bananaplus.modules.hud;
 
 import bananaplus.BananaPlus;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.hud.HudElement;
-import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
-import meteordevelopment.meteorclient.systems.hud.HudRenderer;
+import meteordevelopment.meteorclient.systems.hud.*;
+import meteordevelopment.meteorclient.systems.hud.elements.TextHud;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.Names;
+import meteordevelopment.meteorclient.utils.misc.Pool;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import net.minecraft.item.*;
 
@@ -14,62 +14,69 @@ import java.util.*;
 
 public class ItemCounter extends HudElement {
     public static final HudElementInfo<ItemCounter> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "item-counter", "Count different items in text.", ItemCounter::new);
-
-    public enum SortMode {
-        Longest,
-        Shortest
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
 
     // General
     private final Setting<SortMode> sortMode = sgGeneral.add(new EnumSetting.Builder<SortMode>()
             .name("sort-mode")
-            .description("How to sort the binds list.")
-            .defaultValue(SortMode.Shortest)
+            .description("How to sort the items list.")
+            .defaultValue(SortMode.Smallest)
             .build()
     );
 
-    private final Setting<List<Item>> items = sgGeneral.add(new ItemListSetting.Builder()
+    private final Setting<Alignment> alignment = sgGeneral.add(new EnumSetting.Builder<Alignment>()
+            .name("alignment")
+            .description("Horizontal alignment.")
+            .defaultValue(Alignment.Auto)
+            .build()
+    );
+
+    private final Setting<Boolean> shadow = sgGeneral.add(new BoolSetting.Builder()
+            .name("shadow")
+            .description("Renders shadow behind text.")
+            .defaultValue(true)
+            .build()
+    );
+
+    private final Setting<List<Item>> countedItems = sgGeneral.add(new ItemListSetting.Builder()
             .name("items")
             .description("Which items to display in the counter list.")
             .defaultValue(new ArrayList<>(0))
             .build()
     );
 
-
     public ItemCounter() {
         super(INFO);
     }
 
 
-    private final ArrayList<String> itemCounter = new ArrayList<>();
-    private final HashMap<Item, Integer> itemCounts = new HashMap<Item, Integer>();
+    private final Pool<CountedItem> itemPool = new Pool<>(CountedItem::new);
+    private final List<CountedItem> items = new ArrayList<>();
+
 
     @Override
     public void tick(HudRenderer renderer) {
         if (!Utils.canUpdate()) return;
 
-        updateCounter();
+        updateList(renderer);
 
         double width = 0;
         double height = 0;
-        int i = 0;
 
-        if (itemCounter.isEmpty()) {
-            String t = "Item Counter";
-            width = Math.max(width, renderer.textWidth(t));
-            height += renderer.textHeight();
+        if (items.isEmpty()) {
+            width = Math.max(width, renderer.textWidth("Item Counter"));
+            height += renderer.textHeight(shadow.get());
         } else {
-            for (String counter : itemCounter) {
-                width = Math.max(width, renderer.textWidth(counter));
-                height += renderer.textHeight();
+            double i = 0;
+            for (CountedItem item : items) {
+                width = Math.max(width, item.totalWidth);
+                height += renderer.textHeight(shadow.get());
                 if (i > 0) height += 2;
                 i++;
             }
         }
+
         box.setSize(width, height);
     }
 
@@ -77,47 +84,70 @@ public class ItemCounter extends HudElement {
     public void render(HudRenderer renderer) {
         if (!Utils.canUpdate()) return;
 
-        updateCounter();
+        updateList(renderer);
 
-        double x = this.x;
-        double y = this.y;
-        int i = 0;
-
-        if (itemCounter.isEmpty()) {
-            String t = "Item Counter";
-//            renderer.text(t, x + box.alignX(renderer.textWidth(t)), y, TextHud.getSectionColor(0), true);
+        if (items.isEmpty()) {
+            renderer.text("Item Counter", x, this.y, TextHud.getSectionColor(0), shadow.get());
         } else {
-            for (String counter: itemCounter) {
-//                renderer.text(counter, x + box.alignX(renderer.textWidth(counter)), y, TextHud.getSectionColor(0), true);
-                y += renderer.textHeight();
+            double y = this.y;
+            double i = 0;
+
+            for (CountedItem item : items) {
+                double lineWidth = renderer.textWidth(item.name + item.count);
+
+                double x = this.x + alignX(lineWidth, alignment.get());
+                x = renderer.text(item.name, x, y, TextHud.getSectionColor(0), shadow.get());
+                renderer.text(item.count, x, y, TextHud.getSectionColor(1), shadow.get());
+
+                y += renderer.textHeight(shadow.get());
                 if (i > 0) y += 2;
                 i++;
             }
         }
     }
 
+    private void updateList(HudRenderer renderer) {
+        for (CountedItem item : items) itemPool.free(item);
+        items.clear();
 
-    private void updateCounter() {
-        items.get().sort(Comparator.comparingDouble(value -> getName(value).length()));
+        for (Item item : countedItems.get()) items.add(itemPool.get().set(renderer, item));
 
-        itemCounter.clear();
-        for (Item item: items.get()) itemCounter.add(getName(item) + ": " + InvUtils.find(item).count());
+        if (sortMode.get() == SortMode.Smallest) {
+            items.sort(Comparator.comparing(item -> item.totalWidth));
+        } else items.sort(Comparator.comparing(item -> (0-item.totalWidth)));
+    }
 
-        if (sortMode.get().equals(SortMode.Shortest)) {
-            itemCounter.sort(Comparator.comparing(String::length));
-        } else {
-            itemCounter.sort(Comparator.comparing(String::length).reversed());
+    private static class CountedItem {
+        public Item item;
+        public String name;
+        public String count;
+        public double totalWidth;
+
+        public CountedItem set(HudRenderer renderer, Item i) {
+            item = i;
+            name = getName(i) + ": ";
+            count = String.valueOf(InvUtils.find(i).count());
+            totalWidth = renderer.textWidth(name + count);
+
+            return this;
         }
     }
 
     public static String getName(Item item) {
-        if (item instanceof BedItem) return "Fuck You!!!!!";
+        if (item instanceof BedItem) return "Beds";
         if (item instanceof ExperienceBottleItem) return "XP Bottles";
         if (item instanceof EndCrystalItem) return "Crystals";
         if (item instanceof EnchantedGoldenAppleItem) return "Gapples";
         if (item instanceof EnderPearlItem) return "Pearls";
+
         if (item == Items.TOTEM_OF_UNDYING) return "Totems";
         if (item == Items.ENDER_CHEST) return "Echests";
+
         return Names.get(item);
+    }
+
+    public enum SortMode {
+        Biggest,
+        Smallest
     }
 }
