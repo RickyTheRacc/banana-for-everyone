@@ -9,7 +9,6 @@ import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.player.InstaMine;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
 import meteordevelopment.meteorclient.utils.entity.SortPriority;
 import meteordevelopment.meteorclient.utils.entity.TargetUtils;
@@ -131,14 +130,6 @@ public class AutoCityPlus extends Module {
             .defaultValue(false)
             .build()
     );
-
-    private final Setting<Boolean> turnOffInstaMine = sgToggles.add(new BoolSetting.Builder()
-            .name("turn-off-instamine")
-            .description("Automatically toggles Instamine off if a block target is found.")
-            .defaultValue(false)
-            .build()
-    );
-
 
     // Targeting
     private final Setting<Double> targetRange = sgTarget.add(new DoubleSetting.Builder()
@@ -344,8 +335,6 @@ public class AutoCityPlus extends Module {
             Modules.get().get(BananaBomber.class).toggle();
         if (turnOnButtonTrap.get() && blockTarget != null && !Modules.get().get(AntiSurround.class).isActive())
             Modules.get().get(AntiSurround.class).toggle();
-        if (turnOffInstaMine.get() && blockTarget != null && Modules.get().get(InstaMine.class).isActive())
-            Modules.get().get(InstaMine.class).toggle();
 
         FindItemResult pickaxe = InvUtils.find(itemStack -> itemStack.getItem() == Items.DIAMOND_PICKAXE || itemStack.getItem() == Items.NETHERITE_PICKAXE);
 
