@@ -21,7 +21,7 @@
     "meteorclient.mixins.json",
     "minecraft.mixins.json"
   ],
-  "accessWidener": "accesswidener",
+  "accessWidener": "banana.accesswidener",
   "custom": {
     "meteor-client:color": "255,193,0"
   },
