@@ -97,7 +97,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new Presence());
 		Modules.get().add(new SkinBlinker());
 		Modules.get().add(new TimeAnimator());
-		Modules.get().add(new TPSSync());
 		Modules.get().add(new Twerk());
 		Modules.get().add(new WebNoSlow());
 
