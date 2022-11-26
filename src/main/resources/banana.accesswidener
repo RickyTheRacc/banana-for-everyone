@@ -3,7 +3,6 @@ accessWidener	v1	named
 accessible   class   net/minecraft/client/render/RenderLayer$OutlineMode
 accessible   class   net/minecraft/client/particle/FireworksSparkParticle$Explosion
 accessible   method  net/minecraft/text/TextColor <init> (I)V
-accessible   field   net/minecraft/client/network/AbstractClientPlayerEntity cachedScoreboardEntry Lnet/minecraft/client/network/PlayerListEntry;
 
 # For some retarded reason both InteractType and InteractAtHandler are needed for InteractType to be public, don't ask me why
 accessible   class   net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket$InteractType
