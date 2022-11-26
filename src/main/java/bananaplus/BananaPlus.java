@@ -88,7 +88,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AutoFollow());
 		Modules.get().add(new AutoSex());
 		Modules.get().add(new BindClickExtra());
-		Modules.get().add(new BindClickFriend());
 		Modules.get().add(new InstaMinePlus());
 		Modules.get().add(new KillEffects());
 		Modules.get().add(new MonkeFlight());
