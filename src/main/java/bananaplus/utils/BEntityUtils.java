@@ -16,7 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
-import net.minecraft.tag.FluidTags;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -81,21 +81,12 @@ public class BEntityUtils {
         }
 
         if (player.hasStatusEffect(StatusEffects.MINING_FATIGUE)) {
-            float k;
-            switch(player.getStatusEffect(StatusEffects.MINING_FATIGUE).getAmplifier()) {
-                case 0:
-                    k = 0.3F;
-                    break;
-                case 1:
-                    k = 0.09F;
-                    break;
-                case 2:
-                    k = 0.0027F;
-                    break;
-                case 3:
-                default:
-                    k = 8.1E-4F;
-            }
+            float k = switch (player.getStatusEffect(StatusEffects.MINING_FATIGUE).getAmplifier()) {
+                case 0 -> 0.3F;
+                case 1 -> 0.09F;
+                case 2 -> 0.0027F;
+                default -> 8.1E-4F;
+            };
 
             f *= k;
         }
@@ -168,9 +159,7 @@ public class BEntityUtils {
 
         for (Direction direction : Direction.values()) {
             if (direction == Direction.UP || direction == Direction.DOWN) continue;
-
             BlockPos pos = playerPos(player).offset(direction);
-
             if (isBlastResistant(pos, BlastResistantType.Mineable)) { positions.add(pos); }
         }
 
@@ -208,12 +197,6 @@ public class BEntityUtils {
         return finalPos;
     }
 
-    public static String getName(Entity entity) {
-        if (entity == null) return null;
-        if (entity instanceof PlayerEntity) return entity.getEntityName();
-        return entity.getType().getName().getString();
-    }
-
     public static BlockPos playerPos(PlayerEntity targetEntity) {
         return BWorldUtils.roundBlockPos(targetEntity.getPos());
     }
@@ -222,48 +205,34 @@ public class BEntityUtils {
         return isBlastResistant(playerPos(targetEntity).add(0, 2, 0), type);
     }
 
-    public static boolean isFaceSurrounded(PlayerEntity targetEntity, BlastResistantType type) {
-        return isBlastResistant(playerPos(targetEntity).add(1, 1, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(-1, 1, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 1, 1), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 1, -1), type);
+    public static boolean isFaceTrapped(PlayerEntity player, BlastResistantType type) {
+        BlockPos blockPos = player.getBlockPos();
+
+        for (Direction direction : Direction.values()) {
+            if (direction == Direction.UP || direction == Direction.DOWN) continue;
+            if (!isBlastResistant(blockPos, type)) return false;
+        }
+
+        return true;
     }
 
     public static boolean isBothTrapped(PlayerEntity targetEntity, BlastResistantType type) {
-        return isTopTrapped(targetEntity, type) && isFaceSurrounded(targetEntity, type);
+        return isTopTrapped(targetEntity, type) && isFaceTrapped(targetEntity, type);
     }
 
     public static boolean isAnyTrapped(PlayerEntity targetEntity, BlastResistantType type) {
-        return isTopTrapped(targetEntity, type) || isFaceSurrounded(targetEntity, type);
+        return isTopTrapped(targetEntity, type) || isFaceTrapped(targetEntity, type);
     }
 
-    public static boolean isSurrounded(PlayerEntity targetEntity, BlastResistantType type) {
-        return isBlastResistant(playerPos(targetEntity).add(1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(-1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, 1), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, -1), type);
-    }
+    public static boolean isSurrounded(PlayerEntity player, BlastResistantType type) {
+        BlockPos blockPos = player.getBlockPos();
 
-    public static boolean isSurroundBroken(PlayerEntity targetEntity, BlastResistantType type) {
-        return (!isBlastResistant(playerPos(targetEntity).add(1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(-1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, 1), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, -1), type))
+        for (Direction direction : Direction.values()) {
+            if (direction == Direction.UP || direction == Direction.DOWN) continue;
+            if (!isBlastResistant(blockPos, type)) return false;
+        }
 
-                || (isBlastResistant(playerPos(targetEntity).add(1, 0, 0), type)
-                && !isBlastResistant(playerPos(targetEntity).add(-1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, 1), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, -1), type))
-
-                || (isBlastResistant(playerPos(targetEntity).add(1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(-1, 0, 0), type)
-                && !isBlastResistant(playerPos(targetEntity).add(0, 0, 1), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, -1), type))
-
-                || (isBlastResistant(playerPos(targetEntity).add(1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(-1, 0, 0), type)
-                && isBlastResistant(playerPos(targetEntity).add(0, 0, 1), type)
-                && !isBlastResistant(playerPos(targetEntity).add(0, 0, -1), type));
+        return true;
     }
 
     public static boolean isBurrowed(PlayerEntity targetEntity, BlastResistantType type) {

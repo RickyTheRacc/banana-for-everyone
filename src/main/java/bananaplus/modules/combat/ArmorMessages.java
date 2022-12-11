@@ -8,6 +8,7 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -105,7 +106,7 @@ public class ArmorMessages extends Module {
                 if (messageI >= messages.size()) messageI = 0;
                 i = messageI++;
 
-                mc.player.sendChatMessage(messages.get(i), Text.literal(messages.get(i)));
+                ChatUtils.sendPlayerMsg(messages.get(i));
                 messages.remove(i);
 
                 timer = delay.get();

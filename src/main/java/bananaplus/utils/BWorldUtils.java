@@ -133,7 +133,7 @@ public class BWorldUtils {
     public static boolean isClickable(Block block) {
         return block instanceof CraftingTableBlock
                 || block instanceof AnvilBlock
-                || block instanceof AbstractButtonBlock
+                || block instanceof ButtonBlock
                 || block instanceof AbstractPressurePlateBlock
                 || block instanceof BlockWithEntity
                 || block instanceof BedBlock
@@ -146,11 +146,6 @@ public class BWorldUtils {
                 || block instanceof GrindstoneBlock
                 || block instanceof StonecutterBlock;
     }
-
-    public static void lookAtBlock(BlockPos blockToLookAt) {
-        rotate(calculateLookFromPlayer(blockToLookAt.getX(), blockToLookAt.getY(), blockToLookAt.getZ(), mc.player));
-    }
-
     public static void rotate(float yaw, float pitch) {
         mc.player.setYaw(yaw);
         mc.player.setPitch(pitch);

@@ -14,7 +14,6 @@ import meteordevelopment.meteorclient.systems.modules.movement.Flight;
 import meteordevelopment.meteorclient.systems.modules.movement.LongJump;
 import meteordevelopment.meteorclient.systems.modules.movement.elytrafly.ElytraFly;
 import meteordevelopment.meteorclient.systems.modules.world.Timer;
-import meteordevelopment.meteorclient.utils.misc.Vec2;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
@@ -23,6 +22,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Vector2d;
 
 import static bananaplus.utils.TimerUtils.getTPSMatch;
 
@@ -461,7 +461,7 @@ public class StrafePlus extends Module {
                 speed = Math.min(speed, System.currentTimeMillis() - timer > 1250L ? 0.44D : 0.43D);
             }
 
-            Vec2 change = transformStrafe(speed);
+            Vector2d change = transformStrafe(speed);
 
             double velX = change.x;
             double velZ = change.y;
@@ -513,7 +513,7 @@ public class StrafePlus extends Module {
             speed = Math.min(speed, System.currentTimeMillis() - timer > 1250L ? 0.44D : 0.43D);
         }
 
-        Vec2 change = transformStrafe(speed);
+        Vector2d change = transformStrafe(speed);
 
         double velX = change.x;
         double velZ = change.y;
@@ -606,14 +606,14 @@ public class StrafePlus extends Module {
         return height;
     }
 
-    private Vec2 transformStrafe(double speed) {
+    private Vector2d transformStrafe(double speed) {
         float forward = mc.player.input.movementForward;
         float side = mc.player.input.movementSideways;
         float yaw = mc.player.prevYaw + (mc.player.getYaw() - mc.player.prevYaw) * mc.getTickDelta();
 
         double velX, velZ;
 
-        if (forward == 0.0f && side == 0.0f) return new Vec2(0, 0);
+        if (forward == 0.0f && side == 0.0f) return new Vector2d(0, 0);
 
         else if (forward != 0.0f) {
             if (side >= 1.0f) {
@@ -637,6 +637,6 @@ public class StrafePlus extends Module {
         velX = (double) forward * speed * mx + (double) side * speed * mz;
         velZ = (double) forward * speed * mz - (double) side * speed * mx;
 
-        return new Vec2(velX, velZ);
+        return new Vector2d(velX, velZ);
     }
 }

@@ -28,7 +28,6 @@ import meteordevelopment.meteorclient.utils.entity.EntityUtils;
 import meteordevelopment.meteorclient.utils.entity.Target;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.Pool;
-import meteordevelopment.meteorclient.utils.misc.Vec3;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
@@ -57,6 +56,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
+import org.joml.Vector3d;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -1001,7 +1002,6 @@ public class BananaBomber extends Module {
 
     private final Vec3d vec3d = new Vec3d(0, 0, 0);
     private final Vec3d playerEyePos = new Vec3d(0, 0, 0);
-    private final Vec3 vec3 = new Vec3();
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
     private final Box box = new Box(0, 0, 0, 0, 0, 0);
 
@@ -1781,10 +1781,10 @@ public class BananaBomber extends Module {
     private void onRender2D(Render2DEvent event) {
         if (renderMode.get() == RenderMode.None|| renderTimer <= 0 || !renderDamage.get()) return;
 
-        vec3.set(renderPos.getX() + 0.5, renderPos.getY() + 0.5, renderPos.getZ() + 0.5);
+        Vector3d vec = new Vector3d(renderPos.getX() + 0.5, renderPos.getY() + 0.5, renderPos.getZ() + 0.5);
 
-        if (NametagUtils.to2D(vec3, damageScale.get())) {
-            NametagUtils.begin(vec3);
+        if (NametagUtils.to2D(vec, damageScale.get())) {
+            NametagUtils.begin(vec);
             TextRenderer.get().begin(1, false, true);
 
             String text = String.format("%.1f", damage);

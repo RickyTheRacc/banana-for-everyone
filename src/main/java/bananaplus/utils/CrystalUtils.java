@@ -3,7 +3,6 @@ package bananaplus.utils;
 import bananaplus.modules.combat.BananaBomber;
 import bananaplus.modules.combat.CevBreaker;
 import bananaplus.modules.combat.PostTickKA;
-import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.combat.KillAura;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
@@ -76,7 +75,7 @@ public class CrystalUtils {
             BlockPos pos = target.getBlockPos();
             if (BBomber.CevPause.get() && Modules.get().isActive(CevBreaker.class)) return false;
             if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class) || Modules.get().isActive(PostTickKA.class))) return false;
-            if (BEntityUtils.isFaceSurrounded(target, BEntityUtils.BlastResistantType.Any)) return false;
+            if (BEntityUtils.isFaceTrapped(target, BEntityUtils.BlastResistantType.Any)) return false;
             if (BBomber.surrHoldPause.get() && isSurroundHolding()) return false;
 
             if (crystal.getY() == pos.getY() + 1 && Math.abs(pos.getX() - crystal.getX()) <= 1 && Math.abs(pos.getZ() - crystal.getZ()) <= 1) {
@@ -124,7 +123,7 @@ public class CrystalUtils {
                         return BEntityUtils.isTopTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case FaceTrapped -> {
-                        return BEntityUtils.isFaceSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isFaceTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case Always -> {
                         return true;
@@ -200,7 +199,7 @@ public class CrystalUtils {
                         return BEntityUtils.isTopTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case FaceTrapped -> {
-                        return BEntityUtils.isFaceSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
+                        return BEntityUtils.isFaceTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                     }
                     case Always -> {
                         return true;
@@ -213,7 +212,7 @@ public class CrystalUtils {
     }
 
     public static boolean isSurroundHolding() {
-        if (BBomber.surroundHold.get() && BBomber.bestTarget != null && BEntityUtils.isSurroundBroken(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any)) {
+        if (BBomber.surroundHold.get() && BBomber.bestTarget != null && !BEntityUtils.isSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any)) {
             switch (BBomber.surroundHWhen.get()) {
                 case BothTrapped -> {
                     return BEntityUtils.isBothTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
@@ -225,7 +224,7 @@ public class CrystalUtils {
                     return BEntityUtils.isTopTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                 }
                 case FaceTrapped -> {
-                    return BEntityUtils.isFaceSurrounded(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
+                    return BEntityUtils.isFaceTrapped(BBomber.bestTarget, BEntityUtils.BlastResistantType.Any);
                 }
                 case Always -> {
                     return true;

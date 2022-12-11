@@ -1,12 +1,6 @@
 package bananaplus.utils;
 
-import meteordevelopment.meteorclient.mixin.ClientPlayerEntityAccessor;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.message.DecoratedContents;
-import net.minecraft.network.message.LastSeenMessageList;
-import net.minecraft.network.message.MessageMetadata;
-import net.minecraft.network.message.MessageSignatureData;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -14,10 +8,6 @@ import net.minecraft.util.math.Vec3d;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class BPlayerUtils {
-    public static Vec3d playerEyePos() {
-        return new Vec3d(mc.player.getX(), mc.player.getY() + mc.player.getEyeHeight(mc.player.getPose()), mc.player.getZ());
-    }
-
     public static double distanceFromEye(Entity entity) {
         double feet = distanceFromEye(entity.getX(), entity.getY(), entity.getZ());
         double head = distanceFromEye(entity.getX(), entity.getY() + entity.getHeight(), entity.getZ());
@@ -78,20 +68,5 @@ public class BPlayerUtils {
         else if (yaw >= 225 && yaw < 315) return Direction.EAST;
 
         return Direction.SOUTH;
-    }
-
-
-    // Messages
-    public static void sendMsg(String message) {
-        if (mc.player == null || message == null) return;
-        MessageMetadata metadata = MessageMetadata.of(mc.player.getUuid());
-        DecoratedContents decoratedContents = new DecoratedContents(message);
-        LastSeenMessageList.Acknowledgment acknowledgment = mc.player.networkHandler.consumeAcknowledgment();
-        MessageSignatureData messageSignatureData = ((ClientPlayerEntityAccessor) mc.player)._signChatMessage(metadata, decoratedContents, acknowledgment.lastSeen());
-        mc.player.networkHandler.sendPacket(new ChatMessageC2SPacket(decoratedContents.plain(), metadata.timestamp(), metadata.salt(), messageSignatureData, decoratedContents.isDecorated(), acknowledgment));
-    }
-
-    public static void sendDM(String name, String message) {
-        sendMsg("/msg " + name + " " +  message);
     }
 }

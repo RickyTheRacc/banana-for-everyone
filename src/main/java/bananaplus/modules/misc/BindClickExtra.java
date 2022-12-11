@@ -1,7 +1,6 @@
 package bananaplus.modules.misc;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BPlayerUtils;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.entity.player.StoppedUsingItemEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -10,6 +9,7 @@ import meteordevelopment.meteorclient.systems.friends.Friend;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
+import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
@@ -94,7 +94,7 @@ public class BindClickExtra extends Module {
 
                 if (!Friends.get().isFriend(player)) {
                     Friends.get().add(new Friend(player));
-                    if (message.get()) BPlayerUtils.sendDM(player.getEntityName(), "I just added you as a friend.");
+                    if (message.get()) ChatUtils.sendPlayerMsg("/msg" + player.getEntityName() + " I just added you as a friend.");
                 } else Friends.get().remove(Friends.get().get(player));
             } else {
                 result = InvUtils.find(mode.get().item);

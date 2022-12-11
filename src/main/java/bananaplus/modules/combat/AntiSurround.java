@@ -17,9 +17,9 @@ import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.meteorclient.utils.world.BlockUtils;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
-import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
@@ -164,7 +164,7 @@ public class AntiSurround extends Module {
             if (!isTrapped(target)) return;
         }
 
-        FindItemResult button = InvUtils.findInHotbar(itemStack -> Block.getBlockFromItem(itemStack.getItem()) instanceof AbstractButtonBlock);
+        FindItemResult button = InvUtils.findInHotbar(itemStack -> Block.getBlockFromItem(itemStack.getItem()) instanceof ButtonBlock);
         if (!button.found()) button = InvUtils.findInHotbar(Items.STRING);
         if (!button.found()) button = InvUtils.findInHotbar(Items.REDSTONE);
         // Check for enough resources
@@ -234,7 +234,7 @@ public class AntiSurround extends Module {
                 return BEntityUtils.isTopTrapped(target, BEntityUtils.BlastResistantType.NotAir);
             }
             case FaceTrapped -> {
-                return BEntityUtils.isFaceSurrounded(target, BEntityUtils.BlastResistantType.NotAir);
+                return BEntityUtils.isFaceTrapped(target, BEntityUtils.BlastResistantType.NotAir);
             }
             case Always -> {
                 return true;

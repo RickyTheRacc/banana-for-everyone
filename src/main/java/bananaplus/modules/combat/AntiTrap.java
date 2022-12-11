@@ -182,7 +182,7 @@ public class AntiTrap extends Module {
                 return BEntityUtils.isTopTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
             }
             case FaceTrapped -> {
-                return BEntityUtils.isFaceSurrounded(mc.player, BEntityUtils.BlastResistantType.Any);
+                return BEntityUtils.isFaceTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
             }
         }
 
