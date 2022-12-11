@@ -4,7 +4,7 @@
 name: Java CI with Gradle
 
 concurrency:
-  group: "build-1.19.2"
+  group: "build-1.19.3"
   cancel-in-progress: true
 
 on:
@@ -35,6 +35,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "Latest"
           prerelease: false
-          title: "1.19.2"
+          title: "1.19.3"
           files: |
             ./build/libs/*.jar
