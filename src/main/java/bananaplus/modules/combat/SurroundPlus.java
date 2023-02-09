@@ -823,12 +823,7 @@ public class SurroundPlus extends Module {
     }
 
     private void notifySurroundBreak(Direction direction, PlayerEntity player) {
-        switch (direction) {
-            case NORTH -> warning("Your north surround block is being broken by " + player.getEntityName());
-            case EAST -> warning("Your east surround block is being broken by " + player.getEntityName());
-            case SOUTH -> warning("Your south surround block is being broken by " + player.getEntityName());
-            case WEST -> warning("Your west surround block is being broken by " + player.getEntityName());
-        }
+        warning("Your " + direction.toString() + " surround block is being broken by " + player.getEntityName());
     }
 
     //Toggle
