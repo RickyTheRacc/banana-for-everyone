@@ -67,7 +67,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new MonkeBurrow());
 		Modules.get().add(new Monkhand());
 		Modules.get().add(new MonkeTotem());
-		Modules.get().add(new PostTickKA());
 		Modules.get().add(new QuiverPlus());
 		Modules.get().add(new QuiverRewrite());
 		Modules.get().add(new SelfTrapPlus());

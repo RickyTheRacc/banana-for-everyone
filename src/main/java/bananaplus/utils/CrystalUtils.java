@@ -2,7 +2,6 @@ package bananaplus.utils;
 
 import bananaplus.modules.combat.BananaBomber;
 import bananaplus.modules.combat.CevBreaker;
-import bananaplus.modules.combat.PostTickKA;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.combat.KillAura;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
@@ -74,7 +73,7 @@ public class CrystalUtils {
         for (PlayerEntity target : BBomber.targets) {
             BlockPos pos = target.getBlockPos();
             if (BBomber.CevPause.get() && Modules.get().isActive(CevBreaker.class)) return false;
-            if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class) || Modules.get().isActive(PostTickKA.class))) return false;
+            if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class))) return false;
             if (BEntityUtils.isFaceTrapped(target, BEntityUtils.BlastResistantType.Any)) return false;
             if (BBomber.surrHoldPause.get() && isSurroundHolding()) return false;
 

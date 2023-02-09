@@ -7,7 +7,6 @@
   },
   "mixins": [
     "AutoRespawnMixin",
-    "CriticalsMixin",
     "FreecamMixin",
     "SpeedMineMixin",
     "ZoomMixin"
