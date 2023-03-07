@@ -1,3 +1,5 @@
+Archiving this because I'm unlikely to work on it in any serious capacity. It was good while it lasted.
+
 <p align="center">
 <img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/logo1.png" alt="banana+-logo" width="35%"/>
 </p>
@@ -5,7 +7,7 @@
 <h1 align="center">Banana+</h1>
 
 <p align="center">Based addon for Meteor Client.</p>
-<p align="center"><i>Maintained by RickyTheRacc</i></p>
+<p align="center"><i>Formerly maintained by RickyTheRacc</i></p>
 
 ## How to Use:
 - Download and open with GitHub Desktop
