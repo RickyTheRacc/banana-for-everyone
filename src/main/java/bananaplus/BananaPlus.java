@@ -1,5 +1,6 @@
 package bananaplus;
 
+import bananaplus.gui.GlobalBPlus;
 import bananaplus.hud.*;
 import bananaplus.modules.combat.*;
 import bananaplus.modules.combat.BananaBomber;
@@ -8,9 +9,11 @@ import bananaplus.utils.*;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
+import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
 import meteordevelopment.starscript.value.ValueMap;
@@ -20,6 +23,7 @@ import org.slf4j.Logger;
 public class BananaPlus extends MeteorAddon {
 	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
    	public static final Category MISC = new Category("Banana Misc.", Items.GOLDEN_APPLE.getDefaultStack());
+	public static final Category GLOBAL = new Category("B+ Global", Items.REDSTONE.getDefaultStack());
 	public static final HudGroup HUD_GROUP = new HudGroup("Banana+");
 	public static final Logger LOG = LogUtils.getLogger();
 
@@ -79,12 +83,17 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new SkinBlinker());
 		Modules.get().add(new TimeAnimator());
 		Modules.get().add(new WebNoSlow());
+
+
+		//Tabs
+		Tabs.add(new GlobalBPlus());
 	}
 
 	@Override
 	public void onRegisterCategories() {
 	    Modules.registerCategory(COMBAT);
         Modules.registerCategory(MISC);
+		Modules.registerCategory(GLOBAL);
 	}
 
 	@Override
