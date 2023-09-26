@@ -1,11 +1,10 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.global.GlobalAntiCheat;
-import bananaplus.gui.GlobalBPlus;
+import bananaplus.enums.Anticheat;
+import bananaplus.system.BananaConfig;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;
-import bananaplus.utils.GlobalSettings;
 import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -14,7 +13,6 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.misc.Pool;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
@@ -32,7 +30,6 @@ import net.minecraft.item.EnderPearlItem;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.network.packet.s2c.play.BlockBreakingProgressS2CPacket;
 import net.minecraft.network.packet.s2c.play.DeathMessageS2CPacket;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -40,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import static bananaplus.utils.GlobalSettings.getAntiCheatType;
 
 public class SelfTrapPlus extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -560,19 +555,16 @@ public class SelfTrapPlus extends Module {
             }
 
             if (mode.get() != Mode.Side) {
-                if (getAntiCheatType() == GlobalAntiCheat.Anticheat.NoCheatPlus) {
-                    add(pos, playerPos.up(2).north());
-                    add(pos, playerPos.up(2));
-                } else
-                    add(pos, playerPos.up(2));
+                if (!BananaConfig.get().airPlace.get()) add(pos, playerPos.up(2).north());
+                add(pos, playerPos.up(2));
             }
         } else {
 
             if (mode.get() != Mode.Side) {
                 // Positions above
-                for (BlockPos dynatmicTopPos : PositionUtils.dynamicTopPos(mc.player, false)) {
-                    if (PositionUtils.dynamicTopPos(mc.player, false).contains(dynatmicTopPos)) pos.remove(dynatmicTopPos);
-                    add(pos, dynatmicTopPos);
+                for (BlockPos dynamicTopUtils : PositionUtils.dynamicTopPos(mc.player, false)) {
+                    if (PositionUtils.dynamicTopPos(mc.player, false).contains(dynamicTopUtils)) pos.remove(dynamicTopUtils);
+                    add(pos, dynamicTopUtils);
                 }
             }
 

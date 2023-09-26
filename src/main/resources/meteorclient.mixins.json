@@ -8,7 +8,7 @@
   "mixins": [
     "AutoRespawnMixin",
     "FreecamMixin",
-    "SpeedMineMixin",
+    "SystemsMixin",
     "ZoomMixin"
   ]
 }

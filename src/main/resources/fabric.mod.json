@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "bananaplus",
+  "id": "banana-plus",
   "version": "${version}",
-  "name": "Banana+",
+  "name": "Banana Plus",
   "description": "This addon is literally immortal.",
   "authors": [
     "RickyTheRacc",
