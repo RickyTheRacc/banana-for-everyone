@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 public class BananaPlus extends MeteorAddon {
 	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
    	public static final Category MISC = new Category("Banana Misc.", Items.GOLDEN_APPLE.getDefaultStack());
-	public static final Category GLOBAL = new Category("B+ Global", Items.REDSTONE.getDefaultStack());
 	public static final Category FIXED = new Category("Fixed Modules", Items.FEATHER.getDefaultStack());
 	public static final HudGroup HUD_GROUP = new HudGroup("Banana+");
 
@@ -82,8 +81,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new CevBreaker());
 		Modules.get().add(new HoleESPPlus());
 		Modules.get().add(new MonkeBurrow());
-		Modules.get().add(new Monkhand());
-		Modules.get().add(new MonkeTotem());
 		Modules.get().add(new SelfTrapPlus());
 		Modules.get().add(new SmartHoleFill());
 		Modules.get().add(new StepPlus());
@@ -93,7 +90,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new TickShift());
 
 		// Misc Modules
-		Modules.get().add(new AutoBuild());
 		Modules.get().add(new AfkLog());
 		Modules.get().add(new InstaMinePlus());
 		Modules.get().add(new KillEffects());
@@ -101,7 +97,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new Platform());
 		Modules.get().add(new Presence());
 		Modules.get().add(new SkinBlinker());
-		Modules.get().add(new TimeAnimator());
 		Modules.get().add(new WebNoSlow());
 	}
 
@@ -110,7 +105,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.registerCategory(FIXED);
 	    Modules.registerCategory(COMBAT);
         Modules.registerCategory(MISC);
-		Modules.registerCategory(GLOBAL);
 	}
 
 	@Override

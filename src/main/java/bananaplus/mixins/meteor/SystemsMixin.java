@@ -22,8 +22,8 @@ import java.util.Map;
 
 @Mixin(value = Systems.class, remap = false)
 public abstract class SystemsMixin {
-    @Final @Shadow private static Map<Class<? extends System>, System<?>> systems;
-    @Shadow private static System<?> add(System<?> system) {
+    @Final @Shadow(remap = false) private static Map<Class<? extends System>, System<?>> systems;
+    @Shadow(remap = false) private static System<?> add(System<?> system) {
         systems.put(system.getClass(), system);
         MeteorClient.EVENT_BUS.subscribe(system);
         system.init();
