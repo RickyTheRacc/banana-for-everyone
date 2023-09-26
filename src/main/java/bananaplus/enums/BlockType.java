@@ -13,7 +13,7 @@ public enum BlockType {
     // Any block that would prevent explosion damage. even if it could break
     NotEmpty;
 
-    public boolean isResistant(BlockPos pos) {
+    public boolean resists(BlockPos pos) {
         BlockState state = mc.world.getBlockState(pos);
         return switch (this) {
             case Hardness -> state.getBlock().getHardness() < 0;
