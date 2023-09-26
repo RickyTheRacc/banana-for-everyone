@@ -1,10 +1,7 @@
 package bananaplus.system;
 
 import bananaplus.BananaPlus;
-import bananaplus.enums.Anticheat;
 import bananaplus.enums.SwitchMode;
-import bananaplus.utils.BWorldUtils;
-import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;

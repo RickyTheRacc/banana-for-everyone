@@ -1,7 +1,6 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.enums.Anticheat;
 import bananaplus.system.BananaConfig;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;

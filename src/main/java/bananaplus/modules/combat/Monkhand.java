@@ -157,14 +157,6 @@ public class Monkhand extends Module {
 
     // Misc
 
-    private final Setting<Boolean> xpOnXP = sgMisc.add(new BoolSetting.Builder()
-            .name("XP-on-XP-thrower")
-            .description("Holds experience bottles if Auto XP is being used.")
-            .defaultValue(false)
-            .visible(() -> !Modules.get().get(XPThrower.class).replenish.get())
-            .build()
-    );
-
     private final Setting<Boolean> rocketBow = sgMisc.add(new BoolSetting.Builder()
             .name("crossbow-rocket")
             .description("Holds a rocket if you are holding a crossbow.")
@@ -196,7 +188,6 @@ public class Monkhand extends Module {
         Modules modules = Modules.get();
         AutoTotem autoTotem = modules.get(AutoTotem.class);
         MonkeTotem monkeTotem = modules.get(MonkeTotem.class);
-        XPThrower xpthrower = modules.get(XPThrower.class);
 
         // Swap
         if (allowSwap.get()){
@@ -228,9 +219,6 @@ public class Monkhand extends Module {
         // Gapples
         if (mainHand instanceof SwordItem && swordGap.get() && allowGap()) currentItem = Item.EGap;
         else if (mainHand instanceof AxeItem && axeGap.get() && allowGap()) currentItem = Item.EGap;
-
-        // Xp
-        else if (xpOnXP.get() && xpthrower.isActive() && (!xpthrower.isRepaired() || xpthrower.justThrow.get()) && !xpthrower.replenish.get() && xpthrower.throwBind.get().isPressed()) currentItem = Item.Exp;
 
         // Crystals
         else if ((modules.isActive(CrystalAura.class) && crystalCa.get() || modules.isActive(BananaBomber.class) && crystalCa.get())

@@ -1,6 +1,8 @@
 package bananaplus;
 
 import bananaplus.fixed.combat.ArmorAlerts;
+import bananaplus.fixed.combat.BurrowESP;
+import bananaplus.fixed.combat.MonkeHand;
 import bananaplus.system.BananaTab;
 import bananaplus.fixed.combat.XPThrower;
 import bananaplus.hud.*;
@@ -69,13 +71,14 @@ public class BananaPlus extends MeteorAddon {
 
 		// Fixed Modules
 		Modules.get().add(new ArmorAlerts());
+		Modules.get().add(new BurrowESP());
+		Modules.get().add(new MonkeHand());
 		Modules.get().add(new XPThrower());
 
 		// Combat Modules
 		Modules.get().add(new AutoTrapPlus());
 		Modules.get().add(new AnchorPlus());
 		Modules.get().add(new AntiTrap());
-		Modules.get().add(new BurrowESP());
 		Modules.get().add(new AntiSurround());
 		Modules.get().add(new BananaBomber());
 		Modules.get().add(new CevBreaker());
@@ -93,10 +96,8 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AfkLog());
 		Modules.get().add(new InstaMinePlus());
 		Modules.get().add(new KillEffects());
-		Modules.get().add(new OneClickEat());
 		Modules.get().add(new Platform());
 		Modules.get().add(new Presence());
-		Modules.get().add(new SkinBlinker());
 		Modules.get().add(new WebNoSlow());
 	}
 

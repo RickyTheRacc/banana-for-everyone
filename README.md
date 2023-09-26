@@ -1,37 +1,22 @@
-Archiving this because I'm unlikely to work on it in any serious capacity. It was good while it lasted.
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/logo1.png" alt="banana+-logo" width="35%"/>
+<p style="text-align:center">
+    <img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/logo1.png" alt="banana+-logo" width="35%">
 </p>
 
-<h1 align="center">Banana+</h1>
+<h1 style="text-align:center">Banana+</h1>
+<p style="text-align:center">Based addon for Meteor Client.</p>
+<p style="text-align:center"><i>Formerly maintained by RickyTheRacc</i></p>
 
-<p align="center">Based addon for Meteor Client.</p>
-<p align="center"><i>Formerly maintained by RickyTheRacc</i></p>
+<h1>How to Use</h1>
+<ul>
+    <li>Clone the repo with any Git client</li>
+    <li>Open the project through your IDE</li>
+    <li>Run the gradle build task and wait</li>
+    <li>Use the jar from the build/libs folder</li>
+</ul>
+<i>You can also use the manually released builds, but I heard this Cryto guy put a rat in those so it's probably better to build your own :3</i>
 
-## How to Use:
-- Download and open with GitHub Desktop
-- Open the project through IntelliJ
-- Run the gradle `build` task and wait
-- Use the jar from the `build/libs` folder
-
-*You can also find automatically built jars in the releases tab after every commit!*
-<br>
-<br>
-## End of Life
-After almost a year and a half of updates, Banana+ has finally reached the end of active development. The addon will be kept available for the latest dev build while Ricky reaches out to AntiCope about giving them the code, but there will be no future updates to the client itself.
-<br>
-<br>
-## Personal Note From Ben:
-This started off as a passion project just for me and Necro, and I think it’s insane how far this actually went. From a meteor prefix to a skid to finally a masterpiece. Thank you all for supporting this project, shits unreal! Sad that this shit happened tho.
-
-B+ on top, All love <3 -ben
-<br>
-<br>
-## Credits
-Creators (retired): [Bennooo](https://github.com/Bennooo) , [RickyTheRacc](https://github.com/RickyTheRacc), Necro <br>
-Packet Fly used with permission from [Cally72jhb](https://github.com/cally72jhb)<br>
-[Meteor Development](https://github.com/MeteorDevelopment) for [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)<br>
-The [Fabric Team](https://github.com/FabricMC) for [Fabric](https://github.com/FabricMC/fabric-loader) and [Yarn](https://github.com/FabricMC/yarn)
-
-Licensed under GPL v3.0
+<h1>Credits</h1>
+<a href="https://github.com/Bennooo">Bennoo</a> and Necro for making Banana+ <br>
+<a href="https://github.com/MeteorDevelopment">Meteor Development</a> for <a href="https://github.com/MeteorDevelopment/meteor-client">Meteor Client</a> <br>
+<a href="https://github.com/FabricMC">Fabric Team</a> for <a href="https://github.com/FabricMC/fabric-loader">Fabric</a> and <a href="https://github.com/FabricMC/yarn">Yarn</a>
+<p>Licensed under GPL 3.0</p>

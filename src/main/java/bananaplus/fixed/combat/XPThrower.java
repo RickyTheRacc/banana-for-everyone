@@ -27,99 +27,91 @@ public class XPThrower extends Module {
     // General
 
     public final Setting<Keybind> throwBind = sgGeneral.add(new KeybindSetting.Builder()
-            .name("keybind")
-            .description("The keybind to throw XP.")
-            .defaultValue(Keybind.none())
-            .build()
+        .name("keybind")
+        .description("The keybind to throw XP.")
+        .defaultValue(Keybind.none())
+        .build()
     );
 
     private final Setting<Integer> threshold = sgGeneral.add(new IntSetting.Builder()
-            .name("threshold")
-            .description("The maximum durability to repair items to.")
-            .defaultValue(80)
-            .range(1,99)
-            .sliderRange(1,99)
-            .build()
+        .name("threshold")
+        .description("The maximum durability to repair items to.")
+        .defaultValue(80)
+        .range(1,99)
+        .sliderRange(1,99)
+        .build()
     );
 
     // Throwing
 
     private final Setting<Integer> throwDelay = sgThrowing.add(new IntSetting.Builder()
-            .name("throw-delay")
-            .description("How fast to throw XP.")
-            .defaultValue(1)
-            .range(0,20)
-            .sliderRange(0,20)
-            .build()
+        .name("throw-delay")
+        .description("How fast to throw XP.")
+        .defaultValue(1)
+        .range(0,20)
+        .sliderRange(0,20)
+        .build()
     );
 
     private final Setting<SwitchMode> switchMode = sgThrowing.add(new EnumSetting.Builder<SwitchMode>()
-            .name("switch-mode")
-            .description("How to switch to the XP.")
-            .defaultValue(SwitchMode.Silent)
-            .build()
+        .name("switch-mode")
+        .description("How to switch to the XP.")
+        .defaultValue(SwitchMode.Silent)
+        .build()
     );
 
     private final Setting<Boolean> noGapSwitch = sgSafety.add(new BoolSetting.Builder()
-            .name("no-gap-switch")
-            .description("Whether to switch to XP if you're holding a gap.")
-            .defaultValue(true)
-            .visible(() -> switchMode.get() == SwitchMode.Normal)
-            .build()
+        .name("no-gap-switch")
+        .description("Whether to switch to XP if you're holding a gap.")
+        .defaultValue(true)
+        .visible(() -> switchMode.get() == SwitchMode.Normal)
+        .build()
     );
 
     private final Setting<Boolean> lookDown = sgThrowing.add(new BoolSetting.Builder()
-            .name("look-down")
-            .description("Forces you to rotate downwards when throwing XP.")
-            .defaultValue(true)
-            .build()
+        .name("look-down")
+        .description("Forces you to rotate downwards when throwing XP.")
+        .defaultValue(true)
+        .build()
     );
 
     // Safety
 
     private final Setting<Boolean> onlyOnGround = sgSafety.add(new BoolSetting.Builder()
-            .name("only-on-ground")
-            .description("Only activate when you are on the ground.")
-            .defaultValue(true)
-            .build()
+        .name("only-on-ground")
+        .description("Only activate when you are on the ground.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Boolean> onlyInHole = sgSafety.add(new BoolSetting.Builder()
-            .name("only-in-hole")
-            .description("Only activate when you are in a hole.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> dynamic = sgSafety.add(new BoolSetting.Builder()
-            .name("dynamic")
-            .description("Allow holes of other sizes than 1x1.")
-            .defaultValue(true)
-            .visible(onlyInHole::get)
-            .build()
+        .name("only-in-hole")
+        .description("Only activate when you are in a hole.")
+        .defaultValue(false)
+        .build()
     );
 
     private final Setting<Boolean> usePause = sgSafety.add(new BoolSetting.Builder()
-            .name("pause-on-use")
-            .description("Whether to pause while using an item.")
-            .defaultValue(true)
-            .build()
+        .name("pause-on-use")
+        .description("Whether to pause while using an item.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Boolean> minePause = sgSafety.add(new BoolSetting.Builder()
-            .name("pause-on-mine")
-            .description("Whether to pause while eating.")
-            .defaultValue(false)
-            .build()
+        .name("pause-on-mine")
+        .description("Whether to pause while eating.")
+        .defaultValue(false)
+        .build()
     );
 
     private final Setting<Double> minHealth = sgSafety.add(new DoubleSetting.Builder()
-            .name("min-health")
-            .description("How much health you must have to throw XP.")
-            .defaultValue(10)
-            .range(1,36)
-            .sliderRange(1,36)
-            .build()
+        .name("min-health")
+        .description("How much health you must have to throw XP.")
+        .defaultValue(10)
+        .range(1,36)
+        .sliderRange(1,36)
+        .build()
     );
 
     public XPThrower() {
@@ -182,7 +174,7 @@ public class XPThrower extends Module {
         if (minePause.get() && mc.interactionManager.isBreakingBlock()) return true;
 
         if (onlyOnGround.get() && !mc.player.isOnGround()) return true;
-        return (onlyInHole.get() && BEntityUtils.isInHole(mc.player, dynamic.get(), BEntityUtils.BlastResistantType.Any));
+        return (onlyInHole.get() && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any));
     }
 
     private boolean isRepaired(ItemStack stack) {

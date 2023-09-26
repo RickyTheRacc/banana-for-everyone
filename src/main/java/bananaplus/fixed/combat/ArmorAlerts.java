@@ -26,40 +26,33 @@ public class ArmorAlerts extends Module {
     // General
 
     private final Setting<Integer> threshold = sgGeneral.add(new IntSetting.Builder()
-            .name("threshold")
-            .description("Notify you when your armor reaches this durability.")
-            .defaultValue(20)
-            .range(1,99)
-            .sliderRange(1,99)
-            .build()
+        .name("threshold")
+        .description("Notify you when your armor reaches this durability.")
+        .defaultValue(20)
+        .range(1,99)
+        .sliderRange(1,99)
+        .build()
     );
 
     private final Setting<Boolean> notifySelf = sgGeneral.add(new BoolSetting.Builder()
-            .name("notify-self")
-            .description("Send warnings about your own armor.")
-            .defaultValue(true)
-            .build()
-    );
-
-    private final Setting<Boolean> notifyFriends = sgGeneral.add(new BoolSetting.Builder()
-            .name("notify-friends")
-            .description("Send warnings about your friend's armor.")
-            .defaultValue(true)
-            .build()
+        .name("notify-self")
+        .description("Send warnings about your own armor.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Boolean> notifyEnemies = sgGeneral.add(new BoolSetting.Builder()
-            .name("notify-enemies")
-            .description("Send warnings about your enemy's armor.")
-            .defaultValue(true)
-            .build()
+        .name("notify-enemies")
+        .description("Send warnings about your enemy's armor.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Boolean> playSound = sgGeneral.add(new BoolSetting.Builder()
-            .name("play-sound")
-            .description("Plays a ding sound to alert you.")
-            .defaultValue(true)
-            .build()
+        .name("play-sound")
+        .description("Plays a ding sound to alert you.")
+        .defaultValue(true)
+        .build()
     );
 
     public ArmorAlerts() {
@@ -73,7 +66,7 @@ public class ArmorAlerts extends Module {
 
     private boolean shouldPlaySound = false;
     private final SoundInstance sound = PositionedSoundInstance.master(
-            SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1.2f, 1.5f
+        SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1.2f, 1.5f
     );
 
     @Override
@@ -90,8 +83,8 @@ public class ArmorAlerts extends Module {
         shouldPlaySound = false;
 
         for (PlayerEntity player: mc.world.getPlayers()) {
+            if (Friends.get().isFriend(player)) continue;
             if (!notifySelf.get() && player == mc.player) continue;
-            if (!notifyFriends.get() && Friends.get().isFriend(player)) continue;
             if (!notifyEnemies.get() && !Friends.get().isFriend(player)) continue;
 
             for (int i = 0; i < 4; i++) {
