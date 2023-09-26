@@ -70,7 +70,6 @@ public class BananaPlus extends MeteorAddon {
 		// Misc Modules
 		Modules.get().add(new AutoBuild());
 		Modules.get().add(new AfkLog());
-		Modules.get().add(new BindClickExtra());
 		Modules.get().add(new InstaMinePlus());
 		Modules.get().add(new KillEffects());
 		Modules.get().add(new OneClickEat());
@@ -79,7 +78,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new Presence());
 		Modules.get().add(new SkinBlinker());
 		Modules.get().add(new TimeAnimator());
-		Modules.get().add(new Twerk());
 		Modules.get().add(new WebNoSlow());
 	}
 
