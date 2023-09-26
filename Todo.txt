@@ -1,15 +1,9 @@
-Ben's List
-- add old animations 
-- auto city ready progress and enum switcher (rewrite?)
-- put all the other features in sniper in (maybe)
-- rgb logo (hmmm)
-- whois protection (for website)
-- add back auto ez
-- make a render utils and apply it for everything (fade, shrink and something else)
-
-
 Ricky's List
-- Combine middle click friend and extra
-- Make kill and pop manager modules
-- Fix anti surround toggling off and make it use other blocks
-- Finish Quiver Plus
+- Global events for pops, join/leave
+- Improve nametags somehow hopefully
+- Rewrite offhand (in progress)
+- Rewrite surround buster
+- Interaction manager thing for placing, breaking crystals etc
+
+Cryto's List
+- Guh?
