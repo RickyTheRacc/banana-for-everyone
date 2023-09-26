@@ -1,6 +1,8 @@
 package bananaplus.system;
 
 import bananaplus.BananaPlus;
+import bananaplus.enums.Anticheat;
+import bananaplus.enums.SwingMode;
 import bananaplus.enums.SwitchMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
@@ -15,7 +17,6 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Vector3d;
-import org.joml.Vector3dc;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -24,8 +25,8 @@ public class BananaConfig extends System<BananaConfig> {
 
     private final SettingGroup sgPrefix = settings.createGroup("Prefix");
     private final SettingGroup sgText = settings.createGroup("3D Text");
+    private final SettingGroup sgAnticheat = settings.createGroup("Anticheat");
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
-    private final SettingGroup sgMining = settings.createGroup("Mining");
     private final SettingGroup sgCrystals = settings.createGroup("Crystals");
     
     // Prefix
@@ -34,7 +35,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("banana+-prefix")
         .description("What prefix to use for Banana+ modules.")
         .defaultValue("Banana+")
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .build()
     );
 
@@ -42,7 +43,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("prefix-color")
         .description("Color display for the prefix.")
         .defaultValue(new SettingColor(255,193,0,255))
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .build()
     );
 
@@ -50,7 +51,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("prefix-format")
         .description("What type of minecraft formatting should be applied to the prefix.")
         .defaultValue(Format.Normal)
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .build()
     );
 
@@ -58,7 +59,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("format-brackets")
         .description("Whether the formatting should apply to the brackets as well.")
         .visible(() -> prefixFormat.get() != Format.Normal)
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .defaultValue(true)
         .build()
     );
@@ -67,7 +68,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("left-bracket")
         .description("What to be displayed as left bracket for the prefix.")
         .defaultValue("[")
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .build()
     );
 
@@ -75,7 +76,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("right-bracket")
         .description("What to be displayed as right bracket for the prefix.")
         .defaultValue("]")
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .build()
     );
 
@@ -83,7 +84,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("left-color")
         .description("Color display for the left bracket.")
         .defaultValue(new SettingColor(150,150,150,255))
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .build()
     );
 
@@ -91,7 +92,7 @@ public class BananaConfig extends System<BananaConfig> {
         .name("right-color")
         .description("Color display for the right bracket.")
         .defaultValue(new SettingColor(150,150,150,255))
-        .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .onChanged(cope -> ChatUtils.registerCustomPrefix("bananaplus", this::getPrefix))
         .build()
     );
 
@@ -127,15 +128,58 @@ public class BananaConfig extends System<BananaConfig> {
         .range(0.1,5)
         .build()
     );
-    
-    // Placing
 
-    private final Setting<SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<SwitchMode>()
+    // Anticheat
+    private final Setting<Anticheat> anticheat = sgAnticheat.add(new EnumSetting.Builder<Anticheat>()
+        .name("anticheat")
+        .description("Which anticheat the server uses.")
+        .defaultValue(Anticheat.Nocheat)
+        .build()
+    );
+
+    private final Setting<SwitchMode> switchMode = sgAnticheat.add(new EnumSetting.Builder<SwitchMode>()
         .name("switch-mode")
-        .description("How to switch to your target block.")
+        .description("How to switch slots.")
         .defaultValue(SwitchMode.Silent)
         .build()
     );
+
+    private final Setting<SwingMode> swingMode = sgAnticheat.add(new EnumSetting.Builder<SwingMode>()
+        .name("swing-mode")
+        .description("How to swing your hand when performing actions.")
+        .defaultValue(SwingMode.Both)
+        .build()
+    );
+
+    public final Setting<Boolean> blockRaytrace = sgAnticheat.add(new BoolSetting.Builder()
+        .name("block-raytrace")
+        .description("Only interact with blocks you can see.")
+        .defaultValue(false)
+        .build()
+    );
+
+    public final Setting<Boolean> entityRaytrace = sgAnticheat.add(new BoolSetting.Builder()
+        .name("entity-raytrace")
+        .description("Only interact with entities you can see.")
+        .defaultValue(false)
+        .build()
+    );
+
+    public final Setting<Boolean> blockRotate = sgAnticheat.add(new BoolSetting.Builder()
+        .name("block-rotate")
+        .description("Rotate towards blocks you're interacting with.")
+        .defaultValue(false)
+        .build()
+    );
+
+    public final Setting<Boolean> entityRotate = sgAnticheat.add(new BoolSetting.Builder()
+        .name("entity-rotate")
+        .description("Rotate towards entities you're interacting with.")
+        .defaultValue(false)
+        .build()
+    );
+    
+    // Placing
 
     public final Setting<Integer> placeDelay = sgPlacing.add(new IntSetting.Builder()
         .name("place-delay")
@@ -159,36 +203,6 @@ public class BananaConfig extends System<BananaConfig> {
         .name("air-place")
         .description("Whether to place blocks mid air or not.")
         .defaultValue(true)
-        .build()
-    );
-
-    public final Setting<Boolean> pRaytrace = sgPlacing.add(new BoolSetting.Builder()
-        .name("raytrace")
-        .description("Only allow placements at positions you can see.")
-        .defaultValue(false)
-        .build()
-    );
-
-    public final Setting<Boolean> pRotate = sgPlacing.add(new BoolSetting.Builder()
-        .name("rotate")
-        .description("Rotate towards the blocks you're placing.")
-        .defaultValue(false)
-        .build()
-    );
-    
-    // Mining
-
-    public final Setting<Boolean> mRaytrace = sgMining.add(new BoolSetting.Builder()
-        .name("raytrace")
-        .description("Only allow placements at positions you can see.")
-        .defaultValue(false)
-        .build()
-    );
-
-    public final Setting<Boolean> mRotate = sgMining.add(new BoolSetting.Builder()
-        .name("rotate")
-        .description("Rotate towards the blocks you're placing.")
-        .defaultValue(false)
         .build()
     );
     
@@ -216,27 +230,6 @@ public class BananaConfig extends System<BananaConfig> {
         .name("hitboxes")
         .description("Attack crystals at the closest point in their hitbox instead of the center.")
         .defaultValue(true)
-        .build()
-    );
-
-    public final Setting<Boolean> cPlaceRayTrace = sgCrystals.add(new BoolSetting.Builder()
-        .name("place-raytrace")
-        .description("Only allow placing crystals at positions you can see.")
-        .defaultValue(false)
-        .build()
-    );
-
-    public final Setting<Boolean> cBreakRayTrace = sgCrystals.add(new BoolSetting.Builder()
-        .name("break-raytrace")
-        .description("Only allow breaking crystals at positions you can see.")
-        .defaultValue(false)
-        .build()
-    );
-
-    public final Setting<Boolean> cRotate = sgCrystals.add(new BoolSetting.Builder()
-        .name("rotate")
-        .description("Rotate towards the blocks you're placing.")
-        .defaultValue(false)
         .build()
     );
 
