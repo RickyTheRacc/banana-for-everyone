@@ -137,14 +137,14 @@ public class BananaConfig extends System<BananaConfig> {
             .build()
     );
 
-    private final Setting<SwitchMode> switchMode = sgAnticheat.add(new EnumSetting.Builder<SwitchMode>()
+    public final Setting<SwitchMode> switchMode = sgAnticheat.add(new EnumSetting.Builder<SwitchMode>()
         .name("switch-mode")
         .description("How to switch slots.")
         .defaultValue(SwitchMode.Silent)
         .build()
     );
 
-    private final Setting<SwingMode> swingMode = sgAnticheat.add(new EnumSetting.Builder<SwingMode>()
+    public final Setting<SwingMode> swingMode = sgAnticheat.add(new EnumSetting.Builder<SwingMode>()
         .name("swing-mode")
         .description("How to swing your hand when performing actions.")
         .defaultValue(SwingMode.Both)
