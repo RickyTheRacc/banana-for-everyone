@@ -9,19 +9,9 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.render.entity.PlayerModelPart;
 
 public class SkinBlinker extends Module {
-    public enum Mode {
-        Sequential,
-        Individual
-    }
-
-    public enum SequentialMode {
-        On,
-        Off
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+    // General
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
@@ -297,5 +287,15 @@ public class SkinBlinker extends Module {
     private boolean legs() {
         if (seqMode.get() == SequentialMode.Off) return ticksPassed <= sequentialDelay.get() * 4;
         else return ticksPassed > sequentialDelay.get() * 4;
+    }
+
+    public enum Mode {
+        Sequential,
+        Individual
+    }
+
+    public enum SequentialMode {
+        On,
+        Off
     }
 }

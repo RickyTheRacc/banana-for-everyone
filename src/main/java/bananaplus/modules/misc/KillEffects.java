@@ -17,8 +17,8 @@ import static bananaplus.utils.BEntityUtils.isDeathPacket;
 public class KillEffects extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<Integer> range = sgGeneral.add(new IntSetting.Builder()
             .name("range")
             .description("How far away the lightning is allowed to spawn from you.")
@@ -34,11 +34,9 @@ public class KillEffects extends Module {
             .build()
     );
 
-
     public KillEffects() {
         super(BananaPlus.MISC, "kill-effects", "Spawns a lightning where a player dies.");
     }
-
 
     @EventHandler
     private void onReceivePacket(PacketEvent.Receive event) {

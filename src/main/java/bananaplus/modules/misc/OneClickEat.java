@@ -32,7 +32,6 @@ import java.util.List;
 public class OneClickEat extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
     private final Setting<List<Item>> foodList = sgGeneral.add(new ItemListSetting.Builder()
             .name("white-list")
@@ -55,15 +54,12 @@ public class OneClickEat extends Module {
             .build()
     );
 
-
     public OneClickEat() {
         super(BananaPlus.MISC, "one-click-eat", "Allows you to eat a consumable with one click.");
     }
 
     private boolean isUsing;
     private boolean pressed;
-
-    private Item currentItem;
 
     private boolean isPotato() {
         return mc.player.getMainHandStack().getItem() == Items.POTATO || mc.player.getOffHandStack().getItem() == Items.POTATO;
@@ -232,9 +228,6 @@ public class OneClickEat extends Module {
                         if (canChangeBlock(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
                         if (canPlaceCrystal(((BlockHitResult) mc.crosshairTarget).getBlockPos())) return;
                     }
-
-
-                    if (mc.player.getOffHandStack().getItem() != currentItem) stopIfUsing();
 
                     eat();
                 }

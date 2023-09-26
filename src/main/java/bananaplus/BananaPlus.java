@@ -1,5 +1,6 @@
 package bananaplus;
 
+import bananaplus.fixed.combat.ArmorAlerts;
 import bananaplus.gui.GlobalBPlus;
 import bananaplus.hud.*;
 import bananaplus.modules.combat.*;
@@ -24,6 +25,7 @@ public class BananaPlus extends MeteorAddon {
 	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
    	public static final Category MISC = new Category("Banana Misc.", Items.GOLDEN_APPLE.getDefaultStack());
 	public static final Category GLOBAL = new Category("B+ Global", Items.REDSTONE.getDefaultStack());
+	public static final Category FIXED = new Category("Fixed Modules", Items.FEATHER.getDefaultStack());
 	public static final HudGroup HUD_GROUP = new HudGroup("Banana+");
 	public static final Logger LOG = LogUtils.getLogger();
 
@@ -48,8 +50,10 @@ public class BananaPlus extends MeteorAddon {
 		Hud.get().register(WelcomeHud.INFO);
 		Hud.get().register(TextPresets.INFO);
 
+		// Fixed Modules
+		Modules.get().add(new ArmorAlerts());
+
 		// Combat Modules
-		Modules.get().add(new ArmorMessages());
 		Modules.get().add(new AutoTrapPlus());
 		Modules.get().add(new XPThrower());
 		Modules.get().add(new AnchorPlus());
@@ -58,7 +62,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AntiSurround());
 		Modules.get().add(new BananaBomber());
 		Modules.get().add(new CevBreaker());
-		Modules.get().add(new CityESPPlus());
 		Modules.get().add(new HoleESPPlus());
 		Modules.get().add(new MonkeBurrow());
 		Modules.get().add(new Monkhand());
@@ -91,6 +94,7 @@ public class BananaPlus extends MeteorAddon {
 
 	@Override
 	public void onRegisterCategories() {
+		Modules.registerCategory(FIXED);
 	    Modules.registerCategory(COMBAT);
         Modules.registerCategory(MISC);
 		Modules.registerCategory(GLOBAL);

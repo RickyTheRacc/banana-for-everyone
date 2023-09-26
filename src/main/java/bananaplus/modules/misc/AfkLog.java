@@ -15,8 +15,8 @@ import net.minecraft.text.Text;
 public class AfkLog extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<Dimension> dimension = sgGeneral.add(new EnumSetting.Builder<Dimension>()
             .name("dimension")
             .description("Dimension for the coords.")
@@ -67,11 +67,9 @@ public class AfkLog extends Module {
             .build()
     );
 
-
     public AfkLog() {
         super(BananaPlus.MISC, "afk-log", "Logs out when you are at a certain coords for afk travelling.");
     }
-
 
     @EventHandler
     private void onTick(TickEvent.Post event) {

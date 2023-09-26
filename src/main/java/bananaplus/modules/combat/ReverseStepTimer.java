@@ -13,15 +13,9 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.BlockPos;
 
 public class ReverseStepTimer extends Module {
-    public enum Mode {
-        Timer,
-        Packet,
-        Both
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+    // General
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
@@ -54,15 +48,12 @@ public class ReverseStepTimer extends Module {
             .build()
     );
 
-
     public ReverseStepTimer() {
         super(BananaPlus.COMBAT, "reverse-step+", "Tries to bypass strict anticheats for reverse step.");
     }
 
-
     private int fallTicks;
     private final TimerUtils strictTimer = new TimerUtils();
-
 
     @EventHandler
     private void onMove(PlayerMoveEvent event) {
@@ -124,4 +115,13 @@ public class ReverseStepTimer extends Module {
 
         if (mode.get() != Mode.Packet) Modules.get().get(Timer.class).setOverride(Timer.OFF);
     }
+
+    public enum Mode {
+        Timer,
+        Packet,
+        Both
+    }
+
+
+
 }

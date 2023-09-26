@@ -25,8 +25,8 @@ public class InstaMinePlus extends Module {
     private final SettingGroup sgDelay = settings.createGroup("Delays");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // General
+
     private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug")
             .defaultValue(false)
@@ -55,8 +55,8 @@ public class InstaMinePlus extends Module {
             .build()
     );
 
-
     // Delays
+
     private final Setting<Integer> bypassDelay = sgDelay.add(new IntSetting.Builder()
             .name("bypass delay")
             .description("The delay between breaks for bypass mode.")
@@ -93,8 +93,8 @@ public class InstaMinePlus extends Module {
             .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
             .name("render")
             .description("Renders a block overlay on the block being broken.")
@@ -123,11 +123,9 @@ public class InstaMinePlus extends Module {
             .build()
     );
 
-
     public InstaMinePlus() {
         super(BananaPlus.MISC, "insta-mine+", "Attempts to bypass instant mine.");
     }
-
 
     private int ticksPassed;
     private int ticks;
@@ -137,7 +135,6 @@ public class InstaMinePlus extends Module {
 
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable(0, -1, 0);
     private Direction direction;
-
 
     @Override
     public void onActivate() {

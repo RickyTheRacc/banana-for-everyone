@@ -30,19 +30,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AutoBuild extends Module {
-    public enum CenterMode {
-        Center,
-        Snap,
-        None
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
 
-
     // General
+
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("primary-blocks")
             .description("What blocks to use for the build.")
@@ -89,8 +82,8 @@ public class AutoBuild extends Module {
             .build()
     );
 
-
     // Placing
+
     private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
@@ -158,8 +151,8 @@ public class AutoBuild extends Module {
             .build()
     );
 
-
     // Toggles
+
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-y-change")
             .description("Automatically disables when your Y level changes.")
@@ -174,12 +167,9 @@ public class AutoBuild extends Module {
             .build()
     );
 
-
     public AutoBuild() {
         super(BananaPlus.MISC, "auto-build", "Build whatever you draw.");
     }
-
-    //TODO: Clean this upp maybe and make the grid nicer with a header and stuff.
 
     boolean ett = false, tva = true, tree = true, fyra = false, fem = false;
     boolean ett1 = false,tva1 = true, tree1 = false, fyra1 = true, fem1 = false;
@@ -421,5 +411,11 @@ public class AutoBuild extends Module {
                 toggle();
             }
         }
+    }
+
+    public enum CenterMode {
+        Center,
+        Snap,
+        None
     }
 }

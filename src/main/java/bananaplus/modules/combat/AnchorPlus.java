@@ -20,8 +20,8 @@ import java.util.List;
 public class AnchorPlus extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<Integer> maxHeight = sgGeneral.add(new IntSetting.Builder()
             .name("max-height")
             .description("The maximum height Anchor will work at.")
@@ -131,11 +131,9 @@ public class AnchorPlus extends Module {
             .build()
     );
 
-
     public AnchorPlus() {
         super(BananaPlus.COMBAT, "anchor+", "Helps you get into holes by stopping your movement completely over a hole.");
     }
-
 
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
     private boolean wasInHole;

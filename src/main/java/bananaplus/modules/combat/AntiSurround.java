@@ -30,20 +30,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class AntiSurround extends Module {
-    public enum TrapType {
-        BothTrapped,
-        AnyTrapped,
-        TopTrapped,
-        FaceTrapped,
-        Always
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // General
+
     private final Setting<Double> targetRange = sgGeneral.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("The radius players can be in to be targeted.")
@@ -99,8 +90,8 @@ public class AntiSurround extends Module {
             .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders your swing client-side.")
@@ -248,4 +239,15 @@ public class AntiSurround extends Module {
     public String getInfoString() {
         return EntityUtils.getName(target);
     }
+
+    public enum TrapType {
+        BothTrapped,
+        AnyTrapped,
+        TopTrapped,
+        FaceTrapped,
+        Always
+    }
+
+
+
 }

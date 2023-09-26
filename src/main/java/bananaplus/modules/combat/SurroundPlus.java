@@ -38,36 +38,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SurroundPlus extends Module {
-    public enum Mode {
-        Normal,
-        Russian,
-        Autist
-    }
-
-    public enum CenterMode {
-        Center,
-        Snap,
-        None
-    }
-
-    public enum AntiCityMode {
-        Smart,
-        All,
-        None
-    }
-
-    public enum AntiCityShape {
-        Russian,
-        Autist,
-    }
-
-    public enum RenderMode {
-        None,
-        Normal,
-        Place,
-        Both
-    }
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgAntiCity = settings.createGroup("Anti City");
@@ -75,8 +45,8 @@ public class SurroundPlus extends Module {
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    
     // General
+
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("primary-blocks")
             .description("What blocks to use for Surround+.")
@@ -168,8 +138,8 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-
     // Placing
+
     private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
@@ -237,8 +207,8 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-
     // Anti City
+
     private final Setting<Boolean> notifyBreak = sgAntiCity.add(new BoolSetting.Builder()
             .name("notify-break")
             .description("Notifies you when someone is mining your surround.")
@@ -261,8 +231,8 @@ public class SurroundPlus extends Module {
             .build()
     );
 
+    // Force
 
-    // Force keybinds
     private final Setting<Keybind> russianKeybind = sgForce.add(new KeybindSetting.Builder()
             .name("russian-keybind")
             .description("Turns on Russian surround when held.")
@@ -284,8 +254,8 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-
     // Toggles
+
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-y-change")
             .description("Automatically disables when your Y level changes.")
@@ -321,8 +291,8 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders hand swing when trying to place a block.")
@@ -434,13 +404,10 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-
     public SurroundPlus() {
         super(BananaPlus.COMBAT, "surround+", "Surrounds you in blocks to prevent you from taking lots of damage.");
     }
 
-
-    // Fields
     private BlockPos playerPos;
     private int ticksPassed;
     private int blocksPlaced;
@@ -466,7 +433,6 @@ public class SurroundPlus extends Module {
 
     private final Pool<RenderBlock> renderBlockPool = new Pool<>(RenderBlock::new);
     private final List<RenderBlock> renderBlocks = new ArrayList<>();
-
 
     @Override
     public void onActivate() {
@@ -927,5 +893,35 @@ public class SurroundPlus extends Module {
         Safe,
         Normal,
         Unsafe
+    }
+
+    public enum Mode {
+        Normal,
+        Russian,
+        Autist
+    }
+
+    public enum CenterMode {
+        Center,
+        Snap,
+        None
+    }
+
+    public enum AntiCityMode {
+        Smart,
+        All,
+        None
+    }
+
+    public enum AntiCityShape {
+        Russian,
+        Autist,
+    }
+
+    public enum RenderMode {
+        None,
+        Normal,
+        Place,
+        Both
     }
 }

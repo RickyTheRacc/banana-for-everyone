@@ -38,17 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Presence extends Module {
-    public enum SelectMode {
-        Random,
-        Sequential
-    }
-
-
     private final SettingGroup sgLine1 = settings.createGroup("Line 1");
     private final SettingGroup sgLine2 = settings.createGroup("Line 2");
 
-
     // Line 1
+
     private final Setting<List<String>> line1Strings = sgLine1.add(new StringListSetting.Builder()
             .name("line-1-messages")
             .description("Messages used for the first line.")
@@ -79,8 +73,8 @@ public class Presence extends Module {
             .build()
     );
 
-
     // Line 2
+
     private final Setting<List<String>> line2Strings = sgLine2.add(new StringListSetting.Builder()
             .name("line-2-messages")
             .description("Messages used for the second line.")
@@ -109,13 +103,11 @@ public class Presence extends Module {
             .build()
     );
 
-
     public Presence() {
         super(BananaPlus.MISC, "banana-rpc", "Displays Banana+ as your presence on Discord.");
 
         runInMainMenu = true;
     }
-
 
     private static final RichPresence rpc = new RichPresence();
     private int ticks;
@@ -126,7 +118,6 @@ public class Presence extends Module {
 
     private final List<Script> line2Scripts = new ArrayList<>();
     private int line2Ticks, line2I;
-
 
     @Override
     public void onActivate() {
@@ -292,5 +283,10 @@ public class Presence extends Module {
         banana.action = () -> Util.getOperatingSystem().open("https://github.com/Bennooo/banana-for-everyone/wiki#what-are-bananas-placeholders");
 
         return buttons;
+    }
+
+    public enum SelectMode {
+        Random,
+        Sequential
     }
 }

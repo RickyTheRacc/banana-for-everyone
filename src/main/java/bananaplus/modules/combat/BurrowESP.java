@@ -17,8 +17,8 @@ import net.minecraft.util.math.BlockPos;
 public class BurrowESP extends Module {
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // Render
+
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
             .name("shape-mode")
             .description("How the shapes are rendered.")
@@ -65,11 +65,9 @@ public class BurrowESP extends Module {
             .build()
     );
 
-
     public BurrowESP() {
         super(BananaPlus.COMBAT, "Burrow-ESP", "Displays if the closest target to you is burrowed / webbed.");
     }
-
 
     public BlockPos target;
     public boolean isTargetWebbed;

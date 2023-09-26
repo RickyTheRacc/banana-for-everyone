@@ -44,27 +44,14 @@ import java.util.List;
 import static bananaplus.utils.GlobalSettings.getAntiCheatType;
 
 public class SelfTrapPlus extends Module {
-    public enum Mode {
-        Full,
-        Top,
-        Side
-    }
-
-    public enum CenterMode {
-        Center,
-        Snap,
-        None
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgAntiCity = settings.createGroup("Anti City");
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // General
+
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("primary-blocks")
             .description("What blocks to use for Self Trap+.")
@@ -170,8 +157,8 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-
     // Placing
+
     private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
@@ -239,8 +226,8 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-
     // Anti City
+
     private final Setting<Boolean> notifyBreak = sgAntiCity.add(new BoolSetting.Builder()
             .name("notify-break")
             .description("Notifies you when someone is mining your self trap.")
@@ -255,8 +242,8 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-
     // Toggles
+
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-y-change")
             .description("Automatically disables when your Y level changes.")
@@ -292,8 +279,8 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders hand swing when trying to place a block.")
@@ -405,11 +392,9 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-
     public SelfTrapPlus() {
         super(BananaPlus.COMBAT, "self-trap+", "Surrounds your head in blocks to prevent you from taking lots of damage.");
     }
-
 
     private BlockPos playerPos;
     private int ticksPassed;
@@ -801,5 +786,17 @@ public class SelfTrapPlus extends Module {
         Safe,
         Normal,
         Unsafe
+    }
+
+    public enum Mode {
+        Full,
+        Top,
+        Side
+    }
+
+    public enum CenterMode {
+        Center,
+        Snap,
+        None
     }
 }

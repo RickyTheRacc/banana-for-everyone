@@ -25,8 +25,8 @@ public class TickShift extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgAC = settings.createGroup("Anti Cheat");
 
-
     // Charge
+
     private final Setting<Boolean> charge = sgCharge.add(new BoolSetting.Builder()
             .name("charge")
             .description("Whether or not to charge up your movements.")
@@ -60,8 +60,8 @@ public class TickShift extends Module {
             .build()
     );
 
-
     // General
+
     private final Setting<Integer> durationTicks = sgGeneral.add(new IntSetting.Builder()
             .name("duration-ticks")
             .description("How many ticks you are allowed to tick shift for.")
@@ -103,8 +103,8 @@ public class TickShift extends Module {
             .build()
     );
 
-
     // Anti Cheat
+
     private final Setting<Boolean> inWater = sgAC.add(new BoolSetting.Builder()
             .name("in-water")
             .description("Whether or not to allow you to tick shift in water.")
@@ -150,11 +150,9 @@ public class TickShift extends Module {
             .build()
     );
 
-
     public TickShift() {
         super(BananaPlus.COMBAT, "tick-shift", "Allows you to charge up movement packets and move swiftly.");
     }
-
 
     private int chargeTicked;
     private int durationTicked;
@@ -168,7 +166,6 @@ public class TickShift extends Module {
 
     Timer timerClass = Modules.get().get(Timer.class);
     public Freecam freecam() {return Modules.get().get(Freecam.class);}
-
 
     @Override
     public void onActivate() {

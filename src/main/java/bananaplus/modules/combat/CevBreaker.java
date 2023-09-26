@@ -33,22 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CevBreaker extends Module {
-
-    public enum Mode {
-        Normal,
-        Packet,
-        Instant
-    }
-
-
     private final SettingGroup sgGeneral = settings.createGroup("General");
     private final SettingGroup sgBreaking = settings.createGroup("Breaking");
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgPause = settings.createGroup("Pause");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // General
+
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
             .name("rotate")
             .description("Whether to rotate or not.")
@@ -111,8 +103,8 @@ public class CevBreaker extends Module {
             .build()
     );
 
-
     // Placing
+
     private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
@@ -150,8 +142,8 @@ public class CevBreaker extends Module {
             .build()
     );
 
-
     // Pause
+
     private final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
             .name("pause-health")
             .description("Pauses when you go below a certain health.")
@@ -174,8 +166,8 @@ public class CevBreaker extends Module {
             .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> swing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders your swing client-side.")
@@ -190,11 +182,9 @@ public class CevBreaker extends Module {
             .build()
     );
 
-
     public CevBreaker() {
         super(BananaPlus.COMBAT, "cev-breaker", "Break crystals over a ppl's head to deal massive damage!");
     }
-
 
     private PlayerEntity closestTarget;
     private boolean startedYet;
@@ -407,5 +397,11 @@ public class CevBreaker extends Module {
     public String getInfoString() {
         if (closestTarget != null) return closestTarget.getEntityName();
         return null;
+    }
+
+    public enum Mode {
+        Normal,
+        Packet,
+        Instant
     }
 }
