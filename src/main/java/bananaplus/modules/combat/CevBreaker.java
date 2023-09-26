@@ -119,20 +119,6 @@ public class CevBreaker extends Module {
             .build()
     );
 
-    private final Setting<Boolean> onlyAirPlace = sgPlacing.add(new BoolSetting.Builder()
-            .name("only-air-place")
-            .description("Forces you to only airplace to help with stricter rotations.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<BWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.AirPlaceDirection>()
-            .name("place-direction")
-            .description("Side to try to place at when you are trying to air place.")
-            .defaultValue(BWorldUtils.AirPlaceDirection.Down)
-            .build()
-    );
-
     private final Setting<Integer> rotationPrio = sgPlacing.add(new IntSetting.Builder()
             .name("rotation-priority")
             .description("Rotation priority for Surround+.")
@@ -268,7 +254,7 @@ public class CevBreaker extends Module {
 
         //Placing obby
         if(!blockState.isOf(Blocks.OBSIDIAN) && !crystalThere && (mc.player.getMainHandStack().getItem().equals(Items.OBSIDIAN) || switchDelayLeft <= 0)) {
-            if(!BWorldUtils.place(blockPos, InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), swing.get(), true, true)) {
+            if(!BWorldUtils.place(blockPos, InvUtils.findInHotbar(Items.OBSIDIAN), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), swing.get(), true, true)) {
                 blacklisted.add(closestTarget);
                 getEntities();
                 if(closestTarget == null) {

@@ -40,16 +40,16 @@ public class BWorldUtils {
 
     private static final Vec3d hitPos = new Vec3d(0, 0, 0);
 
-    public static boolean place(BlockPos blockPos, FindItemResult findItemResult, boolean rotate, int rotationPriority, SwitchMode switchMode, PlaceMode placeMode, boolean onlyAirplace, AirPlaceDirection airPlaceDirection, boolean swingHand, boolean checkEntities, boolean swapBack) {
+    public static boolean place(BlockPos blockPos, FindItemResult findItemResult, boolean rotate, int rotationPriority, SwitchMode switchMode, PlaceMode placeMode, boolean swingHand, boolean checkEntities, boolean swapBack) {
         if (findItemResult.isOffhand()) {
-            return place(blockPos, Hand.OFF_HAND, mc.player.getInventory().selectedSlot, mc.player.getInventory().selectedSlot, rotate, rotationPriority, switchMode, placeMode, onlyAirplace, airPlaceDirection, swingHand, checkEntities, swapBack);
+            return place(blockPos, Hand.OFF_HAND, mc.player.getInventory().selectedSlot, mc.player.getInventory().selectedSlot, rotate, rotationPriority, switchMode, placeMode, swingHand, checkEntities, swapBack);
         } else if (findItemResult.isHotbar()) {
-            return place(blockPos, Hand.MAIN_HAND, mc.player.getInventory().selectedSlot, findItemResult.slot(), rotate, rotationPriority, switchMode, placeMode, onlyAirplace, airPlaceDirection, swingHand, checkEntities, swapBack);
+            return place(blockPos, Hand.MAIN_HAND, mc.player.getInventory().selectedSlot, findItemResult.slot(), rotate, rotationPriority, switchMode, placeMode, swingHand, checkEntities, swapBack);
         }
         return false;
     }
 
-    public static boolean place(BlockPos blockPos, Hand hand, int oldSlot, int targetSlot, boolean rotate, int rotationPriority, SwitchMode switchMode, PlaceMode placeMode, boolean onlyAirplace, AirPlaceDirection airPlaceDirection, boolean swingHand, boolean checkEntities, boolean swapBack) {
+    public static boolean place(BlockPos blockPos, Hand hand, int oldSlot, int targetSlot, boolean rotate, int rotationPriority, SwitchMode switchMode, PlaceMode placeMode, boolean swingHand, boolean checkEntities, boolean swapBack) {
         if (targetSlot < 0 || targetSlot > 8) return false;
         if (!canPlace(blockPos, checkEntities)) return false;
 
@@ -58,9 +58,8 @@ public class BWorldUtils {
         BlockPos neighbour;
         Direction side = getPlaceSide(blockPos);
 
-        if (side == null || onlyAirplace) {
-            if (airPlaceDirection == AirPlaceDirection.Up) side = Direction.UP;
-            else side = Direction.DOWN;
+        if (side == null ) {
+            side = Direction.DOWN;
             neighbour = blockPos;
         } else {
             neighbour = blockPos.offset(side.getOpposite());

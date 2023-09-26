@@ -161,28 +161,6 @@ public class SmartHoleFill extends Module {
         .build()
     );
 
-    private final Setting<Boolean> airPlace = sgPlacing.add(new BoolSetting.Builder()
-        .name("air-place")
-        .description("Whether to place blocks mid air or not.")
-        .defaultValue(true)
-        .build()
-    );
-
-    private final Setting<Boolean> onlyAirPlace = sgPlacing.add(new BoolSetting.Builder()
-        .name("only-air-place")
-        .description("Forces you to only airplace to help with stricter rotations.")
-        .defaultValue(false)
-        .visible(airPlace::get)
-        .build()
-    );
-
-    private final Setting<BWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.AirPlaceDirection>()
-        .name("place-direction")
-        .description("Side to try to place at when you are trying to air place.")
-        .defaultValue(BWorldUtils.AirPlaceDirection.Down)
-        .visible(airPlace::get)
-        .build()
-    );
 
     private final Setting<Boolean> rotate = sgPlacing.add(new BoolSetting.Builder()
         .name("rotate")
@@ -334,7 +312,7 @@ public class SmartHoleFill extends Module {
         for (Hole hole : holes) {
             if (blocksPlaced >= blocksPerTick.get()) break;
 
-            if (BWorldUtils.place(hole.blockPos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get()))
+            if (BWorldUtils.place(hole.blockPos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get()))
                 blocksPlaced++;
         }
     }

@@ -1,6 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.enums.AntiCheatType;
 import bananaplus.system.BananaConfig;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;
@@ -178,29 +179,6 @@ public class SelfTrapPlus extends Module {
             .name("ignore-entities")
             .description("Will try to place even if there is an entity in the way.")
             .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Boolean> airPlace = sgPlacing.add(new BoolSetting.Builder()
-            .name("air-place")
-            .description("Whether to place blocks mid air or not.")
-            .defaultValue(true)
-            .build()
-    );
-
-    private final Setting<Boolean> onlyAirPlace = sgPlacing.add(new BoolSetting.Builder()
-            .name("only-air-place")
-            .description("Forces you to only airplace to help with stricter rotations.")
-            .defaultValue(false)
-            .visible(airPlace::get)
-            .build()
-    );
-
-    private final Setting<BWorldUtils.AirPlaceDirection> airPlaceDirection = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.AirPlaceDirection>()
-            .name("place-direction")
-            .description("Side to try to place at when you are trying to air place.")
-            .defaultValue(BWorldUtils.AirPlaceDirection.Down)
-            .visible(airPlace::get)
             .build()
     );
 
@@ -509,7 +487,7 @@ public class SelfTrapPlus extends Module {
         if (ticksPassed <= 0) {
             for (BlockPos pos : centerPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), renderSwing.get(), !ignoreEntity.get(), switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }
@@ -517,7 +495,7 @@ public class SelfTrapPlus extends Module {
 
             for (BlockPos pos : extraPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), true, switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), renderSwing.get(), true, switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }
@@ -554,7 +532,7 @@ public class SelfTrapPlus extends Module {
             }
 
             if (mode.get() != Mode.Side) {
-                if (!BananaConfig.get().airPlace.get()) add(pos, playerPos.up(2).north());
+                if (!BananaConfig.get().airPlace.get() || BananaConfig.get().antiCheatSetting.get() == AntiCheatType.antiCheat.NoCheatPlus) add(pos, playerPos.up(2).north());
                 add(pos, playerPos.up(2));
             }
         } else {
@@ -598,7 +576,7 @@ public class SelfTrapPlus extends Module {
     private void add(List<BlockPos> list, BlockPos pos) {
         if (mc.world.getBlockState(pos).isAir()
                 && allAir(pos.north(), pos.east(), pos.south(), pos.west(), pos.up(), pos.down())
-                && !airPlace.get()
+                && !BananaConfig.get().airPlace.get()
         ) list.add(pos.down());
         list.add(pos);
     }

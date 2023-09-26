@@ -1,8 +1,8 @@
 package bananaplus.system;
 
 import bananaplus.BananaPlus;
-import bananaplus.enums.Anticheat;
 import bananaplus.enums.SwingMode;
+import bananaplus.enums.AntiCheatType;
 import bananaplus.enums.SwitchMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
@@ -129,12 +129,12 @@ public class BananaConfig extends System<BananaConfig> {
         .build()
     );
 
-    // Anticheat
-    private final Setting<Anticheat> anticheat = sgAnticheat.add(new EnumSetting.Builder<Anticheat>()
-        .name("anticheat")
-        .description("Which anticheat the server uses.")
-        .defaultValue(Anticheat.Nocheat)
-        .build()
+    // Anti cheat
+    public final Setting < AntiCheatType.antiCheat > antiCheatSetting = sgAnticheat.add(new EnumSetting.Builder<AntiCheatType.antiCheat>()
+            .name("anti-cheat")
+            .description("What Anti cheat to bypass for Banana+ modules.")
+            .defaultValue(AntiCheatType.antiCheat.NoCheatPlus)
+            .build()
     );
 
     private final Setting<SwitchMode> switchMode = sgAnticheat.add(new EnumSetting.Builder<SwitchMode>()

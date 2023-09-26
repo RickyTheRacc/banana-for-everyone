@@ -387,7 +387,7 @@ public class Platform extends Module {
         if (ticksPassed <= 0) {
             for (BlockPos pos : centerPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), true, switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), renderSwing.get(), true, switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }
@@ -395,7 +395,7 @@ public class Platform extends Module {
 
             for (BlockPos pos : extraPos()) {
                 if (blocksPlaced >= blocksPerTick.get()) return;
-                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), onlyAirPlace.get(), airPlaceDirection.get(), renderSwing.get(), true, switchBack.get())) {
+                if (BWorldUtils.place(pos, getTargetBlock(), rotate.get(), rotationPrio.get(), switchMode.get(), placeMode.get(), renderSwing.get(), true, switchBack.get())) {
                     renderBlocks.add(renderBlockPool.get().set(pos));
                     blocksPlaced++;
                 }
