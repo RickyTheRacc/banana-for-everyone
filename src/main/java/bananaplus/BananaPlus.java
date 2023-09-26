@@ -91,7 +91,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new SurroundPlus());
 		Modules.get().add(new ReverseStepTimer());
 		Modules.get().add(new TickShift());
-		Modules.get().add(new TestSurroundYes());
 
 		// Misc Modules
 		Modules.get().add(new AfkLog());
