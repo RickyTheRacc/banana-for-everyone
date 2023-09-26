@@ -6,8 +6,6 @@ https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/met
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.enums.SwitchMode;
-import bananaplus.system.BananaConfig;
 import bananaplus.utils.CrystalUtils;
 import bananaplus.utils.*;
 import com.google.common.util.concurrent.AtomicDouble;
@@ -133,11 +131,18 @@ public class BananaBomber extends Module {
             .build()
     );
 
+    private final Setting<AutoSwitchMode> autoSwitch = sgGeneral.add(new EnumSetting.Builder<AutoSwitchMode>()
+            .name("auto-switch")
+            .description("Switches to crystals in your hotbar once a target is found.")
+            .defaultValue(AutoSwitchMode.Normal)
+            .build()
+    );
+
     private final Setting<Boolean> noGapSwitch = sgGeneral.add(new BoolSetting.Builder()
             .name("No Gap Switch")
             .description("Disables normal auto switch when you are holding a gap.")
             .defaultValue(true)
-            .visible(() -> BananaConfig.get().switchMode.get() == SwitchMode.Normal)
+            .visible(() -> autoSwitch.get() == AutoSwitchMode.Normal)
             .build()
     );
 
@@ -1304,7 +1309,7 @@ public class BananaBomber extends Module {
         if (!InvUtils.findInHotbar(Items.END_CRYSTAL).found()) return;
 
         // Return if there are no crystals in either hand and auto switch mode is none
-        if (BananaConfig.get().switchMode.get() == SwitchMode.None && mc.player.getOffHandStack().getItem() != Items.END_CRYSTAL && mc.player.getMainHandStack().getItem() != Items.END_CRYSTAL) return;
+        if (autoSwitch.get() == AutoSwitchMode.None && mc.player.getOffHandStack().getItem() != Items.END_CRYSTAL && mc.player.getMainHandStack().getItem() != Items.END_CRYSTAL) return;
 
         // Check for multiplace
         for (Entity entity : mc.world.getEntities()) {
@@ -1443,8 +1448,8 @@ public class BananaBomber extends Module {
 
         int prevSlot = mc.player.getInventory().selectedSlot;
 
-        if (!(mc.player.getOffHandStack().getItem() instanceof EndCrystalItem) && (BananaConfig.get().switchMode.get() == SwitchMode.Normal && noGapSwitch.get()) && (mc.player.getMainHandStack().getItem() instanceof EnchantedGoldenAppleItem)) return;
-        if (BananaConfig.get().switchMode.get() != SwitchMode.None && !item.isOffhand()) InvUtils.swap(item.slot(), false);
+        if (!(mc.player.getOffHandStack().getItem() instanceof EndCrystalItem) && (autoSwitch.get() == AutoSwitchMode.Normal && noGapSwitch.get()) && (mc.player.getMainHandStack().getItem() instanceof EnchantedGoldenAppleItem)) return;
+        if (autoSwitch.get() != AutoSwitchMode.None && !item.isOffhand()) InvUtils.swap(item.slot(), false);
 
         Hand hand = item.getHand();
         if (hand == null) return;
@@ -1481,7 +1486,7 @@ public class BananaBomber extends Module {
         }
 
         // Switch back
-        if (BananaConfig.get().switchMode.get() == SwitchMode.Silent) InvUtils.swap(prevSlot, false);
+        if (autoSwitch.get() == AutoSwitchMode.Silent) InvUtils.swap(prevSlot, false);
     }
 
     // Yaw steps
@@ -1726,6 +1731,12 @@ public class BananaBomber extends Module {
     public enum YawStepMode {
         Break,
         All,
+    }
+
+    public enum AutoSwitchMode {
+        Normal,
+        Silent,
+        None
     }
 
     public enum SupportMode {
