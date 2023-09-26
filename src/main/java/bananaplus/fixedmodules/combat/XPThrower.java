@@ -172,9 +172,8 @@ public class XPThrower extends Module {
         if (PlayerUtils.getTotalHealth() <= minHealth.get()) return true;
         if (usePause.get() && mc.player.isUsingItem()) return true;
         if (minePause.get() && mc.interactionManager.isBreakingBlock()) return true;
-
         if (onlyOnGround.get() && !mc.player.isOnGround()) return true;
-        return (onlyInHole.get() && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any));
+        return onlyInHole.get() && !BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any);
     }
 
     private boolean isRepaired(ItemStack stack) {
