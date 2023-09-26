@@ -1,10 +1,6 @@
-<p style="text-align:center">
-    <img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/logo1.png" alt="banana+-logo" width="35%">
-</p>
-
-<h1 style="text-align:center">Banana+</h1>
-<p style="text-align:center">Based addon for Meteor Client.</p>
-<p style="text-align:center"><i>Formerly maintained by RickyTheRacc</i></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Bennooo/banana-for-everyone/main/src/main/resources/assets/logo1.png" alt="banana+-logo" width="35%"></p>
+<p align="center">Based addon for Meteor Client.</p>
+<p align="center"><i>Formerly maintained by RickyTheRacc</i></p>
 
 <h1>How to Use</h1>
 <ul>
