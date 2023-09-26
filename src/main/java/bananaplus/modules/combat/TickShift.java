@@ -192,7 +192,7 @@ public class TickShift extends Module {
         moved = false;
 
         if (step.get()) {
-            mc.player.stepHeight = 0.5f;
+            mc.player.setStepHeight(0.5f);
         }
     }
 
@@ -243,7 +243,7 @@ public class TickShift extends Module {
                 durationTicked++;
 
                 if (step.get()) {
-                    mc.player.stepHeight = stepHeight.get().floatValue();
+                    mc.player.setStepHeight(stepHeight.get().floatValue());
                 }
             }
         }

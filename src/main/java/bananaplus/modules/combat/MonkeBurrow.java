@@ -200,7 +200,7 @@ public class MonkeBurrow extends Module {
             return;
         }
 
-        if (!mc.world.getBlockState(BWorldUtils.roundBlockPos(mc.player.getPos())).getMaterial().isReplaceable()) {
+        if (!mc.world.getBlockState(BWorldUtils.roundBlockPos(mc.player.getPos())).isReplaceable()) {
             error("Already burrowed, disabling.");
             toggle();
             return;
@@ -348,10 +348,10 @@ public class MonkeBurrow extends Module {
         BlockState blockState2 = mc.world.getBlockState(blockPos.set(mc.player.getX() + .3, mc.player.getY() + 2.3, mc.player.getZ() - .3));
         BlockState blockState3 = mc.world.getBlockState(blockPos.set(mc.player.getX() - .3, mc.player.getY() + 2.3, mc.player.getZ() - .3));
         BlockState blockState4 = mc.world.getBlockState(blockPos.set(mc.player.getX() - .3, mc.player.getY() + 2.3, mc.player.getZ() + .3));
-        boolean air1 = blockState1.getMaterial().isReplaceable();
-        boolean air2 = blockState2.getMaterial().isReplaceable();
-        boolean air3 = blockState3.getMaterial().isReplaceable();
-        boolean air4 = blockState4.getMaterial().isReplaceable();
+        boolean air1 = blockState1.isReplaceable();
+        boolean air2 = blockState2.isReplaceable();
+        boolean air3 = blockState3.isReplaceable();
+        boolean air4 = blockState4.isReplaceable();
         return air1 & air2 & air3 & air4;
     }
 

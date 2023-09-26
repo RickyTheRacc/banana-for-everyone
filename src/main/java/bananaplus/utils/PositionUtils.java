@@ -30,10 +30,10 @@ public class PositionUtils {
         }
 
         // Head positions
-        pos.add(new BlockPos(box.minX, box.minY + 2.5, box.minZ)); // North West
-        pos.add(new BlockPos(box.maxX, box.minY + 2.5, box.minZ)); // North East
-        pos.add(new BlockPos(box.maxX, box.minY + 2.5, box.maxZ)); // South East
-        pos.add(new BlockPos(box.minX, box.minY + 2.5, box.maxZ)); // South West
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 2.5, box.minZ)); // North West
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 2.5, box.minZ)); // North East
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 2.5, box.maxZ)); // South East
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 2.5, box.maxZ)); // South West
 
         return pos;
     }
@@ -48,17 +48,17 @@ public class PositionUtils {
         }
 
         // North
-        pos.add(new BlockPos(box.minX, box.minY + 1.5, box.minZ - 1));
-        pos.add(new BlockPos(box.maxX, box.minY + 1.5, box.minZ - 1));
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 1.5, box.minZ - 1));
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 1.5, box.minZ - 1));
         // East
-        pos.add(new BlockPos(box.maxX + 1, box.minY + 1.5, box.minZ));
-        pos.add(new BlockPos(box.maxX + 1, box.minY + 1.5, box.maxZ));
+        pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 1.5, box.minZ));
+        pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 1.5, box.maxZ));
         // South
-        pos.add(new BlockPos(box.maxX, box.minY + 1.5, box.maxZ + 1));
-        pos.add(new BlockPos(box.minX, box.minY + 1.5, box.maxZ + 1));
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 1.5, box.maxZ + 1));
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 1.5, box.maxZ + 1));
         // West
-        pos.add(new BlockPos(box.minX - 1, box.minY + 1.5, box.maxZ));
-        pos.add(new BlockPos(box.minX - 1, box.minY + 1.5, box.minZ));
+        pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 1.5, box.maxZ));
+        pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 1.5, box.minZ));
 
         return pos;
     }
@@ -73,10 +73,10 @@ public class PositionUtils {
         }
 
         // Bottom positions
-        pos.add(new BlockPos(box.minX, box.minY - 0.5, box.minZ)); // North West
-        pos.add(new BlockPos(box.maxX, box.minY - 0.5, box.minZ)); // North East
-        pos.add(new BlockPos(box.maxX, box.minY - 0.5, box.maxZ)); // South East
-        pos.add(new BlockPos(box.minX, box.minY - 0.5, box.maxZ)); // South West
+        pos.add(BlockPos.ofFloored(box.minX, box.minY - 0.5, box.minZ)); // North West
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY - 0.5, box.minZ)); // North East
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY - 0.5, box.maxZ)); // South East
+        pos.add(BlockPos.ofFloored(box.minX, box.minY - 0.5, box.maxZ)); // South West
 
         return pos;
     }
@@ -92,17 +92,17 @@ public class PositionUtils {
 
         // Positions around (adding 0.4 to the y like isBurrowed check, just like roundblockpos)
         // North
-        pos.add(new BlockPos(box.minX, box.minY + 0.4, box.minZ - 1));
-        pos.add(new BlockPos(box.maxX, box.minY + 0.4, box.minZ - 1));
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 0.4, box.minZ - 1));
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 0.4, box.minZ - 1));
         // East
-        pos.add(new BlockPos(box.maxX + 1, box.minY + 0.4, box.minZ));
-        pos.add(new BlockPos(box.maxX + 1, box.minY + 0.4, box.maxZ));
+        pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 0.4, box.minZ));
+        pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 0.4, box.maxZ));
         // South
-        pos.add(new BlockPos(box.maxX, box.minY + 0.4, box.maxZ + 1));
-        pos.add(new BlockPos(box.minX, box.minY + 0.4, box.maxZ + 1));
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 0.4, box.maxZ + 1));
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 0.4, box.maxZ + 1));
         // West
-        pos.add(new BlockPos(box.minX - 1, box.minY + 0.4, box.maxZ));
-        pos.add(new BlockPos(box.minX - 1, box.minY + 0.4, box.minZ));
+        pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 0.4, box.maxZ));
+        pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 0.4, box.minZ));
 
         return pos;
     }
@@ -112,11 +112,11 @@ public class PositionUtils {
 
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // North
-        pos.add(new BlockPos(box.minX, box.minY + 0.4, box.minZ - 1).north());
-        pos.add(new BlockPos(box.maxX, box.minY + 0.4, box.minZ - 1).north());
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 0.4, box.minZ - 1).north());
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 0.4, box.minZ - 1).north());
         if (plus) {
-            pos.add(new BlockPos(box.minX, box.minY + 0.4, box.minZ - 1).west());
-            pos.add(new BlockPos(box.maxX, box.minY + 0.4, box.minZ - 1).east());
+            pos.add(BlockPos.ofFloored(box.minX, box.minY + 0.4, box.minZ - 1).west());
+            pos.add(BlockPos.ofFloored(box.maxX, box.minY + 0.4, box.minZ - 1).east());
         }
 
         return pos;
@@ -127,11 +127,11 @@ public class PositionUtils {
 
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // East
-        pos.add(new BlockPos(box.maxX + 1, box.minY + 0.4, box.minZ).east());
-        pos.add(new BlockPos(box.maxX + 1, box.minY + 0.4, box.maxZ).east());
+        pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 0.4, box.minZ).east());
+        pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 0.4, box.maxZ).east());
         if (plus) {
-            pos.add(new BlockPos(box.maxX + 1, box.minY + 0.4, box.minZ).north());
-            pos.add(new BlockPos(box.maxX + 1, box.minY + 0.4, box.maxZ).south());
+            pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 0.4, box.minZ).north());
+            pos.add(BlockPos.ofFloored(box.maxX + 1, box.minY + 0.4, box.maxZ).south());
         }
 
         return pos;
@@ -142,11 +142,11 @@ public class PositionUtils {
 
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // South
-        pos.add(new BlockPos(box.maxX, box.minY + 0.4, box.maxZ + 1).south());
-        pos.add(new BlockPos(box.minX, box.minY + 0.4, box.maxZ + 1).south());
+        pos.add(BlockPos.ofFloored(box.maxX, box.minY + 0.4, box.maxZ + 1).south());
+        pos.add(BlockPos.ofFloored(box.minX, box.minY + 0.4, box.maxZ + 1).south());
         if (plus) {
-            pos.add(new BlockPos(box.maxX, box.minY + 0.4, box.maxZ + 1).east());
-            pos.add(new BlockPos(box.minX, box.minY + 0.4, box.maxZ + 1).west());
+            pos.add(BlockPos.ofFloored(box.maxX, box.minY + 0.4, box.maxZ + 1).east());
+            pos.add(BlockPos.ofFloored(box.minX, box.minY + 0.4, box.maxZ + 1).west());
         }
 
         return pos;
@@ -157,11 +157,11 @@ public class PositionUtils {
 
         Box box = targetEntity.getBoundingBox().contract(0.001, 0, 0.001);
         // West
-        pos.add(new BlockPos(box.minX - 1, box.minY + 0.4, box.maxZ).west());
-        pos.add(new BlockPos(box.minX - 1, box.minY + 0.4, box.minZ).west());
+        pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 0.4, box.maxZ).west());
+        pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 0.4, box.minZ).west());
         if (plus) {
-            pos.add(new BlockPos(box.minX - 1, box.minY + 0.4, box.maxZ).south());
-            pos.add(new BlockPos(box.minX - 1, box.minY + 0.4, box.minZ).north());
+            pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 0.4, box.maxZ).south());
+            pos.add(BlockPos.ofFloored(box.minX - 1, box.minY + 0.4, box.minZ).north());
         }
 
         return pos;

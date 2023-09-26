@@ -5,6 +5,7 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.render.Freecam;
 import meteordevelopment.meteorclient.utils.Utils;
+import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -67,7 +68,7 @@ public class FreecamMixin{
     @Inject(method = "onTick", at = @At("TAIL"), remap = false)
     public void onTick(CallbackInfo info){
         if (parallelView.get() && !rotate.get()){
-            pitch = Utils.clamp(pitch, -90, 90);
+            pitch = MathHelper.clamp(pitch, -90, 90);
 
             mc.player.setYaw(yaw);
             mc.player.setPitch(pitch);

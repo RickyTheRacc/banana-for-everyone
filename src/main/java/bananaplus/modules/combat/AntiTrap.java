@@ -204,8 +204,8 @@ public class AntiTrap extends Module {
             BlockState blockState1 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy, mc.player.getZ()));
             BlockState blockState2 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy + 1, mc.player.getZ()));
 
-            boolean air1 = blockState1.getMaterial().isReplaceable();
-            boolean air2 = blockState2.getMaterial().isReplaceable();
+            boolean air1 = blockState1.isReplaceable();
+            boolean air2 = blockState2.isReplaceable();
 
             if (air1 & air2) return dy;
         }
@@ -218,8 +218,8 @@ public class AntiTrap extends Module {
             BlockState blockState1 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy, mc.player.getZ()));
             BlockState blockState2 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy + 1, mc.player.getZ()));
 
-            boolean air1 = blockState1.getMaterial().isReplaceable();
-            boolean air2 = blockState2.getMaterial().isReplaceable();
+            boolean air1 = blockState1.isReplaceable();
+            boolean air2 = blockState2.isReplaceable();
 
             if (air1 & air2) return dy;
         }

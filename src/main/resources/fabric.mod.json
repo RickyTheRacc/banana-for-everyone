@@ -3,9 +3,10 @@
   "id": "bananaplus",
   "version": "${version}",
   "name": "Banana+",
-  "description": "Based PVP addon for Meteor Client.",
+  "description": "This addon is literally immortal.",
   "authors": [
-    "RickyTheRacc"
+    "RickyTheRacc",
+    "CrytoPal"
   ],
   "contact": {
     "repo": "https://github.com/Bennooo/banana-for-everyone"
@@ -32,6 +33,7 @@
   },
   "breaks": {
     "bedtrap": "*",
-    "splashhack": "*"
+    "splashhack": "*",
+    "deltahack": "*"
   }
 }

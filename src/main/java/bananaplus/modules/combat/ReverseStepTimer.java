@@ -78,7 +78,7 @@ public class ReverseStepTimer extends Module {
         if (mc.player.fallDistance > 0 && (fallTicks > 0 && fallTicks < 10)) {
             double fallingBlock = mc.world.getBottomY();
             for (double y = mc.player.getY(); y > mc.world.getBottomY(); y -= 0.001) {
-                if (mc.world.getBlockState(new BlockPos(mc.player.getX(), y, mc.player.getZ())).getBlock().getDefaultState().getCollisionShape(mc.world, new BlockPos(0, 0,0 )) == null) continue;
+                if (mc.world.getBlockState(new BlockPos((int) mc.player.getX(), (int) y, (int) mc.player.getZ())).getBlock().getDefaultState().getCollisionShape(mc.world, new BlockPos(0, 0,0 )) == null) continue;
 
                 fallingBlock = y;
                 break;

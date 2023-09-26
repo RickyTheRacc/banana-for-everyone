@@ -1,10 +1,12 @@
 package bananaplus;
 
+import bananaplus.hud.*;
 import bananaplus.modules.combat.*;
 import bananaplus.modules.combat.BananaBomber;
-import bananaplus.modules.hud.*;
 import bananaplus.modules.misc.*;
 import bananaplus.utils.*;
+import com.mojang.logging.LogUtils;
+import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
@@ -13,20 +15,19 @@ import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
 import meteordevelopment.starscript.value.ValueMap;
 import net.minecraft.item.Items;
+import org.slf4j.Logger;
 
 public class BananaPlus extends MeteorAddon {
 	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
    	public static final Category MISC = new Category("Banana Misc.", Items.GOLDEN_APPLE.getDefaultStack());
 	public static final HudGroup HUD_GROUP = new HudGroup("Banana+");
+	public static final Logger LOG = LogUtils.getLogger();
 
 	@Override
 	public void onInitialize() {
-	    Log("Beginning initialization.");
+	    LOG.info("Initializing...");
 
-
-		// Starscript Placeholders
-		Log("Adding Starscript placeholders...");
-
+		// Starscript Values
 		MeteorStarscript.ss.set("banana", new ValueMap()
 				.set("kills", StatsUtils::getKills)
 				.set("deaths", StatsUtils::getDeaths)
@@ -34,31 +35,22 @@ public class BananaPlus extends MeteorAddon {
 				.set("killstreak", StatsUtils::getKillstreak)
 				.set("highscore", StatsUtils::getHighscore)
 				.set("crystalsps", StatsUtils::getCrystalsPs)
-				.set("discord", "https://discord.gg/tByq7JXakQ")
 		);
 
-
-		// HUD
-		Log("Adding HUD modules...");
-
+		// Hud Modules
 		Hud.get().register(ItemCounter.INFO);
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(WelcomeHud.INFO);
 		Hud.get().register(TextPresets.INFO);
 
-
-		// Combat
-		Log("Adding Combat modules...");
-
+		// Combat Modules
 		Modules.get().add(new ArmorMessages());
-		Modules.get().add(new AutoCityPlus());
 		Modules.get().add(new AutoTrapPlus());
 		Modules.get().add(new XPThrower());
 		Modules.get().add(new AnchorPlus());
 		Modules.get().add(new AntiTrap());
 		Modules.get().add(new BurrowESP());
-		Modules.get().add(new BurrowMiner());
 		Modules.get().add(new AntiSurround());
 		Modules.get().add(new BananaBomber());
 		Modules.get().add(new CevBreaker());
@@ -75,19 +67,12 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new ReverseStepTimer());
 		Modules.get().add(new TickShift());
 
-
-		// Misc
-		Log("Adding Other modules...");
-
+		// Misc Modules
 		Modules.get().add(new AutoBuild());
 		Modules.get().add(new AfkLog());
-		Modules.get().add(new AntiGlitchBlock());
-		Modules.get().add(new AutoFollow());
-		Modules.get().add(new AutoSex());
 		Modules.get().add(new BindClickExtra());
 		Modules.get().add(new InstaMinePlus());
 		Modules.get().add(new KillEffects());
-		Modules.get().add(new MonkeFlight());
 		Modules.get().add(new OneClickEat());
 		Modules.get().add(new Platform());
 		Modules.get().add(new PrefixManager());
@@ -96,9 +81,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new TimeAnimator());
 		Modules.get().add(new Twerk());
 		Modules.get().add(new WebNoSlow());
-
-
-		Log("Initialized successfully!");
 	}
 
 	@Override
@@ -112,7 +94,8 @@ public class BananaPlus extends MeteorAddon {
 		return "bananaplus";
 	}
 
-	public static void Log(String text) {
-		System.out.println("[Banana+] " + text);
+	@Override
+	public GithubRepo getRepo() {
+		return new GithubRepo("RickyTheRacc", "banana-for-everyone", "main");
 	}
 }

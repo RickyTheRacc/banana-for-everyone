@@ -1,4 +1,4 @@
-package bananaplus.modules.hud;
+package bananaplus.hud;
 
 import bananaplus.BananaPlus;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;

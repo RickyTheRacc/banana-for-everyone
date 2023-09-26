@@ -66,18 +66,18 @@ public class StepPlus extends Module {
     @Override
     public void onActivate() {
         assert mc.player != null;
-        mc.player.stepHeight = 0.5F;
+        mc.player.setStepHeight(0.5F);
     }
 
     @Override
     public void onDeactivate() {
         assert mc.player != null;
-        mc.player.stepHeight = 0.5F;
+        mc.player.setStepHeight(0.5F);
     }
 
     @EventHandler
     public void onTick(TickEvent.Pre event) {
-        mc.player.stepHeight = mode.get() == Mode.Vanilla ? height.get().floatValue() : 0.5f;
+        mc.player.setStepHeight(mode.get() == Mode.Vanilla ? height.get().floatValue() : 0.5f);
 
         if (!mc.player.horizontalCollision) {
             queue.clear();
@@ -87,7 +87,7 @@ public class StepPlus extends Module {
             return;
         }
 
-        if (!mc.world.getBlockState(mc.player.getBlockPos().add(0, mc.player.getHeight() + 1, 0)).getMaterial().isReplaceable()
+        if (!mc.world.getBlockState(mc.player.getBlockPos().add(0, (int) (mc.player.getHeight() + 1), 0)).isReplaceable()
                 || mc.player.input.jumping
                 || !(mc.player.input.pressingForward || mc.player.input.pressingBack || mc.player.input.pressingLeft || mc.player.input.pressingRight)) {
             return;

@@ -200,7 +200,7 @@ public class AntiSurround extends Module {
 
     private void add(BlockPos blockPos) {
         if (!placePositions.contains(blockPos)
-                && mc.world.getBlockState(blockPos).getMaterial().isReplaceable()
+                && mc.world.getBlockState(blockPos).isReplaceable()
                 && mc.world.canPlace(Blocks.STONE_BUTTON.getDefaultState(), blockPos, ShapeContext.absent())
                 && (mc.world.getBlockState(new BlockPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ())).isFullCube(mc.world, new BlockPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ()))
                 || mc.world.getBlockState(new BlockPos(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ())).isFullCube(mc.world, new BlockPos(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ()))

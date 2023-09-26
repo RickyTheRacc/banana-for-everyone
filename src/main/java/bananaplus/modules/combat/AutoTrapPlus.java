@@ -528,11 +528,11 @@ public class AutoTrapPlus extends Module {
     }
 
     private boolean allAir(BlockPos... pos) {
-        return Arrays.stream(pos).allMatch(blockPos -> mc.world.getBlockState(blockPos).getMaterial().isReplaceable());
+        return Arrays.stream(pos).allMatch(blockPos -> mc.world.getBlockState(blockPos).isReplaceable());
     }
 
     private boolean anyAir(BlockPos... pos) {
-        return Arrays.stream(pos).anyMatch(blockPos -> mc.world.getBlockState(blockPos).getMaterial().isReplaceable());
+        return Arrays.stream(pos).anyMatch(blockPos -> mc.world.getBlockState(blockPos).isReplaceable());
     }
 
     private FindItemResult getTargetBlock() {

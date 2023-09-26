@@ -1401,7 +1401,7 @@ public class BananaBomber extends Module {
             // Check for support
             if (!hasBlock) {
                 if (isSupport.get()) {
-                    if (!blockState.getMaterial().isReplaceable()) return;
+                    if (!blockState.isReplaceable()) return;
                 } else return;
             }
 

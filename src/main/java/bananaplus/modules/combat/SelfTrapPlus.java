@@ -616,7 +616,7 @@ public class SelfTrapPlus extends Module {
     }
 
     private boolean allAir(BlockPos... pos) {
-        return Arrays.stream(pos).allMatch(blockPos -> mc.world.getBlockState(blockPos).getMaterial().isReplaceable());
+        return Arrays.stream(pos).allMatch(blockPos -> mc.world.getBlockState(blockPos).isReplaceable());
     }
 
     private FindItemResult getTargetBlock() {

@@ -185,25 +185,26 @@ public class BDamageUtils {
     }
 
     private static float normalProtReduction(Entity player, float damage) {
-        int protLevel = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), DamageSource.GENERIC);
+        int protLevel = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), mc.world.getDamageSources().generic());
         if (protLevel > 20) protLevel = 20;
 
-        damage *= 1 - (protLevel * 0.04);
+        damage *= (float) (1 - (protLevel * 0.04));
         return damage < 0 ? 0 : damage;
     }
 
+
     private static float blastProtReduction(Entity player, float damage, Explosion explosion) {
-        int protLevel = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), DamageSource.explosion(explosion));
+        int protLevel = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), mc.world.getDamageSources().explosion(explosion));
         if (protLevel > 20) protLevel = 20;
 
-        damage *= (1 - (protLevel * 0.04));
+        damage *= (float) (1 - (protLevel * 0.04));
         return damage < 0 ? 0 : damage;
     }
 
     private static float resistanceReduction(LivingEntity player, float damage) {
         if (player.hasStatusEffect(StatusEffects.RESISTANCE)) {
             int lvl = (player.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1);
-            damage *= (1 - (lvl * 0.2));
+            damage *= (float) (1 - (lvl * 0.2));
         }
 
         return damage < 0 ? 0 : damage;
@@ -272,7 +273,7 @@ public class BDamageUtils {
             return d <= e ? blockHitResult : blockHitResult2;
         }, (raycastContext) -> {
             Vec3d vec3d = raycastContext.getStart().subtract(raycastContext.getEnd());
-            return BlockHitResult.createMissed(raycastContext.getEnd(), Direction.getFacing(vec3d.x, vec3d.y, vec3d.z), new BlockPos(raycastContext.getEnd()));
+            return BlockHitResult.createMissed(raycastContext.getEnd(), Direction.getFacing(vec3d.x, vec3d.y, vec3d.z), BlockPos.ofFloored(raycastContext.getEnd()));
         });
     }
 
