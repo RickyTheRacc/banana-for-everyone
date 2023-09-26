@@ -13,11 +13,17 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.MathHelper;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
+
+import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class BananaConfig extends System<BananaConfig> {
     public final Settings settings = new Settings();
 
     private final SettingGroup sgPrefix = settings.createGroup("Prefix");
+    private final SettingGroup sgText = settings.createGroup("3D Text");
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgMining = settings.createGroup("Mining");
     private final SettingGroup sgCrystals = settings.createGroup("Crystals");
@@ -86,6 +92,39 @@ public class BananaConfig extends System<BananaConfig> {
         .description("Color display for the right bracket.")
         .defaultValue(new SettingColor(150,150,150,255))
         .onChanged(cope -> ChatUtils.registerCustomPrefix("meteordevelopment", this::getPrefix))
+        .build()
+    );
+
+    // Text
+
+    private final Setting<Double> textScale = sgText.add(new DoubleSetting.Builder()
+        .name("scale")
+        .description("The base scale of the text.")
+        .defaultValue(1)
+        .range(1,5)
+        .build()
+    );
+
+    private final Setting<Double> divisor = sgText.add(new DoubleSetting.Builder()
+        .name("divisor")
+        .description("How strongly distance should affect text size.")
+        .defaultValue(6)
+        .range(1,10)
+        .build()
+    );
+
+    private final Setting<Double> minScale = sgText.add(new DoubleSetting.Builder()
+        .name("min-scale")
+        .description("The smallest text can get, regardless of distance.")
+        .defaultValue(0.5)
+        .range(0.1,5)
+        .build()
+    );
+    private final Setting<Double> maxScale = sgText.add(new DoubleSetting.Builder()
+        .name("max-scale")
+        .description("The largest text can get, regardless of distance.")
+        .defaultValue(1.7)
+        .range(0.1,5)
         .build()
     );
     
@@ -261,5 +300,14 @@ public class BananaConfig extends System<BananaConfig> {
         Format (Formatting formatting) {
             this.formatting = formatting;
         }
+    }
+
+    public double getScale(Vector3d pos) {
+        double denom = pos.distance(
+            mc.gameRenderer.getCamera().getPos().x,
+            mc.gameRenderer.getCamera().getPos().y,
+            mc.gameRenderer.getCamera().getPos().z
+        ) / divisor.get();
+        return MathHelper.clamp(textScale.get() / denom, minScale.get(), maxScale.get());
     }
 }
