@@ -1,5 +1,6 @@
 package bananaplus.utils;
 
+import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.utils.Utils;
 import net.minecraft.block.AnvilBlock;
@@ -43,7 +44,7 @@ public class BEntityUtils {
     }
 
     public static Direction rayTraceCheck(BlockPos pos, boolean forceReturn) {
-        Vec3d eyesPos = new Vec3d(mc.player.getX(), mc.player.getY() + (double)mc.player.getEyeHeight(mc.player.getPose()), mc.player.getZ());
+        Vec3d eyesPos = mc.player.getEyePos();
         Direction[] var3 = Direction.values();
 
         for (Direction direction : var3) {
