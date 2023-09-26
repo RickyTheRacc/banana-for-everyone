@@ -31,38 +31,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class MonkeBurrow extends Module {
-    public enum Mode {
-        Normal,
-        Smart
-    }
-
-    public enum RubberbandDirection {
-        Up,
-        Down
-    }
-
-    public enum CenterMode {
-        Snap,
-        Center,
-        None
-    }
-
-    public enum Block {
-        EChest,
-        Obsidian,
-        Anvil,
-        AncientDebris,
-        Netherite,
-        Anchor,
-        EnchantingTable,
-        Held
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
 
     // General
+
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("burrow-mode")
             .description("How the module should function.")
@@ -108,8 +81,8 @@ public class MonkeBurrow extends Module {
             .build()
     );
 
-
     // Placing
+
     private final Setting<CenterMode> centerMode = sgPlacing.add(new EnumSetting.Builder<CenterMode>()
             .name("center")
             .description("How it should center you before burrowing.")
@@ -182,15 +155,12 @@ public class MonkeBurrow extends Module {
             .build()
     );
 
-
     public MonkeBurrow() {
         super(BananaPlus.COMBAT, "monke-burrow", "Attempts to clip you into a block.");
     }
 
-
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
     private boolean shouldBurrow;
-
 
     @Override
     public void onActivate() {
@@ -388,4 +358,34 @@ public class MonkeBurrow extends Module {
         if (mode.get() == Mode.Smart) return "Standby";
         return null;
     }
+
+    public enum Mode {
+        Normal,
+        Smart
+    }
+
+    public enum RubberbandDirection {
+        Up,
+        Down
+    }
+
+    public enum CenterMode {
+        Snap,
+        Center,
+        None
+    }
+
+    public enum Block {
+        EChest,
+        Obsidian,
+        Anvil,
+        AncientDebris,
+        Netherite,
+        Anchor,
+        EnchantingTable,
+        Held
+    }
+
+
+
 }

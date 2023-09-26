@@ -35,8 +35,8 @@ public class SmartHoleFill extends Module {
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // General
+
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
         .name("primary-blocks")
         .description("What blocks to use for filling holes.")
@@ -90,8 +90,8 @@ public class SmartHoleFill extends Module {
         .build()
     );
 
-
     // Ranges
+
     private final Setting<Double> targetRange = sgRanges.add(new DoubleSetting.Builder()
         .name("target-range")
         .description("target-range")
@@ -131,8 +131,8 @@ public class SmartHoleFill extends Module {
         .build()
     );
 
-
     // Placing
+
     private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
         .name("switch-mode")
         .description("How to switch to your target block.")
@@ -200,8 +200,8 @@ public class SmartHoleFill extends Module {
         .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
         .name("render-swing")
         .description("Render the player's hand swinging when placing blocks.")
@@ -240,7 +240,6 @@ public class SmartHoleFill extends Module {
         .build()
     );
 
-
     public SmartHoleFill() {
         super(BananaPlus.COMBAT, "smart-holefill", "Fill safe holes around your enemy.");
     }
@@ -251,7 +250,6 @@ public class SmartHoleFill extends Module {
     private final List<Hole> holes = new ArrayList<>();
 
     private int delay, blocksPlaced;
-
 
     private boolean blockFilter(Block block) {
         return block == Blocks.OBSIDIAN ||

@@ -14,38 +14,13 @@ import net.minecraft.util.Identifier;
 import java.util.Calendar;
 
 public class LogoHud extends HudElement {
-    public static final HudElementInfo<LogoHud> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "logo-hud", "Display the Banana+ logo.", LogoHud::new);
-
-    public enum Logo {
-        Default,
-        British,
-        Festive,
-        Spooky,
-        Mexican,
-        Irish,
-        Patriot,
-        Pride,
-        Swedish
-    }
-
-    public enum Default {
-        Default,
-        Plus2,
-        Plus3,
-        Circle
-    }
-
-    public enum Halloween {
-        Default,
-        Ghosts,
-        Pumpkin
-    }
-
-
+    public static final HudElementInfo<LogoHud> INFO = new HudElementInfo<>(
+            BananaPlus.HUD_GROUP, "logo-hud", "Display the Banana+ logo.", LogoHud::new
+    );
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<Logo> logo = sgGeneral.add(new EnumSetting.Builder<Logo>()
             .name("logo-image")
             .description("Which image to display as the logo.")
@@ -89,7 +64,6 @@ public class LogoHud extends HudElement {
         super(INFO);
     }
 
-
     // Normal Logos
     private static final Identifier LOGO = new Identifier("assets", "logo1.png");
     private static final Identifier LOGO2 = new Identifier("assets", "logo2.png");
@@ -108,31 +82,6 @@ public class LogoHud extends HudElement {
     private static final Identifier PATRIOT = new Identifier("assets", "patriot.png");
     private static final Identifier PRIDE = new Identifier("assets", "pride.png");
     private static final Identifier SWEDEN = new Identifier("assets", "swedish.png");
-
-    public Identifier getNormal() {
-        if (normal.get() == Default.Default) return LOGO;
-        if (normal.get() == Default.Plus2) return LOGO2;
-        if (normal.get() == Default.Plus3) return LOGO3;
-        return CIRCLE;
-    }
-
-    public Identifier getSpooky() {
-        if (halloween.get() == Halloween.Default) return HALLOWEEN;
-        if (halloween.get() == Halloween.Pumpkin) return HALLOWEEN2;
-        return HALLOWEEN3;
-    }
-
-    public Identifier getDefault() {
-        if (logo.get() == Logo.British) return BRITISH;
-        if (logo.get() == Logo.Festive) return CHRISTMAS;
-        if (logo.get() == Logo.Spooky) return getSpooky();
-        if (logo.get() == Logo.Mexican) return MEXICO;
-        if (logo.get() == Logo.Irish) return PATRICK;
-        if (logo.get() == Logo.Patriot) return PATRIOT;
-        if (logo.get() == Logo.Pride) return PRIDE;
-        if (logo.get() == Logo.Swedish) return SWEDEN;
-        return getNormal();
-    }
 
     @Override
     public void tick(HudRenderer renderer) {
@@ -173,5 +122,55 @@ public class LogoHud extends HudElement {
         Renderer2D.TEXTURE.begin();
         Renderer2D.TEXTURE.texQuad(x, y, w, h, color);
         Renderer2D.TEXTURE.render(null);
+    }
+
+    public Identifier getNormal() {
+        if (normal.get() == Default.Default) return LOGO;
+        if (normal.get() == Default.Plus2) return LOGO2;
+        if (normal.get() == Default.Plus3) return LOGO3;
+        return CIRCLE;
+    }
+
+    public Identifier getSpooky() {
+        if (halloween.get() == Halloween.Default) return HALLOWEEN;
+        if (halloween.get() == Halloween.Pumpkin) return HALLOWEEN2;
+        return HALLOWEEN3;
+    }
+
+    public Identifier getDefault() {
+        if (logo.get() == Logo.British) return BRITISH;
+        if (logo.get() == Logo.Festive) return CHRISTMAS;
+        if (logo.get() == Logo.Spooky) return getSpooky();
+        if (logo.get() == Logo.Mexican) return MEXICO;
+        if (logo.get() == Logo.Irish) return PATRICK;
+        if (logo.get() == Logo.Patriot) return PATRIOT;
+        if (logo.get() == Logo.Pride) return PRIDE;
+        if (logo.get() == Logo.Swedish) return SWEDEN;
+        return getNormal();
+    }
+
+    public enum Logo {
+        Default,
+        British,
+        Festive,
+        Spooky,
+        Mexican,
+        Irish,
+        Patriot,
+        Pride,
+        Swedish
+    }
+
+    public enum Default {
+        Default,
+        Plus2,
+        Plus3,
+        Circle
+    }
+
+    public enum Halloween {
+        Default,
+        Ghosts,
+        Pumpkin
     }
 }

@@ -15,17 +15,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class StepPlus extends Module {
-    public enum Mode {
-        Packet,
-        Vanilla,
-        Spider,
-        Jump
-    }
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Mode to use for Step+.")
@@ -52,16 +45,13 @@ public class StepPlus extends Module {
             .build()
     );
 
-
     public StepPlus() {
         super(BananaPlus.COMBAT, "step+", "Allows you to walk up full blocks.");
     }
 
-
     private boolean flag;
     private int lastStep = 0;
     private final Deque<Double> queue = new ArrayDeque<>();
-
 
     @Override
     public void onActivate() {
@@ -144,4 +134,13 @@ public class StepPlus extends Module {
         return !mc.world.isSpaceEmpty(box.expand(0.01, 0, 0))
             || !mc.world.isSpaceEmpty(box.expand(0, 0, 0.01));
     }
+
+    public enum Mode {
+        Packet,
+        Vanilla,
+        Spider,
+        Jump
+    }
+
+
 }

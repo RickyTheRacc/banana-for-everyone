@@ -30,28 +30,13 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AutoTrapPlus extends Module {
-    public enum TopMode {
-        Full,
-        Top,
-        Side,
-        None
-    }
-
-    public enum BottomMode {
-        Full,
-        Single,
-        Platform,
-        None
-    }
-
-
     private final SettingGroup sgTargeting = settings.createGroup("Targeting");
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // Targeting
+
     private final Setting<Double> targetRange = sgTargeting.add(new DoubleSetting.Builder()
             .name("target-range")
             .description("The range players can be targeted.")
@@ -67,8 +52,8 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-
     // General
+
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("primary-blocks")
             .description("What blocks to use for Auto Trap+.")
@@ -156,8 +141,8 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-
     // Placing
+
     private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
@@ -225,8 +210,8 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders hand swing when trying to place a block.")
@@ -338,11 +323,9 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-
     public AutoTrapPlus() {
         super(BananaPlus.COMBAT, "auto-trap+", "Surround your target with blocks.");
     }
-
 
     private BlockPos playerPos;
     private int ticksPassed;
@@ -418,6 +401,11 @@ public class AutoTrapPlus extends Module {
         // Ticking fade animation
         renderBlocks.forEach(RenderBlock::tick);
         renderBlocks.removeIf(renderBlock -> renderBlock.ticks <= 0);
+    }
+
+    @Override
+    public String getInfoString() {
+        return EntityUtils.getName(target);
     }
 
     // This is to return both centerPos and extraPos
@@ -634,8 +622,17 @@ public class AutoTrapPlus extends Module {
         Unsafe
     }
 
-    @Override
-    public String getInfoString() {
-        return EntityUtils.getName(target);
+    public enum TopMode {
+        Full,
+        Top,
+        Side,
+        None
+    }
+
+    public enum BottomMode {
+        Full,
+        Single,
+        Platform,
+        None
     }
 }

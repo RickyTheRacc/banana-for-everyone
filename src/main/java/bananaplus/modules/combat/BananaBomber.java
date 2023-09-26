@@ -66,72 +66,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class BananaBomber extends Module {
-    public enum YawStepMode {
-        Break,
-        All,
-    }
-
-    public enum AutoSwitchMode {
-        Normal,
-        Silent,
-        None
-    }
-
-    public enum SupportMode {
-        Disabled,
-        Accurate,
-        Fast
-    }
-
-    public enum CancelCrystalMode {
-        Hit,
-        NoDesync
-    }
-
-    public enum DamageIgnore {
-        Always,
-        WhileSafe,
-        Never
-    }
-
-    public enum SlowMode {
-        Delay,
-        Age,
-        Both
-    }
-
-    public enum SelfPopIgnore {
-        Place,
-        Break,
-        Both
-    }
-
-    public enum PopPause {
-        Place,
-        Break,
-        Both
-    }
-
-    public enum RenderMode {
-        Normal,
-        Fade,
-        None
-    }
-
-    public enum TrapType {
-        BothTrapped,
-        AnyTrapped,
-        TopTrapped,
-        FaceTrapped,
-        Always
-    }
-
-    public enum FacePlaceMode {
-        Normal,
-        Slow,
-        None
-    }
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlace = settings.createGroup("Place");
     private final SettingGroup sgFacePlace = settings.createGroup("Face Place");
@@ -142,8 +76,8 @@ public class BananaBomber extends Module {
     private final SettingGroup sgPause = settings.createGroup("Pause");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // General
+
     public final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
             .name("debug-mode")
             .description("Informs you what the CA is doing.")
@@ -237,8 +171,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Place
+
     public final Setting<Boolean> doPlace = sgPlace.add(new BoolSetting.Builder()
             .name("place")
             .description("If the CA should place crystals.")
@@ -344,8 +278,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Face place
+
     public final Setting<Boolean> facePlace = sgFacePlace.add(new BoolSetting.Builder()
             .name("face-place")
             .description("Will place crystals against the enemy's face.")
@@ -448,8 +382,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Surround
+
     public final Setting<Boolean> burrowBreak = sgSurround.add(new BoolSetting.Builder()
             .name("burrow-break")
             .description("Will try to break target's burrow.")
@@ -573,8 +507,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Break
+
     private final Setting<Boolean> doBreak = sgBreak.add(new BoolSetting.Builder()
             .name("break")
             .description("If the CA should break crystals.")
@@ -744,8 +678,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Fast break
+
     public final Setting<Boolean> fastBreak = sgFastBreak.add(new BoolSetting.Builder()
             .name("fast-break")
             .description("Ignores break delay and tries to break the crystal as soon as it's spawned in the world.")
@@ -777,8 +711,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Chain Pop
+
     public final Setting<Boolean> selfPopInvincibility = sgChainPop.add(new BoolSetting.Builder()
             .name("self-pop-invincibility")
             .description("Ignores self damage if you just popped.")
@@ -827,8 +761,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Pause
+
     public final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
             .name("pause-health")
             .description("Pauses when you go below a certain health.")
@@ -858,8 +792,8 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     // Render
+
     public final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Whether to swing your hand client side")
@@ -988,11 +922,9 @@ public class BananaBomber extends Module {
             .build()
     );
 
-
     public BananaBomber() {
         super(BananaPlus.COMBAT, "banana-bomber", "Automatically places and attacks crystals.");
     }
-
 
     public int breakTimer;
     private int placeTimer;
@@ -1796,11 +1728,71 @@ public class BananaBomber extends Module {
         }
     }
 
-    public PlayerEntity getPlayerTarget() {
-        if(bestTarget != null) {
-            return bestTarget;
-        } else {
-            return null;
-        }
+    public enum YawStepMode {
+        Break,
+        All,
     }
+
+    public enum AutoSwitchMode {
+        Normal,
+        Silent,
+        None
+    }
+
+    public enum SupportMode {
+        Disabled,
+        Accurate,
+        Fast
+    }
+
+    public enum CancelCrystalMode {
+        Hit,
+        NoDesync
+    }
+
+    public enum DamageIgnore {
+        Always,
+        WhileSafe,
+        Never
+    }
+
+    public enum SlowMode {
+        Delay,
+        Age,
+        Both
+    }
+
+    public enum SelfPopIgnore {
+        Place,
+        Break,
+        Both
+    }
+
+    public enum PopPause {
+        Place,
+        Break,
+        Both
+    }
+
+    public enum RenderMode {
+        Normal,
+        Fade,
+        None
+    }
+
+    public enum TrapType {
+        BothTrapped,
+        AnyTrapped,
+        TopTrapped,
+        FaceTrapped,
+        Always
+    }
+
+    public enum FacePlaceMode {
+        Normal,
+        Slow,
+        None
+    }
+
+
 }

@@ -23,28 +23,10 @@ import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.math.BlockPos;
 
 public class AntiTrap extends Module {
-    public enum Mode {
-        VClip,
-        Chorus
-    }
-
-    public enum VClipDirection {
-        Up,
-        Down
-    }
-
-    public enum TrapType {
-        BothTrapped,
-        AnyTrapped,
-        TopTrapped,
-        FaceTrapped
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<TrapType> trappedWhen = sgGeneral.add(new EnumSetting.Builder<TrapType>()
             .name("activate-on")
             .description("How you must be trapped in order to activate.")
@@ -296,4 +278,24 @@ public class AntiTrap extends Module {
     private void onStoppedUsingItem(StoppedUsingItemEvent event) {
         stopEating();
     }
+
+    public enum Mode {
+        VClip,
+        Chorus
+    }
+
+    public enum VClipDirection {
+        Up,
+        Down
+    }
+
+    public enum TrapType {
+        BothTrapped,
+        AnyTrapped,
+        TopTrapped,
+        FaceTrapped
+    }
+
+
+
 }

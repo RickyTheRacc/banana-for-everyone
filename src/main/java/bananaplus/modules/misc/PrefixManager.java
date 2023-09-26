@@ -9,27 +9,11 @@ import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 public class PrefixManager extends Module {
-    public enum PrefixMode {
-        Banana,
-        Custom,
-        Default
-    }
-
-    public enum Format {
-        Normal,
-        Heavy,
-        Italic,
-        Underline,
-        Crossed,
-        Cursed
-    }
-
-
     private final SettingGroup sgBanana = settings.createGroup("Banana+");
     private final SettingGroup sgMeteor = settings.createGroup("Meteor");
 
-
     // General
+
     private final Setting<String> bananaPrefix = sgBanana.add(new StringSetting.Builder()
             .name("banana+-prefix")
             .description("What prefix to use for Banana+ modules.")
@@ -95,8 +79,8 @@ public class PrefixManager extends Module {
             .build()
     );
 
-
     // Meteor
+
     private final Setting<PrefixMode> prefixMode = sgMeteor.add(new EnumSetting.Builder<PrefixMode>()
             .name("prefix-mode")
             .description("What prefix to use for Meteor modules.")
@@ -177,11 +161,9 @@ public class PrefixManager extends Module {
             .build()
     );
 
-
     public PrefixManager() {
         super(BananaPlus.MISC, "prefix-manager", "Allows you to customize prefixes used by Meteor.");
     }
-
 
     @Override
     public void onActivate(){
@@ -259,5 +241,20 @@ public class PrefixManager extends Module {
         prefix.append(" ");
 
         return prefix;
+    }
+
+    public enum PrefixMode {
+        Banana,
+        Custom,
+        Default
+    }
+
+    public enum Format {
+        Normal,
+        Heavy,
+        Italic,
+        Underline,
+        Crossed,
+        Cursed
     }
 }

@@ -13,11 +13,13 @@ import net.minecraft.item.*;
 import java.util.*;
 
 public class ItemCounter extends HudElement {
-    public static final HudElementInfo<ItemCounter> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "item-counter", "Count different items in text.", ItemCounter::new);
+    public static final HudElementInfo<ItemCounter> INFO = new HudElementInfo<>(
+            BananaPlus.HUD_GROUP, "item-counter", "Count different items in text.", ItemCounter::new
+    );
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<SortMode> sortMode = sgGeneral.add(new EnumSetting.Builder<SortMode>()
             .name("sort-mode")
             .description("How to sort the items list.")
@@ -50,10 +52,8 @@ public class ItemCounter extends HudElement {
         super(INFO);
     }
 
-
     private final Pool<CountedItem> itemPool = new Pool<>(CountedItem::new);
     private final List<CountedItem> items = new ArrayList<>();
-
 
     @Override
     public void tick(HudRenderer renderer) {

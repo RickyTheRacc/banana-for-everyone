@@ -26,8 +26,8 @@ public class Monkhand extends Module {
     private final SettingGroup sgCrystal = settings.createGroup("Crystal");
     private final SettingGroup sgMisc = settings.createGroup("Misc");
 
-
     // General
+
     private final Setting<Item> item = sgGeneral.add(new EnumSetting.Builder<Item>()
             .name("item")
             .description("Which item to hold in your offhand.")
@@ -70,8 +70,8 @@ public class Monkhand extends Module {
             .build()
     );
 
-
     // Gap
+
     private final Setting<Boolean> allowCrapples = sgGap.add(new BoolSetting.Builder()
             .name("allow-crapples")
             .description("Holds a crapple instead of an EGap when no Egap is found.")
@@ -132,8 +132,8 @@ public class Monkhand extends Module {
             .build()
     );
 
-
     // Crystal
+
     private final Setting<Boolean> crystalCa = sgCrystal.add(new BoolSetting.Builder()
             .name("crystal-on-ca")
             .description("Holds a crystal when you have Crystal Aura enabled.")
@@ -155,8 +155,8 @@ public class Monkhand extends Module {
             .build()
     );
 
-
     // Misc
+
     private final Setting<Boolean> xpOnXP = sgMisc.add(new BoolSetting.Builder()
             .name("XP-on-XP-thrower")
             .description("Holds experience bottles if Auto XP is being used.")
@@ -172,11 +172,9 @@ public class Monkhand extends Module {
             .build()
     );
 
-
     public Monkhand() {
         super(BananaPlus.COMBAT, "monkhand", "Allows you to hold specified items in your offhand.");
     }
-
 
     private boolean isClicking;
     private boolean sentMessage;

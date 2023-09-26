@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArmorMessages extends Module {
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+
+    // General
 
     private final Setting<Integer> durThreshold = sgGeneral.add(new IntSetting.Builder()
             .name("durability-threshold")
@@ -59,7 +60,6 @@ public class ArmorMessages extends Module {
         super(BananaPlus.COMBAT, "armor-alert", "Send alerts to people with low armor.");
     }
 
-
     private final List<String> messages = new ArrayList<>();
     private final List<PlayerEntity> helmet = new ArrayList<>();
     private final List<PlayerEntity> chestplate = new ArrayList<>();
@@ -67,7 +67,6 @@ public class ArmorMessages extends Module {
     private final List<PlayerEntity> boots = new ArrayList<>();
 
     private int messageI, timer;
-
 
     @Override
     public void onActivate() {

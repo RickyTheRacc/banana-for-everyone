@@ -20,17 +20,13 @@ import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.screen.slot.SlotActionType;
 
 public class MonkeTotem extends Module {
-    public enum Mode {
-        Smart,
-        Strict
-    }
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgCursor = settings.createGroup("Cursor");
     private final SettingGroup sgArmor = settings.createGroup("Armor Modifier");
     private final SettingGroup sgHole = settings.createGroup("In Hole Modifier");
 
     // General
+
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Determines when to hold a totem, strict will always hold.")
@@ -126,8 +122,8 @@ public class MonkeTotem extends Module {
             .build()
     );
 
-
     // Cursor
+
     private final Setting<Boolean> antiCursorStack = sgCursor.add(new BoolSetting.Builder()
             .name("anti-cursor-stack")
             .description("Puts back items on your cursor back to your inventory after popping.")
@@ -153,8 +149,8 @@ public class MonkeTotem extends Module {
             .build()
     );
 
-
     // Armor
+
     private final Setting<Double> missingHelmet = sgArmor.add(new DoubleSetting.Builder()
             .name("missing-helmet")
             .description("The minimum total health to increase by if your helmet is missing.")
@@ -187,8 +183,8 @@ public class MonkeTotem extends Module {
             .build()
     );
 
-
     // Hole
+
     private final Setting<Double> inSingleHole = sgHole.add(new DoubleSetting.Builder()
             .name("in-single-hole")
             .description("The minimum total health to decrease by if your are in a surround.")
@@ -221,11 +217,9 @@ public class MonkeTotem extends Module {
             .build()
     );
 
-
     public MonkeTotem() {
         super(BananaPlus.COMBAT, "monke-totem", "Automatically puts a totem in your offhand.");
     }
-
 
     private final TimerUtils offhandTimer = new TimerUtils();
     private final TimerUtils poppedTimer = new TimerUtils();
@@ -377,5 +371,10 @@ public class MonkeTotem extends Module {
     @Override
     public String getInfoString() {
         return String.valueOf(totems);
+    }
+
+    public enum Mode {
+        Smart,
+        Strict
     }
 }

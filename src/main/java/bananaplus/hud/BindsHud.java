@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BindsHud extends HudElement {
-    public static final HudElementInfo<BindsHud> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "binds-hud", "Displays modules you've binded keys to.", BindsHud::new);
-
-
+    public static final HudElementInfo<BindsHud> INFO = new HudElementInfo<>(
+            BananaPlus.HUD_GROUP, "binds-hud", "Displays modules you've bound keys to.", BindsHud::new
+    );
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+    // General
 
-    // General Settings
     private final Setting<Sort> sortMode = sgGeneral.add(new EnumSetting.Builder<Sort>()
             .name("sort-mode")
             .description("How to sort active modules.")
@@ -95,11 +95,9 @@ public class BindsHud extends HudElement {
             .build()
     );
 
-
     public BindsHud() {
         super(INFO);
     }
-
 
     private final List<Module> modules = new ArrayList<>();
 
@@ -109,7 +107,6 @@ public class BindsHud extends HudElement {
     private double prevX;
     private double prevTextLength;
     private Color prevColor = new Color();
-
 
     @Override
     public void tick(HudRenderer renderer) {

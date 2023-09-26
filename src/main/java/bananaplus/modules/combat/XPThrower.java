@@ -21,18 +21,12 @@ import net.minecraft.util.Hand;
 import static bananaplus.utils.TimerUtils.getTPSMatch;
 
 public class XPThrower extends Module {
-    public enum SwitchMode {
-        Normal,
-        Silent,
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlayer = settings.createGroup("Player");
     private final SettingGroup sgPause = settings.createGroup("Pause");
 
-
     // General
+
     public final Setting<Keybind> throwBind = sgGeneral.add(new KeybindSetting.Builder()
             .name("keybind")
             .description("The keybind to throw XP.")
@@ -81,8 +75,8 @@ public class XPThrower extends Module {
             .build()
     );
 
-
     // Player
+
     private final Setting<SwitchMode> autoSwitch = sgPlayer.add(new EnumSetting.Builder<SwitchMode> ()
             .name("auto-switch")
             .description("How to switch to XP.")
@@ -143,8 +137,8 @@ public class XPThrower extends Module {
             .build()
     );
 
-
     //Pause
+
     private final Setting<Boolean> eatPause = sgPause.add(new BoolSetting.Builder()
             .name("pause-on-eat")
             .description("Whether to pause while eating.")
@@ -175,11 +169,9 @@ public class XPThrower extends Module {
             .build()
     );
 
-
     public XPThrower() {
         super(BananaPlus.COMBAT, "XP-thrower", "Throw XP bottles to repair your armor and tools.");
     }
-
 
     private int delay = 0;
     public boolean isRepairing;
@@ -290,5 +282,10 @@ public class XPThrower extends Module {
                 if (autoSwitch.get() == SwitchMode.Silent) InvUtils.swap(prevSlot, false);
             }
         }
+    }
+
+    public enum SwitchMode {
+        Normal,
+        Silent,
     }
 }

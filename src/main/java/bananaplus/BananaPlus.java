@@ -54,7 +54,6 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new AntiSurround());
 		Modules.get().add(new BananaBomber());
 		Modules.get().add(new CevBreaker());
-		Modules.get().add(new CityESPPlus());
 		Modules.get().add(new HoleESPPlus());
 		Modules.get().add(new MonkeBurrow());
 		Modules.get().add(new Monkhand());

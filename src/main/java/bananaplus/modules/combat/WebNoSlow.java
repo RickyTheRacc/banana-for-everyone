@@ -10,15 +10,9 @@ import meteordevelopment.meteorclient.systems.modules.world.Timer;
 import meteordevelopment.orbit.EventHandler;
 
 public class WebNoSlow extends Module {
-    public enum WebMode {
-        Vanilla,
-        Timer,
-        Adaptive,
-    }
-
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+    // General
 
     public final Setting<WebMode> web = sgGeneral.add(new EnumSetting.Builder<WebMode>()
             .name("web")
@@ -81,5 +75,11 @@ public class WebNoSlow extends Module {
                 resetTimer = true;
             }
         }
+    }
+
+    public enum WebMode {
+        Vanilla,
+        Timer,
+        Adaptive,
     }
 }

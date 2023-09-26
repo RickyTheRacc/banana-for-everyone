@@ -17,19 +17,13 @@ import java.util.Calendar;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class WelcomeHud extends HudElement {
-    public static final HudElementInfo<WelcomeHud> INFO = new HudElementInfo<>(BananaPlus.HUD_GROUP, "welcome-hud", "Display a friendly welcome to Banana+.", WelcomeHud::new);
-
-
-    public enum Mode {
-        Normal,
-        Custom
-    }
-
-
+    public static final HudElementInfo<WelcomeHud> INFO = new HudElementInfo<>(
+            BananaPlus.HUD_GROUP, "welcome-hud", "Display a friendly welcome to Banana+.", WelcomeHud::new
+    );
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-
     // General
+
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("What text to show for the greeting.")
@@ -69,11 +63,9 @@ public class WelcomeHud extends HudElement {
             .build()
     );
 
-
     public WelcomeHud () {
         super(INFO);
     }
-
 
     private String leftText;
     private String rightText;
@@ -117,4 +109,13 @@ public class WelcomeHud extends HudElement {
         renderer.text(leftText, x, y, TextHud.getSectionColor(0), true);
         renderer.text(rightText, x + leftWidth, y, TextHud.getSectionColor(1), true);
     }
+
+
+
+    public enum Mode {
+        Normal,
+        Custom
+    }
+
+
 }

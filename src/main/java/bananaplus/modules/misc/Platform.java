@@ -39,8 +39,8 @@ public class Platform extends Module {
     private final SettingGroup sgToggle = settings.createGroup("Toggle Modes");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-
     // General
+
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
             .name("primary-blocks")
             .description("What blocks to use for Surround+.")
@@ -131,8 +131,8 @@ public class Platform extends Module {
             .build()
     );
 
-
     // Placing
+
     private final Setting<BWorldUtils.SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<BWorldUtils.SwitchMode>()
             .name("switch-mode")
             .description("How to switch to your target block.")
@@ -193,8 +193,8 @@ public class Platform extends Module {
             .build()
     );
 
-
     // Force keybinds
+
     private final Setting<Keybind> doubleHeightKeybind = sgForce.add(new KeybindSetting.Builder()
             .name("double-height-keybind")
             .description("Turns on double height.")
@@ -202,8 +202,8 @@ public class Platform extends Module {
             .build()
     );
 
-
     // Toggles
+
     private final Setting<Boolean> toggleOnYChange = sgToggle.add(new BoolSetting.Builder()
             .name("toggle-on-y-change")
             .description("Automatically disables when your y level (step, jumping, etc).")
@@ -239,8 +239,8 @@ public class Platform extends Module {
             .build()
     );
 
-
     // Render
+
     private final Setting<Boolean> renderSwing = sgRender.add(new BoolSetting.Builder()
             .name("render-swing")
             .description("Renders hand swing when trying to place a block.")
@@ -299,11 +299,9 @@ public class Platform extends Module {
             .build()
     );
 
-
     public Platform() {
         super(BananaPlus.MISC, "platform", "Platforms around your feet to make building easier.");
     }
-
 
     private BlockPos playerPos;
     private int ticksPassed;
@@ -317,7 +315,6 @@ public class Platform extends Module {
 
     private final Pool<RenderBlock> renderBlockPool = new Pool<>(RenderBlock::new);
     private final List<RenderBlock> renderBlocks = new ArrayList<>();
-
 
     @Override
     public void onActivate() {

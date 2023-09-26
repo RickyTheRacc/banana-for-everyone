@@ -27,23 +27,6 @@ import org.joml.Vector2d;
 import static bananaplus.utils.TimerUtils.getTPSMatch;
 
 public class StrafePlus extends Module {
-    public enum Mode {
-        Vanilla,
-        NCP,
-        Smart
-    }
-
-    public enum HopMode {
-        Auto,
-        Custom
-    }
-
-    public enum WebbedPause {
-        Always,
-        OnAir,
-        None
-    }
-
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgVanilla = settings.createGroup("Vanilla");
     private final SettingGroup sgNCP = settings.createGroup("NCP");
@@ -51,6 +34,7 @@ public class StrafePlus extends Module {
     private final SettingGroup sgPause = settings.createGroup("Pause");
     private final SettingGroup sgAC = settings.createGroup("Anti Cheat");
 
+    // General
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
             .name("mode")
@@ -638,5 +622,22 @@ public class StrafePlus extends Module {
         velZ = (double) forward * speed * mz - (double) side * speed * mx;
 
         return new Vector2d(velX, velZ);
+    }
+
+    public enum Mode {
+        Vanilla,
+        NCP,
+        Smart
+    }
+
+    public enum HopMode {
+        Auto,
+        Custom
+    }
+
+    public enum WebbedPause {
+        Always,
+        OnAir,
+        None
     }
 }
