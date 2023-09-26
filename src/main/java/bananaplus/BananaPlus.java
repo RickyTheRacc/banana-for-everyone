@@ -1,10 +1,10 @@
 package bananaplus;
 
-import bananaplus.fixed.combat.ArmorAlerts;
-import bananaplus.fixed.combat.BurrowESP;
-import bananaplus.fixed.combat.MonkeHand;
+import bananaplus.fixedmodules.combat.ArmorAlerts;
+import bananaplus.fixedmodules.combat.BurrowESP;
+import bananaplus.fixedmodules.combat.MonkeHand;
 import bananaplus.system.BananaTab;
-import bananaplus.fixed.combat.XPThrower;
+import bananaplus.fixedmodules.combat.XPThrower;
 import bananaplus.hud.*;
 import bananaplus.modules.combat.*;
 import bananaplus.modules.combat.BananaBomber;

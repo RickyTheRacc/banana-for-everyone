@@ -1,4 +1,4 @@
-package bananaplus.fixed.combat;
+package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
 import bananaplus.enums.SwitchMode;

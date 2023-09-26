@@ -1,8 +1,18 @@
-package bananaplus.fixed.combat;
+package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
+import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.combat.BedAura;
+import meteordevelopment.meteorclient.systems.modules.combat.CrystalAura;
+import meteordevelopment.meteorclient.utils.player.FindItemResult;
+import meteordevelopment.meteorclient.utils.player.InvUtils;
+import meteordevelopment.orbit.EventHandler;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.item.Item;
+
+import java.util.List;
 
 public class MonkeHand extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -141,8 +151,58 @@ public class MonkeHand extends Module {
 
     // Combat
 
+    private Setting<List<Module>> crystalAura = sgCombat.add(new ModuleListSetting.Builder()
+        .name("crystal-auras")
+        .description("Hold beds if any of these are active.")
+        .defaultValue(CrystalAura.class)
+        .visible (() -> totemMode.get() != TotemMode.Strict)
+        .build()
+    );
+
+    private Setting<List<Module>> bedAuras = sgCombat.add(new ModuleListSetting.Builder()
+        .name("bed-auras")
+        .description("Hold beds if any of these are active.")
+        .defaultValue(BedAura.class)
+        .visible (() -> totemMode.get() != TotemMode.Strict)
+        .build()
+    );
+
+    private final Setting<Boolean> whileMining = sgCombat.add(new BoolSetting.Builder()
+        .name("while-mining")
+        .description("Always hold crystals while mining a block.")
+        .defaultValue(false)
+        .visible (() -> totemMode.get() != TotemMode.Strict)
+        .build()
+    );
+
+    private final Setting<Boolean> enemiesNearby = sgCombat.add(new BoolSetting.Builder()
+        .name("near-enemies")
+        .description("Always hold crystals if you're near players you don't have added.")
+        .defaultValue(true)
+        .visible (() -> totemMode.get() != TotemMode.Strict)
+        .build()
+    );
+
     public MonkeHand() {
         super(BananaPlus.FIXED, "monkehand", "The best offhand in the game. Even works with XCarry!");
+    }
+
+    @EventHandler
+    private void onPreTick(TickEvent.Pre event) {
+        if (mc.currentScreen instanceof GenericContainerScreen) return;
+    }
+
+    @EventHandler
+    private void onPostTick(TickEvent.Post event) {
+
+    }
+
+    private FindItemResult findItem(Item item) {
+        FindItemResult xCarry = InvUtils.find(stack -> stack.getItem() == item, 37, 40);
+        if (xCarry.found()) return xCarry;
+        FindItemResult inventory = InvUtils.find(stack -> stack.getItem() == item, 9, 35);
+        if (inventory.found() || !useHotbar.get()) return inventory;
+        return InvUtils.find(stack -> stack.getItem() == item, 0, 8);
     }
 
     public enum TotemMode {
