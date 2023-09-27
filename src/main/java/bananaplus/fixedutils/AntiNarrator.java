@@ -1,4 +1,4 @@
-package bananaplus.utils;
+package bananaplus.fixedutils;
 
 import com.sun.jna.Platform;
 import meteordevelopment.meteorclient.MeteorClient;

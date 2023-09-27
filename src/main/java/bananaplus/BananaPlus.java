@@ -1,10 +1,7 @@
 package bananaplus;
 
-import bananaplus.fixedmodules.combat.ArmorAlerts;
-import bananaplus.fixedmodules.combat.BurrowESP;
-import bananaplus.fixedmodules.combat.MonkeHand;
+import bananaplus.fixedmodules.combat.*;
 import bananaplus.system.BananaTab;
-import bananaplus.fixedmodules.combat.XPThrower;
 import bananaplus.hud.*;
 import bananaplus.modules.combat.*;
 import bananaplus.modules.combat.BananaBomber;
@@ -54,12 +51,12 @@ public class BananaPlus extends MeteorAddon {
 
 		// Starscript Values
 		MeteorStarscript.ss.set("banana", new ValueMap()
-				.set("kills", StatsUtils::getKills)
-				.set("deaths", StatsUtils::getDeaths)
-				.set("kdr", StatsUtils::getKDR)
-				.set("killstreak", StatsUtils::getKillstreak)
-				.set("highscore", StatsUtils::getHighscore)
-				.set("crystalsps", StatsUtils::getCrystalsPs)
+			.set("kills", StatsUtils::getKills)
+			.set("deaths", StatsUtils::getDeaths)
+			.set("kdr", StatsUtils::getKDR)
+			.set("killstreak", StatsUtils::getKillstreak)
+			.set("highscore", StatsUtils::getHighscore)
+			.set("crystalsps", StatsUtils::getCrystalsPs)
 		);
 
 		// Hud Modules
