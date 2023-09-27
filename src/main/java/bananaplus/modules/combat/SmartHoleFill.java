@@ -1,6 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.system.BananaConfig;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -55,15 +56,6 @@ public class SmartHoleFill extends Module {
         .description("What blocks to use if no default blocks are found.")
         .defaultValue(Blocks.RESPAWN_ANCHOR)
         .filter(this::blockFilter)
-        .build()
-    );
-
-    private final Setting<Integer> placeDelay = sgGeneral.add(new IntSetting.Builder()
-        .name("place-delay")
-        .description("Tick delay between block placements.")
-        .defaultValue(1)
-        .range(0,20)
-        .sliderRange(0,20)
         .build()
     );
 
@@ -262,7 +254,7 @@ public class SmartHoleFill extends Module {
             delay--;
             return;
         } else {
-            delay = placeDelay.get();
+            delay = BananaConfig.get().placeDelay.get();
             blocksPlaced = 0;
         }
 

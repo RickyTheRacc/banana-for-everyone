@@ -64,14 +64,6 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
-            .name("delay")
-            .description("Tick delay between block placements.")
-            .defaultValue(1)
-            .range(0,20)
-            .sliderRange(0,20)
-            .build()
-    );
 
     private final Setting<Integer> blocksPerTick = sgGeneral.add(new IntSetting.Builder()
             .name("blocks-per-tick")
@@ -469,7 +461,7 @@ public class SurroundPlus extends Module {
         // Decrement placing timer
         if (ticksPassed >= 0) ticksPassed--;
         else {
-            ticksPassed = delay.get();
+            ticksPassed = BananaConfig.get().placeDelay.get();
             blocksPlaced = 0;
         }
 

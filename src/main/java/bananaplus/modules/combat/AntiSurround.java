@@ -1,6 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.system.BananaConfig;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BPlayerUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -57,15 +58,6 @@ public class AntiSurround extends Module {
             .name("when")
             .description("When to start button trapping.")
             .defaultValue(TrapType.Always)
-            .build()
-    );
-
-    private final Setting<Integer> delaySetting = sgGeneral.add(new IntSetting.Builder()
-            .name("place-delay")
-            .description("How many ticks between block placements.")
-            .defaultValue(1)
-            .range(0,20)
-            .sliderRange(0,20)
             .build()
     );
 
@@ -169,7 +161,7 @@ public class AntiSurround extends Module {
 
             findPlacePos(target);
 
-            if (delay >= delaySetting.get() && placePositions.size() > 0) {
+            if (delay >= BananaConfig.get().placeDelay.get() && placePositions.size() > 0) {
                 BlockPos blockPos = placePositions.get(placePositions.size() - 1);
                 if (BPlayerUtils.distanceFromEye(blockPos) > placeRange.get()) return;
 

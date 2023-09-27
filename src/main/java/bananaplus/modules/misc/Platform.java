@@ -1,6 +1,7 @@
 package bananaplus.modules.misc;
 
 import bananaplus.BananaPlus;
+import bananaplus.system.BananaConfig;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;
 import bananaplus.utils.PositionUtils;
@@ -61,15 +62,6 @@ public class Platform extends Module {
             .defaultValue(2)
             .range(1,5)
             .sliderRange(1,5)
-            .build()
-    );
-
-    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
-            .name("delay")
-            .description("Tick delay between block placements.")
-            .defaultValue(2)
-            .range(0,20)
-            .sliderRange(0,20)
             .build()
     );
 
@@ -357,7 +349,7 @@ public class Platform extends Module {
         // Decrement placing timer
         if (ticksPassed >= 0) ticksPassed--;
         else {
-            ticksPassed = delay.get();
+            ticksPassed = BananaConfig.get().placeDelay.get();
             blocksPlaced = 0;
         }
 
