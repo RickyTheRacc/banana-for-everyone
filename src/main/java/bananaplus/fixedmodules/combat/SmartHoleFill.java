@@ -1,4 +1,4 @@
-package bananaplus.modules.combat;
+package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
 import bananaplus.system.BananaConfig;
@@ -17,13 +17,16 @@ import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.meteorclient.utils.world.BlockIterator;
 import meteordevelopment.meteorclient.utils.world.Dir;
+import meteordevelopment.meteorclient.utils.world.TickRate;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,6 @@ public class SmartHoleFill extends Module {
             Blocks.CRYING_OBSIDIAN,
             Blocks.NETHERITE_BLOCK
         )
-        .filter(this::blockFilter)
         .build()
     );
 
@@ -55,7 +57,6 @@ public class SmartHoleFill extends Module {
         .name("fallback-blocks")
         .description("What blocks to use if no default blocks are found.")
         .defaultValue(Blocks.RESPAWN_ANCHOR)
-        .filter(this::blockFilter)
         .build()
     );
 
@@ -198,7 +199,7 @@ public class SmartHoleFill extends Module {
         .name("side-color")
         .description("The color of blocks.")
         .visible(() -> renderPlace.get() && shapeMode.get() != ShapeMode.Lines)
-        .defaultValue(new SettingColor(255, 255, 255, 25))
+        .defaultValue(new SettingColor(255, 255, 255, 50,true))
         .build()
     );
 
@@ -206,7 +207,7 @@ public class SmartHoleFill extends Module {
         .name("line-color")
         .description("The color of lines.")
         .visible(() -> renderPlace.get() && shapeMode.get() != ShapeMode.Sides)
-        .defaultValue(new SettingColor(255, 255, 255, 150))
+        .defaultValue(new SettingColor(255, 255, 255, 255,true))
         .build()
     );
 
@@ -220,20 +221,6 @@ public class SmartHoleFill extends Module {
     private final List<Hole> holes = new ArrayList<>();
 
     private int delay, blocksPlaced;
-
-    private boolean blockFilter(Block block) {
-        return block == Blocks.OBSIDIAN ||
-            block == Blocks.CRYING_OBSIDIAN ||
-            block == Blocks.ANCIENT_DEBRIS ||
-            block == Blocks.NETHERITE_BLOCK ||
-            block == Blocks.ENDER_CHEST ||
-            block == Blocks.RESPAWN_ANCHOR ||
-            block == Blocks.ANVIL ||
-            block == Blocks.CHIPPED_ANVIL ||
-            block == Blocks.DAMAGED_ANVIL ||
-            block == Blocks.ENCHANTING_TABLE ||
-            block == Blocks.COBWEB;
-    }
 
     @Override
     public void onActivate() {
@@ -249,21 +236,16 @@ public class SmartHoleFill extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        // Decrement placing timer
-        if (delay > 0) {
-            delay--;
-            return;
-        } else {
-            delay = BananaConfig.get().placeDelay.get();
-            blocksPlaced = 0;
-        }
+        delay -= (TickRate.INSTANCE.getTickRate() / 20.0);
+        if (delay > 0) return;
+        delay = BananaConfig.get().placeDelay.get();
+        blocksPlaced = 0;
 
         for (Hole hole : holes) holePool.free(hole);
         holes.clear();
 
         setTargets();
-        if (targets.isEmpty()) return;
-        if (!getTargetBlock().found()) return;
+        if (targets.isEmpty() || !getTargetBlock().found()) return;
 
         BlockIterator.register(searchRange.get(), searchRange.get(), (blockPos, blockState) -> {
             if (!validHole(blockPos)) return;
@@ -276,13 +258,10 @@ public class SmartHoleFill extends Module {
 
                 if (BEntityUtils.isBlastResistant(blockPos.offset(direction), BEntityUtils.BlastResistantType.Any)) blocks++;
 
-                else if (direction == Direction.DOWN) continue;
-
                 else if (validHole(blockPos.offset(direction)) && air == null) {
                     for (Direction dir : Direction.values()) {
                         if (dir == direction.getOpposite() || dir == Direction.UP) continue;
                         if (BEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir),  BEntityUtils.BlastResistantType.Any)) blocks++;
-                        else continue;
                     }
 
                     air = direction;
@@ -298,9 +277,6 @@ public class SmartHoleFill extends Module {
 
     @EventHandler (priority = LOWEST - 2)
     private void onPreTickLast(TickEvent.Pre event) {
-        // Placing done in separate event because BlockIterators execute themselves at the end of a tick
-        // instead of when they're called, this way it can still read the list they provide
-
         for (Hole hole : holes) {
             if (blocksPlaced >= blocksPerTick.get()) break;
 
@@ -329,16 +305,8 @@ public class SmartHoleFill extends Module {
     }
 
     private boolean validHole(BlockPos pos) {
-        // Make sure the hole isn't occupied
-        if (mc.player.getBlockPos().equals(pos)) return false;
-
-        // Don't fill cobwebs
-        if (mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB) return false;
-
-        // Ranges Check
+        if (mc.player.getBlockPos().equals(pos) || mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB) return false;
         if (mc.player.getEyePos().distanceTo(Vec3d.ofCenter(pos)) > placeRange.get()) return false;
-
-        // Doesn't have a collidable block
         if (((AbstractBlockAccessor) mc.world.getBlockState(pos).getBlock()).isCollidable()) return false;
         if (((AbstractBlockAccessor) mc.world.getBlockState(pos.up()).getBlock()).isCollidable()) return false;
 
