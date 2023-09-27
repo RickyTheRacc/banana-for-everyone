@@ -13,14 +13,9 @@ public class DynamicUtil {
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
     private static Box testBox = new Box(testPos);
 
-    public static boolean allPlaced(List<BlockPos> list, BlockType type) {
-        for (BlockPos pos : list) if (!type.resists(pos)) return false;
-        return true;
-    }
-
-    public static List<BlockPos> headPos(PlayerEntity target) {
+    public static List<BlockPos> topPos(PlayerEntity player) {
         posList.clear();
-        testBox = target.getBoundingBox().contract(0.01, 0, 0.01);
+        testBox = player.getBoundingBox().contract(0.01);
 
         for (double[] point : fourWay(testBox)) {
             testPos.set(point[0], testBox.maxY + 0.5, point[1]);
@@ -30,9 +25,9 @@ public class DynamicUtil {
         return posList;
     }
 
-    public static List<BlockPos> facePos(PlayerEntity target) {
+    public static List<BlockPos> facePos(PlayerEntity player) {
         posList.clear();
-        testBox = target.getBoundingBox().contract(0.01, 0, 0.01);
+        testBox = player.getBoundingBox().contract(0.01);
         
         for (double[] point : eightWay(testBox)) {
             testPos.set(point[0], testBox.maxY - 0.5, point[1]);
@@ -42,9 +37,9 @@ public class DynamicUtil {
         return posList;
     }
 
-    public static List<BlockPos> feetPos(PlayerEntity target) {
+    public static List<BlockPos> feetPos(PlayerEntity player) {
         posList.clear();
-        testBox = target.getBoundingBox().contract(0.01, 0, 0.01);
+        testBox = player.getBoundingBox().contract(0.01);
 
         for (double[] point : eightWay(testBox)) {
             testPos.set(point[0], testBox.minY + 0.5, point[1]);
@@ -54,9 +49,9 @@ public class DynamicUtil {
         return posList;
     }
 
-    public static List<BlockPos> underPos(PlayerEntity target) {
+    public static List<BlockPos> underPos(PlayerEntity player) {
         posList.clear();
-        testBox = target.getBoundingBox().contract(0.01, 0, 0.01);
+        testBox = player.getBoundingBox().contract(0.01);
 
         for (double[] point : fourWay(testBox)) {
             testPos.set(point[0], testBox.minY - 0.5, point[1]);

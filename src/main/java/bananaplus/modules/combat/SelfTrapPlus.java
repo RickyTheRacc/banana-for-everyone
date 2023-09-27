@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.enums.AntiCheatType;
+import bananaplus.enums.AntiCheat;
 import bananaplus.system.BananaConfig;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;
@@ -523,7 +523,9 @@ public class SelfTrapPlus extends Module {
             }
 
             if (mode.get() != Mode.Side) {
-                if (!BananaConfig.get().airPlace.get() || BananaConfig.get().antiCheatSetting.get() == AntiCheatType.antiCheat.NoCheatPlus) add(pos, playerPos.up(2).north());
+                if (!BananaConfig.get().airPlace.get() || BananaConfig.get().antiCheat.get() == AntiCheat.NoCheat) {
+                    add(pos, playerPos.up(2).north());
+                }
                 add(pos, playerPos.up(2));
             }
         } else {

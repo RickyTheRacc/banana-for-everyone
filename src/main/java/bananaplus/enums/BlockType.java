@@ -15,6 +15,10 @@ public enum BlockType {
 
     public boolean resists(BlockPos pos) {
         BlockState state = mc.world.getBlockState(pos);
+        return resists(state);
+    }
+
+    public boolean resists(BlockState state) {
         return switch (this) {
             case Hardness -> state.getBlock().getHardness() < 0;
             case Resistance -> state.getBlock().getBlastResistance() >= 600;

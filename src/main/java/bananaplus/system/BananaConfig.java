@@ -1,9 +1,8 @@
 package bananaplus.system;
 
 import bananaplus.BananaPlus;
+import bananaplus.enums.AntiCheat;
 import bananaplus.enums.SwingMode;
-import bananaplus.enums.AntiCheatType;
-import bananaplus.enums.SwitchMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
@@ -130,10 +129,10 @@ public class BananaConfig extends System<BananaConfig> {
     );
 
     // Anti cheat
-    public final Setting < AntiCheatType.antiCheat > antiCheatSetting = sgAnticheat.add(new EnumSetting.Builder<AntiCheatType.antiCheat>()
+    public final Setting <AntiCheat> antiCheat = sgAnticheat.add(new EnumSetting.Builder<AntiCheat>()
             .name("anti-cheat")
             .description("What Anti cheat to bypass for Banana+ modules.")
-            .defaultValue(AntiCheatType.antiCheat.NoCheatPlus)
+            .defaultValue(AntiCheat.NoCheat)
             .build()
     );
 
@@ -263,6 +262,7 @@ public class BananaConfig extends System<BananaConfig> {
             left.setStyle(Style.EMPTY.withFormatting(prefixFormat.get().formatting));
             right.setStyle(Style.EMPTY.withFormatting(prefixFormat.get().formatting));
         }
+
         left.setStyle(left.getStyle().withColor(TextColor.fromRgb(leftColor.get().getPacked())));
         right.setStyle(right.getStyle().withColor(TextColor.fromRgb(rightColor.get().getPacked())));
 
