@@ -65,7 +65,7 @@ public class BPlayerUtils {
         if (yaw >= 315 || yaw < 45) return Direction.SOUTH;
         else if (yaw >= 45 && yaw < 135) return Direction.WEST;
         else if (yaw >= 135 && yaw < 225) return Direction.NORTH;
-        else if (yaw >= 225 && yaw < 315) return Direction.EAST;
+        else if (yaw >= 225) return Direction.EAST;
 
         return Direction.SOUTH;
     }

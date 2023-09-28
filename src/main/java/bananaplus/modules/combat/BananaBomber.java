@@ -6,8 +6,10 @@ https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/met
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.utils.BDamageUtils;
+import bananaplus.utils.BPlayerUtils;
 import bananaplus.utils.CrystalUtils;
-import bananaplus.utils.*;
+import bananaplus.utils.TimerUtils;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.*;
 import meteordevelopment.meteorclient.events.entity.EntityAddedEvent;
@@ -50,7 +52,6 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -72,7 +73,6 @@ public class BananaBomber extends Module {
     private final SettingGroup sgSurround = settings.createGroup("Surround");
     private final SettingGroup sgBreak = settings.createGroup("Break");
     private final SettingGroup sgFastBreak = settings.createGroup("Fast Break");
-    private final SettingGroup sgChainPop = settings.createGroup("Chain Pop");
     private final SettingGroup sgPause = settings.createGroup("Pause");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
@@ -711,56 +711,6 @@ public class BananaBomber extends Module {
             .build()
     );
 
-    // Chain Pop
-
-    public final Setting<Boolean> selfPopInvincibility = sgChainPop.add(new BoolSetting.Builder()
-            .name("self-pop-invincibility")
-            .description("Ignores self damage if you just popped.")
-            .defaultValue(false)
-            .build()
-    );
-
-    public final Setting<Integer> selfPopInvincibilityTime = sgChainPop.add(new IntSetting.Builder()
-            .name("self-pop-time")
-            .description("How many millisecond to consider for self-pop invincibility")
-            .defaultValue(300)
-            .sliderRange(1,2000)
-            .visible(selfPopInvincibility::get)
-            .build()
-    );
-
-    public final Setting<SelfPopIgnore> selfPopIgnore = sgChainPop.add(new EnumSetting.Builder<SelfPopIgnore>()
-            .name("self-pop-ignore")
-            .description("What to ignore when you just popped.")
-            .defaultValue(SelfPopIgnore.Break)
-            .visible(selfPopInvincibility::get)
-            .build()
-    );
-
-    public final Setting<Boolean> targetPopInvincibility = sgChainPop.add(new BoolSetting.Builder()
-            .name("target-pop-invincibility")
-            .description("Tries to pause certain actions when your enemy just popped.")
-            .defaultValue(false)
-            .build()
-    );
-
-    public final Setting<Integer> targetPopInvincibilityTime = sgChainPop.add(new IntSetting.Builder()
-            .name("target-pop-time")
-            .description("How many milliseconds to consider for target-pop invincibility")
-            .defaultValue(500)
-            .sliderRange(1,2000)
-            .visible(targetPopInvincibility::get)
-            .build()
-    );
-
-    public final Setting<PopPause> popPause = sgChainPop.add(new EnumSetting.Builder<PopPause>()
-            .name("pop-pause-mode")
-            .description("What to pause when your enemy just popped.")
-            .defaultValue(PopPause.Break)
-            .visible(targetPopInvincibility::get)
-            .build()
-    );
-
     // Pause
 
     public final Setting<Double> pauseAtHealth = sgPause.add(new DoubleSetting.Builder()
@@ -1131,7 +1081,7 @@ public class BananaBomber extends Module {
             }
 
             if (smartCheck.get()) {
-                if (CrystalUtils.isSurroundHolding() || (slowFacePlace.get() && CrystalUtils.isFacePlacing() || (targetPopInvincibility.get() && CrystalUtils.targetJustPopped()))) return;
+                if (CrystalUtils.isSurroundHolding() || (slowFacePlace.get() && CrystalUtils.isFacePlacing())) return;
             }
 
             float damage = getBreakDamage(event.entity, false);
@@ -1168,7 +1118,7 @@ public class BananaBomber extends Module {
     // Break
 
     private void doBreak() {
-        if (!doBreak.get() || breakTimer > 0 || switchTimer > 0 || attacks >= attackFrequency.get() || (popPause.get() != PopPause.Place && CrystalUtils.targetJustPopped())) return;
+        if (!doBreak.get() || breakTimer > 0 || switchTimer > 0 || attacks >= attackFrequency.get()) return;
 
         float bestDamage = 0;
         Entity crystal = null;
@@ -1220,11 +1170,8 @@ public class BananaBomber extends Module {
         // Check damage to self and anti suicide
         blockPos.set(entity.getBlockPos()).move(0, -1, 0);
 
-        if (!CrystalUtils.shouldIgnoreSelfBreakDamage()) {
-            float selfDamage = BDamageUtils.crystalDamage(mc.player, entity.getPos(), predictMovement.get(), breakRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
-            if (selfDamage > BmaxDamage.get() || (BantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
-                return 0;
-        } else if (debug.get()) warning("Ignoring self break dmg");
+        float selfDamage = BDamageUtils.crystalDamage(mc.player, entity.getPos(), predictMovement.get(), breakRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+        if (selfDamage > BmaxDamage.get() || (BantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player))) return 0;
 
         // Check damage to target and face place
         float damage = getDamageToTargets(entity.getPos(), true, false);
@@ -1303,7 +1250,7 @@ public class BananaBomber extends Module {
     // Place
 
     private void doPlace() {
-        if (!doPlace.get() || placeTimer > 0 || (popPause.get() != PopPause.Break && CrystalUtils.targetJustPopped())) return;
+        if (!doPlace.get() || placeTimer > 0) return;
 
         // Return if there are no crystals in hotbar or offhand
         if (!InvUtils.findInHotbar(Items.END_CRYSTAL).found()) return;
@@ -1361,11 +1308,8 @@ public class BananaBomber extends Module {
             if (intersectsWithEntities(box)) return;
 
             // Check damage to self and anti suicide
-            if (!CrystalUtils.shouldIgnoreSelfPlaceDamage()) {
-                float selfDamage = BDamageUtils.crystalDamage(mc.player, vec3d, predictMovement.get(), placeRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
-                if (selfDamage > PmaxDamage.get() || (PantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player)))
-                    return;
-            } else if (debug.get()) warning("Ignoring self place dmg");
+            float selfDamage = BDamageUtils.crystalDamage(mc.player, vec3d, predictMovement.get(), placeRange.get().floatValue(), ignoreTerrain.get(), fullBlocks.get());
+            if (selfDamage > PmaxDamage.get() || (PantiSuicide.get() && selfDamage >= EntityUtils.getTotalHealth(mc.player))) return;
 
             // Check damage to target and face place
             float damage = getDamageToTargets(vec3d, false, !hasBlock && support.get() == SupportMode.Fast);
@@ -1611,36 +1555,18 @@ public class BananaBomber extends Module {
         return EntityUtils.intersectsWithEntity(box, entity -> !entity.isSpectator() && !removed.contains(entity.getId()));
     }
 
-    @EventHandler
-    private void onReceivePacket(PacketEvent.Receive event) {
-        if (!(event.packet instanceof EntityStatusS2CPacket p)) return;
-
-        if (p.getStatus() != 35) return;
-
-        Entity entity = p.getEntity(mc.world);
-
-        if (!(entity instanceof PlayerEntity)) return;
-
-        if (entity.equals(mc.player) && selfPopInvincibility.get()) selfPoppedTimer.reset();
-
-        if (entity.equals(bestTarget) && targetPopInvincibility.get()) targetPoppedTimer.reset();
-
-    }
-
     @EventHandler(priority = EventPriority.LOWEST - 1000)
     private void onTick(TickEvent.Post event) {
-        if (debug.get()) {
-            if (CrystalUtils.isFacePlacing() && bestTarget != null && bestTarget.getY() < placingCrystalBlockPos.getY()) {
-                if (slowFacePlace.get()) warning("Slow faceplacing");
-                else warning("Faceplacing");
-            }
+        if (!debug.get()) return;
 
-            if (CrystalUtils.isBurrowBreaking()) warning("Burrow breaking");
-
-            if (CrystalUtils.isSurroundHolding()) warning("Surround holding");
-
-            if (CrystalUtils.isSurroundBreaking()) warning("Surround breaking");
+        if (CrystalUtils.isFacePlacing() && bestTarget != null && bestTarget.getY() < placingCrystalBlockPos.getY()) {
+            if (slowFacePlace.get()) warning("Slow faceplacing.");
+            else warning("Faceplacing.");
         }
+
+        if (CrystalUtils.isBurrowBreaking()) warning("Burrow breaking.");
+        if (CrystalUtils.isSurroundHolding()) warning("Surround holding.");
+        if (CrystalUtils.isSurroundBreaking()) warning("Surround breaking.");
     }
 
     // Render
@@ -1654,7 +1580,9 @@ public class BananaBomber extends Module {
                 renderBreakBlocks.sort(Comparator.comparingInt(o -> -o.ticks));
                 renderBreakBlocks.forEach(renderBlock -> renderBlock.render(event, breakSideColor.get(), breakLineColor.get(), shapeMode.get()));
             }
-        } else if (renderMode.get() == RenderMode.Normal) {
+        }
+
+        if (renderMode.get() == RenderMode.Normal) {
             if (renderTimer > 0) {
                 event.renderer.box(renderPos, placeSideColor.get(), placeLineColor.get(), shapeMode.get(), 0);
             }
@@ -1677,7 +1605,6 @@ public class BananaBomber extends Module {
                 breakLineColor.get().a = preLineA;
             }
         }
-
     }
 
     public class RenderBlock {

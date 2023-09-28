@@ -1,7 +1,6 @@
-package bananaplus.modules.misc;
+package bananaplus.fixedmodules.misc;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -10,9 +9,10 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
-
-import static bananaplus.utils.BEntityUtils.deadEntity;
-import static bananaplus.utils.BEntityUtils.isDeathPacket;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 
 public class KillEffects extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -35,22 +35,24 @@ public class KillEffects extends Module {
     );
 
     public KillEffects() {
-        super(BananaPlus.MISC, "kill-effects", "Spawns a lightning where a player dies.");
+        super(BananaPlus.FIXED, "kill-effects", "Spawns lightning where a player dies.");
     }
 
     @EventHandler
     private void onReceivePacket(PacketEvent.Receive event) {
-        if (isDeathPacket(event)) {
-            Entity player = deadEntity;
+        if (event.packet instanceof EntityStatusS2CPacket packet) {
+            if (packet.getStatus() != 3) return;
+
+            Entity entity = packet.getEntity(mc.world);
+            if (!(entity instanceof PlayerEntity player)) return;
             if (player == mc.player && avoidSelf.get()) return;
             if (mc.player.distanceTo(player) > range.get()) return;
 
-            double playerX = player.getX();
-            double playerY = player.getY();
-            double playerZ = player.getZ();
+            LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, mc.world);
+            lightning.updatePosition(player.getX(), player.getX(), player.getZ());
+            lightning.refreshPositionAfterTeleport(player.getX(), player.getX(), player.getZ());
 
-            BWorldUtils.spawnLightning(playerX, playerY, playerZ);
+            mc.world.addEntity(lightning.getId(), lightning);
         }
     }
-
 }

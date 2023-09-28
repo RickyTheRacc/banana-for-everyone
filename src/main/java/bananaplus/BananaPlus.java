@@ -1,6 +1,8 @@
 package bananaplus;
 
 import bananaplus.fixedmodules.combat.*;
+import bananaplus.fixedmodules.misc.TravelLog;
+import bananaplus.fixedmodules.misc.KillEffects;
 import bananaplus.system.BananaTab;
 import bananaplus.hud.*;
 import bananaplus.modules.combat.*;
@@ -68,7 +70,7 @@ public class BananaPlus extends MeteorAddon {
 
 		// Fixed Modules
 		Modules.get().add(new ArmorAlerts());
-		Modules.get().add(new BurrowESP());
+		Modules.get().add(new PhaseESP());
 		Modules.get().add(new MonkeHand());
 		Modules.get().add(new XPThrower());
 
@@ -90,8 +92,7 @@ public class BananaPlus extends MeteorAddon {
 		Modules.get().add(new TickShift());
 
 		// Misc Modules
-		Modules.get().add(new AfkLog());
-		Modules.get().add(new InstaMinePlus());
+		Modules.get().add(new TravelLog());
 		Modules.get().add(new KillEffects());
 		Modules.get().add(new Platform());
 		Modules.get().add(new Presence());

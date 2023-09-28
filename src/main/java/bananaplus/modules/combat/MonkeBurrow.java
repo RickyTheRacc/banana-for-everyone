@@ -1,7 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BEntityUtils;
+import bananaplus.enums.BlockType;
+import bananaplus.fixedutils.CombatUtil;
 import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.meteor.KeyEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -170,13 +171,13 @@ public class MonkeBurrow extends Module {
             return;
         }
 
-        if (!mc.world.getBlockState(BWorldUtils.roundBlockPos(mc.player.getPos())).isReplaceable()) {
+        if (!mc.world.getBlockState(mc.player.getBlockPos()).isReplaceable()) {
             error("Already burrowed, disabling.");
             toggle();
             return;
         }
 
-        if (!BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any) && onlyInHole.get()) {
+        if (!CombatUtil.isInHole(mc.player, BlockType.Resistance) && onlyInHole.get()) {
             error("Not in a hole, disabling.");
             toggle();
             return;
@@ -197,7 +198,7 @@ public class MonkeBurrow extends Module {
             return;
         }
 
-        blockPos.set(BWorldUtils.roundBlockPos(mc.player.getPos()));
+        blockPos.set(mc.player.getBlockPos());
 
         Modules.get().get(Timer.class).setOverride(this.timer.get());
 
@@ -222,14 +223,11 @@ public class MonkeBurrow extends Module {
             if (TargetUtils.getPlayerTarget(range.get(), SortPriority.LowestDistance) != null) burrow();
         } else {
             if (!instant.get()) shouldBurrow = mc.player.getY() > blockPos.getY() + triggerHeight.get();
-            if (!shouldBurrow && instant.get()) blockPos.set(BWorldUtils.roundBlockPos(mc.player.getPos()));
-
+            if (!shouldBurrow && instant.get()) blockPos.set(mc.player.getBlockPos());
 
             if (shouldBurrow) {
-                if (rotate.get())
-                    Rotations.rotate(Rotations.getYaw(BWorldUtils.roundBlockPos(mc.player.getPos())), Rotations.getPitch(BWorldUtils.roundBlockPos(mc.player.getPos())), 50, this::burrow);
-                else burrow();
-
+                if (rotate.get()) Rotations.rotate(Rotations.getYaw(mc.player.getPos()), Rotations.getPitch(mc.player.getPos()), 50);
+                burrow();
                 toggle();
             }
         }
@@ -241,7 +239,7 @@ public class MonkeBurrow extends Module {
             if (event.action == KeyAction.Press && mc.options.jumpKey.matchesKey(event.key, 0)) {
                 shouldBurrow = true;
             }
-            blockPos.set(BWorldUtils.roundBlockPos(mc.player.getPos()));
+            blockPos.set(mc.player.getBlockPos());
         }
     }
 
@@ -252,7 +250,7 @@ public class MonkeBurrow extends Module {
 
         if (!(mc.player.getInventory().getStack(block.slot()).getItem() instanceof BlockItem)) return;
 
-        if (centerMode.get() == CenterMode.Snap) BWorldUtils.snapPlayer(BWorldUtils.roundBlockPos(mc.player.getPos()));
+        if (centerMode.get() == CenterMode.Snap) BWorldUtils.snapPlayer(mc.player.getBlockPos());
         else if (centerMode.get() == CenterMode.Center) PlayerUtils.centerPlayer();
 
         if (instant.get()) {
@@ -327,8 +325,8 @@ public class MonkeBurrow extends Module {
 
     private int upperSpace() {
         for (int dy = minRubberbandHeight.get(); dy <= maxRubberbandHeight.get(); dy++) {
-            BlockState blockState1 = mc.world.getBlockState(BWorldUtils.roundBlockPos(mc.player.getPos()).up(dy));
-            BlockState blockState2 = mc.world.getBlockState(BWorldUtils.roundBlockPos(mc.player.getPos()).up(dy + 1));
+            BlockState blockState1 = mc.world.getBlockState(mc.player.getBlockPos().up(dy));
+            BlockState blockState2 = mc.world.getBlockState(mc.player.getBlockPos().up(dy + 1));
 
             boolean air1 = !((AbstractBlockAccessor)blockState1.getBlock()).isCollidable();
             boolean air2 = !((AbstractBlockAccessor)blockState2.getBlock()).isCollidable();
@@ -341,8 +339,8 @@ public class MonkeBurrow extends Module {
 
     private int lowerSpace() {
         for (int dy = -minRubberbandHeight.get(); dy >= -maxRubberbandHeight.get(); dy--) {
-            BlockState blockState1 = mc.world.getBlockState(BWorldUtils.roundBlockPos(mc.player.getPos()).up(dy));
-            BlockState blockState2 = mc.world.getBlockState(BWorldUtils.roundBlockPos(mc.player.getPos()).up(dy + 1));
+            BlockState blockState1 = mc.world.getBlockState(mc.player.getBlockPos().up(dy));
+            BlockState blockState2 = mc.world.getBlockState(mc.player.getBlockPos().up(dy + 1));
 
             boolean air1 = !((AbstractBlockAccessor)blockState1.getBlock()).isCollidable();
             boolean air2 = !((AbstractBlockAccessor)blockState2.getBlock()).isCollidable();

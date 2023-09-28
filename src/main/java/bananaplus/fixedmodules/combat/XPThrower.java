@@ -1,8 +1,9 @@
 package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.enums.BlockType;
 import bananaplus.enums.SwitchMode;
-import bananaplus.utils.BEntityUtils;
+import bananaplus.fixedutils.CombatUtil;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -173,7 +174,7 @@ public class XPThrower extends Module {
         if (usePause.get() && mc.player.isUsingItem()) return true;
         if (minePause.get() && mc.interactionManager.isBreakingBlock()) return true;
         if (onlyOnGround.get() && !mc.player.isOnGround()) return true;
-        return onlyInHole.get() && !BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any);
+        return onlyInHole.get() && !CombatUtil.isInHole(mc.player, BlockType.Resistance);
     }
 
     private boolean isRepaired(ItemStack stack) {

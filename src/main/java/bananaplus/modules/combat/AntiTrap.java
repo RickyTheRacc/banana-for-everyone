@@ -1,8 +1,9 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BEntityUtils;
-import bananaplus.utils.BWorldUtils;
+import bananaplus.enums.BlockType;
+import bananaplus.enums.TrapType;
+import bananaplus.fixedutils.CombatUtil;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.entity.player.ItemUseCrosshairTargetEvent;
 import meteordevelopment.meteorclient.events.entity.player.StoppedUsingItemEvent;
@@ -24,70 +25,76 @@ import net.minecraft.util.math.BlockPos;
 
 public class AntiTrap extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+    private final SettingGroup sgVclip = settings.createGroup("Vclip");
+    private final SettingGroup sgChorus = settings.createGroup("Chorus");
 
     // General
 
-    private final Setting<TrapType> trappedWhen = sgGeneral.add(new EnumSetting.Builder<TrapType>()
-            .name("activate-on")
-            .description("How you must be trapped in order to activate.")
-            .defaultValue(TrapType.BothTrapped)
-            .build()
+    private final Setting<TrapType> trappedMode = sgGeneral.add(new EnumSetting.Builder<TrapType>()
+        .name("trapped-mode")
+        .description("How you must be trapped in order to activate.")
+        .defaultValue(TrapType.Both)
+        .build()
     );
 
     private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
-            .name("only-on-ground")
-            .description("Only activates when you are on the ground.")
-            .defaultValue(true)
-            .build()
+        .name("only-on-ground")
+        .description("Only activates when you are on the ground.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Boolean> onlyInHole = sgGeneral.add(new BoolSetting.Builder()
-            .name("only-in-hole")
-            .description("Only activates when you are in a hole.")
-            .defaultValue(true)
-            .build()
+        .name("only-in-hole")
+        .description("Only activates when you are in a hole.")
+        .defaultValue(true)
+        .build()
     );
 
-    private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
-            .name("mode")
-            .defaultValue(Mode.Chorus)
-            .description("What to do when you are trapped.")
-            .build()
+    private final Setting<Mode> actionMode = sgGeneral.add(new EnumSetting.Builder<Mode>()
+        .name("action-mode")
+        .description("What to do when you are trapped.")
+        .defaultValue(Mode.Chorus)
+        .build()
     );
 
-    private final Setting<VClipDirection> vClipDirection = sgGeneral.add(new EnumSetting.Builder<VClipDirection>()
-            .name("v-clip-direction")
-            .description("Direction to VClip towards.")
-            .defaultValue(VClipDirection.Up)
-            .visible(() -> mode.get() == Mode.VClip)
-            .build()
+    // Vclip
+
+    private final Setting<VClipDirection> direction = sgVclip.add(new EnumSetting.Builder<VClipDirection>()
+        .name("direction")
+        .description("Direction to VClip towards.")
+        .defaultValue(VClipDirection.Up)
+        .visible(() -> actionMode.get() == Mode.VClip)
+        .build()
     );
 
-    private final Setting<Integer> minVClipHeight = sgGeneral.add(new IntSetting.Builder()
-            .name("min-height")
-            .description("Minimum height it will VClip you.")
-            .sliderMin(3)
-            .min(3)
-            .defaultValue(3)
-            .visible(() -> mode.get() == Mode.VClip)
-            .build()
+    private final Setting<Integer> minVClipHeight = sgVclip.add(new IntSetting.Builder()
+        .name("min-height")
+        .description("Minimum height it will VClip you.")
+        .sliderMin(3)
+        .min(3)
+        .defaultValue(3)
+        .visible(() -> actionMode.get() == Mode.VClip)
+        .build()
     );
 
-    private final Setting<Integer> maxVClipHeight = sgGeneral.add(new IntSetting.Builder()
+    private final Setting<Integer> maxVClipHeight = sgVclip.add(new IntSetting.Builder()
             .name("max-height")
             .description("Maximum height it will VClip you.")
             .sliderMin(3)
             .min(3)
             .defaultValue(4)
-            .visible(() -> mode.get() == Mode.VClip)
+            .visible(() -> actionMode.get() == Mode.VClip)
             .build()
     );
 
-    private final Setting<Boolean> autoMove = sgGeneral.add(new BoolSetting.Builder()
+    // Chorus
+
+    private final Setting<Boolean> autoMove = sgChorus.add(new BoolSetting.Builder()
             .name("auto-move")
             .description("Puts a chorus into a selected slot if you don't have one in your hotbar.")
             .defaultValue(true)
-            .visible(() -> mode.get() == Mode.Chorus)
+            .visible(() -> actionMode.get() == Mode.Chorus)
             .build()
     );
 
@@ -97,14 +104,14 @@ public class AntiTrap extends Module {
             .defaultValue(9)
             .range(1,9)
             .sliderRange(1,9)
-            .visible(() -> mode.get() == Mode.Chorus && autoMove.get())
+            .visible(() -> actionMode.get() == Mode.Chorus && autoMove.get())
             .build()
     );
 
     private final Setting<Boolean> autoSwitch = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-switch")
             .description("Switches to chorus automatically.")
-            .visible(() -> mode.get() == Mode.Chorus)
+            .visible(() -> actionMode.get() == Mode.Chorus)
             .defaultValue(true)
             .build()
     );
@@ -112,72 +119,36 @@ public class AntiTrap extends Module {
     private final Setting<Boolean> autoEat = sgGeneral.add(new BoolSetting.Builder()
             .name("auto-eat")
             .description("Eats the chorus automatically.")
-            .visible(() -> mode.get() == Mode.Chorus)
+            .visible(() -> actionMode.get() == Mode.Chorus)
             .defaultValue(false)
             .build()
     );
-
-    private final Setting<Boolean> debug = sgGeneral.add(new BoolSetting.Builder()
-            .name("debug")
-            .description("Show the module's processes in chat.")
-            .defaultValue(false)
-            .build()
-    );
-
 
     public AntiTrap() {
         super(BananaPlus.COMBAT, "anti-trap", "Tries to save you after getting trapped.");
     }
-
-
+    
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
-
-    private boolean eating;
-    private boolean swapped;
-
-
+    private boolean eating, swapped;
+    
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        assert mc.player != null;
-
-        blockPos.set(BWorldUtils.roundBlockPos(mc.player.getPos()));
-
         if (onlyOnGround.get() && !mc.player.isOnGround()) return;
-        if (onlyInHole.get() && !BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any)) return;
+        if (onlyInHole.get() && !CombatUtil.isInHole(mc.player, BlockType.Resistance)) return;
 
-        if (isTrapped()) {
-            if (mode.get() == Mode.VClip) doVClip();
-            else doChorus();
+        if (!CombatUtil.isTrapped(mc.player, BlockType.Resistance, trappedMode.get())) return;
+        
+        switch (actionMode.get()) {
+            case VClip -> doVClip();
+            case Chorus -> doChorus();
         }
-
-    }
-
-    private boolean isTrapped() {
-        switch (trappedWhen.get()) {
-            case BothTrapped -> {
-                return BEntityUtils.isBothTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
-            }
-            case AnyTrapped -> {
-                return BEntityUtils.isAnyTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
-            }
-            case TopTrapped -> {
-                return BEntityUtils.isTopTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
-            }
-            case FaceTrapped -> {
-                return BEntityUtils.isFaceTrapped(mc.player, BEntityUtils.BlastResistantType.Any);
-            }
-        }
-
-        return false;
     }
 
     private void doVClip() {
-        if (vClipDirection.get() == VClipDirection.Up && upperSpace() != 0) {
+        if (direction.get() == VClipDirection.Up && upperSpace() != 0) {
             mc.player.setPosition(mc.player.getX(), mc.player.getY() + upperSpace(), mc.player.getZ());
-            if (debug.get()) info(String.valueOf(upperSpace()));
-        } else if (vClipDirection.get() == VClipDirection.Down && lowerSpace() != 0){
+        } else if (direction.get() == VClipDirection.Down && lowerSpace() != 0){
             mc.player.setPosition(mc.player.getX(), mc.player.getY() + lowerSpace(), mc.player.getZ());
-            if (debug.get()) info(String.valueOf(lowerSpace()));
         }
     }
 
@@ -288,14 +259,4 @@ public class AntiTrap extends Module {
         Up,
         Down
     }
-
-    public enum TrapType {
-        BothTrapped,
-        AnyTrapped,
-        TopTrapped,
-        FaceTrapped
-    }
-
-
-
 }

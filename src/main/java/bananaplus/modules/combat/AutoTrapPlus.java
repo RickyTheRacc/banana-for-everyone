@@ -2,7 +2,6 @@ package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
 import bananaplus.system.BananaConfig;
-import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;
 import bananaplus.utils.PositionUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -338,7 +337,7 @@ public class AutoTrapPlus extends Module {
         if (target == null) return;
 
         // Update player position
-        playerPos = BEntityUtils.playerPos(target);
+        playerPos = target.getBlockPos();
 
         if (toggleOnComplete.get()) {
             if (PositionUtils.allPlaced(placePos())) {
@@ -426,9 +425,9 @@ public class AutoTrapPlus extends Module {
 
             if (topMode.get() == TopMode.Full || topMode.get() == TopMode.Top) {
                 // Top positions above
-                for (BlockPos dynatmicTopPos : PositionUtils.dynamicTopPos(target, predictMovement.get())) {
-                    if (PositionUtils.dynamicTopPos(target, predictMovement.get()).contains(dynatmicTopPos)) pos.remove(dynatmicTopPos);
-                    add(pos, dynatmicTopPos);
+                for (BlockPos dynamicTopPos : PositionUtils.dynamicTopPos(target, predictMovement.get())) {
+                    if (PositionUtils.dynamicTopPos(target, predictMovement.get()).contains(dynamicTopPos)) pos.remove(dynamicTopPos);
+                    add(pos, dynamicTopPos);
                 }
             }
 
@@ -499,17 +498,7 @@ public class AutoTrapPlus extends Module {
     }
 
     private boolean blockFilter(Block block) {
-        return block == Blocks.OBSIDIAN ||
-                block == Blocks.CRYING_OBSIDIAN ||
-                block == Blocks.ANCIENT_DEBRIS ||
-                block == Blocks.NETHERITE_BLOCK ||
-                block == Blocks.ENDER_CHEST ||
-                block == Blocks.RESPAWN_ANCHOR ||
-                block == Blocks.ANVIL ||
-                block == Blocks.CHIPPED_ANVIL ||
-                block == Blocks.DAMAGED_ANVIL ||
-                block == Blocks.ENCHANTING_TABLE ||
-                block == Blocks.COBWEB;
+        return block == Blocks.COBWEB || bananaplus.enums.BlockType.Resistance.resists(block.getDefaultState());
     }
 
     // Render

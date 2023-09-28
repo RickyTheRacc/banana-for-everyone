@@ -145,15 +145,6 @@ public class BWorldUtils {
                 || block instanceof GrindstoneBlock
                 || block instanceof StonecutterBlock;
     }
-    public static void rotate(float yaw, float pitch) {
-        mc.player.setYaw(yaw);
-        mc.player.setPitch(pitch);
-    }
-
-    public static void rotate(double[] rotations) {
-        mc.player.setYaw((float) rotations[0]);
-        mc.player.setPitch((float) rotations[1]);
-    }
 
     public static void snapPlayer(BlockPos lastPos) {
         double xPos = mc.player.getPos().x;
@@ -178,16 +169,6 @@ public class BWorldUtils {
 
     public static BlockPos roundBlockPos(Vec3d vec) {
         return new BlockPos((int) vec.x, (int) Math.round(vec.y), (int) vec.z);
-    }
-
-    // Player Utils
-
-    public static double getEyeY(PlayerEntity player) {
-        return player.getY() + player.getEyeHeight(player.getPose());
-    }
-
-    public static double[] calculateLookFromPlayer(double x, double y, double z, PlayerEntity player) {
-        return calculateAngle(new Vec3d(player.getX(), getEyeY(player), player.getZ()), new Vec3d(x,y,z));
     }
 
     // Math Utils
@@ -219,13 +200,5 @@ public class BWorldUtils {
         }
 
         return false;
-    }
-
-    public static void spawnLightning(double x, double y, double z) {
-        LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, mc.world);
-
-        lightning.updatePosition(x, y, z);
-        lightning.refreshPositionAfterTeleport(x, y, z);
-        mc.world.addEntity(lightning.getId(), lightning);
     }
 }

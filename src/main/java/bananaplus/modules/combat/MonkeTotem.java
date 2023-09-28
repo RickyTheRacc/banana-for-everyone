@@ -1,6 +1,8 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.enums.BlockType;
+import bananaplus.fixedutils.CombatUtil;
 import bananaplus.utils.BDamageUtils;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.TimerUtils;
@@ -344,6 +346,11 @@ public class MonkeTotem extends Module {
 
     private float holeModifier() {
         // Todo : implement the ping sync util from serverutils
+
+        if (inSingleBedrock.get() > 0 && CombatUtil.isInHole(mc.player, BlockType.Hardness)) return inSingleBedrock.get().floatValue();
+        else if (inSingleHole.get() > 0 && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any)) return inSingleHole.get().floatValue();
+        else if (inDoubleBedrock.get() > 0 && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Unbreakable)) return inDoubleBedrock.get().floatValue();
+        else if (inDoubleHole.get() > 0 && BEntityUtils.isInHole(mc.player, true, BEntityUtils.BlastResistantType.Any)) return inDoubleHole.get().floatValue();
 
         if (inSingleBedrock.get() > 0 && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Unbreakable)) return inSingleBedrock.get().floatValue();
         else if (inSingleHole.get() > 0 && BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any)) return inSingleHole.get().floatValue();

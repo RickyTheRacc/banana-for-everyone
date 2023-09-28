@@ -1,7 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
-import bananaplus.utils.BEntityUtils;
+import bananaplus.enums.BlockType;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
@@ -174,15 +174,16 @@ public class HoleESPPlus extends Module {
             for (Direction direction : Direction.values()) {
                 if (direction == Direction.UP) continue;
 
-                if (BEntityUtils.isBlastResistant(blockPos.offset(direction), BEntityUtils.BlastResistantType.Unbreakable)) bedrock++;
-                else if (BEntityUtils.isBlastResistant(blockPos.offset(direction), BEntityUtils.BlastResistantType.Mineable)) blastproof++;
+                if (BlockType.Hardness.resists(blockPos.offset(direction))) bedrock++;
+                else if (BlockType.Resistance.resists(blockPos.offset(direction))) blastproof++;
                 else if (direction == Direction.DOWN) return;
+
                 else if (validHole(blockPos.offset(direction)) && air == null) {
                     for (Direction dir : Direction.values()) {
                         if (dir == direction.getOpposite() || dir == Direction.UP) continue;
 
-                        if (BEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir), BEntityUtils.BlastResistantType.Unbreakable)) bedrock++;
-                        else if (BEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir), BEntityUtils.BlastResistantType.Mineable)) blastproof++;
+                        if (BlockType.Hardness.resists(blockPos.offset(direction).offset(dir))) bedrock++;
+                        else if (BlockType.Resistance.resists(blockPos.offset(direction).offset(dir))) blastproof++;
                         else return;
                     }
 

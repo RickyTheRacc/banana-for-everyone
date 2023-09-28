@@ -1,6 +1,7 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.fixedutils.CombatUtil;
 import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.TimerUtils;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
@@ -59,7 +60,7 @@ public class ReverseStepTimer extends Module {
     private void onMove(PlayerMoveEvent event) {
         if (mc.player.isSubmergedInWater() || mc.player.isInLava() || mc.player.isFallFlying() || mc.player.isClimbing() || mc.player.getVehicle() != null) return;
 
-        if (BEntityUtils.isWebbed(mc.player) && !webs.get()) return;
+        if (CombatUtil.isPhased(mc.player).getRight() && !webs.get()) return;
 
         if (mc.options.jumpKey.isPressed() || mc.options.sneakKey.isPressed()) return;
 

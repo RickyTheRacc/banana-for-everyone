@@ -1,5 +1,8 @@
 package bananaplus.utils;
 
+import bananaplus.enums.BlockType;
+import bananaplus.enums.TrapType;
+import bananaplus.fixedutils.CombatUtil;
 import bananaplus.modules.combat.BananaBomber;
 import bananaplus.modules.combat.CevBreaker;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -39,26 +42,6 @@ public class CrystalUtils {
 
     // Damage Ignores
 
-    public static boolean targetJustPopped() {
-        if (BBomber.targetPopInvincibility.get()) {
-            return !BBomber.targetPoppedTimer.passedMillis(BBomber.targetPopInvincibilityTime.get());
-        }
-
-        return false;
-    }
-
-    public static boolean shouldIgnoreSelfPlaceDamage() {
-        return (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.Always
-                || (BBomber.PDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any) || BEntityUtils.isBurrowed(mc.player, BEntityUtils.BlastResistantType.Any)))
-                || (BBomber.selfPopInvincibility.get() && BBomber.selfPopIgnore.get() != BananaBomber.SelfPopIgnore.Break && !BBomber.selfPoppedTimer.passedMillis(BBomber.selfPopInvincibilityTime.get())));
-    }
-
-    public static boolean shouldIgnoreSelfBreakDamage() {
-        return (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.Always
-                || (BBomber.BDamageIgnore.get() == BananaBomber.DamageIgnore.WhileSafe && (BEntityUtils.isSurrounded(mc.player, BEntityUtils.BlastResistantType.Any) || BEntityUtils.isBurrowed(mc.player, BEntityUtils.BlastResistantType.Any)))
-                || (BBomber.selfPopInvincibility.get() && BBomber.selfPopIgnore.get() != BananaBomber.SelfPopIgnore.Place && !BBomber.selfPoppedTimer.passedMillis(BBomber.selfPopInvincibilityTime.get())));
-    }
-
     private static void getBreakDelay() {
         if (isSurroundHolding() && BBomber.surroundHoldMode.get() != BananaBomber.SlowMode.Age) {
             BBomber.breakTimer = BBomber.surroundHoldDelay.get();
@@ -69,21 +52,19 @@ public class CrystalUtils {
 
     // Face Place
     public static boolean shouldFacePlace(BlockPos crystal) {
-        // Checks if the provided crystal position should face place to any target
-        for (PlayerEntity target : BBomber.targets) {
-            BlockPos pos = target.getBlockPos();
-            if (BBomber.CevPause.get() && Modules.get().isActive(CevBreaker.class)) return false;
-            if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class))) return false;
-            if (BEntityUtils.isFaceTrapped(target, BEntityUtils.BlastResistantType.Any)) return false;
-            if (BBomber.surrHoldPause.get() && isSurroundHolding()) return false;
+        if (BBomber.CevPause.get() && Modules.get().isActive(CevBreaker.class)) return false;
+        if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class))) return false;
+        if (BBomber.surrHoldPause.get() && isSurroundHolding()) return false;
 
+        for (PlayerEntity target : BBomber.targets) {
+            if (CombatUtil.isTrapped(target, BlockType.NotEmpty, TrapType.Face)) return false;
+
+            BlockPos pos = target.getBlockPos();
             if (crystal.getY() == pos.getY() + 1 && Math.abs(pos.getX() - crystal.getX()) <= 1 && Math.abs(pos.getZ() - crystal.getZ()) <= 1) {
                 if (EntityUtils.getTotalHealth(target) <= BBomber.facePlaceHealth.get()) return true;
 
                 for (ItemStack itemStack : target.getArmorItems()) {
-                    if (itemStack == null || itemStack.isEmpty()) {
-                        if (BBomber.facePlaceArmor.get()) return true;
-                    }
+                    if ((itemStack == null || itemStack.isEmpty()) && BBomber.facePlaceArmor.get()) return true;
                     else {
                         if ((float) (itemStack.getMaxDamage() - itemStack.getDamage()) / itemStack.getMaxDamage() * 100 <= BBomber.facePlaceDurability.get()) return true;
                     }
@@ -169,19 +150,6 @@ public class CrystalUtils {
                         || (BBomber.surroundBHorse.get() && (crystal.equals(pos.east(2).north()) || crystal.equals(pos.east(2).south())))
                         || (BBomber.surroundBDiagonal.get() && (crystal.equals(pos.east().north()) || crystal.equals(pos.east().south())))
                 ));
-
-        // I tried this one below, and it doesn't work very well, still I think there's a better way of doing this tho, this takes so much computing power
-        /*
-        BlockPos targetSurround = EntityUtils.getCityBlock(playerTarget);
-
-            if (targetSurround != null) {
-                // Checking around targets city block
-                for (Direction direction : Direction.values()) {
-                    if (direction == Direction.DOWN || direction == Direction.UP) continue;
-
-                    // If one of the positions matches the current pos, ignore minDamage
-                    if (pos.equals(targetSurround.down().offset(direction))) return true;
-                }         */
     }
 
     public static boolean isSurroundBreaking() {

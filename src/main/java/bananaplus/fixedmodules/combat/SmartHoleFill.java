@@ -1,8 +1,9 @@
 package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.enums.BlockType;
+import bananaplus.fixedutils.CombatUtil;
 import bananaplus.system.BananaConfig;
-import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BWorldUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -23,10 +24,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -236,7 +235,7 @@ public class SmartHoleFill extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        delay -= (TickRate.INSTANCE.getTickRate() / 20.0);
+        delay -= (int) (TickRate.INSTANCE.getTickRate() / 20.0);
         if (delay > 0) return;
         delay = BananaConfig.get().placeDelay.get();
         blocksPlaced = 0;
@@ -256,12 +255,12 @@ public class SmartHoleFill extends Module {
             for (Direction direction : Direction.values()) {
                 if (direction == Direction.UP) continue;
 
-                if (BEntityUtils.isBlastResistant(blockPos.offset(direction), BEntityUtils.BlastResistantType.Any)) blocks++;
+                if (BlockType.Resistance.resists(blockPos.offset(direction))) blocks++;
 
                 else if (validHole(blockPos.offset(direction)) && air == null) {
                     for (Direction dir : Direction.values()) {
                         if (dir == direction.getOpposite() || dir == Direction.UP) continue;
-                        if (BEntityUtils.isBlastResistant(blockPos.offset(direction).offset(dir),  BEntityUtils.BlastResistantType.Any)) blocks++;
+                        if (BlockType.Resistance.resists(blockPos.offset(direction).offset(dir))) blocks++;
                     }
 
                     air = direction;
@@ -296,10 +295,9 @@ public class SmartHoleFill extends Module {
 
         // Players
         for (PlayerEntity player : mc.world.getPlayers()) {
-            if (player.isCreative() || player == mc.player || player.isDead() || !Friends.get().shouldAttack(player)
-                || (BEntityUtils.isInHole(player, true, BEntityUtils.BlastResistantType.Any) && ignoreInHole.get())
-            ) continue;
-
+            if (Friends.get().isFriend(player) || player == mc.player) continue;
+            if (player.isCreative() || player.isDead()) continue;
+            if (ignoreInHole.get() && CombatUtil.isInHole(player, BlockType.Resistance)) continue;
             if (player.distanceTo(mc.player) <= targetRange.get()) targets.add(player);
         }
     }

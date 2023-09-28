@@ -1,8 +1,10 @@
 package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.enums.BlockType;
+import bananaplus.enums.TrapType;
+import bananaplus.fixedutils.CombatUtil;
 import bananaplus.system.BananaConfig;
-import bananaplus.utils.BEntityUtils;
 import bananaplus.utils.BPlayerUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -54,10 +56,10 @@ public class AntiSurround extends Module {
             .build()
     );
 
-    private final Setting<TrapType> when = sgGeneral.add(new EnumSetting.Builder<TrapType>()
+    private final Setting<TrapMode> when = sgGeneral.add(new EnumSetting.Builder<TrapMode>()
             .name("when")
             .description("When to start button trapping.")
-            .defaultValue(TrapType.Always)
+            .defaultValue(TrapMode.Always)
             .build()
     );
 
@@ -119,13 +121,13 @@ public class AntiSurround extends Module {
             .build()
     );
 
-    private PlayerEntity target;
-    private final List<BlockPos> placePositions = new ArrayList<>();
-    private int delay;
-
     public AntiSurround() {
         super(BananaPlus.COMBAT, "anti-surround", "Place items inside the enemy's surround to break it.");
     }
+
+    private PlayerEntity target;
+    private final List<BlockPos> placePositions = new ArrayList<>();
+    private int delay;
 
     @Override
     public void onActivate() {
@@ -176,8 +178,7 @@ public class AntiSurround extends Module {
     @EventHandler
     private void onRender(Render3DEvent event) {
         if (!renderTrap.get() || placePositions.isEmpty()) return;
-        for (BlockPos pos : placePositions)
-            event.renderer.box(pos, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
+        placePositions.forEach((pos) -> event.renderer.box(pos, sideColor.get(), lineColor.get(), shapeMode.get(), 0));
     }
 
 
@@ -206,25 +207,13 @@ public class AntiSurround extends Module {
     }
 
     private boolean isTrapped(PlayerEntity target) {
-        switch (when.get()) {
-            case BothTrapped -> {
-                return BEntityUtils.isBothTrapped(target, BEntityUtils.BlastResistantType.NotAir);
-            }
-            case AnyTrapped -> {
-                return BEntityUtils.isAnyTrapped(target, BEntityUtils.BlastResistantType.NotAir);
-            }
-            case TopTrapped -> {
-                return BEntityUtils.isTopTrapped(target, BEntityUtils.BlastResistantType.NotAir);
-            }
-            case FaceTrapped -> {
-                return BEntityUtils.isFaceTrapped(target, BEntityUtils.BlastResistantType.NotAir);
-            }
-            case Always -> {
-                return true;
-            }
-        }
-
-        return false;
+        return switch (when.get()) {
+            case BothTrapped -> CombatUtil.isTrapped(target, BlockType.NotEmpty, TrapType.Both);
+            case AnyTrapped -> CombatUtil.isTrapped(target, BlockType.NotEmpty, TrapType.Any);
+            case TopTrapped -> CombatUtil.isTrapped(target, BlockType.NotEmpty, TrapType.Top);
+            case FaceTrapped -> CombatUtil.isTrapped(target, BlockType.NotEmpty, TrapType.Face);
+            case Always -> true;
+        };
     }
 
     @Override
@@ -232,14 +221,11 @@ public class AntiSurround extends Module {
         return EntityUtils.getName(target);
     }
 
-    public enum TrapType {
+    public enum TrapMode {
         BothTrapped,
         AnyTrapped,
         TopTrapped,
         FaceTrapped,
         Always
     }
-
-
-
 }

@@ -1,8 +1,8 @@
 package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
+import bananaplus.fixedutils.CombatUtil;
 import bananaplus.system.BananaConfig;
-import bananaplus.utils.BEntityUtils;
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -12,19 +12,18 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.render.NametagUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import org.joml.Vector3d;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BurrowESP extends Module {
+public class PhaseESP extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
-    private final SettingGroup sgText = settings.createGroup("Text");
     private final SettingGroup sgRender = settings.createGroup("Render");
 
     // General
@@ -58,70 +57,69 @@ public class BurrowESP extends Module {
         .build()
     );
 
-    private final Setting<RenderMode> renderMode = sgGeneral.add(new EnumSetting.Builder<RenderMode>()
+    // Render
+
+    private final Setting<RenderMode> renderMode = sgRender.add(new EnumSetting.Builder<RenderMode>()
         .name("render-mode")
-        .description("Render text in the middle of a player's burrow block.")
-        .defaultValue(RenderMode.Text)
+        .description("How to render burrowed players.")
+        .defaultValue(RenderMode.Hitbox)
         .build()
     );
 
-    // Text
-
-    private final Setting<SettingColor> textColor = sgText.add(new ColorSetting.Builder()
+    private final Setting<SettingColor> textColor = sgRender.add(new ColorSetting.Builder()
         .name("text-color")
         .description("The color of the text.")
         .defaultValue(new SettingColor(230, 0, 255, 25))
-        .visible(() -> renderMode.get().text())
+        .visible(() -> renderMode.get() != RenderMode.Hitbox)
         .build()
     );
-
-    // Render
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
-            .name("shape-mode")
-            .description("How the shapes are rendered.")
-            .defaultValue(ShapeMode.Both)
-            .visible(() -> renderMode.get().block())
-            .build()
-    );
-
-    private final Setting<SettingColor> sideColor = sgRender.add(new ColorSetting.Builder()
-        .name("normal-sides")
-        .description("The side color of the rendering.")
-        .defaultValue(new SettingColor(230, 0, 255, 25))
-        .visible(() -> shapeMode.get().sides() && renderMode.get().block())
+        .name("shape-mode")
+        .description("Shape mode of the hitbox render.")
+        .defaultValue(ShapeMode.Both)
+        .visible(() -> renderMode.get() != RenderMode.Text)
         .build()
     );
 
-    private final Setting<SettingColor> lineColor = sgRender.add(new ColorSetting.Builder()
-        .name("normal-lines")
-        .description("The line color of the rendering.")
-        .defaultValue(new SettingColor(230, 0, 255, 255))
-        .visible(() -> shapeMode.get().lines() && renderMode.get().block())
+    private final Setting<SettingColor> phasedSides = sgRender.add(new ColorSetting.Builder()
+        .name("phased-sides")
+        .description("The side color for phased players.")
+        .defaultValue(new SettingColor(255, 255, 255, 45))
+        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().sides())
         .build()
     );
 
-    private final Setting<SettingColor> webSideColor = sgRender.add(new ColorSetting.Builder()
-        .name("webbed-sides")
-        .description("The side color of the rendering for webs.")
-        .defaultValue(new SettingColor(255, 255, 255, 25))
-        .visible(() -> shapeMode.get().sides() && renderWebbed.get() && renderMode.get().block())
-        .build()
-    );
-
-    private final Setting<SettingColor> webLineColor = sgRender.add(new ColorSetting.Builder()
-        .name("webbed-lines")
-        .description("The line color of the rendering for webs.")
+    private final Setting<SettingColor> phasedLines = sgRender.add(new ColorSetting.Builder()
+        .name("phased-lines")
+        .description("The line color for phased players.")
         .defaultValue(new SettingColor(255, 255, 255, 255))
-        .visible(() -> shapeMode.get().lines() && renderWebbed.get() && renderMode.get().block())
+        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().lines())
         .build()
     );
 
-    public BurrowESP() {
-        super(BananaPlus.FIXED, "Burrow-ESP", "Displays players that are burrowed or webbed.");
+    private final Setting<SettingColor> webbedSides = sgRender.add(new ColorSetting.Builder()
+        .name("webbed-sides")
+        .description("The side color for webbed players.")
+        .defaultValue(new SettingColor(255, 255, 255, 45))
+        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().sides())
+        .build()
+    );
+
+    private final Setting<SettingColor> webbedLines = sgRender.add(new ColorSetting.Builder()
+        .name("webbed-lines")
+        .description("The line color for webbed players.")
+        .defaultValue(new SettingColor(255, 255, 255, 255))
+        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().lines())
+        .build()
+    );
+
+
+    public PhaseESP() {
+        super(BananaPlus.FIXED, "phase-ESP", "Displays players that are phased into blocks .");
     }
 
-    public Map<BlockPos, Boolean> players = new HashMap<>();
+    public Map<PlayerEntity, Boolean> players = new HashMap<>();
     private final Vector3d pos = new Vector3d();
 
     @EventHandler
@@ -131,30 +129,31 @@ public class BurrowESP extends Module {
         for (PlayerEntity player: mc.world.getPlayers()) {
             if (player == mc.player && !renderSelf.get()) continue;
             if (Friends.get().isFriend(player) && !renderFriends.get()) continue;
-            if (mc.player.getEyePos().distanceTo(player.getPos()) > range.get()) continue;
+            if (mc.gameRenderer.getCamera().getPos().distanceTo(player.getPos()) > range.get()) continue;
 
-            if (BEntityUtils.isWebbed(player) && renderWebbed.get()) players.put(player.getBlockPos(), true);
-            if (BEntityUtils.isBurrowed(player, BEntityUtils.BlastResistantType.Any)) players.put(player.getBlockPos(), false);
+            var isPhased = CombatUtil.isPhased(player);
+            if (isPhased.getLeft()) players.put(player, isPhased.getRight() && renderWebbed.get());
         }
     }
 
     @EventHandler
     private void onRender3D(Render3DEvent event) {
-        if (!renderMode.get().block() || players.isEmpty()) return;
+        if (players.isEmpty() || renderMode.get() == RenderMode.Text) return;
 
-        players.forEach((blockPos, isWebbed) -> {
-            if (!isWebbed) event.renderer.box(blockPos, sideColor.get(), lineColor.get(), shapeMode.get(), 0);
-            else event.renderer.box(blockPos, webSideColor.get(), webLineColor.get(), shapeMode.get(), 0);
+        players.forEach((player, webbed) -> {
+            if (!webbed) event.renderer.box(player.getBoundingBox(), webbedSides.get(), webbedLines.get(), ShapeMode.Lines, 0);
+            else event.renderer.box(player.getBoundingBox(), phasedSides.get(), phasedLines.get(), ShapeMode.Lines, 0);
         });
     }
 
     @EventHandler
     private void onRender2D(Render2DEvent event) {
-        if (!renderMode.get().text() || players.isEmpty()) return;
+        if (players.isEmpty() || renderMode.get() == RenderMode.Hitbox) return;
+
         boolean shadow = Config.get().customFont.get();
 
-        players.forEach((blockPos, isWebbed) -> {
-            pos.set(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
+        players.forEach((player, isWebbed) -> {
+            Utils.set(pos, player, event.tickDelta).add(0, 0.5, 0);
             double scale = BananaConfig.get().getScale(pos);
 
             if (NametagUtils.to2D(pos, scale)) {
@@ -170,18 +169,10 @@ public class BurrowESP extends Module {
             }
         });
     }
-    
+
     public enum RenderMode {
-        Block,
+        Hitbox,
         Text,
-        Both;
-        
-        public boolean block() {
-            return this == Block || this == Both;
-        }
-        
-        public boolean text() {
-            return this == Text || this == Both;
-        }
+        Both
     }
 }
