@@ -17,6 +17,8 @@ import meteordevelopment.meteorclient.utils.render.NametagUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import org.joml.Vector3d;
 
 import java.util.HashMap;
@@ -69,7 +71,7 @@ public class PhaseESP extends Module {
     private final Setting<SettingColor> textColor = sgRender.add(new ColorSetting.Builder()
         .name("text-color")
         .description("The color of the text.")
-        .defaultValue(new SettingColor(230, 0, 255, 25))
+        .defaultValue(new SettingColor(255, 255, 255, 255))
         .visible(() -> renderMode.get() != RenderMode.Hitbox)
         .build()
     );
@@ -85,7 +87,7 @@ public class PhaseESP extends Module {
     private final Setting<SettingColor> phasedSides = sgRender.add(new ColorSetting.Builder()
         .name("phased-sides")
         .description("The side color for phased players.")
-        .defaultValue(new SettingColor(255, 255, 255, 45))
+        .defaultValue(new SettingColor(255, 30, 180, 25))
         .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().sides())
         .build()
     );
@@ -93,7 +95,7 @@ public class PhaseESP extends Module {
     private final Setting<SettingColor> phasedLines = sgRender.add(new ColorSetting.Builder()
         .name("phased-lines")
         .description("The line color for phased players.")
-        .defaultValue(new SettingColor(255, 255, 255, 255))
+        .defaultValue(new SettingColor(255, 30, 180, 255))
         .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().lines())
         .build()
     );
@@ -101,7 +103,7 @@ public class PhaseESP extends Module {
     private final Setting<SettingColor> webbedSides = sgRender.add(new ColorSetting.Builder()
         .name("webbed-sides")
         .description("The side color for webbed players.")
-        .defaultValue(new SettingColor(255, 255, 255, 45))
+        .defaultValue(new SettingColor(255, 255, 255, 25))
         .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().sides())
         .build()
     );
@@ -131,8 +133,8 @@ public class PhaseESP extends Module {
             if (Friends.get().isFriend(player) && !renderFriends.get()) continue;
             if (mc.gameRenderer.getCamera().getPos().distanceTo(player.getPos()) > range.get()) continue;
 
-            var isPhased = CombatUtil.isPhased(player);
-            if (isPhased.getLeft()) players.put(player, isPhased.getRight() && renderWebbed.get());
+            if (CombatUtil.isWebbed(player)) players.put(player, true);
+            else if (CombatUtil.isPhased(player)) players.put(player, false);
         }
     }
 
@@ -141,8 +143,16 @@ public class PhaseESP extends Module {
         if (players.isEmpty() || renderMode.get() == RenderMode.Text) return;
 
         players.forEach((player, webbed) -> {
-            if (!webbed) event.renderer.box(player.getBoundingBox(), webbedSides.get(), webbedLines.get(), ShapeMode.Lines, 0);
-            else event.renderer.box(player.getBoundingBox(), phasedSides.get(), phasedLines.get(), ShapeMode.Lines, 0);
+            double x = MathHelper.lerp(event.tickDelta, player.lastRenderX, player.getX()) - player.getX();
+            double y = MathHelper.lerp(event.tickDelta, player.lastRenderY, player.getY()) - player.getY();
+            double z = MathHelper.lerp(event.tickDelta, player.lastRenderZ, player.getZ()) - player.getZ();
+            Box box = player.getBoundingBox().offset(x, y, z);
+
+            event.renderer.box(
+                box, (webbed) ? webbedSides.get() : phasedSides.get(),
+                (webbed) ? webbedLines.get() : phasedLines.get(),
+                shapeMode.get(), 0
+            );
         });
     }
 

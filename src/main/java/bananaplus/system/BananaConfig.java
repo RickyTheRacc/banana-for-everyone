@@ -3,6 +3,7 @@ package bananaplus.system;
 import bananaplus.BananaPlus;
 import bananaplus.enums.AntiCheat;
 import bananaplus.enums.SwingMode;
+import bananaplus.enums.SwitchMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
@@ -120,6 +121,7 @@ public class BananaConfig extends System<BananaConfig> {
         .range(0.1,5)
         .build()
     );
+
     private final Setting<Double> maxScale = sgText.add(new DoubleSetting.Builder()
         .name("max-scale")
         .description("The largest text can get, regardless of distance.")
@@ -129,18 +131,12 @@ public class BananaConfig extends System<BananaConfig> {
     );
 
     // Anti cheat
+
     public final Setting <AntiCheat> antiCheat = sgAnticheat.add(new EnumSetting.Builder<AntiCheat>()
             .name("anti-cheat")
-            .description("What Anti cheat to bypass for Banana+ modules.")
+            .description("Which anticheat the server uses.")
             .defaultValue(AntiCheat.NoCheat)
             .build()
-    );
-
-    private final Setting<SwingMode> swingMode = sgAnticheat.add(new EnumSetting.Builder<SwingMode>()
-        .name("swing-mode")
-        .description("How to swing your hand when performing actions.")
-        .defaultValue(SwingMode.Both)
-        .build()
     );
 
     public final Setting<Boolean> blockRaytrace = sgAnticheat.add(new BoolSetting.Builder()
@@ -173,6 +169,22 @@ public class BananaConfig extends System<BananaConfig> {
     
     // Placing
 
+    public final Setting<SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<SwitchMode>()
+        .name("switch-mode")
+        .description("How to switch to the blocks you want to place.")
+        .defaultValue(SwitchMode.Silent)
+        .build()
+    );
+
+    public final Setting<Double> placeRange = sgPlacing.add(new DoubleSetting.Builder()
+        .name("target-range")
+        .description("The radius players can be in to be targeted.")
+        .defaultValue(4.5)
+        .range(0,6)
+        .sliderRange(0,6)
+        .build()
+    );
+
     public final Setting<Integer> placeDelay = sgPlacing.add(new IntSetting.Builder()
         .name("place-delay")
         .description("Tick delay between block placements.")
@@ -199,6 +211,15 @@ public class BananaConfig extends System<BananaConfig> {
     );
     
     // Crystals
+
+    public final Setting<Double> targetRange = sgCrystals.add(new DoubleSetting.Builder()
+        .name("attack-range")
+        .description("How far away you can hit crystals.")
+        .defaultValue(4.5)
+        .range(0,6)
+        .sliderRange(0,6)
+        .build()
+    );
 
     public final Setting<Integer> attacksPerSecond = sgCrystals.add(new IntSetting.Builder()
         .name("attacks-/-second")

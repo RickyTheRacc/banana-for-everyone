@@ -48,7 +48,6 @@ public abstract class SystemsMixin {
 
         // Registers the colors from config tabs. This allows rainbow colours to work for friends.
         meteorConfig.settings.registerColorSettings(null);
-        bananaConfig.settings.registerColorSettings(null);
 
         add(new Modules());
         add(new Macros());

@@ -45,43 +45,46 @@ public class CombatUtil {
         return true;
     }
 
-    public static Pair<Boolean, Boolean> isPhased(PlayerEntity player) {
+    public static boolean isWebbed(PlayerEntity player) {
         Box playerBox = player.getBoundingBox().contract(0.001);
-        playerBox = playerBox.withMaxY(Math.min(playerBox.maxY, playerBox.minY + 1));
 
-        int minX = MathHelper.floor(playerBox.minX);
-        int minY = MathHelper.floor(playerBox.minY);
-        int minZ = MathHelper.floor(playerBox.minZ);
-        int maxX = MathHelper.floor(playerBox.maxX);
-        int maxY = MathHelper.floor(playerBox.maxY);
-        int maxZ = MathHelper.floor(playerBox.maxZ);
-
-        int solids = 0, total = 0;
-        boolean isWebbed = false;
-
-        for (int i = minX; i <= maxX; i++) {
-            for (int j = minY; j <= maxY; j++) {
-                for (int k = minZ; k <= maxZ; k++) {
+        for (int i = MathHelper.floor(playerBox.minX); i <= MathHelper.floor(playerBox.maxX); i++) {
+            for (int j = MathHelper.floor(playerBox.minY); j <= MathHelper.floor(playerBox.maxY); j++) {
+                for (int k = MathHelper.floor(playerBox.minZ); k <= MathHelper.floor(playerBox.maxZ); k++) {
                     testPos.set(i, j, k);
-                    total++;
-
-                    BlockState state = mc.world.getBlockState(testPos);
-                    if (state.getBlock() == Blocks.COBWEB) {
-                        isWebbed = true;
-                        solids++;
-                    }
-
-                    if (!((AbstractBlockAccessor) state.getBlock()).isCollidable()) continue;
-
-                    Box stateBox = state.getOutlineShape(mc.world, testPos).getBoundingBox();
-                    stateBox = stateBox.offset(testPos.getX(), testPos.getY(), testPos.getZ());
-
-                    if (stateBox.intersects(playerBox)) solids++;
+                    if (mc.world.getBlockState(testPos).getBlock() == Blocks.COBWEB) return true;
                 }
             }
         }
 
-        boolean isPhased = (double) solids / total >= 0.75;
-        return new Pair<>(isPhased, isWebbed);
+        return false;
+    }
+
+    public static boolean isPhased(PlayerEntity player) {
+        Box playerBox = player.getBoundingBox();
+        double maxY = Math.min(playerBox.maxY, playerBox.minY + 1);
+        playerBox = playerBox.withMaxY(maxY).contract(0.001);
+
+        int solids = 0, total = 0;
+
+        for (int i = MathHelper.floor(playerBox.minX); i <= MathHelper.floor(playerBox.maxX); i++) {
+            for (int j = MathHelper.floor(playerBox.minY); j <= MathHelper.floor(playerBox.maxY); j++) {
+                for (int k = MathHelper.floor(playerBox.minZ); k <= MathHelper.floor(playerBox.maxZ); k++) {
+                    testPos.set(i, j, k);
+                    total += 1;
+
+                    BlockState state = mc.world.getBlockState(testPos);
+                    if (!((AbstractBlockAccessor) state.getBlock()).isCollidable()) continue;
+                    if (state.getCollisionShape(mc.world, testPos).isEmpty()) continue;
+
+                    Box stateBox = state.getCollisionShape(mc.world, testPos).getBoundingBox();
+                    stateBox = stateBox.offset(testPos.getX(), testPos.getY(), testPos.getZ());
+
+                    if (stateBox.intersects(playerBox)) solids += 1;
+                }
+            }
+        }
+
+        return (double) solids / total >= 0.75;
     }
 }

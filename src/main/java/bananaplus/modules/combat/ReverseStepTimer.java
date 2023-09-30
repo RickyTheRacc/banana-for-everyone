@@ -60,7 +60,7 @@ public class ReverseStepTimer extends Module {
     private void onMove(PlayerMoveEvent event) {
         if (mc.player.isSubmergedInWater() || mc.player.isInLava() || mc.player.isFallFlying() || mc.player.isClimbing() || mc.player.getVehicle() != null) return;
 
-        if (CombatUtil.isPhased(mc.player).getRight() && !webs.get()) return;
+        if (CombatUtil.isPhased(mc.player) && !webs.get()) return;
 
         if (mc.options.jumpKey.isPressed() || mc.options.sneakKey.isPressed()) return;
 

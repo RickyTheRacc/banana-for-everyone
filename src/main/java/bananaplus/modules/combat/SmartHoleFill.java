@@ -1,4 +1,4 @@
-package bananaplus.fixedmodules.combat;
+package bananaplus.modules.combat;
 
 import bananaplus.BananaPlus;
 import bananaplus.enums.BlockType;

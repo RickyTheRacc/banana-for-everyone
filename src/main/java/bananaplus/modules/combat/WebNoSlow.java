@@ -55,6 +55,7 @@ public class WebNoSlow extends Module {
     }
 
     public boolean ignoreWebs() {
+        if (!isActive()) return false;
         if (web.get() == WebMode.Vanilla) return true;
         return (web.get() == WebMode.Adaptive && mc.player.isOnGround());
     }

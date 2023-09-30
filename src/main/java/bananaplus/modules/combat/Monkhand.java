@@ -191,13 +191,11 @@ public class Monkhand extends Module {
 
         // Swap
         if (allowSwap.get()){
-
             if (!mc.options.swapHandsKey.isPressed()) key = false;
 
-            if (mc.options.swapHandsKey.isPressed()
-                    && !swapped
-                    && !key
-                    && (mc.player.getOffHandStack().getItem() == currentItem.item || mc.player.getOffHandStack().getItem() == fallbackItem.get().item)){
+            if (mc.options.swapHandsKey.isPressed() && !swapped && !key &&
+                (mc.player.getOffHandStack().getItem() == currentItem.item || mc.player.getOffHandStack().getItem() == fallbackItem.get().item)
+            ){
                 swapped = true;
                 key = true;
                 if (info.get()) info("Swapped! Swap with one of the chosen items to return to normal.");

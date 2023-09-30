@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AntiSurround extends Module {
+public class OldAntiSurround extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
@@ -121,8 +121,8 @@ public class AntiSurround extends Module {
             .build()
     );
 
-    public AntiSurround() {
-        super(BananaPlus.COMBAT, "anti-surround", "Place items inside the enemy's surround to break it.");
+    public OldAntiSurround() {
+        super(BananaPlus.COMBAT, "old-anti-surround", "Place items inside the enemy's surround to break it.");
     }
 
     private PlayerEntity target;
@@ -140,14 +140,7 @@ public class AntiSurround extends Module {
     private void onTick(TickEvent.Pre event) {
 
         target = TargetUtils.getPlayerTarget(targetRange.get(), SortPriority.LowestDistance);
-
-        if (target == null || Objects.requireNonNull(mc.player).distanceTo(target) > targetRange.get()) {
-            error("No target found, disabling...");
-            toggle();
-            return;
-        } else {
-            if (!isTrapped(target)) return;
-        }
+        if (target == null) return;
 
         FindItemResult button = InvUtils.findInHotbar(itemStack -> Block.getBlockFromItem(itemStack.getItem()) instanceof ButtonBlock);
         if (!button.found()) button = InvUtils.findInHotbar(Items.STRING);
@@ -163,7 +156,7 @@ public class AntiSurround extends Module {
 
             findPlacePos(target);
 
-            if (delay >= BananaConfig.get().placeDelay.get() && placePositions.size() > 0) {
+            if (delay >= BananaConfig.get().placeDelay.get() && !placePositions.isEmpty()) {
                 BlockPos blockPos = placePositions.get(placePositions.size() - 1);
                 if (BPlayerUtils.distanceFromEye(blockPos) > placeRange.get()) return;
 
