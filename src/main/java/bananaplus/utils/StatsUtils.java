@@ -59,7 +59,7 @@ public class StatsUtils {
     public static boolean isTarget() {
         for (Module module : Modules.get().getAll()) {
             if (module.getInfoString() != null) {
-                if (module.getInfoString().contains(deadEntity.getEntityName())) return true;
+                if (module.getInfoString().contains(deadEntity.getName().getString())) return true;
             }
         }
         return false;

@@ -638,10 +638,10 @@ public class SelfTrapPlus extends Module {
 
     private void notifySelfTrapBreak(Direction direction, PlayerEntity player) {
         switch (direction) {
-            case NORTH -> warning("Your north self trap block is being broken by " + player.getEntityName());
-            case EAST -> warning("Your east self trap block is being broken by " + player.getEntityName());
-            case SOUTH -> warning("Your south self trap block is being broken by " + player.getEntityName());
-            case WEST -> warning("Your west self trap block is being broken by " + player.getEntityName());
+            case NORTH -> warning("Your north self trap block is being broken by " + player.getName().getString());
+            case EAST -> warning("Your east self trap block is being broken by " + player.getName().getString());
+            case SOUTH -> warning("Your south self trap block is being broken by " + player.getName().getString());
+            case WEST -> warning("Your west self trap block is being broken by " + player.getName().getString());
         }
     }
 

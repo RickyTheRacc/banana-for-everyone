@@ -52,7 +52,7 @@ public class KillEffects extends Module {
             lightning.updatePosition(player.getX(), player.getX(), player.getZ());
             lightning.refreshPositionAfterTeleport(player.getX(), player.getX(), player.getZ());
 
-            mc.world.addEntity(lightning.getId(), lightning);
+            mc.world.addEntity(lightning);
         }
     }
 }
