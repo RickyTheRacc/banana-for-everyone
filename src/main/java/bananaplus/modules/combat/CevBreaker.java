@@ -381,7 +381,7 @@ public class CevBreaker extends Module {
 
     @Override
     public String getInfoString() {
-        if (closestTarget != null) return closestTarget.getEntityName();
+        if (closestTarget != null) return closestTarget.getName().getString();
         return null;
     }
 

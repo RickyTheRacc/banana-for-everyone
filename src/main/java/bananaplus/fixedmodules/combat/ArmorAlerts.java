@@ -117,7 +117,7 @@ public class ArmorAlerts extends Module {
     }
 
     private void notify(Item item, PlayerEntity player) {
-        String playerName = (player == mc.player) ? "Your " : player.getEntityName() + "'s ";
+        String playerName = (player == mc.player) ? "Your " : player.getName().getString() + "'s ";
         String itemName = item.getName().getString().toLowerCase();
 
         if (item instanceof ArmorItem && !(item == Items.TURTLE_HELMET)|| item instanceof ToolItem) {
