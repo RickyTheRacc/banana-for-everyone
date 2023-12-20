@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class AutoTrapPlus extends Module {
+public class OldAutoTrap extends Module {
     private final SettingGroup sgTargeting = settings.createGroup("Targeting");
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
@@ -291,7 +291,7 @@ public class AutoTrapPlus extends Module {
             .build()
     );
 
-    public AutoTrapPlus() {
+    public OldAutoTrap() {
         super(BananaPlus.COMBAT, "auto-trap+", "Surround your target with blocks.");
     }
 

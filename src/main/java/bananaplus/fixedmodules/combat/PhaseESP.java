@@ -31,7 +31,7 @@ public class PhaseESP extends Module {
     // General
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
-        .name("range")
+        .name("target-range")
         .description("Only render players within this range.")
         .defaultValue(10.0)
         .sliderRange(0,20)
@@ -104,7 +104,7 @@ public class PhaseESP extends Module {
         .name("webbed-sides")
         .description("The side color for webbed players.")
         .defaultValue(new SettingColor(255, 255, 255, 25))
-        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().sides())
+        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().sides() && renderWebbed.get())
         .build()
     );
 
@@ -112,7 +112,7 @@ public class PhaseESP extends Module {
         .name("webbed-lines")
         .description("The line color for webbed players.")
         .defaultValue(new SettingColor(255, 255, 255, 255))
-        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().lines())
+        .visible(() -> renderMode.get() != RenderMode.Text && shapeMode.get().lines() && renderWebbed.get())
         .build()
     );
 

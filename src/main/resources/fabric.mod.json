@@ -3,13 +3,13 @@
   "id": "banana-plus",
   "version": "${version}",
   "name": "Banana Plus",
-  "description": "This addon is literally immortal.",
+  "description": "Trolled",
   "authors": [
     "RickyTheRacc",
     "CrytoPal"
   ],
   "contact": {
-    "repo": "https://github.com/Bennooo/banana-for-everyone"
+    "repo": "https://github.com/RickyTheRacc/banana-for-everyone"
   },
   "icon": "assets/logo1.png",
   "environment": "client",

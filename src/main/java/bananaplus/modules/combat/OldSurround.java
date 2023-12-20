@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class SurroundPlus extends Module {
+public class OldSurround extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgAntiCity = settings.createGroup("Anti City");
@@ -374,7 +374,7 @@ public class SurroundPlus extends Module {
             .build()
     );
 
-    public SurroundPlus() {
+    public OldSurround() {
         super(BananaPlus.COMBAT, "surround+", "Surrounds you in blocks to prevent you from taking lots of damage.");
     }
 

@@ -6,8 +6,9 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "PlayerEntityMixin",
     "AnvilBlockMixin",
-    "CobwebBlockMixin"
+    "BlockMixinRedirect",
+    "CobwebBlockMixin",
+    "PlayerEntityMixin"
   ]
 }

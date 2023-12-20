@@ -1,4 +1,4 @@
-package bananaplus.modules.combat;
+package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
@@ -20,10 +20,52 @@ import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 
 public class TickShift extends Module {
-
-    private final SettingGroup sgCharge = settings.createGroup("Charge");
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+    private final SettingGroup sgCharge = settings.createGroup("Charge");
     private final SettingGroup sgAC = settings.createGroup("Anti Cheat");
+
+    // General
+
+    private final Setting<Integer> maxDuration = sgGeneral.add(new IntSetting.Builder()
+        .name("max-duration")
+        .description("How many ticks you are allowed to tick shift for.")
+        .defaultValue(60)
+        .min(1)
+        .sliderRange(1, 100)
+        .build()
+    );
+
+    private final Setting<Double> maxDistance = sgGeneral.add(new DoubleSetting.Builder()
+        .name("max-distance")
+        .description("How far are you allowed to tick shift for.")
+        .defaultValue(12)
+        .min(1)
+        .sliderRange(1, 20)
+        .build()
+    );
+
+    private final Setting<Double> factor = sgGeneral.add(new DoubleSetting.Builder()
+        .name("factor")
+        .description("How fast to perform the tick shift.")
+        .defaultValue(3.5)
+        .min(1)
+        .sliderRange(1, 10)
+        .build()
+    );
+
+    private final Setting<Boolean> onJump = sgGeneral.add(new BoolSetting.Builder()
+        .name("on-jump")
+        .description("Whether the player needs to jump first or not.")
+        .defaultValue(false)
+        .build()
+    );
+
+    private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
+        .name("chat-info")
+        .description("Sends info about what the module is doing.")
+        .defaultValue(false)
+        .build()
+    );
 
     // Charge
 
@@ -49,57 +91,6 @@ public class TickShift extends Module {
             .description("Disables your movement when you are charging.")
             .defaultValue(false)
             .visible(charge::get)
-            .build()
-    );
-
-    private final Setting<Boolean> chatInfo = sgCharge.add(new BoolSetting.Builder()
-            .name("chat-info")
-            .description("Tells you when you have finished charging.")
-            .defaultValue(false)
-            .visible(charge::get)
-            .build()
-    );
-
-    // General
-
-    private final Setting<Integer> durationTicks = sgGeneral.add(new IntSetting.Builder()
-            .name("duration-ticks")
-            .description("How many ticks you are allowed to tick shift for.")
-            .defaultValue(60)
-            .min(1)
-            .sliderRange(1, 100)
-            .build()
-    );
-
-    private final Setting<Double> factor = sgGeneral.add(new DoubleSetting.Builder()
-            .name("factor")
-            .description("How fast to perform the tick shift.")
-            .defaultValue(3.5)
-            .min(1)
-            .sliderRange(1, 10)
-            .build()
-    );
-
-    private final Setting<Boolean> onJump = sgGeneral.add(new BoolSetting.Builder()
-            .name("on-jump")
-            .description("Whether the player needs to jump first or not.")
-            .defaultValue(false)
-            .build()
-    );
-
-    private final Setting<Double> distance = sgGeneral.add(new DoubleSetting.Builder()
-            .name("distance")
-            .description("How far are you allowed to tick shift for.")
-            .defaultValue(12)
-            .min(1)
-            .sliderRange(1, 20)
-            .build()
-    );
-
-    private final Setting<Boolean> onRubberband = sgGeneral.add(new BoolSetting.Builder()
-            .name("disable-on-rubberband")
-            .description("Whether or not to turn off on rubberband.")
-            .defaultValue(true)
             .build()
     );
 
@@ -151,33 +142,30 @@ public class TickShift extends Module {
     );
 
     public TickShift() {
-        super(BananaPlus.COMBAT, "tick-shift", "Allows you to charge up movement packets and move swiftly.");
+        super(BananaPlus.FIXED, "tick-shift", "Allows you to charge up movement packets and move swiftly.");
     }
 
     private int chargeTicked;
     private int durationTicked;
-
     private boolean messaged;
-
     private boolean charged;
     private boolean moved;
 
-    private Vec3d startPos;
+    private final Vec3d startPos = new Vec3d(0, 0, 0);
 
     Timer timerClass = Modules.get().get(Timer.class);
     public Freecam freecam() {return Modules.get().get(Freecam.class);}
 
     @Override
     public void onActivate() {
+        ((IVec3d) startPos).set(mc.player.getX(), mc.player.getY(), mc.player.getZ());
         reset();
-        startPos = Vec3d.ofCenter(mc.player.getBlockPos());
         messaged = false;
     }
 
     @Override
     public void onDeactivate() {
         reset();
-        startPos = null;
     }
 
     private void reset() {
@@ -196,15 +184,22 @@ public class TickShift extends Module {
     @EventHandler
     private void onPacketReceive(PacketEvent.Receive event) {
         if (event.packet instanceof PlayerPositionLookS2CPacket) {
-            if (onRubberband.get()) toggle();
+            if (chatInfo.get()) info("Rubberbanded, toggling.");
+            toggle();
         }
     }
 
     @EventHandler
     private void onKey(KeyEvent event) {
         if (!charged && lockMovement.get() && !freecam().isActive()) {
-            if (Input.isKeyPressed(GLFW.GLFW_KEY_W) || Input.isKeyPressed(GLFW.GLFW_KEY_A) || Input.isKeyPressed(GLFW.GLFW_KEY_S) || Input.isKeyPressed(GLFW.GLFW_KEY_D) || Input.isKeyPressed(GLFW.GLFW_KEY_SPACE))
-                event.cancel();
+            if (!Input.isKeyPressed(GLFW.GLFW_KEY_W)
+                && !Input.isKeyPressed(GLFW.GLFW_KEY_A)
+                && !Input.isKeyPressed(GLFW.GLFW_KEY_S)
+                && !Input.isKeyPressed(GLFW.GLFW_KEY_D)
+                && !Input.isKeyPressed(GLFW.GLFW_KEY_SPACE)
+            ) return;
+
+            event.cancel();
         }
     }
 
@@ -245,37 +240,41 @@ public class TickShift extends Module {
             }
         }
 
-        if (startPos != null && (Math.sqrt(mc.player.squaredDistanceTo(startPos)) >= distance.get() || (durationTicked * factor.get()) > durationTicks.get())) {
+        if (startPos != null && (Math.sqrt(mc.player.squaredDistanceTo(startPos)) >= maxDistance.get() || (durationTicked * factor.get()) > maxDuration.get())) {
             toggle();
         }
     }
 
     @EventHandler
     private void onMove(PlayerMoveEvent event) {
-        if (charged && moved) {
-            // Now we override the timer
-            timerClass.setOverride(factor.get());
+        if (!charged || !moved) return;
 
-            double moveForward = mc.player.input.movementForward;
-            double moveStrafe = mc.player.input.movementSideways;
-            double rotationYaw = mc.player.getYaw();
-            if (moveForward == 0.0 && moveStrafe == 0.0) {
-                ((IVec3d) event.movement).setXZ(0, 0);
-            } else {
-                if (moveForward != 0.0) {
-                    if (moveStrafe > 0.0) {
-                        rotationYaw += (moveForward > 0.0 ? -45 : 45);
-                    } else if (moveStrafe < 0.0) {
-                        rotationYaw += (moveForward > 0.0 ? 45 : -45);
-                    }
-                    moveStrafe = 0.0;
+        // Now we override the timer
+        timerClass.setOverride(factor.get());
+
+        double moveForward = mc.player.input.movementForward;
+        double moveStrafe = mc.player.input.movementSideways;
+        double rotationYaw = mc.player.getYaw();
+
+        if (moveForward == 0.0 && moveStrafe == 0.0) {
+            ((IVec3d) event.movement).setXZ(0, 0);
+        } else {
+            if (moveForward != 0.0) {
+                if (moveStrafe > 0.0) {
+                    rotationYaw += (moveForward > 0.0 ? -45 : 45);
+                } else if (moveStrafe < 0.0) {
+                    rotationYaw += (moveForward > 0.0 ? 45 : -45);
                 }
-
-                moveStrafe = moveStrafe == 0.0 ? moveStrafe : (moveStrafe > 0.0 ? 1.0 : -1.0);
-                ((IVec3d) event.movement).setXZ(moveForward * getMaxSpeed() * Math.cos(Math.toRadians(rotationYaw + 90.0) + moveStrafe * getMaxSpeed() * Math.sin(Math.toRadians(rotationYaw + 90.0))), moveForward * getMaxSpeed() * Math.sin(Math.toRadians(rotationYaw + 90.0)) - moveStrafe * getMaxSpeed() * Math.cos(Math.toRadians(rotationYaw + 90.0)));
+                moveStrafe = 0.0;
             }
-        }
 
+            moveStrafe = moveStrafe == 0.0 ? moveStrafe : (moveStrafe > 0.0 ? 1.0 : -1.0);
+            double rotationSin = Math.sin(Math.toRadians(rotationYaw + 90.0));
+            ((IVec3d) event.movement).setXZ(
+                moveForward * getMaxSpeed() * Math.cos(Math.toRadians(rotationYaw + 90.0) + moveStrafe * getMaxSpeed() * rotationSin),
+                moveForward * getMaxSpeed() * rotationSin - moveStrafe * getMaxSpeed() * Math.cos(Math.toRadians(rotationYaw + 90.0))
+            );
+        }
     }
 
     private double getMaxSpeed() {
@@ -294,13 +293,7 @@ public class TickShift extends Module {
     @Override
     public String getInfoString() {
         if (charge.get()) {
-            if (chargeTicked < chargeTicks.get()) {
-                return chargeTicked + "";
-            } else {
-                return "Charged";
-            }
-        } else {
-            return durationTicked + "";
-        }
+            return (chargeTicked < chargeTicks.get() ? chargeTicked : "Charged") + "";
+        } else return durationTicked + "";
     }
 }

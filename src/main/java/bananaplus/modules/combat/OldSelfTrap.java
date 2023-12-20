@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class SelfTrapPlus extends Module {
+public class OldSelfTrap extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPlacing = settings.createGroup("Placing");
     private final SettingGroup sgAntiCity = settings.createGroup("Anti City");
@@ -355,7 +355,7 @@ public class SelfTrapPlus extends Module {
             .build()
     );
 
-    public SelfTrapPlus() {
+    public OldSelfTrap() {
         super(BananaPlus.COMBAT, "self-trap+", "Surrounds your head in blocks to prevent you from taking lots of damage.");
     }
 

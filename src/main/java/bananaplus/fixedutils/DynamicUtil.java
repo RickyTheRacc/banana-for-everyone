@@ -1,6 +1,5 @@
 package bananaplus.fixedutils;
 
-import bananaplus.enums.BlockType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;

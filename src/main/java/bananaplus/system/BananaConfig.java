@@ -139,16 +139,18 @@ public class BananaConfig extends System<BananaConfig> {
             .build()
     );
 
-    public final Setting<Boolean> blockRaytrace = sgAnticheat.add(new BoolSetting.Builder()
-        .name("block-raytrace")
-        .description("Only interact with blocks you can see.")
-        .defaultValue(false)
+    public final Setting<Double> blockRange = sgPlacing.add(new DoubleSetting.Builder()
+        .name("block-range")
+        .description("How far away you can interact with blocks.")
+        .defaultValue(4.5)
+        .range(0,6)
+        .sliderRange(0,6)
         .build()
     );
 
-    public final Setting<Boolean> entityRaytrace = sgAnticheat.add(new BoolSetting.Builder()
-        .name("entity-raytrace")
-        .description("Only interact with entities you can see.")
+    public final Setting<Boolean> blockRaytrace = sgAnticheat.add(new BoolSetting.Builder()
+        .name("block-raytrace")
+        .description("Only interact with blocks you can see.")
         .defaultValue(false)
         .build()
     );
@@ -160,28 +162,35 @@ public class BananaConfig extends System<BananaConfig> {
         .build()
     );
 
+    public final Setting<Double> entityRange = sgPlacing.add(new DoubleSetting.Builder()
+        .name("entity-range")
+        .description("How far away you can interact with entities.")
+        .defaultValue(4.5)
+        .range(0,6)
+        .sliderRange(0,6)
+        .build()
+    );
+
+    public final Setting<Boolean> entityRaytrace = sgAnticheat.add(new BoolSetting.Builder()
+        .name("entity-raytrace")
+        .description("Only interact with entities you can see.")
+        .defaultValue(false)
+        .build()
+    );
+
     public final Setting<Boolean> entityRotate = sgAnticheat.add(new BoolSetting.Builder()
         .name("entity-rotate")
         .description("Rotate towards entities you're interacting with.")
         .defaultValue(false)
         .build()
     );
-    
+
     // Placing
 
     public final Setting<SwitchMode> switchMode = sgPlacing.add(new EnumSetting.Builder<SwitchMode>()
         .name("switch-mode")
         .description("How to switch to the blocks you want to place.")
         .defaultValue(SwitchMode.Silent)
-        .build()
-    );
-
-    public final Setting<Double> placeRange = sgPlacing.add(new DoubleSetting.Builder()
-        .name("target-range")
-        .description("The radius players can be in to be targeted.")
-        .defaultValue(4.5)
-        .range(0,6)
-        .sliderRange(0,6)
         .build()
     );
 

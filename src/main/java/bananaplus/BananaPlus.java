@@ -1,9 +1,7 @@
 package bananaplus;
 
 import bananaplus.fixedmodules.combat.*;
-import bananaplus.fixedmodules.combat.Monkhand;
 import bananaplus.fixedmodules.misc.TravelLog;
-import bananaplus.fixedmodules.misc.KillEffects;
 import bananaplus.system.BananaTab;
 import bananaplus.hud.*;
 import bananaplus.modules.combat.*;
@@ -70,34 +68,30 @@ public class BananaPlus extends MeteorAddon {
 		Hud.get().register(TextPresets.INFO);
 
 		// Fixed Modules
-		Modules.get().add(new ArmorAlerts());
-		Modules.get().add(new PhaseESP());
-		Modules.get().add(new Monkhand());
-		Modules.get().add(new XPThrower());
+		Modules.get().add(new AntiRetard());
+		Modules.get().add(new AntiTrap());
 		Modules.get().add(new AntiSurround());
+		Modules.get().add(new ArmorAlerts());
+//		Modules.get().add(new Monkhand());
+		Modules.get().add(new PhaseESP());
+		Modules.get().add(new TickShift());
 		Modules.get().add(new TravelLog());
-
-		Modules.get().add(new TestModule());
+		Modules.get().add(new XPThrower());
 
 		// Combat Modules
-		Modules.get().add(new AutoTrapPlus());
+		Modules.get().add(new OldAutoTrap());
 		Modules.get().add(new AnchorPlus());
-		Modules.get().add(new AntiTrap());
-		Modules.get().add(new OldAntiSurround());
 		Modules.get().add(new BananaBomber());
-		Modules.get().add(new CevBreaker());
 		Modules.get().add(new HoleESPPlus());
 		Modules.get().add(new MonkeBurrow());
-		Modules.get().add(new SelfTrapPlus());
+		Modules.get().add(new OldSurround());
 		Modules.get().add(new SmartHoleFill());
 		Modules.get().add(new StepPlus());
 		Modules.get().add(new StrafePlus());
-		Modules.get().add(new SurroundPlus());
+		Modules.get().add(new OldSelfTrap());
 		Modules.get().add(new ReverseStepTimer());
-		Modules.get().add(new TickShift());
 
 		// Misc Modules
-		Modules.get().add(new KillEffects());
 		Modules.get().add(new Platform());
 		Modules.get().add(new Presence());
 		Modules.get().add(new WebNoSlow());

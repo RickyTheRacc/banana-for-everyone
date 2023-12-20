@@ -4,7 +4,6 @@ import bananaplus.enums.BlockType;
 import bananaplus.enums.TrapType;
 import bananaplus.fixedutils.CombatUtil;
 import bananaplus.modules.combat.BananaBomber;
-import bananaplus.modules.combat.CevBreaker;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.combat.KillAura;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
@@ -52,7 +51,6 @@ public class CrystalUtils {
 
     // Face Place
     public static boolean shouldFacePlace(BlockPos crystal) {
-        if (BBomber.CevPause.get() && Modules.get().isActive(CevBreaker.class)) return false;
         if (BBomber.KAPause.get() && (Modules.get().isActive(KillAura.class))) return false;
         if (BBomber.surrHoldPause.get() && isSurroundHolding()) return false;
 

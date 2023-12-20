@@ -8,6 +8,7 @@
   "mixins": [
     "AutoRespawnMixin",
     "FreecamMixin",
+    "ModulesMixin",
     "StringListSettingMixin",
     "SystemsMixin",
     "ZoomMixin"

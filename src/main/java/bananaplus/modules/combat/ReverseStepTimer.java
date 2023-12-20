@@ -54,7 +54,6 @@ public class ReverseStepTimer extends Module {
     }
 
     private int fallTicks;
-    private final TimerUtils strictTimer = new TimerUtils();
 
     @EventHandler
     private void onMove(PlayerMoveEvent event) {
@@ -81,34 +80,31 @@ public class ReverseStepTimer extends Module {
             if (fallHeight > height.get()) return;
 
             if (mode.get() != Mode.Timer) {
-               // if (strictTimer.passedSec(1)) {
-                    if (mc.player.networkHandler != null) {
-                        if (fallHeight > 0.5) {
-                            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.07840000152, mc.player.getZ(), false));
-                            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.23363200604, mc.player.getZ(), false));
-                            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.46415937495, mc.player.getZ(), false));
-                            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.76847620241, mc.player.getZ(), false));
+                if (mc.player.networkHandler != null) {
+                    if (fallHeight > 0.5) {
+                        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.07840000152, mc.player.getZ(), false));
+                        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.23363200604, mc.player.getZ(), false));
+                        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.46415937495, mc.player.getZ(), false));
+                        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.76847620241, mc.player.getZ(), false));
 
-                            if (fallHeight >= 1.5) {
-                                mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 1.14510670065, mc.player.getZ(), false));
-                                mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 1.59260459764, mc.player.getZ(), false));
+                        if (fallHeight >= 1.5) {
+                            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 1.14510670065, mc.player.getZ(), false));
+                            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 1.59260459764, mc.player.getZ(), false));
 
-                                if (fallHeight >= 2.5) {
-                                    mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 2.10955254674, mc.player.getZ(), false));
-                                    mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 2.69456154825, mc.player.getZ(), false));
+                            if (fallHeight >= 2.5) {
+                                mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 2.10955254674, mc.player.getZ(), false));
+                                mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 2.69456154825, mc.player.getZ(), false));
 
-                                    if (fallHeight >= 3.5) {
-                                        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 3.34627038241, mc.player.getZ(), false));
-                                    }
+                                if (fallHeight >= 3.5) {
+                                    mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 3.34627038241, mc.player.getZ(), false));
                                 }
                             }
                         }
                     }
+                }
 
-                    mc.player.setPosition(mc.player.getX(), fallingBlock + 0.1, mc.player.getZ());
-                    mc.player.setVelocity(0, 0, 0);
-                    strictTimer.reset();
-              //  }
+                mc.player.setPosition(mc.player.getX(), fallingBlock + 0.1, mc.player.getZ());
+                mc.player.setVelocity(0, 0, 0);
             }
 
             if (mode.get() != Mode.Packet) Modules.get().get(Timer.class).setOverride(timer.get());

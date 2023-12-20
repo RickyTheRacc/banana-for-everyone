@@ -169,7 +169,7 @@ public class AntiSurround extends Module {
             if (PlacingUtil.tryPlace(placePos, result, swingMode.get())) {
                 RenderUtils.renderTickingBlock(
                     placePos, sideColor.get(), lineColor.get(), shapeMode.get(),
-                    0, 8, true, false
+                    0, 4, true, false
                 );
                 toggle();
             }
@@ -194,7 +194,7 @@ public class AntiSurround extends Module {
         if (surroundBlocks.isEmpty()) return null;
 
         surroundBlocks.sort(Comparator.comparing(PlayerUtils::squaredDistanceTo));
-        double range = BananaConfig.get().placeRange.get();
+        double range = BananaConfig.get().blockRange.get();
         if (PlayerUtils.squaredDistanceTo(surroundBlocks.get(0)) > range * range) return null;
         return surroundBlocks.get(0);
     }

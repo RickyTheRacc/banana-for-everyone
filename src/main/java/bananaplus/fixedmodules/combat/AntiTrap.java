@@ -1,14 +1,16 @@
-package bananaplus.modules.combat;
+package bananaplus.fixedmodules.combat;
 
 import bananaplus.BananaPlus;
 import bananaplus.enums.BlockType;
 import bananaplus.enums.TrapType;
 import bananaplus.fixedutils.CombatUtil;
+import meteordevelopment.meteorclient.commands.commands.VClipCommand;
 import meteordevelopment.meteorclient.events.entity.player.FinishUsingItemEvent;
 import meteordevelopment.meteorclient.events.entity.player.ItemUseCrosshairTargetEvent;
 import meteordevelopment.meteorclient.events.entity.player.StoppedUsingItemEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -20,8 +22,11 @@ import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.math.BlockPos;
+
+import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class AntiTrap extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -47,7 +52,7 @@ public class AntiTrap extends Module {
     private final Setting<Boolean> onlyInHole = sgGeneral.add(new BoolSetting.Builder()
         .name("only-in-hole")
         .description("Only activates when you are in a hole.")
-        .defaultValue(true)
+        .defaultValue(false)
         .build()
     );
 
@@ -60,83 +65,87 @@ public class AntiTrap extends Module {
 
     // Vclip
 
-    private final Setting<VClipDirection> direction = sgVclip.add(new EnumSetting.Builder<VClipDirection>()
+    private final Setting<ClipDirection> direction = sgVclip.add(new EnumSetting.Builder<ClipDirection>()
         .name("direction")
         .description("Direction to VClip towards.")
-        .defaultValue(VClipDirection.Up)
+        .defaultValue(ClipDirection.Up)
         .visible(() -> actionMode.get() == Mode.VClip)
         .build()
     );
 
-    private final Setting<Integer> minVClipHeight = sgVclip.add(new IntSetting.Builder()
+    private final Setting<Integer> minHeight = sgVclip.add(new IntSetting.Builder()
         .name("min-height")
-        .description("Minimum height it will VClip you.")
-        .sliderMin(3)
-        .min(3)
+        .description("Minimum height you're allowed to vclip.")
         .defaultValue(3)
+        .range(3,10)
         .visible(() -> actionMode.get() == Mode.VClip)
         .build()
     );
 
-    private final Setting<Integer> maxVClipHeight = sgVclip.add(new IntSetting.Builder()
-            .name("max-height")
-            .description("Maximum height it will VClip you.")
-            .sliderMin(3)
-            .min(3)
-            .defaultValue(4)
-            .visible(() -> actionMode.get() == Mode.VClip)
-            .build()
+    private final Setting<Integer> maxHeight = sgVclip.add(new IntSetting.Builder()
+        .name("max-height")
+        .description("Maximum height you're allowed to vclip.")
+        .defaultValue(3)
+        .range(3,10)
+        .visible(() -> actionMode.get() == Mode.VClip)
+        .build()
     );
 
     // Chorus
 
     private final Setting<Boolean> autoMove = sgChorus.add(new BoolSetting.Builder()
-            .name("auto-move")
-            .description("Puts a chorus into a selected slot if you don't have one in your hotbar.")
-            .defaultValue(true)
-            .visible(() -> actionMode.get() == Mode.Chorus)
-            .build()
+        .name("auto-move")
+        .description("Puts a chorus into a selected slot if you don't have one in your hotbar.")
+        .defaultValue(true)
+        .visible(() -> actionMode.get() == Mode.Chorus)
+        .build()
     );
 
-    private final Setting<Integer> autoMoveSlot = sgGeneral.add(new IntSetting.Builder()
-            .name("auto-move-slot")
-            .description("The slot auto move moves chorus to.")
-            .defaultValue(9)
-            .range(1,9)
-            .sliderRange(1,9)
-            .visible(() -> actionMode.get() == Mode.Chorus && autoMove.get())
-            .build()
+    private final Setting<Integer> autoMoveSlot = sgChorus.add(new IntSetting.Builder()
+        .name("move-slot")
+        .description("The slot auto move moves chorus to.")
+        .defaultValue(9)
+        .range(1,9)
+        .sliderRange(1,9)
+        .visible(() -> actionMode.get() == Mode.Chorus && autoMove.get())
+        .build()
     );
 
-    private final Setting<Boolean> autoSwitch = sgGeneral.add(new BoolSetting.Builder()
-            .name("auto-switch")
-            .description("Switches to chorus automatically.")
-            .visible(() -> actionMode.get() == Mode.Chorus)
-            .defaultValue(true)
-            .build()
+    private final Setting<Boolean> autoSwitch = sgChorus.add(new BoolSetting.Builder()
+        .name("auto-switch")
+        .description("Switches to chorus automatically.")
+        .visible(() -> actionMode.get() == Mode.Chorus)
+        .defaultValue(true)
+        .build()
     );
 
-    private final Setting<Boolean> autoEat = sgGeneral.add(new BoolSetting.Builder()
-            .name("auto-eat")
-            .description("Eats the chorus automatically.")
-            .visible(() -> actionMode.get() == Mode.Chorus)
-            .defaultValue(false)
-            .build()
+    private final Setting<Boolean> autoEat = sgChorus.add(new BoolSetting.Builder()
+        .name("auto-eat")
+        .description("Eats the chorus automatically.")
+        .visible(() -> actionMode.get() == Mode.Chorus)
+        .defaultValue(false)
+        .build()
     );
 
     public AntiTrap() {
-        super(BananaPlus.COMBAT, "anti-trap", "Tries to save you after getting trapped.");
+        super(BananaPlus.FIXED, "anti-trap", "Tries to save you after getting trapped.");
     }
-    
-    private final BlockPos.Mutable blockPos = new BlockPos.Mutable();
-    private boolean eating, swapped;
-    
+
+    private boolean eating, swapped, alerted;
+
+    @Override
+    public void onActivate() {
+        alerted = false;
+    }
+
     @EventHandler
     private void onTick(TickEvent.Post event) {
         if (onlyOnGround.get() && !mc.player.isOnGround()) return;
         if (onlyInHole.get() && !CombatUtil.isInHole(mc.player, BlockType.Resistance)) return;
-
-        if (!CombatUtil.isTrapped(mc.player, BlockType.Resistance, trappedMode.get())) return;
+        if (!CombatUtil.isTrapped(mc.player, BlockType.Resistance, trappedMode.get())) {
+            alerted = false;
+            return;
+        }
         
         switch (actionMode.get()) {
             case VClip -> doVClip();
@@ -145,39 +154,28 @@ public class AntiTrap extends Module {
     }
 
     private void doVClip() {
-        if (direction.get() == VClipDirection.Up && upperSpace() != 0) {
-            mc.player.setPosition(mc.player.getX(), mc.player.getY() + upperSpace(), mc.player.getZ());
-        } else if (direction.get() == VClipDirection.Down && lowerSpace() != 0){
-            mc.player.setPosition(mc.player.getX(), mc.player.getY() + lowerSpace(), mc.player.getZ());
-        }
-    }
+        int bound1 = mc.player.getBlockY() + (direction.get() == ClipDirection.Down ? minHeight.get() : -minHeight.get());
+        int bound2 = mc.player.getBlockY() + (direction.get() == ClipDirection.Down ? maxHeight.get() : -maxHeight.get());
 
-    private int upperSpace() {
-        for (int dy = minVClipHeight.get(); dy <= maxVClipHeight.get(); dy++) {
-            BlockState blockState1 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy, mc.player.getZ()));
-            BlockState blockState2 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy + 1, mc.player.getZ()));
+        int start = Math.min(bound1, bound2);
+        int end = Math.max(bound1, bound2);
 
-            boolean air1 = blockState1.isReplaceable();
-            boolean air2 = blockState2.isReplaceable();
+        for (int i = start; i <= end; i++) {
+            BlockState state1 = mc.world.getBlockState(mc.player.getBlockPos().add(0, i, 0));
+            if (!((AbstractBlockAccessor) state1.getBlock()).isCollidable()) continue;
 
-            if (air1 & air2) return dy;
-        }
+            BlockState state2 = mc.world.getBlockState(mc.player.getBlockPos().add(0, i + 1, 0));
+            if (!((AbstractBlockAccessor) state2.getBlock()).isCollidable()) continue;
 
-        return 0;
-    }
-
-    private int lowerSpace() {
-        for (int dy = -minVClipHeight.get(); dy >= -maxVClipHeight.get(); dy--) {
-            BlockState blockState1 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy, mc.player.getZ()));
-            BlockState blockState2 = mc.world.getBlockState(blockPos.set(mc.player.getX(), mc.player.getY() + dy + 1, mc.player.getZ()));
-
-            boolean air1 = blockState1.isReplaceable();
-            boolean air2 = blockState2.isReplaceable();
-
-            if (air1 & air2) return dy;
+            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), i, mc.player.getZ(), true));
+            mc.player.setPosition(mc.player.getX(), i, mc.player.getZ());
+            break;
         }
 
-        return 0;
+        if (!alerted) {
+            warning("Couldn't find a suitable place to vclip.");
+            alerted = true;
+        }
     }
 
     private void doChorus() {
@@ -255,7 +253,7 @@ public class AntiTrap extends Module {
         Chorus
     }
 
-    public enum VClipDirection {
+    public enum ClipDirection {
         Up,
         Down
     }

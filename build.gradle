@@ -22,6 +22,8 @@ repositories {
         name = "meteor-maven-snapshots"
         url = "https://maven.meteordev.org/snapshots"
     }
+
+    maven { url = "https://jitpack.io" }
 }
 
 dependencies {
@@ -32,6 +34,9 @@ dependencies {
 
     // Meteor
     modImplementation "meteordevelopment:meteor-client:${project.meteor_version}"
+
+    // Mixin Squared
+    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.1.1")))
 }
 
 processResources {
