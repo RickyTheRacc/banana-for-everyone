@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "me.ricky.banana.mixins.minecraft",
+  "package": "me.ricky.banana.mixin.minecraft",
   "compatibilityLevel": "JAVA_16",
   "injectors": {
     "defaultRequire": 1

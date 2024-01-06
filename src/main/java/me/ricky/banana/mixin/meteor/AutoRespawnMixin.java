@@ -1,26 +1,20 @@
-package me.ricky.banana.mixins.meteor;
+package me.ricky.banana.mixin.meteor;
 
 import meteordevelopment.meteorclient.events.game.OpenScreenEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.misc.AutoRespawn;
-import meteordevelopment.meteorclient.systems.modules.render.WaypointsModule;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
-import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.gui.screen.DeathScreen;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
-@Mixin(AutoRespawn.class)
-public class AutoRespawnMixin extends Module{
-
+@Mixin(value = AutoRespawn.class, remap = false)
+public abstract class AutoRespawnMixin extends Module{
     @Unique private Setting<Boolean> autoRekit;
     @Unique private Setting<Boolean> chatInfo;
     @Unique private Setting<String> kitName;
@@ -29,7 +23,7 @@ public class AutoRespawnMixin extends Module{
         super(Categories.Player, "auto-respawn", "Automatically respawns after death.");
     }
 
-    @Inject(method = "<init>", at=@At("TAIL"), remap = false)
+    @Inject(method = "<init>", at=@At("TAIL"))
     private void onInit(CallbackInfo ci) {
         SettingGroup sgGeneral = settings.getDefaultGroup();
 
@@ -59,22 +53,11 @@ public class AutoRespawnMixin extends Module{
         );
     }
 
-    /**
-     * @author RickyTheRacc
-     * @reason Add rekit settings
-     */
-    @EventHandler(priority = 100)
-    @Overwrite(remap = false)
-    private void onOpenScreenEvent(OpenScreenEvent event) {
-        if (!(event.screen instanceof DeathScreen)) return;
-
-        Modules.get().get(WaypointsModule.class).addDeath(mc.player.getPos());
-        mc.player.requestRespawn();
+    @Inject(method = "onOpenScreenEvent", at = @At("TAIL"))
+    private void sendRekitMessage(OpenScreenEvent event, CallbackInfo ci) {
         if (autoRekit.get()) {
             if (chatInfo.get()) info("Rekitting with kit " + kitName.get() + ".");
             ChatUtils.sendPlayerMsg("/kit " + kitName.get());
         }
-
-        event.cancel();
     }
 }

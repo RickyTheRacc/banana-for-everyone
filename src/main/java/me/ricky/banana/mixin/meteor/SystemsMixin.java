@@ -1,6 +1,6 @@
-package me.ricky.banana.mixins.meteor;
+package me.ricky.banana.mixin.meteor;
 
-import me.ricky.banana.system.BananaConfig;
+import me.ricky.banana.systems.BananaConfig;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Systems.class, remap = false)
 public abstract class SystemsMixin {
-    @Shadow(remap = false) private static System<?> add(System<?> system) {
+    @Shadow private static System<?> add(System<?> system) {
         throw new AssertionError();
     }
 

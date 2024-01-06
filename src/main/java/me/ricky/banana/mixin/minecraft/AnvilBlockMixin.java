@@ -1,4 +1,4 @@
-package me.ricky.banana.mixins.minecraft;
+package me.ricky.banana.mixin.minecraft;
 
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AnvilBlock.class)
-public class AnvilBlockMixin {
+public abstract class AnvilBlockMixin {
     @Unique private static final VoxelShape BASE_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
     @Unique private static final VoxelShape X_STEP_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 2.0D, 16.0D, 4.0D, 14.0D);
     @Unique private static final VoxelShape X_STEM_SHAPE = Block.createCuboidShape(0.0D, 5.0D, 2.0D, 16.0D, 10.0D, 14.0D);

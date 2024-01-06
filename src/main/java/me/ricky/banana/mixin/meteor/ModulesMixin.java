@@ -1,4 +1,4 @@
-package me.ricky.banana.mixins.meteor;
+package me.ricky.banana.mixin.meteor;
 
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -43,6 +43,20 @@ public abstract class ModulesMixin {
         slice = @Slice(from = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/movement/HighJump;<init>()V"))
     )
     private void removeHighJump(Modules instance, Module _module) {}
+
+    // Remove AutoWeb
+    @Redirect(method = "initCombat",
+        at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/Modules;add(Lmeteordevelopment/meteorclient/systems/modules/Module;)V", ordinal = 0),
+        slice = @Slice(from = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/combat/AutoWeb;<init>()V"))
+    )
+    private void removeAutoWeb(Modules instance, Module _module) {}
+
+    // Remove AutoWeb
+    @Redirect(method = "initCombat",
+        at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/Modules;add(Lmeteordevelopment/meteorclient/systems/modules/Module;)V", ordinal = 0),
+        slice = @Slice(from = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/combat/SelfWeb;<init>()V"))
+    )
+    private void removeSelfWeb(Modules instance, Module _module) {}
 
     // Remove High Jump
 //    @Redirect(method = "initMovement",

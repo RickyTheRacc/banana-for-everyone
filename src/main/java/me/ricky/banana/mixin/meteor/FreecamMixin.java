@@ -1,4 +1,4 @@
-package me.ricky.banana.mixins.meteor;
+package me.ricky.banana.mixin.meteor;
 
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -15,15 +15,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-@Mixin(Freecam.class)
-public class FreecamMixin{
-    @Shadow(remap = false) @Final private SettingGroup sgGeneral;
-    @Shadow(remap = false) @Final private Setting<Boolean> rotate;
-    @Shadow(remap = false) public float yaw, pitch;
+@Mixin(value = Freecam.class, remap = false)
+public abstract class FreecamMixin{
+    @Shadow @Final private SettingGroup sgGeneral;
+    @Shadow @Final private Setting<Boolean> rotate;
+    @Shadow public float yaw, pitch;
 
     @Unique private Setting<Boolean> parallelView;
 
-    @Inject(method = "<init>", at=@At("TAIL"), remap = false)
+    @Inject(method = "<init>", at=@At("TAIL"))
     private void onInit(CallbackInfo ci) {
         parallelView  = sgGeneral.add(new BoolSetting.Builder()
             .name("parallel-view-B+")

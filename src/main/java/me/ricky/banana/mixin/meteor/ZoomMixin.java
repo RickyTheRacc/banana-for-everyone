@@ -1,4 +1,4 @@
-package me.ricky.banana.mixins.meteor;
+package me.ricky.banana.mixin.meteor;
 
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Zoom.class)
-public class ZoomMixin extends Module{
-    @Shadow(remap = false) @Final private SettingGroup sgGeneral;
+@Mixin(value = Zoom.class, remap = false)
+public abstract class ZoomMixin extends Module{
+    @Shadow @Final private SettingGroup sgGeneral;
 
     @Unique private Setting<Boolean> toggleHud;
     @Unique private boolean wasHudHidden;
@@ -25,7 +25,7 @@ public class ZoomMixin extends Module{
         super(Categories.Render, "zoom", "Zooms your view.");
     }
 
-    @Inject(method = "<init>", at=@At("TAIL"), remap = false)
+    @Inject(method = "<init>", at=@At("TAIL"))
     private void onInit(CallbackInfo ci) {
         toggleHud = sgGeneral.add(new BoolSetting.Builder()
             .name("toggle-hud")
@@ -35,7 +35,7 @@ public class ZoomMixin extends Module{
         );
     }
 
-    @Inject(method = "onActivate", at = @At("TAIL"), remap = false)
+    @Inject(method = "onActivate", at = @At("TAIL"))
     public void onActivate(CallbackInfo info){
         if (toggleHud.get()){
             wasHudHidden = mc.options.hudHidden;
