@@ -10,15 +10,15 @@
   "contact": {
     "repo": "https://github.com/Bennooo/banana-for-everyone"
   },
-  "icon": "assets/logo1.png",
+  "icon": "logo.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "bananaplus.BananaPlus"
+      "me.ricky.banana.BananaPlus"
     ]
   },
   "mixins": [
-    "meteorclient.mixins.json",
+    "meteor.mixins.json",
     "minecraft.mixins.json"
   ],
   "accessWidener": "banana.accesswidener",
