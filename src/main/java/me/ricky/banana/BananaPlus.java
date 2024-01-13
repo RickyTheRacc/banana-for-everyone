@@ -1,8 +1,10 @@
 package me.ricky.banana;
 
 import com.mojang.logging.LogUtils;
+import me.ricky.banana.systems.BananaTab;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -30,6 +32,8 @@ public class BananaPlus extends MeteorAddon {
 	@Override
 	public void onInitialize() {
 		LOG.info("Initializing...");
+
+		Tabs.get().add(2, new BananaTab());
 	}
 
 	@Override

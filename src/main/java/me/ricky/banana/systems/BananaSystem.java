@@ -22,9 +22,6 @@ public class BananaSystem extends System<BananaSystem> {
 
     private final SettingGroup sgPrefix = settings.createGroup("Prefix");
     private final SettingGroup sgText = settings.createGroup("3D Text");
-    private final SettingGroup sgServer = settings.createGroup("Server");
-    private final SettingGroup sgBlocks = settings.createGroup("Blocks");
-    private final SettingGroup sgEntities = settings.createGroup("Entities");
 
     // Prefix
 
