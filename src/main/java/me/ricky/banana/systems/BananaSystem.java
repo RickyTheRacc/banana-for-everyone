@@ -96,7 +96,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("scale")
         .description("The base scale of the text.")
         .defaultValue(1)
-        .range(1,5)
+        .range(0.5,5)
         .build()
     );
 
@@ -190,12 +190,5 @@ public class BananaSystem extends System<BananaSystem> {
         }
     }
 
-    public double getScale(Vector3d pos) {
-        double denom = pos.distance(
-            mc.gameRenderer.getCamera().getPos().x,
-            mc.gameRenderer.getCamera().getPos().y,
-            mc.gameRenderer.getCamera().getPos().z
-        ) / divisor.get();
-        return MathHelper.clamp(textScale.get() / denom, minScale.get(), maxScale.get());
-    }
+
 }
