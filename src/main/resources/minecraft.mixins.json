@@ -1,13 +1,11 @@
 {
   "required": true,
-  "package": "bananaplus.mixins.minecraft",
+  "package": "me.ricky.banana.mixin.minecraft",
   "compatibilityLevel": "JAVA_16",
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "PlayerEntityMixin",
-    "AnvilBlockMixin",
-    "CobwebBlockMixin"
+
   ]
 }
