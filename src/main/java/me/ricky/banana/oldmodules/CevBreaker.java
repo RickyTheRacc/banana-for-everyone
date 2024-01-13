@@ -169,7 +169,7 @@ public class CevBreaker extends Module {
     );
 
     public CevBreaker() {
-        super(BananaPlus.COMBAT, "cev-breaker", "Break crystals over a ppl's head to deal massive damage!");
+        super(BananaPlus.FIXED, "cev-breaker", "Break crystals over a ppl's head to deal massive damage!");
     }
 
     private PlayerEntity closestTarget;

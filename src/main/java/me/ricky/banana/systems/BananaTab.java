@@ -1,4 +1,4 @@
-package me.ricky.banana.system;
+package me.ricky.banana.systems;
 
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.tabs.Tab;

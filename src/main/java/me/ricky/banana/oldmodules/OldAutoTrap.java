@@ -1,7 +1,7 @@
 package me.ricky.banana.oldmodules;
 
 import me.ricky.banana.BananaPlus;
-import me.ricky.banana.system.BananaConfig;
+import me.ricky.banana.systems.BananaConfig;
 import me.ricky.banana.oldutils.BWorldUtils;
 import me.ricky.banana.oldutils.PositionUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -292,7 +292,7 @@ public class OldAutoTrap extends Module {
     );
 
     public OldAutoTrap() {
-        super(BananaPlus.COMBAT, "auto-trap+", "Surround your target with blocks.");
+        super(BananaPlus.FIXED, "auto-trap+", "Surround your target with blocks.");
     }
 
     private BlockPos playerPos;
@@ -329,7 +329,7 @@ public class OldAutoTrap extends Module {
         // Decrement placing timer
         if (ticksPassed >= 0) ticksPassed--;
         else {
-            ticksPassed = BananaConfig.get().placeDelay.get();
+            ticksPassed = 10;
             blocksPlaced = 0;
         }
 

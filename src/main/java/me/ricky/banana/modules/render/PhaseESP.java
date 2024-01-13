@@ -1,8 +1,8 @@
-package me.ricky.banana.modules.combat;
+package me.ricky.banana.modules.render;
 
 import me.ricky.banana.BananaPlus;
+import me.ricky.banana.systems.BananaConfig;
 import me.ricky.banana.utils.CombatUtil;
-import me.ricky.banana.system.BananaConfig;
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -38,13 +38,6 @@ public class PhaseESP extends Module {
         .build()
     );
 
-    private final Setting<Boolean> renderWebbed = sgGeneral.add(new BoolSetting.Builder()
-        .name("show-webbed")
-        .description("Render players that are webbed.")
-        .defaultValue(true)
-        .build()
-    );
-
     private final Setting<Boolean> renderSelf = sgGeneral.add(new BoolSetting.Builder()
         .name("render-self")
         .description("Render your own burrow block.")
@@ -55,6 +48,13 @@ public class PhaseESP extends Module {
     private final Setting<Boolean> renderFriends = sgGeneral.add(new BoolSetting.Builder()
         .name("render-friends")
         .description("Render players you have added.")
+        .defaultValue(true)
+        .build()
+    );
+
+    private final Setting<Boolean> renderWebbed = sgGeneral.add(new BoolSetting.Builder()
+        .name("render-webbed")
+        .description("Render players that are webbed.")
         .defaultValue(true)
         .build()
     );

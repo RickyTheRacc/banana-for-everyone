@@ -220,7 +220,7 @@ public class MonkeTotem extends Module {
     );
 
     public MonkeTotem() {
-        super(BananaPlus.COMBAT, "monke-totem", "Automatically puts a totem in your offhand.");
+        super(BananaPlus.FIXED, "monke-totem", "Automatically puts a totem in your offhand.");
     }
 
     private final TimerUtils offhandTimer = new TimerUtils();

@@ -15,6 +15,8 @@ import meteordevelopment.meteorclient.systems.modules.combat.CrystalAura;
 import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
+import meteordevelopment.meteorclient.utils.render.color.Color;
+import meteordevelopment.meteorclient.utils.render.color.RainbowColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.*;
 
@@ -165,7 +167,7 @@ public class Monkhand extends Module {
     );
 
     public Monkhand() {
-        super(BananaPlus.COMBAT, "monkhand", "Allows you to hold specified items in your offhand.");
+        super(BananaPlus.FIXED, "monkhand", "Allows you to hold specified items in your offhand.");
     }
 
     private boolean isClicking;
@@ -195,16 +197,16 @@ public class Monkhand extends Module {
 
             if (mc.options.swapHandsKey.isPressed() && !swapped && !key &&
                 (mc.player.getOffHandStack().getItem() == currentItem.item || mc.player.getOffHandStack().getItem() == fallbackItem.get().item)
-            ){
+            ) {
+                if (info.get()) info("Swapped! Swap with one of the chosen items to return to normal.");
                 swapped = true;
                 key = true;
-                if (info.get()) info("Swapped! Swap with one of the chosen items to return to normal.");
             }
 
-            if (mc.options.swapHandsKey.isPressed()
-                    && swapped
-                    && !key
-                    && (mc.player.getMainHandStack().getItem() == currentItem.item || mc.player.getMainHandStack().getItem() == fallbackItem.get().item)){
+            if (mc.options.swapHandsKey.isPressed() && swapped && !key
+                && (mc.player.getMainHandStack().getItem() == currentItem.item
+                || mc.player.getMainHandStack().getItem() == fallbackItem.get().item)
+            ) {
                 swapped = false;
                 key = true;
                 if (info.get()) info("Swapped back!");

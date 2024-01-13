@@ -90,8 +90,6 @@ public class LogoHud extends HudElement {
 
     @Override
     public void render(HudRenderer renderer) {
-        if (!Utils.canUpdate()) return;
-
         double x = this.x;
         double y = this.y;
         int w = this.getWidth();

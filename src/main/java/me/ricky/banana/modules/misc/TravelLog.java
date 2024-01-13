@@ -19,10 +19,10 @@ public class TravelLog extends Module {
     // General
 
     private final Setting<Dimension> dimension = sgGeneral.add(new EnumSetting.Builder<Dimension>()
-            .name("dimension")
-            .description("Dimension for the coords.")
-            .defaultValue(Dimension.Nether)
-            .build()
+        .name("dimension")
+        .description("Dimension for the coords.")
+        .defaultValue(Dimension.Nether)
+        .build()
     );
 
     private final Setting<Vector3d> coords = sgGeneral.add(new Vector3dSetting.Builder()
@@ -35,25 +35,25 @@ public class TravelLog extends Module {
     );
 
     private final Setting<Integer> radius = sgGeneral.add(new IntSetting.Builder()
-            .name("distance")
-            .description("How many blocks away from the point to log you out.")
-            .defaultValue(500)
-            .sliderRange(0,1000)
-            .build()
+        .name("distance")
+        .description("How many blocks away from the point to log you out.")
+        .defaultValue(500)
+        .sliderRange(0,1000)
+        .build()
     );
 
     private final Setting<Boolean> toggleAutoReconnect = sgGeneral.add(new BoolSetting.Builder()
-            .name("prevent-reconnect")
-            .description("Turns off auto reconnect when disconnecting.")
-            .defaultValue(true)
-            .build()
+        .name("prevent-reconnect")
+        .description("Turns off auto reconnect when disconnecting.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Boolean> autoToggle = sgGeneral.add(new BoolSetting.Builder()
-            .name("auto-toggle")
-            .description("Turns itself off when disconnecting.")
-            .defaultValue(true)
-            .build()
+        .name("auto-toggle")
+        .description("Turns itself off when disconnecting.")
+        .defaultValue(true)
+        .build()
     );
 
     public TravelLog() {

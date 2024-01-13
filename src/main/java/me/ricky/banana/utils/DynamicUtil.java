@@ -1,63 +1,82 @@
 package me.ricky.banana.utils;
 
+import me.ricky.banana.mixininterface.IBlink;
+import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.movement.Blink;
+import meteordevelopment.meteorclient.utils.PostInit;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class DynamicUtil {
-    private static final List<BlockPos> posList = new ArrayList<>();
+    private static final Set<BlockPos> posSet = new HashSet<>();
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
     private static Box testBox = new Box(testPos);
+    private static IBlink blink;
 
-    public static List<BlockPos> topPos(PlayerEntity player) {
-        posList.clear();
-        testBox = player.getBoundingBox().contract(0.01);
+    @PostInit
+    public static void init() {
+        blink = (IBlink) Modules.get().get(Blink.class);
+    }
+
+    public static Set<BlockPos> topPos(PlayerEntity player) {
+        posSet.clear();
+
+        testBox = player == mc.player ? blink.getHitbox() : player.getBoundingBox();
+        testBox = testBox.contract(0.001);
 
         for (double[] point : fourWay(testBox)) {
             testPos.set(point[0], testBox.maxY + 0.5, point[1]);
-            if (!posList.contains(testPos)) posList.add(testPos.toImmutable());
+            posSet.add(testPos.toImmutable());
         }
 
-        return posList;
+        return posSet;
     }
 
-    public static List<BlockPos> facePos(PlayerEntity player) {
-        posList.clear();
-        testBox = player.getBoundingBox().contract(0.01);
+    public static Set<BlockPos> facePos(PlayerEntity player) {
+        posSet.clear();
+
+        testBox = player == mc.player ? blink.getHitbox() : player.getBoundingBox();
+        testBox = testBox.contract(0.001);
         
         for (double[] point : eightWay(testBox)) {
             testPos.set(point[0], testBox.maxY - 0.5, point[1]);
-            if (!posList.contains(testPos)) posList.add(testPos.toImmutable());
+            posSet.add(testPos.toImmutable());
         }
 
-        return posList;
+        return posSet;
     }
 
-    public static List<BlockPos> feetPos(PlayerEntity player) {
-        posList.clear();
-        testBox = player.getBoundingBox().contract(0.01);
+    public static Set<BlockPos> feetPos(PlayerEntity player) {
+        posSet.clear();
+
+        testBox = player == mc.player ? blink.getHitbox() : player.getBoundingBox();
+        testBox = testBox.contract(0.001);
 
         for (double[] point : eightWay(testBox)) {
             testPos.set(point[0], testBox.minY + 0.5, point[1]);
-            if (!posList.contains(testPos)) posList.add(testPos.toImmutable());
+            posSet.add(testPos.toImmutable());
         }
 
-        return posList;
+        return posSet;
     }
 
-    public static List<BlockPos> underPos(PlayerEntity player) {
-        posList.clear();
-        testBox = player.getBoundingBox().contract(0.01);
+    public static Set<BlockPos> underPos(PlayerEntity player) {
+        posSet.clear();
+
+        testBox = player == mc.player ? blink.getHitbox() : player.getBoundingBox();
+        testBox = testBox.contract(0.001);
 
         for (double[] point : fourWay(testBox)) {
             testPos.set(point[0], testBox.minY - 0.5, point[1]);
-            if (!posList.contains(testPos)) posList.add(testPos.toImmutable());
+            posSet.add(testPos.toImmutable());
         }
 
-        return posList;
+        return posSet;
     }
 
     private static double[][] eightWay(Box box) {

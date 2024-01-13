@@ -157,7 +157,7 @@ public class MonkeBurrow extends Module {
     );
 
     public MonkeBurrow() {
-        super(BananaPlus.COMBAT, "monke-burrow", "Attempts to clip you into a block.");
+        super(BananaPlus.FIXED, "monke-burrow", "Attempts to clip you into a block.");
     }
 
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();

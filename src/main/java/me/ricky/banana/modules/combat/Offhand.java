@@ -1,8 +1,7 @@
 package me.ricky.banana.modules.combat;
 
 import me.ricky.banana.BananaPlus;
-import me.ricky.banana.enums.BlockType;
-import me.ricky.banana.utils.CombatUtil;
+import me.ricky.banana.oldmodules.BananaBomber;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -10,19 +9,17 @@ import meteordevelopment.meteorclient.systems.modules.combat.BedAura;
 import meteordevelopment.meteorclient.systems.modules.combat.CrystalAura;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
-import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.world.TickRate;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 
 import java.util.List;
 
-import static meteordevelopment.orbit.EventPriority.HIGHEST;
-
-public class Monkhand extends Module {
+public class Offhand extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgTotems = settings.createGroup("Totems");
     private final SettingGroup sgGapples = settings.createGroup("Gapples");
@@ -133,8 +130,8 @@ public class Monkhand extends Module {
         .build()
     );
 
-    private final Setting<Boolean> alwaysOnWeapon = sgGapples.add(new BoolSetting.Builder()
-        .name("always-on-weapon")
+    private final Setting<Boolean> holdingWeapon = sgGapples.add(new BoolSetting.Builder()
+        .name("holding-weapon")
         .description("Always hold gapples while holding a weapon.")
         .defaultValue(true)
         .visible (() -> totemMode.get() != TotemMode.Strict && rightClickGap.get())
@@ -162,7 +159,10 @@ public class Monkhand extends Module {
     private Setting<List<Module>> crystalAura = sgCombat.add(new ModuleListSetting.Builder()
         .name("crystal-auras")
         .description("Hold beds if any of these are active.")
-        .defaultValue(CrystalAura.class)
+        .defaultValue(
+            CrystalAura.class,
+            BananaBomber.class
+        )
         .visible (() -> totemMode.get() != TotemMode.Strict)
         .build()
     );
@@ -191,11 +191,13 @@ public class Monkhand extends Module {
         .build()
     );
 
-    public Monkhand() {
+    public Offhand() {
         super(BananaPlus.FIXED, "monkhand", "The best offhand in the game.");
     }
 
     private double delay;
+    private double locked;
+
     private Item toHold;
     private Item mainItem;
     private Item offItem;
@@ -204,10 +206,9 @@ public class Monkhand extends Module {
     @Override
     public void onActivate() {
         delay = 0.0;
-        setItemNextTick();
     }
 
-    @EventHandler(priority = HIGHEST)
+    @EventHandler(priority = 500)
     private void onPreTick(TickEvent.Pre event) {
         delay -= TickRate.INSTANCE.getTickRate() / 20.0;
         if (delay > 0) return;
@@ -221,46 +222,50 @@ public class Monkhand extends Module {
 
         }
 
-        mc.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(mc.player.playerScreenHandler.syncId));
+
     }
 
-    @EventHandler
+    @EventHandler(priority = 500)
     private void onPostTick(TickEvent.Post event) {
         mainItem = mc.player.getMainHandStack().getItem();
         offItem = mc.player.getOffHandStack().getItem();
-        setItemNextTick();
+
     }
 
-    private void setItemNextTick() {
-        findItem(Items.TOTEM_OF_UNDYING);
-
-        if (result.found()) {
-            if (totemMode.get() == TotemMode.Strict) return;
-            if (elytraCheck.get() && isWearingElytra()) return;
-
-            double playerHealth = PlayerUtils.getTotalHealth();
-            if (CombatUtil.isInHole(mc.player, BlockType.Resistance)) playerHealth -= holeOffset.get();
-            for (ItemStack stack: mc.player.getArmorItems()) {
-                if (stack.getItem() instanceof ArmorItem) continue;
-                playerHealth -= armorOffset.get();
-                if (playerHealth <= minHealth.get()) return;
-            }
-
-//            if (fallingCheck.get()) playerHealth -= DamageUtils.getFallDamage();
-            if (playerHealth <= minHealth.get()) return;
-        }
-
-        findItem(preferCrapples.get() ? Items.GOLDEN_APPLE : Items.ENCHANTED_GOLDEN_APPLE);
-        if (!result.found()) {
-            if (toHold == Items.GOLDEN_APPLE) findItem(Items.ENCHANTED_GOLDEN_APPLE);
-            if (toHold == Items.ENCHANTED_GOLDEN_APPLE) findItem(Items.GOLDEN_APPLE);
-        }
-
-        if (result.found() && (!onlyInHoles.get() || CombatUtil.isInHole(mc.player, BlockType.Resistance))) {
-            if (mc.options.useKey.isPressed() && rightClickGap.get()) return;
-            if ((mainItem instanceof AxeItem || mainItem instanceof SwordItem) && alwaysOnWeapon.get()) return;
-        }
-    }
+//    private FindItemResult setItemNextTick() {
+//        // Totems
+//        findItem(Items.TOTEM_OF_UNDYING);
+//
+//        if (result.found()) {
+//            if (totemMode.get() == TotemMode.Strict) return;
+//            if (elytraCheck.get() && isWearingElytra()) return;
+//
+//            double playerHealth = PlayerUtils.getTotalHealth();
+//            if (CombatUtil.isInHole(mc.player, BlockType.Resistance)) playerHealth -= holeOffset.get();
+//            for (ItemStack stack: mc.player.getArmorItems()) {
+//                if (stack.getItem() instanceof ArmorItem) continue;
+//                playerHealth -= armorOffset.get();
+//                if (playerHealth <= minHealth.get()) return;
+//            }
+//
+////            if (fallingCheck.get()) playerHealth -= DamageUtils.getFallDamage();
+//            if (playerHealth <= minHealth.get()) return;
+//        }
+//
+//        findItem(preferCrapples.get() ? Items.GOLDEN_APPLE : Items.ENCHANTED_GOLDEN_APPLE);
+//        if (!result.found()) {
+//            if (toHold == Items.GOLDEN_APPLE) findItem(Items.ENCHANTED_GOLDEN_APPLE);
+//            if (toHold == Items.ENCHANTED_GOLDEN_APPLE) findItem(Items.GOLDEN_APPLE);
+//        }
+//
+//        if (result.found() && (!onlyInHoles.get() || CombatUtil.isInHole(mc.player, BlockType.Resistance))) {
+//            if (mc.options.useKey.isPressed() && rightClickGap.get()) return;
+//            if ((mainItem instanceof AxeItem || mainItem instanceof SwordItem) && holdingWeapon.get()) return;
+//        }
+//
+//        findItem(Items.END_CRYSTAL);
+//        if (bedAuras.get().stream().anyMatch(module -> Modules.get().isActive(module.getClass())));
+//    }
 
     private void findItem(Item item) {
         toHold = item;
@@ -270,6 +275,14 @@ public class Monkhand extends Module {
         result = InvUtils.find(stack -> stack.getItem() == item, 9, 35);
         if (result.found() || !useHotbar.get()) return;
         result = InvUtils.find(stack -> stack.getItem() == item, 0, 8);
+    }
+
+    private void doSwap() {
+
+
+        if (spoofScreen.get()) {
+            mc.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(mc.player.playerScreenHandler.syncId));
+        }
     }
 
     private boolean isWearingElytra() {

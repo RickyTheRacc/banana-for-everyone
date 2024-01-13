@@ -3,7 +3,7 @@ package me.ricky.banana.oldmodules;
 import me.ricky.banana.BananaPlus;
 import me.ricky.banana.enums.BlockType;
 import me.ricky.banana.utils.CombatUtil;
-import me.ricky.banana.system.BananaConfig;
+import me.ricky.banana.systems.BananaConfig;
 import me.ricky.banana.oldutils.BWorldUtils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -211,7 +211,7 @@ public class SmartHoleFill extends Module {
     );
 
     public SmartHoleFill() {
-        super(BananaPlus.COMBAT, "smart-holefill", "Fill safe holes around your enemy.");
+        super(BananaPlus.FIXED, "smart-holefill", "Fill safe holes around your enemy.");
     }
 
     public final List<PlayerEntity> targets = new ArrayList<>();
@@ -237,7 +237,7 @@ public class SmartHoleFill extends Module {
     private void onTick(TickEvent.Pre event) {
         delay -= (int) (TickRate.INSTANCE.getTickRate() / 20.0);
         if (delay > 0) return;
-        delay = BananaConfig.get().placeDelay.get();
+        delay = 10;
         blocksPlaced = 0;
 
         for (Hole hole : holes) holePool.free(hole);

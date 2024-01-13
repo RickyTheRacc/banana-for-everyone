@@ -1,4 +1,4 @@
-package me.ricky.banana.system;
+package me.ricky.banana.systems;
 
 import me.ricky.banana.BananaPlus;
 import me.ricky.banana.enums.AntiCheat;
@@ -8,6 +8,7 @@ import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
+import meteordevelopment.meteorclient.utils.world.TickRate;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -97,7 +98,7 @@ public class BananaConfig extends System<BananaConfig> {
 
     // Text
 
-    private final Setting<Double> textScale = sgText.add(new DoubleSetting.Builder()
+    public final Setting<Double> textScale = sgText.add(new DoubleSetting.Builder()
         .name("scale")
         .description("The base scale of the text.")
         .defaultValue(1)
@@ -105,7 +106,7 @@ public class BananaConfig extends System<BananaConfig> {
         .build()
     );
 
-    private final Setting<Double> divisor = sgText.add(new DoubleSetting.Builder()
+    public final Setting<Double> divisor = sgText.add(new DoubleSetting.Builder()
         .name("divisor")
         .description("How strongly distance should affect text size.")
         .defaultValue(6)
@@ -113,7 +114,7 @@ public class BananaConfig extends System<BananaConfig> {
         .build()
     );
 
-    private final Setting<Double> minScale = sgText.add(new DoubleSetting.Builder()
+    public final Setting<Double> minScale = sgText.add(new DoubleSetting.Builder()
         .name("min-scale")
         .description("The smallest text can get, regardless of distance.")
         .defaultValue(0.5)
@@ -121,7 +122,7 @@ public class BananaConfig extends System<BananaConfig> {
         .build()
     );
 
-    private final Setting<Double> maxScale = sgText.add(new DoubleSetting.Builder()
+    public final Setting<Double> maxScale = sgText.add(new DoubleSetting.Builder()
         .name("max-scale")
         .description("The largest text can get, regardless of distance.")
         .defaultValue(1.7)
@@ -165,24 +166,8 @@ public class BananaConfig extends System<BananaConfig> {
         .build()
     );
 
-    public final Setting<SwitchMode> switchMode = sgBlocks.add(new EnumSetting.Builder<SwitchMode>()
-        .name("switch-mode")
-        .description("How to switch to the blocks you want to place.")
-        .defaultValue(SwitchMode.Silent)
-        .build()
-    );
-
-    public final Setting<Integer> placeDelay = sgBlocks.add(new IntSetting.Builder()
-        .name("place-delay")
-        .description("Tick delay between block placements.")
-        .defaultValue(1)
-        .range(0,20)
-        .sliderRange(0,20)
-        .build()
-    );
-
     public final Setting<Integer> blocksPerTick = sgBlocks.add(new IntSetting.Builder()
-        .name("blocks-/-tick")
+        .name("blocks/Tick")
         .description("How many blocks to place in one tick.")
         .defaultValue(3)
         .range(1,5)
@@ -213,17 +198,8 @@ public class BananaConfig extends System<BananaConfig> {
 
     // Entities
 
-    public final Setting<Double> entityRange = sgEntities.add(new DoubleSetting.Builder()
-        .name("entity-range")
-        .description("How far away you can interact with entities.")
-        .defaultValue(4.5)
-        .range(0,6)
-        .sliderRange(0,6)
-        .build()
-    );
-
     public final Setting<Integer> attacksPerSecond = sgEntities.add(new IntSetting.Builder()
-        .name("attacks-/-second")
+        .name("attacks/Second")
         .description("How many times you can attack entities per second.")
         .defaultValue(20)
         .range(1,20)
@@ -277,6 +253,8 @@ public class BananaConfig extends System<BananaConfig> {
         return this;
     }
 
+    // Utils
+
     public Text getPrefix() {
         MutableText logo = Text.literal(prefix.get());
         MutableText left = Text.literal(leftBracket.get());
@@ -323,5 +301,9 @@ public class BananaConfig extends System<BananaConfig> {
             mc.gameRenderer.getCamera().getPos().z
         ) / divisor.get();
         return MathHelper.clamp(textScale.get() / denom, minScale.get(), maxScale.get());
+    }
+
+    public double delay() {
+        return BananaConfig.get().tpsSync.get() ? TickRate.INSTANCE.getTickRate() / 20 : 1.0;
     }
 }

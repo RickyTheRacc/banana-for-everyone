@@ -120,7 +120,7 @@ public class ArmorAlerts extends Module {
         String playerName = (player == mc.player) ? "Your " : player.getName().getString() + "'s ";
         String itemName = item.getName().getString().toLowerCase();
 
-        if (item instanceof ArmorItem && !(item == Items.TURTLE_HELMET)|| item instanceof ToolItem) {
+        if ((item instanceof ArmorItem && item != Items.TURTLE_HELMET) || item instanceof ToolItem) {
             String[] nameArray = itemName.split(" ");
             itemName = nameArray[nameArray.length - 1];
         }

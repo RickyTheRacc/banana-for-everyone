@@ -873,7 +873,7 @@ public class BananaBomber extends Module {
     );
 
     public BananaBomber() {
-        super(BananaPlus.COMBAT, "banana-bomber", "Automatically places and attacks crystals.");
+        super(BananaPlus.FIXED, "banana-bomber", "Automatically places and attacks crystals.");
     }
 
     public int breakTimer;

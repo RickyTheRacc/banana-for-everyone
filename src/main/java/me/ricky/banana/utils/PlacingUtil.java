@@ -1,8 +1,7 @@
 package me.ricky.banana.utils;
 
-import me.ricky.banana.enums.SwingMode;
 import me.ricky.banana.enums.SwitchMode;
-import me.ricky.banana.system.BananaConfig;
+import me.ricky.banana.systems.BananaConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -16,6 +15,7 @@ import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.sound.BlockSoundGroup;
@@ -43,32 +43,30 @@ public class PlacingUtil {
         MeteorClient.EVENT_BUS.subscribe(PlacingUtil.class);
     }
 
-    public static boolean tryPlace(BlockPos pos, FindItemResult result, SwingMode swingMode) {
+    public static boolean tryPlace(BlockPos pos, FindItemResult result, SwitchMode switchMode, boolean swing) {
         if (!shouldPlace(pos)) return false;
         if (!result.found()) return false;
 
         Hand hand = result.slot() == 40 ? Hand.OFF_HAND : Hand.MAIN_HAND;
-        SwitchMode switchMode = BananaConfig.get().switchMode.get();
         if (hand == Hand.MAIN_HAND && (result.slot() < 0 || result.slot() > 8) && switchMode.onlyHotbar()) return false;
 
         BlockHitResult placeResult = placeResult(pos);
         if (placeResult == null) return false;
 
         placedBlocks.put(placeResult.getBlockPos(), System.currentTimeMillis());
-        placeBlock(result, placeResult, hand, switchMode, swingMode);
+        placeBlock(result, placeResult, hand, switchMode, swing);
         return true;
     }
 
-    public static void forcePlace(BlockPos pos, FindItemResult result, SwingMode swingMode) {
+    public static void forcePlace(BlockPos pos, FindItemResult result, SwitchMode switchMode, boolean swing) {
         Hand hand = result.slot() == 40 ? Hand.OFF_HAND : Hand.MAIN_HAND;
-        SwitchMode switchMode = BananaConfig.get().switchMode.get();
         if (hand == Hand.MAIN_HAND && (result.slot() < 0 || result.slot() > 8) && switchMode.onlyHotbar()) return;
 
         BlockHitResult placeResult = placeResult(pos);
-        if (placeResult != null) placeBlock(result, placeResult, hand, switchMode, swingMode);
+        if (placeResult != null) placeBlock(result, placeResult, hand, switchMode, swing);
     }
 
-    private static void placeBlock(FindItemResult itemResult, BlockHitResult hitResult, Hand hand, SwitchMode switchMode, SwingMode swingMode) {
+    private static void placeBlock(FindItemResult itemResult, BlockHitResult hitResult, Hand hand, SwitchMode switchMode, boolean swing) {
         if (BananaConfig.get().blockRotate.get()) Rotations.rotate(Rotations.getYaw(hitResult.getPos()), Rotations.getPitch(hitResult.getPos()), 9999);
 
         BlockState state = mc.world.getBlockState(hitResult.getBlockPos());
@@ -84,7 +82,8 @@ public class PlacingUtil {
         }
 
         mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(hand, hitResult, 0));
-        swingMode.swing(hand);
+        if (swing) mc.player.swingHand(hand);
+        else mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(hand));
 
         if (sneak) mc.getNetworkHandler().sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
         if (hand == Hand.MAIN_HAND && !selected) {

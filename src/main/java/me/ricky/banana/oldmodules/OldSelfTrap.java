@@ -2,7 +2,7 @@ package me.ricky.banana.oldmodules;
 
 import me.ricky.banana.BananaPlus;
 import me.ricky.banana.enums.AntiCheat;
-import me.ricky.banana.system.BananaConfig;
+import me.ricky.banana.systems.BananaConfig;
 import me.ricky.banana.oldutils.BEntityUtils;
 import me.ricky.banana.oldutils.BWorldUtils;
 import me.ricky.banana.oldutils.PositionUtils;
@@ -356,7 +356,7 @@ public class OldSelfTrap extends Module {
     );
 
     public OldSelfTrap() {
-        super(BananaPlus.COMBAT, "self-trap+", "Surrounds your head in blocks to prevent you from taking lots of damage.");
+        super(BananaPlus.FIXED, "self-trap+", "Surrounds your head in blocks to prevent you from taking lots of damage.");
     }
 
     private BlockPos playerPos;
@@ -440,7 +440,7 @@ public class OldSelfTrap extends Module {
         // Decrement placing timer
         if (ticksPassed >= 0) ticksPassed--;
         else {
-            ticksPassed = BananaConfig.get().placeDelay.get();
+            ticksPassed = 10;
             blocksPlaced = 0;
         }
 

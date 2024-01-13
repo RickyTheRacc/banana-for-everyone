@@ -131,7 +131,7 @@ public class AnchorPlus extends Module {
     );
 
     public AnchorPlus() {
-        super(BananaPlus.COMBAT, "anchor+", "Helps you get into holes by stopping your movement completely over a hole.");
+        super(BananaPlus.FIXED, "anchor+", "Helps you get into holes by stopping your movement completely over a hole.");
     }
 
     private final BlockPos.Mutable blockPos = new BlockPos.Mutable();

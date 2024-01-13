@@ -2,10 +2,9 @@ package me.ricky.banana.modules.combat;
 
 import me.ricky.banana.BananaPlus;
 import me.ricky.banana.enums.BlockType;
-import me.ricky.banana.enums.SwingMode;
 import me.ricky.banana.utils.CombatUtil;
 import me.ricky.banana.utils.DynamicUtil;
-import me.ricky.banana.system.BananaConfig;
+import me.ricky.banana.systems.BananaConfig;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -57,7 +56,7 @@ public class SurroundClicker extends Module {
 
     private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
         .name("chat-info")
-        .description("Render your own burrow block.")
+        .description("Send information about the module.")
         .defaultValue(true)
         .build()
     );
@@ -88,10 +87,10 @@ public class SurroundClicker extends Module {
 
     // Render
 
-    private final Setting<SwingMode> swingMode = sgRender.add(new EnumSetting.Builder<SwingMode>()
-        .name("swing-mode")
-        .description("How to swing your hand when attempting to break.")
-        .defaultValue(SwingMode.Both)
+    private final Setting<Boolean> swing = sgRender.add(new BoolSetting.Builder()
+        .name("swing")
+        .description("Swing your hand clientside while interacting with blocks.")
+        .defaultValue(true)
         .build()
     );
 
@@ -142,6 +141,7 @@ public class SurroundClicker extends Module {
         }, SortPriority.ClosestAngle);
 
         if (target == null) {
+            if (chatInfo.get()) error("Couldn't find a valid target, disabling.");
             toggle();
             return;
         }
@@ -152,6 +152,12 @@ public class SurroundClicker extends Module {
         surround.removeIf(BlockType.Hardness::resists);
         double range = BananaConfig.get().blockRange.get();
         surround.removeIf(pos -> PlayerUtils.distanceTo(pos) > range);
+
+        if (surround.isEmpty()) {
+            if (chatInfo.get()) error("Couldn't reach any surround blocks, disabling.");
+            toggle();
+            return;
+        }
 
         delay = 0.0;
     }
@@ -177,7 +183,7 @@ public class SurroundClicker extends Module {
 
             if (BananaConfig.get().blockRotate.get()) Rotations.rotate(Rotations.getYaw(pos), Rotations.getPitch(pos));
 
-            swingMode.get().swing(Hand.MAIN_HAND);
+            if (swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
             for (int i = 0; i < packetAmount.get(); i++) {
                 Direction direction = mc.player.getEyeY() > pos.getY() ? Direction.DOWN : Direction.UP;
                 mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));

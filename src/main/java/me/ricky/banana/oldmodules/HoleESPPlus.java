@@ -151,7 +151,7 @@ public class HoleESPPlus extends Module {
 
 
     public HoleESPPlus() {
-        super(BananaPlus.COMBAT, "hole-esp+", "Displays holes that you will take less damage in.");
+        super(BananaPlus.FIXED, "hole-esp+", "Displays holes that you will take less damage in.");
     }
 
 

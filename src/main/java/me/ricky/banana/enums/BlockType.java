@@ -10,7 +10,7 @@ public enum BlockType {
     Hardness,
     // Blocks that don't break in an explosion
     Resistance,
-    // Any block that would prevent explosion damage. even if it could break
+    // Any block that would prevent explosion damage once
     NotEmpty;
 
     public boolean resists(BlockPos pos) {

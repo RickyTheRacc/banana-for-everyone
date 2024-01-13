@@ -2,11 +2,11 @@ package me.ricky.banana.modules.combat;
 
 import me.ricky.banana.BananaPlus;
 import me.ricky.banana.enums.BlockType;
-import me.ricky.banana.enums.SwingMode;
+import me.ricky.banana.enums.SwitchMode;
+import me.ricky.banana.systems.BananaConfig;
 import me.ricky.banana.utils.CombatUtil;
 import me.ricky.banana.utils.DynamicUtil;
 import me.ricky.banana.utils.PlacingUtil;
-import me.ricky.banana.system.BananaConfig;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -58,10 +58,10 @@ public class SurroundBuster extends Module {
         .build()
     );
 
-    private final Setting<Boolean> checkEntities = sgGeneral.add(new BoolSetting.Builder()
-        .name("check-entities")
-        .description("Check if entities like crystals are blocking the place.")
-        .defaultValue(true)
+    private final Setting<SwitchMode> switchMode = sgGeneral.add(new EnumSetting.Builder<SwitchMode>()
+        .name("switch-mode")
+        .description("How to switch to the block you're placing.")
+        .defaultValue(SwitchMode.Silent)
         .build()
     );
 
@@ -73,12 +73,26 @@ public class SurroundBuster extends Module {
         .build()
     );
 
+    private final Setting<Boolean> checkEntities = sgGeneral.add(new BoolSetting.Builder()
+        .name("check-entities")
+        .description("Check if entities like crystals are blocking the place.")
+        .defaultValue(true)
+        .build()
+    );
+
+    private final Setting<Boolean> chatInfo = sgGeneral.add(new BoolSetting.Builder()
+        .name("chat-info")
+        .description("Send information about the module.")
+        .defaultValue(true)
+        .build()
+    );
+
     // Render
 
-    private final Setting<SwingMode> swingMode = sgRender.add(new EnumSetting.Builder<SwingMode>()
+    private final Setting<Boolean> swingMode = sgRender.add(new BoolSetting.Builder()
         .name("swing-mode")
-        .description("How to swing your hand when attempting to place.")
-        .defaultValue(SwingMode.Both)
+        .description("Swing your hand client side when placing.")
+        .defaultValue(true)
         .build()
     );
 
@@ -124,39 +138,49 @@ public class SurroundBuster extends Module {
 
     @Override
     public void onActivate() {
-        boolean onlyHotbar = BananaConfig.get().switchMode.get().onlyHotbar();
+        boolean onlyHotbar = switchMode.get().onlyHotbar();
         result = InvUtils.find(stack -> blocks.get().contains(Block.getBlockFromItem(stack.getItem())), 0, onlyHotbar ? 8 : 35);
         if (!result.found()) {
+            if (chatInfo.get()) error("Couldn't find any items, disabling.");
             toggle();
             return;
         }
 
         target = findTarget();
         if (target == null) {
+            if (chatInfo.get()) error("Couldn't find a valid target, disabling.");
             toggle();
             return;
         }
 
         placePos = findPlacePos();
-        if (placePos == null) toggle();
+        if (placePos == null) {
+            error("Couldn't find a valid block, disabling.");
+            toggle();
+        }
     }
 
     @EventHandler
     private void onPreTick(TickEvent.Pre event) {
-        boolean onlyHotbar = BananaConfig.get().switchMode.get().onlyHotbar();
+        boolean onlyHotbar = switchMode.get().onlyHotbar();
         result = InvUtils.find(stack -> blocks.get().contains(Block.getBlockFromItem(stack.getItem())), 0, onlyHotbar ? 8 : 35);
         if (!result.found()) {
+            if (chatInfo.get()) error("Couldn't find any items, disabling.");
             toggle();
             return;
         }
 
         if (!isValidTarget(target)) {
+            if (chatInfo.get()) error("Couldn't find a valid target, disabling.");
             toggle();
             return;
         }
 
         placePos = findPlacePos();
-        if (placePos == null) toggle();
+        if (placePos == null) {
+            error("Couldn't find a valid block, disabling.");
+            toggle();
+        }
     }
 
     @EventHandler
@@ -166,7 +190,7 @@ public class SurroundBuster extends Module {
             if (!packet.getState().isReplaceable()) return;
             if (checkEntities.get() && !mc.world.canPlace(Blocks.OBSIDIAN.getDefaultState(), placePos, ShapeContext.absent())) return;
             
-            if (PlacingUtil.tryPlace(placePos, result, swingMode.get())) {
+            if (PlacingUtil.tryPlace(placePos, result, switchMode.get(), swingMode.get())) {
                 RenderUtils.renderTickingBlock(
                     placePos, sideColor.get(), lineColor.get(), shapeMode.get(),
                     0, 4, true, false
@@ -195,8 +219,8 @@ public class SurroundBuster extends Module {
 
         surroundBlocks.sort(Comparator.comparing(PlayerUtils::squaredDistanceTo));
         double range = BananaConfig.get().blockRange.get();
-        if (PlayerUtils.squaredDistanceTo(surroundBlocks.get(0)) > range * range) return null;
-        return surroundBlocks.get(0);
+        if (PlayerUtils.squaredDistanceTo(surroundBlocks.getFirst()) > range * range) return null;
+        return surroundBlocks.getFirst();
     }
 
     private PlayerEntity findTarget() {

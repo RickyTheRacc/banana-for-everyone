@@ -46,7 +46,7 @@ public class StepPlus extends Module {
     );
 
     public StepPlus() {
-        super(BananaPlus.COMBAT, "step+", "Allows you to walk up full blocks.");
+        super(BananaPlus.FIXED, "step+", "Allows you to walk up full blocks.");
     }
 
     private boolean flag;

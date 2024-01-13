@@ -1,4 +1,4 @@
-package me.ricky.banana.modules.combat;
+package me.ricky.banana.modules.movement;
 
 import me.ricky.banana.BananaPlus;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 public class TickShift extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgCharge = settings.createGroup("Charge");
-    private final SettingGroup sgAC = settings.createGroup("Anti Cheat");
+    private final SettingGroup sgAnticheat = settings.createGroup("Anticheat");
 
     // General
 
@@ -70,75 +70,75 @@ public class TickShift extends Module {
     // Charge
 
     private final Setting<Boolean> charge = sgCharge.add(new BoolSetting.Builder()
-            .name("charge")
-            .description("Whether or not to charge up your movements.")
-            .defaultValue(true)
-            .build()
+        .name("charge")
+        .description("Whether or not to charge up your movements.")
+        .defaultValue(true)
+        .build()
     );
 
     private final Setting<Integer> chargeTicks = sgCharge.add(new IntSetting.Builder()
-            .name("charge-ticks")
-            .description("How many ticks to charge up your movement.")
-            .defaultValue(30)
-            .min(1)
-            .sliderRange(1, 50)
-            .visible(charge::get)
-            .build()
+        .name("charge-ticks")
+        .description("How many ticks to charge up your movement.")
+        .defaultValue(30)
+        .min(1)
+        .sliderRange(1,50)
+        .visible(charge::get)
+        .build()
     );
 
     private final Setting<Boolean> lockMovement = sgCharge.add(new BoolSetting.Builder()
-            .name("lock-movement")
-            .description("Disables your movement when you are charging.")
-            .defaultValue(false)
-            .visible(charge::get)
-            .build()
+        .name("lock-movement")
+        .description("Disables your movement when you are charging.")
+        .defaultValue(false)
+        .visible(charge::get)
+        .build()
     );
 
     // Anti Cheat
 
-    private final Setting<Boolean> inWater = sgAC.add(new BoolSetting.Builder()
-            .name("in-water")
-            .description("Whether or not to allow you to tick shift in water.")
-            .defaultValue(false)
-            .build()
+    private final Setting<Boolean> inWater = sgAnticheat.add(new BoolSetting.Builder()
+        .name("in-water")
+        .description("Whether or not to allow you to tick shift in water.")
+        .defaultValue(false)
+        .build()
     );
 
-    private final Setting<Boolean> inLava = sgAC.add(new BoolSetting.Builder()
-            .name("in-lava")
-            .description("Whether or not to allow you to tick shift in lava.")
-            .defaultValue(false)
-            .build()
+    private final Setting<Boolean> inLava = sgAnticheat.add(new BoolSetting.Builder()
+        .name("in-lava")
+        .description("Whether or not to allow you to tick shift in lava.")
+        .defaultValue(false)
+        .build()
     );
 
-    private final Setting<Boolean> whenSneaking = sgAC.add(new BoolSetting.Builder()
-            .name("when-sneaking")
-            .description("Allow tick shift when sneaking.")
-            .defaultValue(false)
-            .build()
+    private final Setting<Boolean> whenSneaking = sgAnticheat.add(new BoolSetting.Builder()
+        .name("when-sneaking")
+        .description("Allow tick shift when sneaking.")
+        .defaultValue(false)
+        .build()
     );
 
-    private final Setting<Boolean> hungerCheck = sgAC.add(new BoolSetting.Builder()
-            .name("hunger-check")
-            .description("Pauses when hunger reaches 3 or less drumsticks")
-            .defaultValue(true)
-            .build()
+    private final Setting<Boolean> hungerCheck = sgAnticheat.add(new BoolSetting.Builder()
+        .name("hunger-check")
+        .description("Pauses when hunger reaches 3 or less drumsticks")
+        .defaultValue(true)
+        .build()
     );
 
-    private final Setting<Boolean> step = sgAC.add(new BoolSetting.Builder()
-            .name("step")
-            .description("Whether or not to allow you to step up on to blocks.")
-            .defaultValue(false)
-            .build()
+    private final Setting<Boolean> step = sgAnticheat.add(new BoolSetting.Builder()
+        .name("step")
+        .description("Whether or not to allow you to step up on to blocks.")
+        .defaultValue(false)
+        .build()
     );
 
-    private final Setting<Double> stepHeight = sgAC.add(new DoubleSetting.Builder()
-            .name("height")
-            .description("How high are you allowed to step.")
-            .defaultValue(1)
-            .min(0.5)
-            .sliderRange(0.5, 10)
-            .visible(step::get)
-            .build()
+    private final Setting<Double> stepHeight = sgAnticheat.add(new DoubleSetting.Builder()
+        .name("height")
+        .description("How high are you allowed to step.")
+        .defaultValue(1)
+        .min(0.5)
+        .sliderRange(0.5, 10)
+        .visible(step::get)
+        .build()
     );
 
     public TickShift() {

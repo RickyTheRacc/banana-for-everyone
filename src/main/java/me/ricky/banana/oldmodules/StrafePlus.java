@@ -286,7 +286,7 @@ public class StrafePlus extends Module {
 
 
     public StrafePlus() {
-        super(BananaPlus.COMBAT, "strafe+", "Increase speed and control.");
+        super(BananaPlus.FIXED, "strafe+", "Increase speed and control.");
     }
 
 

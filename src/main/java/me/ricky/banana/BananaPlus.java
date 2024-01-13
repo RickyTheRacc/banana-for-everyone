@@ -1,12 +1,15 @@
 package me.ricky.banana;
 
 import me.ricky.banana.modules.combat.*;
-import me.ricky.banana.modules.combat.Monkhand;
-import me.ricky.banana.modules.misc.Sprint;
+import me.ricky.banana.modules.combat.Offhand;
 import me.ricky.banana.modules.misc.TravelLog;
-import me.ricky.banana.modules.misc.WebNoSlow;
+import me.ricky.banana.modules.movement.Sprint;
+import me.ricky.banana.modules.movement.TickShift;
+import me.ricky.banana.modules.movement.WebNoSlow;
+import me.ricky.banana.modules.render.KillEffects;
+import me.ricky.banana.modules.render.PhaseESP;
 import me.ricky.banana.oldmodules.*;
-import me.ricky.banana.system.BananaTab;
+import me.ricky.banana.systems.BananaTab;
 import me.ricky.banana.hud.*;
 import com.mojang.logging.LogUtils;
 import me.ricky.banana.oldutils.StatsUtils;
@@ -26,8 +29,7 @@ import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
 public class BananaPlus extends MeteorAddon {
-	public static final Category COMBAT = new Category("Banana Combat", Items.END_CRYSTAL.getDefaultStack());
-	public static final Category FIXED = new Category("Fixed Modules", Items.FEATHER.getDefaultStack());
+	public static final Category FIXED = new Category("Banana Fixed", Items.FEATHER.getDefaultStack());
 	public static final HudGroup HUD_GROUP = new HudGroup("Banana+");
 
 	public static final Version VERSION;
@@ -62,43 +64,54 @@ public class BananaPlus extends MeteorAddon {
 		);
 
 		// Hud Modules
+		
 		Hud.get().register(ItemCounter.INFO);
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(WelcomeHud.INFO);
 		Hud.get().register(TextPresets.INFO);
 
-		// Fixed Modules
-		Modules.get().add(new SurroundClicker());
-		Modules.get().add(new AntiTrap());
-		Modules.get().add(new SurroundBuster());
-		Modules.get().add(new ArmorAlerts());
-		Modules.get().add(new Monkhand());
-		Modules.get().add(new PhaseESP());
-		Modules.get().add(new TickShift());
-		Modules.get().add(new TravelLog());
-		Modules.get().add(new XPThrower());
-		Modules.get().add(new WebNoSlow());
-		Modules.get().add(new Sprint());
+		// Combat
 
-		// Combat Modules
-		Modules.get().add(new OldAutoTrap());
-		Modules.get().add(new AnchorPlus());
-		Modules.get().add(new BananaBomber());
-		Modules.get().add(new HoleESPPlus());
-		Modules.get().add(new MonkeBurrow());
-		Modules.get().add(new OldSurround());
-		Modules.get().add(new SmartHoleFill());
-		Modules.get().add(new StepPlus());
-		Modules.get().add(new StrafePlus());
-		Modules.get().add(new OldSelfTrap());
-		Modules.get().add(new ReverseStepTimer());
+		Modules.get().add(new AntiTrap());
+		Modules.get().add(new Offhand());
+		Modules.get().add(new SurroundBuster());
+		Modules.get().add(new SurroundClicker());
+		Modules.get().add(new XPThrower());
+		Modules.get().add(new Surround());
+		
+		// Render
+
+		Modules.get().add(new KillEffects());
+		Modules.get().add(new PhaseESP());
+
+		// Movement
+
+		Modules.get().add(new Sprint());
+		Modules.get().add(new TickShift());
+		Modules.get().add(new WebNoSlow());
+		
+		// Misc
+
+		Modules.get().add(new TravelLog());
+		
+		// Old modules
+//		Modules.get().add(new OldAutoTrap());
+//		Modules.get().add(new AnchorPlus());
+//		Modules.get().add(new BananaBomber());
+//		Modules.get().add(new HoleESPPlus());
+//		Modules.get().add(new MonkeBurrow());
+//		Modules.get().add(new OldSurround());
+//		Modules.get().add(new SmartHoleFill());
+//		Modules.get().add(new StepPlus());
+//		Modules.get().add(new StrafePlus());
+//		Modules.get().add(new OldSelfTrap());
+//		Modules.get().add(new ReverseStepTimer());
 	}
 
 	@Override
 	public void onRegisterCategories() {
 		Modules.registerCategory(FIXED);
-	    Modules.registerCategory(COMBAT);
 	}
 
 	@Override

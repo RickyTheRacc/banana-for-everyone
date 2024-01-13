@@ -18,38 +18,38 @@ public class ReverseStepTimer extends Module {
     // General
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
-            .name("mode")
-            .description("Mode to use to bypass reverse step.")
-            .defaultValue(Mode.Packet)
-            .build()
+        .name("mode")
+        .description("Mode to use to bypass reverse step.")
+        .defaultValue(Mode.Packet)
+        .build()
     );
 
     private final Setting<Double> timer = sgGeneral.add(new DoubleSetting.Builder()
-            .name("timer")
-            .description("How fast to speed up timer for timer mode.")
-            .min(0)
-            .defaultValue(10)
-            .visible(() -> mode.get() != Mode.Packet)
-            .build()
+        .name("timer")
+        .description("How fast to speed up timer for timer mode.")
+        .min(0)
+        .defaultValue(10)
+        .visible(() -> mode.get() != Mode.Packet)
+        .build()
     );
 
     private final Setting<Double> height = sgGeneral.add(new DoubleSetting.Builder()
-            .name("height")
-            .description("The maximum y height you are allowed to fall.")
-            .min(0)
-            .defaultValue(5)
-            .build()
+        .name("height")
+        .description("The maximum y height you are allowed to fall.")
+        .min(0)
+        .defaultValue(5)
+        .build()
     );
 
     private final Setting<Boolean> webs = sgGeneral.add(new BoolSetting.Builder()
-            .name("webs")
-            .description("Will pull you even if there are webs below you.")
-            .defaultValue(false)
-            .build()
+        .name("webs")
+        .description("Will pull you even if there are webs below you.")
+        .defaultValue(false)
+        .build()
     );
 
     public ReverseStepTimer() {
-        super(BananaPlus.COMBAT, "reverse-step+", "Tries to bypass strict anticheats for reverse step.");
+        super(BananaPlus.FIXED, "reverse-step+", "Tries to bypass strict anticheats for reverse step.");
     }
 
     private int fallTicks;
@@ -58,7 +58,7 @@ public class ReverseStepTimer extends Module {
     private void onMove(PlayerMoveEvent event) {
         if (mc.player.isSubmergedInWater() || mc.player.isInLava() || mc.player.isFallFlying() || mc.player.isClimbing() || mc.player.getVehicle() != null) return;
 
-        if (CombatUtil.isPhased(mc.player) && !webs.get()) return;
+        if (CombatUtil.isWebbed(mc.player) && !webs.get()) return;
 
         if (mc.options.jumpKey.isPressed() || mc.options.sneakKey.isPressed()) return;
 

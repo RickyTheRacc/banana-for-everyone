@@ -1,7 +1,7 @@
 package me.ricky.banana.oldmodules;
 
 import me.ricky.banana.BananaPlus;
-import me.ricky.banana.system.BananaConfig;
+import me.ricky.banana.systems.BananaConfig;
 import me.ricky.banana.oldutils.BEntityUtils;
 import me.ricky.banana.oldutils.BWorldUtils;
 import me.ricky.banana.oldutils.PositionUtils;
@@ -19,6 +19,7 @@ import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
+import meteordevelopment.meteorclient.utils.world.Dir;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -375,7 +376,7 @@ public class OldSurround extends Module {
     );
 
     public OldSurround() {
-        super(BananaPlus.COMBAT, "surround+", "Surrounds you in blocks to prevent you from taking lots of damage.");
+        super(BananaPlus.FIXED, "surround+", "Surrounds you in blocks to prevent you from taking lots of damage.");
     }
 
     private BlockPos playerPos;
@@ -461,7 +462,7 @@ public class OldSurround extends Module {
         // Decrement placing timer
         if (ticksPassed >= 0) ticksPassed--;
         else {
-            ticksPassed = BananaConfig.get().placeDelay.get();
+            ticksPassed = 10;
             blocksPlaced = 0;
         }
 
@@ -790,12 +791,20 @@ public class OldSurround extends Module {
     // Render
     @EventHandler
     private void onRender(Render3DEvent event) {
-        for (BlockPos pos : placePos()) {
+        List<BlockPos> poses = placePos();
+        for (BlockPos pos : poses) {
+
+            int excludeDir = 0;
+            for (Direction dir : Direction.values()) {
+                if (!poses.contains(pos.offset(dir))) continue;
+                excludeDir |= Dir.get(dir);
+            }
+
             renderPos.set(pos);
             Color color = getBlockColor(renderPos);
             Color lineColor = getLineColor(renderPos);
 
-            if (renderActive.get()) event.renderer.box(renderPos, color, lineColor, shapeMode.get(), 0);
+            if (renderActive.get()) event.renderer.box(renderPos, color, lineColor, shapeMode.get(), excludeDir);
 
             if (renderPlace.get()) {
                 renderBlocks.sort(Comparator.comparingInt(o -> -o.ticks));
