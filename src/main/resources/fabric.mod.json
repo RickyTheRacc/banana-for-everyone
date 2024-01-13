@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "environment": "client",
   "version": "${version}",
-  "id": "bananaplus",
+  "id": "banana-plus",
   "name": "Banana+",
   "description": "This addon will never die!",
   "authors": ["RickyTheRacc"],
