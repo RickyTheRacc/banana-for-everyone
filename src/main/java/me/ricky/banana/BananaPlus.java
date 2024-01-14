@@ -6,7 +6,6 @@ import me.ricky.banana.hud.LogoHud;
 import me.ricky.banana.hud.PotionsHud;
 import me.ricky.banana.hud.TextPresets;
 import me.ricky.banana.modules.movement.Blink;
-import me.ricky.banana.modules.render.Test;
 import me.ricky.banana.systems.BananaTab;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -51,7 +50,6 @@ public class BananaPlus extends MeteorAddon {
 
 		// Add modules
 		Modules.get().add(new Blink());
-		Modules.get().add(new Test());
 	}
 
 	@Override
