@@ -11,10 +11,7 @@ import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.combat.CrystalAura;
 import meteordevelopment.meteorclient.systems.modules.render.Breadcrumbs;
-import meteordevelopment.meteorclient.systems.modules.render.LogoutSpots;
-import meteordevelopment.meteorclient.systems.modules.render.PopChams;
 import meteordevelopment.meteorclient.utils.entity.fakeplayer.FakePlayerEntity;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.render.WireframeEntityRenderer;
@@ -23,19 +20,13 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import org.apache.logging.log4j.util.Timer;
-import org.spongepowered.asm.mixin.Unique;
-
-import javax.swing.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static meteordevelopment.meteorclient.MeteorClient.mc;
-
+@SuppressWarnings("unused")
 public class Blink extends BananaModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
