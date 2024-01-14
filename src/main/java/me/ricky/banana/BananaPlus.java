@@ -1,11 +1,16 @@
 package me.ricky.banana;
 
 import com.mojang.logging.LogUtils;
+import me.ricky.banana.hud.BindsHud;
+import me.ricky.banana.hud.LogoHud;
+import me.ricky.banana.hud.PotionsHud;
+import me.ricky.banana.hud.TextPresets;
 import me.ricky.banana.modules.movement.Blink;
 import me.ricky.banana.systems.BananaTab;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
+import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -36,6 +41,12 @@ public class BananaPlus extends MeteorAddon {
 
 		// Add system tab
 		Tabs.get().add(2, new BananaTab());
+
+		// Hud
+		Hud.get().register(BindsHud.INFO);
+		Hud.get().register(LogoHud.INFO);
+		Hud.get().register(PotionsHud.INFO);
+		Hud.get().register(TextPresets.INFO);
 
 		// Modules
 		Modules.get().add(new Blink());

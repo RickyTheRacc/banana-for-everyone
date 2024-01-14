@@ -6,7 +6,7 @@
   "name": "Banana+",
   "description": "This addon will never die!",
   "authors": ["RickyTheRacc"],
-  "icon": "assets/logo.png",
+  "icon": "logo.png",
 
   "entrypoints": {
     "meteor": [
