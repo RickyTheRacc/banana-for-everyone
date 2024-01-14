@@ -3,11 +3,10 @@
   "environment": "client",
   "version": "${version}",
   "id": "banana-plus",
-  "name": "Banana+",
+  "name": "Banana Plus",
   "description": "This addon will never die!",
   "authors": ["RickyTheRacc"],
-  "icon": "logo.png",
-
+  "icon": "assets/bananaplus/logo.png",
   "entrypoints": {
     "meteor": [
       "me.ricky.banana.BananaPlus"

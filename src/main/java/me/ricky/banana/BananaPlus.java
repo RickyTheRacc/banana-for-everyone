@@ -6,6 +6,7 @@ import me.ricky.banana.hud.LogoHud;
 import me.ricky.banana.hud.PotionsHud;
 import me.ricky.banana.hud.TextPresets;
 import me.ricky.banana.modules.movement.Blink;
+import me.ricky.banana.modules.render.Test;
 import me.ricky.banana.systems.BananaTab;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -21,7 +22,7 @@ import org.slf4j.Logger;
 
 public class BananaPlus extends MeteorAddon {
 	public static final Category CATEGORY = new Category("Banana Plus");
-	public static final HudGroup HUD_GROUP = new HudGroup("Banana+");
+	public static final HudGroup HUD_GROUP = new HudGroup("Banana Plus");
 	public static final Logger LOG = LogUtils.getLogger();
 	public static final Version VERSION;
 
@@ -42,14 +43,15 @@ public class BananaPlus extends MeteorAddon {
 		// Add system tab
 		Tabs.get().add(2, new BananaTab());
 
-		// Hud
+		// Add hud elements
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(PotionsHud.INFO);
 		Hud.get().register(TextPresets.INFO);
 
-		// Modules
+		// Add modules
 		Modules.get().add(new Blink());
+		Modules.get().add(new Test());
 	}
 
 	@Override
