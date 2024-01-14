@@ -1,10 +1,9 @@
 package me.ricky.banana.systems;
 
-import me.ricky.banana.mixininterface.IBlink;
+import me.ricky.banana.modules.movement.Blink;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.movement.Blink;
 import meteordevelopment.meteorclient.utils.world.Dir;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.*;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 public class BananaModule extends Module {
     protected BananaSystem config = BananaSystem.get();
-    protected IBlink blink = (IBlink) Modules.get().get(Blink.class);
+    protected Blink blink = Modules.get().get(Blink.class);
 
     public BananaModule(Category category, String name, String description) {
         super(category, name, description);

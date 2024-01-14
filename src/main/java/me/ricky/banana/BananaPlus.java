@@ -1,6 +1,7 @@
 package me.ricky.banana;
 
 import com.mojang.logging.LogUtils;
+import me.ricky.banana.modules.movement.Blink;
 import me.ricky.banana.systems.BananaTab;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -33,7 +34,11 @@ public class BananaPlus extends MeteorAddon {
 	public void onInitialize() {
 		LOG.info("Initializing...");
 
+		// Add system tab
 		Tabs.get().add(2, new BananaTab());
+
+		// Modules
+		Modules.get().add(new Blink());
 	}
 
 	@Override
