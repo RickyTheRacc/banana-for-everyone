@@ -6,8 +6,11 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "AutoRespawnMixin",
+    "FreecamMixin",
     "ModulesMixin",
     "StringListSettingMixin",
-    "SystemsMixin"
+    "SystemsMixin",
+    "ZoomMixin"
   ]
 }
