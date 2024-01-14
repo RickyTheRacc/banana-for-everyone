@@ -1,6 +1,7 @@
 package me.ricky.banana.systems;
 
 import me.ricky.banana.BananaPlus;
+import me.ricky.banana.utils.CombatUtils;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;

@@ -15,28 +15,33 @@ import java.util.Map;
 
 public class BananaModule extends Module {
     protected BananaSystem config = BananaSystem.get();
-    protected Blink blink = Modules.get().get(Blink.class);
 
     public BananaModule(Category category, String name, String description) {
         super(category, name, description);
     }
 
-    protected BlockPos blockPos(PlayerEntity player) {
+    // Players
+
+    protected BlockPos pos(PlayerEntity player) {
+        Blink blink = Modules.get().get(Blink.class);
         if (player == mc.player) return blink.realBlockPos();
         return player.getBlockPos();
     }
 
-    protected Box hitbox(PlayerEntity player) {
+    protected Box box(PlayerEntity player) {
+        Blink blink = Modules.get().get(Blink.class);
         if (player == mc.player) return blink.realHitbox();
         return player.getBoundingBox();
     }
 
-    protected Vec3d eyesPos(PlayerEntity player) {
+    protected Vec3d eyes(PlayerEntity player) {
+        Blink blink = Modules.get().get(Blink.class);
         if (player == mc.player) return blink.realEyesPos();
         return player.getPos();
     }
 
-    protected Vec3d feetPos(PlayerEntity player) {
+    protected Vec3d feet(PlayerEntity player) {
+        Blink blink = Modules.get().get(Blink.class);
         if (player == mc.player) return blink.realFeetPos();
         return player.getEyePos();
     }
@@ -69,4 +74,10 @@ public class BananaModule extends Module {
 
         return sides;
     }
+
+    // Misc
+
+//    protected double tickPassed() {
+//        return config.tpsSync.get() ? TickRate.INSTANCE.getTickRate() / 20.0 : 1.0;
+//    }
 }
