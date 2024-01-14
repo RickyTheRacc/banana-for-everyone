@@ -153,32 +153,24 @@ public class BananaSystem extends System<BananaSystem> {
     // Utils
 
     public Text getPrefix() {
-        MutableText logo = Text.literal(prefix.get());
+        MutableText logo = Text.literal(prefix.get()).formatted(prefixFormat.get().formatting);
         MutableText left = Text.literal(leftBracket.get());
         MutableText right = Text.literal(rightBracket.get());
-        MutableText prefix = Text.literal("");
 
-        if (prefixFormat.get() != Format.Normal) logo.setStyle(Style.EMPTY.withFormatting(prefixFormat.get().formatting));
-        logo.setStyle(logo.getStyle().withColor(TextColor.fromRgb(prefixColor.get().getPacked())));
-
-        if (prefixFormat.get() != Format.Normal && formatBrackets.get()) {
-            left.setStyle(Style.EMPTY.withFormatting(prefixFormat.get().formatting));
-            right.setStyle(Style.EMPTY.withFormatting(prefixFormat.get().formatting));
+        if (formatBrackets.get()) {
+           left = left.formatted(prefixFormat.get().formatting);
+           right = right.formatted(prefixFormat.get().formatting);
         }
+        
+        logo = logo.withColor(prefixColor.get().getPacked());
+        left = left.withColor(leftColor.get().getPacked());
+        right = right.withColor(rightColor.get().getPacked());
 
-        left.setStyle(left.getStyle().withColor(TextColor.fromRgb(leftColor.get().getPacked())));
-        right.setStyle(right.getStyle().withColor(TextColor.fromRgb(rightColor.get().getPacked())));
-
-        prefix.append(left);
-        prefix.append(logo);
-        prefix.append(right);
-        prefix.append(" ");
-
-        return prefix;
+        return Text.empty().append(left).append(logo).append(right).append(" ");
     }
 
     public enum Format {
-        Normal(null),
+        Normal(Formatting.RESET),
         Heavy(Formatting.BOLD),
         Italic(Formatting.ITALIC),
         Underline(Formatting.UNDERLINE),
