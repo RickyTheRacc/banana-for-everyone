@@ -55,7 +55,7 @@ public class BananaModule extends Module {
             mc.gameRenderer.getCamera().getPos().z
         ) / config.divisor.get();
 
-        return MathHelper.clamp(config.textScale.get() / denom, config.minScale.get(), config.maxScale.get());
+        return Math.clamp(config.textScale.get() / denom, config.minScale.get(), config.maxScale.get());
     }
 
     protected Map<BlockPos, Integer> prettySides(List<BlockPos> list) {

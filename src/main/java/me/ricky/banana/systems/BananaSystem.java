@@ -37,7 +37,7 @@ public class BananaSystem extends System<BananaSystem> {
     public final Setting<SettingColor> prefixColor = sgPrefix.add(new ColorSetting.Builder()
         .name("prefix-color")
         .description("Color display for the prefix.")
-        .defaultValue(new SettingColor(255,193,0,255))
+        .defaultValue(new SettingColor(255, 193, 0, 255))
         .onChanged(cope -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
         .build()
     );
@@ -78,7 +78,7 @@ public class BananaSystem extends System<BananaSystem> {
     public final Setting<SettingColor> leftColor = sgPrefix.add(new ColorSetting.Builder()
         .name("left-color")
         .description("Color display for the left bracket.")
-        .defaultValue(new SettingColor(150,150,150,255))
+        .defaultValue(new SettingColor(150, 150, 150, 255))
         .onChanged(cope -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
         .build()
     );
@@ -86,7 +86,7 @@ public class BananaSystem extends System<BananaSystem> {
     public final Setting<SettingColor> rightColor = sgPrefix.add(new ColorSetting.Builder()
         .name("right-color")
         .description("Color display for the right bracket.")
-        .defaultValue(new SettingColor(150,150,150,255))
+        .defaultValue(new SettingColor(150, 150, 150, 255))
         .onChanged(cope -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
         .build()
     );
@@ -97,7 +97,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("scale")
         .description("The base scale of the text.")
         .defaultValue(1)
-        .range(0.5,5)
+        .range(0.5, 5)
         .build()
     );
 
@@ -105,7 +105,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("divisor")
         .description("How strongly distance should affect text size.")
         .defaultValue(6)
-        .range(1,10)
+        .range(1, 10)
         .build()
     );
 
@@ -113,7 +113,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("min-scale")
         .description("The smallest text can get, regardless of distance.")
         .defaultValue(0.5)
-        .range(0.1,5)
+        .range(0.1, 5)
         .build()
     );
 
@@ -121,7 +121,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("max-scale")
         .description("The largest text can get, regardless of distance.")
         .defaultValue(1.7)
-        .range(0.1,5)
+        .range(0.1, 5)
         .build()
     );
 
@@ -158,10 +158,10 @@ public class BananaSystem extends System<BananaSystem> {
         MutableText right = Text.literal(rightBracket.get());
 
         if (formatBrackets.get()) {
-           left = left.formatted(prefixFormat.get().formatting);
-           right = right.formatted(prefixFormat.get().formatting);
+            left = left.formatted(prefixFormat.get().formatting);
+            right = right.formatted(prefixFormat.get().formatting);
         }
-        
+
         logo = logo.withColor(prefixColor.get().getPacked());
         left = left.withColor(leftColor.get().getPacked());
         right = right.withColor(rightColor.get().getPacked());
@@ -178,10 +178,9 @@ public class BananaSystem extends System<BananaSystem> {
         Cursed(Formatting.OBFUSCATED);
 
         final Formatting formatting;
-        Format (Formatting formatting) {
+
+        Format(Formatting formatting) {
             this.formatting = formatting;
         }
     }
-
-
 }
