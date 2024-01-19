@@ -17,13 +17,6 @@ public class Sprint extends Module {
 
     // General
 
-    public final Setting<SprintMode> sprintMode = sgGeneral.add(new EnumSetting.Builder<SprintMode>()
-        .name("sprint-mode")
-        .description("How sprinting should behave.")
-        .defaultValue(SprintMode.Vanilla)
-        .build()
-    );
-
     public final Setting <Boolean> allDirections = sgGeneral.add(new BoolSetting.Builder()
         .name("all-directions")
         .description("Allows you to sprint sideways and backwards.")
@@ -32,7 +25,7 @@ public class Sprint extends Module {
     );
 
     public final Setting <Boolean> ignoreLiquids = sgGeneral.add(new BoolSetting.Builder()
-        .name("ignore-liquids")
+        .name("sprint-in-water")
         .description("Try to sprint even when in water/lava.")
         .defaultValue(true)
         .build()
@@ -59,7 +52,6 @@ public class Sprint extends Module {
     @EventHandler(priority = 500)
     private void onTick(TickEvent.Post event) {
         if (!canSprint()) return;
-
         mc.player.setSprinting(true);
     }
 
@@ -67,19 +59,17 @@ public class Sprint extends Module {
         if (mc.player.getHungerManager().getFoodLevel() <= 6 && !ignoreHunger.get()) return false;
         if (ignoreLiquids.get() && (mc.player.isSubmergedInWater() || mc.player.isInLava())) return false;
 
-        boolean moving = mc.player.forwardSpeed != 0 || mc.player.sidewaysSpeed != 0 && allDirections.get();
-        return moving || sprintMode.get() == SprintMode.Blatant;
+        float speed = mc.player.forwardSpeed;
+        if (allDirections.get()) {
+            speed = Math.abs(speed);
+            speed += Math.abs(mc.player.sidewaysSpeed);
+        }
+        return allDirections.get() ? speed != 0 : speed > 0;
     }
 
     @Override
     public void onDeactivate() {
         if (!cancelSprint.get()) return;
         mc.player.setSprinting(false);
-        mc.player.jump();
-    }
-
-    public enum SprintMode {
-        Vanilla,
-        Blatant
     }
 }
