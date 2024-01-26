@@ -24,18 +24,11 @@ public class LivingEntityMixin {
 
         Sprint sprint = Modules.get().get(Sprint.class);
         if (sprint.isActive() && sprint.allDirections.get()) {
-            if (mc.player.forwardSpeed < 0) {
-                yaw += 180;
-                if (mc.player.sidewaysSpeed != 0) {
-                    yaw += mc.player.sidewaysSpeed > 0 ? -135 : 135;
-                }
-            } else {
-                if (mc.player.sidewaysSpeed != 0) {
-                    yaw += mc.player.sidewaysSpeed > 0 ? -45 : 45;
-                }
-            }
+            float forwardMovement = mc.player.input.movementForward;
+            float sidewaysMovement = mc.player.input.movementSideways;
 
-            if (yaw >= 360) yaw -= 360;
+            yaw += (float) Math.toDegrees(-Math.atan2(sidewaysMovement, forwardMovement));
+            yaw = (yaw + 180) % 360 - 180;   // Correct to between 180 and -180
         }
 
         return (float) Math.toRadians(yaw);

@@ -57,11 +57,11 @@ public class Blink extends BananaModule {
         .build()
     );
 
-    private final Setting<Integer> maxTime = sgGeneral.add(new IntSetting.Builder()
+    private final Setting<Double> maxTime = sgGeneral.add(new DoubleSetting.Builder()
         .name("max-time")
         .description("The maximum time you can blink.")
-        .defaultValue(5)
-        .range(1, 10)
+        .defaultValue(5.0)
+        .range(1.0, 10.0)
         .sliderMin(1)
         .visible(limitTime::get)
         .build()
