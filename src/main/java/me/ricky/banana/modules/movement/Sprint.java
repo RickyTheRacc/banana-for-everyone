@@ -24,8 +24,15 @@ public class Sprint extends Module {
         .build()
     );
 
+    public final Setting <Boolean> preventStop = sgGeneral.add(new BoolSetting.Builder()
+        .name("prevent-stop")
+        .description("Makes you keep sprinting even if you run into blocks.")
+        .defaultValue(false)
+        .build()
+    );
+
     public final Setting <Boolean> ignoreLiquids = sgGeneral.add(new BoolSetting.Builder()
-        .name("sprint-in-water")
+        .name("ignore-liquids")
         .description("Try to sprint even when in water/lava.")
         .defaultValue(true)
         .build()
@@ -56,8 +63,8 @@ public class Sprint extends Module {
     }
 
     public boolean canSprint() {
-        if (mc.player.getHungerManager().getFoodLevel() <= 6 && !ignoreHunger.get()) return false;
-        if (ignoreLiquids.get() && (mc.player.isSubmergedInWater() || mc.player.isInLava())) return false;
+        if (!ignoreHunger.get() && mc.player.getHungerManager().getFoodLevel() <= 6) return false;
+        if (!ignoreLiquids.get() && (mc.player.isSubmergedInWater() || mc.player.isInLava())) return false;
 
         float speed = mc.player.forwardSpeed;
         if (allDirections.get()) {
