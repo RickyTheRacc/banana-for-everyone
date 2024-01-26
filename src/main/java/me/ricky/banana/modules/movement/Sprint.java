@@ -1,16 +1,12 @@
 package me.ricky.banana.modules.movement;
 
 import me.ricky.banana.BananaPlus;
-import meteordevelopment.meteorclient.events.entity.player.JumpVelocityMultiplierEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
-import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 
 public class Sprint extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -31,9 +27,9 @@ public class Sprint extends Module {
         .build()
     );
 
-    public final Setting <Boolean> ignoreLiquids = sgGeneral.add(new BoolSetting.Builder()
-        .name("ignore-liquids")
-        .description("Try to sprint even when in water/lava.")
+    public final Setting <Boolean> ignoreWater = sgGeneral.add(new BoolSetting.Builder()
+        .name("ignore-water")
+        .description("Try to sprint even when in water.")
         .defaultValue(true)
         .build()
     );
@@ -41,13 +37,6 @@ public class Sprint extends Module {
     public final Setting <Boolean> ignoreHunger = sgGeneral.add(new BoolSetting.Builder()
         .name("ignore-hunger")
         .description("Sprint even when below 6 hunger.")
-        .defaultValue(true)
-        .build()
-    );
-
-    public final Setting <Boolean> cancelSprint = sgGeneral.add(new BoolSetting.Builder()
-        .name("cancel-sprint")
-        .description("Stop you from sprinting when the module is disabled.")
         .defaultValue(false)
         .build()
     );
@@ -64,7 +53,7 @@ public class Sprint extends Module {
 
     public boolean canSprint() {
         if (!ignoreHunger.get() && mc.player.getHungerManager().getFoodLevel() <= 6) return false;
-        if (!ignoreLiquids.get() && (mc.player.isSubmergedInWater() || mc.player.isInLava())) return false;
+        if (!ignoreWater.get() && (mc.player.isSubmergedInWater())) return false;
 
         float speed = mc.player.forwardSpeed;
         if (allDirections.get()) {
@@ -72,11 +61,5 @@ public class Sprint extends Module {
             speed += Math.abs(mc.player.sidewaysSpeed);
         }
         return allDirections.get() ? speed != 0 : speed > 0;
-    }
-
-    @Override
-    public void onDeactivate() {
-        if (!cancelSprint.get()) return;
-        mc.player.setSprinting(false);
     }
 }

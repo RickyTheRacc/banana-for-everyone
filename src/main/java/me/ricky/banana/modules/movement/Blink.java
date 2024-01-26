@@ -12,6 +12,7 @@ import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.render.Breadcrumbs;
+import meteordevelopment.meteorclient.systems.modules.world.Timer;
 import meteordevelopment.meteorclient.utils.entity.fakeplayer.FakePlayerEntity;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.render.WireframeEntityRenderer;
@@ -235,7 +236,8 @@ public class Blink extends BananaModule {
 
     @Override
     public String getInfoString() {
-        return String.format("%.3f", (float) stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000);
+        double multiplier = Modules.get().get(Timer.class).getMultiplier();
+        return String.format("%.3f", (float) (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) * multiplier);
     }
 
     public BlockPos realBlockPos() {
