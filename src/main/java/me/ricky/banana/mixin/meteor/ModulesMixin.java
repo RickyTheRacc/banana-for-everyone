@@ -17,11 +17,11 @@ public abstract class ModulesMixin {
     private void removeTrails(Modules instance, Module _module) {}
 
     // Remove Offhand Crash
-    @Redirect(method = "initPlayer",
-        at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/Modules;add(Lmeteordevelopment/meteorclient/systems/modules/Module;)V", ordinal = 0),
-        slice = @Slice(from = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/player/OffhandCrash;<init>()V"))
-    )
-    private void removeOffhandCrash(Modules instance, Module _module) {}
+//    @Redirect(method = "initPlayer",
+//        at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/Modules;add(Lmeteordevelopment/meteorclient/systems/modules/Module;)V", ordinal = 0),
+//        slice = @Slice(from = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/systems/modules/player/OffhandCrash;<init>()V"))
+//    )
+//    private void removeOffhandCrash(Modules instance, Module _module) {}
 
     // Remove Click TP
     @Redirect(method = "initMovement",
