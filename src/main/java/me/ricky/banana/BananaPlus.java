@@ -41,15 +41,18 @@ public class BananaPlus extends MeteorAddon {
 		LOG.info("Initializing...");
 
 		// Add system tab
+
 		Tabs.get().add(2, new BananaTab());
 
 		// Add hud elements
+
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(PotionsHud.INFO);
 		Hud.get().register(TextPresets.INFO);
 
 		// Add modules
+
 		Modules.get().add(new Blink());
 		Modules.get().add(new Sprint());
 	}
