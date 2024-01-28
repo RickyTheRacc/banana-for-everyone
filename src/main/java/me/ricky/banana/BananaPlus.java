@@ -7,7 +7,9 @@ import me.ricky.banana.hud.PotionsHud;
 import me.ricky.banana.hud.TextPresets;
 import me.ricky.banana.modules.movement.Blink;
 import me.ricky.banana.modules.movement.Sprint;
+import me.ricky.banana.modules.render.LogoutSpots;
 import me.ricky.banana.systems.BananaTab;
+import me.ricky.banana.utils.StatsUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
@@ -15,7 +17,9 @@ import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
 import meteordevelopment.meteorclient.utils.misc.Version;
+import meteordevelopment.starscript.value.ValueMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.slf4j.Logger;
@@ -44,6 +48,17 @@ public class BananaPlus extends MeteorAddon {
 
 		Tabs.get().add(2, new BananaTab());
 
+		// Starscript
+
+		MeteorStarscript.ss.set("banana", new ValueMap()
+			.set("kills", StatsUtils::getKills)
+			.set("deaths", StatsUtils::getDeaths)
+			.set("kdr", StatsUtils::getKDR)
+			.set("killstreak", StatsUtils::getKillstreak)
+			.set("highscore", StatsUtils::getHighscore)
+			.set("crystalsps", StatsUtils::getCrystalsPs)
+		);
+
 		// Add hud elements
 
 		Hud.get().register(BindsHud.INFO);
@@ -55,6 +70,7 @@ public class BananaPlus extends MeteorAddon {
 
 		Modules.get().add(new Blink());
 		Modules.get().add(new Sprint());
+		Modules.get().add(new LogoutSpots());
 	}
 
 	@Override
