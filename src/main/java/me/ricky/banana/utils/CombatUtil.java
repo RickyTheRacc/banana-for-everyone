@@ -12,19 +12,19 @@ import net.minecraft.util.math.Box;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombatUtils extends BananaUtils {
+public class CombatUtil extends BananaUtils {
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
 
     public boolean isSurrounded(PlayerEntity player, BlockType type) {
         List<BlockPos> posList = new ArrayList<>();
-        posList.addAll(DynamicUtils.feetPos(player));
-        posList.addAll(DynamicUtils.underPos(player));
+        posList.addAll(DynamicUtil.feetPos(player));
+        posList.addAll(DynamicUtil.underPos(player));
 
         return posList.stream().allMatch(type::resists);
     }
 
     public boolean isTopTrapped(PlayerEntity player, BlockType type) {
-        for (BlockPos pos: DynamicUtils.topPos(player)) {
+        for (BlockPos pos: DynamicUtil.topPos(player)) {
             if (!type.resists(pos)) return false;
         }
 
@@ -32,7 +32,7 @@ public class CombatUtils extends BananaUtils {
     }
 
     public boolean isFaceTrapped(PlayerEntity player, BlockType type) {
-        for (BlockPos pos: DynamicUtils.facePos(player)) {
+        for (BlockPos pos: DynamicUtil.facePos(player)) {
             if (!type.resists(pos)) return false;
         }
 
@@ -41,8 +41,8 @@ public class CombatUtils extends BananaUtils {
 
     public boolean isFullTrapped(PlayerEntity player, BlockType type ) {
         List<BlockPos> posList = new ArrayList<>();
-        posList.addAll(DynamicUtils.topPos(player));
-        posList.addAll(DynamicUtils.facePos(player));
+        posList.addAll(DynamicUtil.topPos(player));
+        posList.addAll(DynamicUtil.facePos(player));
 
         for (BlockPos pos: posList) {
             if (!type.resists(pos)) return false;
@@ -54,7 +54,7 @@ public class CombatUtils extends BananaUtils {
     public static boolean isBurrowed(PlayerEntity player) {
         Box box = box(player).contract(0.001);
 
-        for (double[] point : DynamicUtils.fourWay(box)) {
+        for (double[] point : DynamicUtil.fourWay(box)) {
             testPos.set(point[0], box.minY + 0.4, point[1]);
 
             BlockState state = mc.world.getBlockState(testPos);

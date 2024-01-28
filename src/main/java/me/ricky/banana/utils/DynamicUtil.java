@@ -8,7 +8,7 @@ import net.minecraft.util.math.Box;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DynamicUtils extends BananaUtils {
+public class DynamicUtil extends BananaUtils {
     private static final Set<BlockPos> posSet = new HashSet<>();
     private static Box testBox = new Box(BlockPos.ORIGIN);
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
