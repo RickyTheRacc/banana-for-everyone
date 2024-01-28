@@ -64,19 +64,24 @@ public class StatsUtils extends BananaUtils {
     public static Value getKills() {
         return Value.number(kills);
     }
+
     public static Value getDeaths() {
         return Value.number(kills);
     }
+
     public static Value getKDR() {
         if (deaths <= 0) return Value.string(kills + ".00");
         return Value.string(String.format("%.2f", (double) kills / deaths));
     }
+
     public static Value getKillstreak() {
         return Value.number(killStreak);
     }
+
     public static Value getHighscore() {
         return Value.number(highScore);
     }
+
     public static Value getCrystalsPs() {
         return Value.number(crystalsPerSec);
     }
