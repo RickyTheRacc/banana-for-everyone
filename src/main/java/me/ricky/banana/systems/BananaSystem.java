@@ -1,7 +1,6 @@
 package me.ricky.banana.systems;
 
 import me.ricky.banana.BananaPlus;
-import me.ricky.banana.utils.CombatUtils;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
@@ -9,14 +8,8 @@ import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
-import org.joml.Vector3d;
-
-import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class BananaSystem extends System<BananaSystem> {
     public final Settings settings = new Settings();
