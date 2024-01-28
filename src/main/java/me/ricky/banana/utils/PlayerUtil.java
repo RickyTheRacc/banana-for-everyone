@@ -17,6 +17,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -112,24 +113,27 @@ public class PlayerUtil extends BananaUtils {
         if (!Utils.canUpdate()) return;
 
         ArrayList<PlayerListEntry> currentEntries = new ArrayList<>(mc.getNetworkHandler().getPlayerList());
+        // Attempt to ignore NPCs or holograms
         currentEntries.removeIf(entry -> {
             if (entry.getGameMode() == null) return true;
-            return entry.getDisplayName() == null;
+
+            if (entry.getProfile().getName() == null) return true;
+            String name = entry.getProfile().getName();
+            return name.isBlank() || !name.matches("[a-zA-Z0-9_]+");
         });
 
         // Leaving players
 
-        for (PlayerListEntry entry: currentEntries) {
+        for (PlayerListEntry entry: lastEntries) {
             if (currentEntries.contains(entry)) continue;
-
             boolean wasTarget = targets.containsKey(entry.getProfile().getId());
             MeteorClient.EVENT_BUS.post(LeaveEvent.get(entry, wasTarget));
         }
 
         // Joining players
 
-        for (PlayerListEntry entry: lastEntries) {
-            if (currentEntries.contains(entry)) continue;
+        for (PlayerListEntry entry: currentEntries) {
+            if (lastEntries.contains(entry)) continue;
             MeteorClient.EVENT_BUS.post(JoinEvent.get(entry));
         }
 
