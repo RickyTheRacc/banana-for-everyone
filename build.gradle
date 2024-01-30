@@ -2,15 +2,8 @@ plugins {
     id 'fabric-loom' version '1.5-SNAPSHOT'
 }
 
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
-
-loom {
-    accessWidenerPath = file("src/main/resources/banana.accesswidener")
-}
 
 repositories {
     maven {
@@ -34,6 +27,10 @@ dependencies {
     modImplementation "meteordevelopment:meteor-client:${project.meteor_version}"
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/banana.accesswidener")
+}
+
 processResources {
     filesMatching("fabric.mod.json") {
         expand "version": project.version, "mc_version": project.minecraft_version
@@ -42,4 +39,8 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding("UTF-8")
+}
+
+compileJava {
+    options.compilerArgs += ['--enable-preview']
 }
