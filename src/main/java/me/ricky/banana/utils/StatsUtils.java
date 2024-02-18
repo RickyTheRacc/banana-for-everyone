@@ -70,7 +70,7 @@ public class StatsUtils extends BananaUtils {
     }
 
     public static Value getKDR() {
-        if (deaths <= 0) return Value.string(kills + ".00");
+        if (deaths <= 0) return Value.string(STR."\{kills}.00");
         return Value.string(String.format("%.2f", (double) kills / deaths));
     }
 
