@@ -17,6 +17,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.utils.entity.EntityUtils;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.PlayerListEntry;
@@ -27,16 +28,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class PlayerUtil extends BananaUtils {
     private static final ArrayList<Class<? extends Module>> singleTargets = new ArrayList<>();
     private static final ArrayList<Class<? extends Module>> multiTargets = new ArrayList<>();
 
-    private static final ArrayList<PlayerListEntry> lastEntries = new ArrayList<>();
+    private static final Set<PlayerListEntry> lastEntries = new HashSet<>();
+    private static final Set<PlayerEntity> lastPlayers = new HashSet<>();
     private static final Object2LongMap<UUID> targets = new Object2LongOpenHashMap<>();
     private static final Object2IntMap<UUID> totemPops = new Object2IntOpenHashMap<>();
 
@@ -77,9 +77,11 @@ public class PlayerUtil extends BananaUtils {
     private void onGameJoin(GameJoinedEvent event) {
         totemPops.clear();
         targets.clear();
-        lastEntries.clear();
 
-        lastEntries.addAll(mc.getNetworkHandler().getPlayerList());
+        lastEntries.clear();
+        lastEntries.addAll(getCurrentEntries());
+
+        updateLastPlayers();
     }
 
     @EventHandler
@@ -112,22 +114,22 @@ public class PlayerUtil extends BananaUtils {
     private static void onPostTick(TickEvent.Post event) {
         if (!Utils.canUpdate()) return;
 
-        ArrayList<PlayerListEntry> currentEntries = new ArrayList<>(mc.getNetworkHandler().getPlayerList());
-        // Attempt to ignore NPCs or holograms
-        currentEntries.removeIf(entry -> {
-            if (entry.getGameMode() == null) return true;
-
-            if (entry.getProfile().getName() == null) return true;
-            String name = entry.getProfile().getName();
-            return name.isBlank() || !name.matches("[a-zA-Z0-9_]+");
-        });
+        Set<PlayerListEntry> currentEntries = getCurrentEntries();
 
         // Leaving players
 
         for (PlayerListEntry entry: lastEntries) {
             if (currentEntries.contains(entry)) continue;
-            boolean wasTarget = targets.containsKey(entry.getProfile().getId());
-            MeteorClient.EVENT_BUS.post(LeaveEvent.get(entry, wasTarget));
+            UUID uuid = entry.getProfile().getId();
+            if (uuid == mc.player.getUuid()) continue;
+
+            boolean wasTarget = targets.containsKey(uuid);
+            int pops = totemPops.removeInt(uuid);
+            PlayerEntity player = lastPlayers.stream().filter(p ->
+                p.getUuid().equals(uuid)
+            ).findFirst().orElse(null);
+
+            MeteorClient.EVENT_BUS.post(LeaveEvent.get(entry, player, wasTarget ,pops));
         }
 
         // Joining players
@@ -139,6 +141,8 @@ public class PlayerUtil extends BananaUtils {
 
         lastEntries.clear();
         lastEntries.addAll(currentEntries);
+
+        updateLastPlayers();
     }
 
     @EventHandler
@@ -148,25 +152,52 @@ public class PlayerUtil extends BananaUtils {
         if (!(event.packet instanceof EntityStatusS2CPacket packet)) return;
         if (!(packet.getEntity(mc.world) instanceof PlayerEntity player)) return;
 
+        UUID uuid = player.getUuid();
+
         // Totem pops
 
         if (packet.getStatus() == 35) {
-            int pops = totemPops.getOrDefault(player.getUuid(), 0) + 1;
-            boolean wasTarget = targets.containsKey(player.getUuid());
-            MeteorClient.EVENT_BUS.post(PopEvent.get(player, pops, wasTarget));
+            int pops = totemPops.getOrDefault(uuid, 0) + 1;
+            boolean wasTarget = targets.containsKey(uuid);
+            totemPops.put(uuid, pops);
 
-            totemPops.put(player.getUuid(), pops);
+            MeteorClient.EVENT_BUS.post(PopEvent.get(player, pops, wasTarget));
         }
 
         // Deaths
 
         if (packet.getStatus() == 3) {
-            int pops = totemPops.removeInt(player.getUuid());
-            boolean wasTarget = targets.containsKey(player.getUuid());
-            MeteorClient.EVENT_BUS.post(DeathEvent.get(player, pops, wasTarget));
+            int pops = totemPops.removeInt(uuid);
+            boolean wasTarget = targets.containsKey(uuid);
+            targets.removeLong(uuid);
 
-            targets.removeLong(player.getUuid());
+            MeteorClient.EVENT_BUS.post(DeathEvent.get(player, pops, wasTarget));
         }
+    }
+
+    private static void updateLastPlayers() {
+        lastPlayers.clear();
+
+        for (PlayerEntity player : mc.world.getPlayers()) {
+            if (EntityUtils.getGameMode(player) == null || player.getGameProfile() == null) continue;
+            String name = player.getGameProfile().getName();
+            if (name.isBlank() || !name.matches("[a-zA-Z0-9_]+")) continue;
+
+            lastPlayers.add(player);
+        }
+    }
+
+    public static Set<PlayerListEntry> getCurrentEntries() {
+        Set<PlayerListEntry> currentEntries = new HashSet<>(mc.getNetworkHandler().getPlayerList());
+
+        // Attempt to ignore NPCs or holograms
+        currentEntries.removeIf(entry -> {
+            if (entry.getGameMode() == null || entry.getProfile() == null) return true;
+            String name = entry.getProfile().getName();
+            return name.isBlank() || !name.matches("[a-zA-Z0-9_]+");
+        });
+
+        return currentEntries;
     }
 
     public static int getPops(PlayerEntity player) {

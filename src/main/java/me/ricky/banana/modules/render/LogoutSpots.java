@@ -7,15 +7,12 @@ import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
-import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.Utils;
-import meteordevelopment.meteorclient.utils.entity.EntityUtils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.render.NametagUtils;
 import meteordevelopment.meteorclient.utils.render.WireframeEntityRenderer;
@@ -24,13 +21,11 @@ import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.meteorclient.utils.world.Dimension;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,34 +50,27 @@ public class LogoutSpots extends Module {
         .build()
     );
 
-    public final Setting<NotifyMode> logoutMode = sgGeneral.add(new EnumSetting.Builder<NotifyMode>()
-        .name("logouts")
-        .description("How to notify you when someone logs out.")
+    public final Setting<NotifyMode> chatMode = sgGeneral.add(new EnumSetting.Builder<NotifyMode>()
+        .name("chat-mode")
+        .description("Send a chat message when someone joins/leaves.")
         .defaultValue(NotifyMode.Both)
         .build()
     );
 
-    public final Setting<NotifyMode> rejoinMode = sgGeneral.add(new EnumSetting.Builder<NotifyMode>()
-        .name("rejoins")
-        .description("How to notify you when someone rejoins.")
+    public final Setting<NotifyMode> soundMode = sgGeneral.add(new EnumSetting.Builder<NotifyMode>()
+        .name("sound-mode")
+        .description("Play ding sounds if someone joins/leaves.")
         .defaultValue(NotifyMode.Both)
         .build()
     );
 
-    private final Setting<Boolean> culling = sgGeneral.add(new BoolSetting.Builder()
-        .name("culling")
-        .description("Render a certain number of logout spots within a certain distance.")
-        .defaultValue(true)
-        .build()
-    );
-
-    private final Setting<Integer> maxCount = sgGeneral.add(new IntSetting.Builder()
-        .name("max-count")
-        .description("Only render this many nametags.")
+    private final Setting<Integer> volume = sgGeneral.add(new IntSetting.Builder()
+        .name("volume")
+        .description("The volume of the sound played.")
         .defaultValue(50)
         .min(1)
-        .sliderRange(1, 100)
-        .visible(culling::get)
+        .sliderRange(1,100)
+        .visible(() -> soundMode.get() != NotifyMode.None)
         .build()
     );
 
@@ -136,101 +124,68 @@ public class LogoutSpots extends Module {
     }
 
     private final List<LogoutSpot> logoutSpots = new ArrayList<>();
-    private final List<PlayerEntity> lastPlayers = new ArrayList<>();
 
     private static final Color GREEN = new Color(25, 225, 25);
     private static final Color ORANGE = new Color(225, 105, 25);
     private static final Color RED = new Color(225, 25, 25);
     private static final Vector3d pos = new Vector3d();
 
-    private final SoundInstance sound = PositionedSoundInstance.master(
-        SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1.2f, 1
-    );
-
-    @Override
-    public void onActivate() {
-        if (!Utils.canUpdate()) return;
-        updateLastPlayers();
-    }
-
     @Override
     public void onDeactivate() {
         logoutSpots.clear();
-        lastPlayers.clear();
     }
 
     @EventHandler
     public void onGameJoin(GameJoinedEvent event) {
         logoutSpots.clear();
-        lastPlayers.clear();
-        updateLastPlayers();
     }
 
     @EventHandler
     private void onPlayerLeave(LeaveEvent event) {
-        if (onlyTargets.get() && !event.wasTarget) return;
+        if (event.player == null || (onlyTargets.get() && !event.wasTarget)) return;
+        if (Friends.get().isFriend(event.player) && ignoreFriends.get()) return;
 
-        for (PlayerEntity player : lastPlayers) {
-            if (!player.getUuid().equals(event.entry.getProfile().getId())) continue;
-            if (Friends.get().isFriend(player) && ignoreFriends.get()) continue;
+        LogoutSpot logSpot = new LogoutSpot(event.player);
+        logoutSpots.removeIf(spot -> spot.uuid.equals(event.player.getUuid()));
+        logoutSpots.add(logSpot);
 
-            LogoutSpot logSpot = new LogoutSpot(player);
-            logoutSpots.removeIf(logoutSpot -> logoutSpot.uuid.equals(logSpot.uuid) );
-            logoutSpots.add(logSpot);
-
-            if (culling.get() && logoutSpots.size() > maxCount.get()) logoutSpots.removeFirst();
-
-            if (logoutMode.get().chat()) {
-                warning("%s logged out at (%d, %d, %d) in the %s.",
-                    logSpot.player.getName().getString(),
-                    logSpot.player.getBlockX(),
-                    logSpot.player.getBlockY(),
-                    logSpot.player.getBlockZ(),
-                    logSpot.dimension.toString()
-                );
-            }
-            if (logoutMode.get().sound()) mc.getSoundManager().play(sound);
-
-            break;
+        if (chatMode.get().leaves()) {
+            warning("%s logged out at (%d, %d, %d) in the %s.",
+                logSpot.player.getName().getString(),
+                logSpot.player.getBlockX(),
+                logSpot.player.getBlockY(),
+                logSpot.player.getBlockZ(),
+                logSpot.dimension.toString()
+            );
         }
+
+        if (soundMode.get().leaves()) mc.getSoundManager().play(PositionedSoundInstance.master(
+            SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1.2f, volume.get()
+        ));
     }
 
     @EventHandler
     private void onPlayerJoin(JoinEvent event) {
-        Iterator<LogoutSpot> iterator = logoutSpots.iterator();
-        while (iterator.hasNext()) {
-            LogoutSpot logSpot = iterator.next();
-            if (!logSpot.uuid.equals(event.entry.getProfile().getId())) continue;
+        LogoutSpot logSpot = logoutSpots.stream().filter(spot ->
+            spot.uuid.equals(event.entry.getProfile().getId())
+        ).findFirst().orElse(null);
 
-            if (rejoinMode.get().chat()) {
-                warning("%s logged back in at (%d, %d, %d) in the %s.",
-                    logSpot.player.getName().getString(),
-                    logSpot.player.getBlockX(),
-                    logSpot.player.getBlockY(),
-                    logSpot.player.getBlockZ(),
-                    logSpot.dimension.toString()
-                );
-            }
-            if (rejoinMode.get().sound()) mc.getSoundManager().play(sound);
+        if (logSpot == null) return;
+        logoutSpots.remove(logSpot);
 
-            iterator.remove();
-            break;
+        if (chatMode.get().joins()) {
+            warning("%s logged back in at (%d, %d, %d) in the %s.",
+                logSpot.player.getName().getString(),
+                logSpot.player.getBlockX(),
+                logSpot.player.getBlockY(),
+                logSpot.player.getBlockZ(),
+                logSpot.dimension.toString()
+            );
         }
-    }
 
-    @EventHandler
-    private void onTick(TickEvent.Post event) {
-        updateLastPlayers();
-    }
-
-    private void updateLastPlayers() {
-        lastPlayers.clear();
-
-        for (PlayerEntity player : mc.world.getPlayers()) {
-            if (EntityUtils.getGameMode(player) == null) continue;
-            if (player == mc.player) continue;
-            lastPlayers.add(player);
-        }
+        if (soundMode.get().joins()) mc.getSoundManager().play(PositionedSoundInstance.master(
+            SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1.2f, volume.get()
+        ));
     }
 
     @EventHandler
@@ -318,16 +273,16 @@ public class LogoutSpots extends Module {
 
     public enum NotifyMode {
         Both,
-        Chat,
-        Sound,
+        Joins,
+        Leaves,
         None;
 
-        public boolean chat() {
-            return this == Both || this == Chat;
+        public boolean joins() {
+            return this == Both || this == Joins;
         }
 
-        public boolean sound() {
-            return this == Both || this == Sound;
+        public boolean leaves() {
+            return this == Both || this == Leaves;
         }
     }
 }
