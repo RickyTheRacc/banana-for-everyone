@@ -15,7 +15,7 @@ import java.util.List;
 public class CombatUtil extends BananaUtils {
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
 
-    public boolean isSurrounded(PlayerEntity player, BlockType type) {
+    public static boolean isSurrounded(PlayerEntity player, BlockType type) {
         List<BlockPos> posList = new ArrayList<>();
         posList.addAll(DynamicUtil.feetPos(player));
         posList.addAll(DynamicUtil.underPos(player));
@@ -23,7 +23,7 @@ public class CombatUtil extends BananaUtils {
         return posList.stream().allMatch(type::resists);
     }
 
-    public boolean isTopTrapped(PlayerEntity player, BlockType type) {
+    public static boolean isTopTrapped(PlayerEntity player, BlockType type) {
         for (BlockPos pos: DynamicUtil.topPos(player)) {
             if (!type.resists(pos)) return false;
         }
@@ -31,7 +31,7 @@ public class CombatUtil extends BananaUtils {
         return true;
     }
 
-    public boolean isFaceTrapped(PlayerEntity player, BlockType type) {
+    public static boolean isFaceTrapped(PlayerEntity player, BlockType type) {
         for (BlockPos pos: DynamicUtil.facePos(player)) {
             if (!type.resists(pos)) return false;
         }
@@ -39,7 +39,7 @@ public class CombatUtil extends BananaUtils {
         return true;
     }
 
-    public boolean isFullTrapped(PlayerEntity player, BlockType type ) {
+    public static boolean isFullTrapped(PlayerEntity player, BlockType type ) {
         List<BlockPos> posList = new ArrayList<>();
         posList.addAll(DynamicUtil.topPos(player));
         posList.addAll(DynamicUtil.facePos(player));
@@ -51,7 +51,7 @@ public class CombatUtil extends BananaUtils {
         return true;
     }
 
-    public static boolean isBurrowed(PlayerEntity player) {
+    public static boolean isPhased(PlayerEntity player) {
         Box box = box(player).contract(0.001);
 
         for (double[] point : DynamicUtil.fourWay(box)) {
