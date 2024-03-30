@@ -1,4 +1,4 @@
-package me.ricky.banana.modules.movement;
+package me.ricky.banana.modules;
 
 import com.google.common.base.Stopwatch;
 import me.ricky.banana.BananaPlus;

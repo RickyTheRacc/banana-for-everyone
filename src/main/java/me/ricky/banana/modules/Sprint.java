@@ -1,4 +1,4 @@
-package me.ricky.banana.modules.movement;
+package me.ricky.banana.modules;
 
 import me.ricky.banana.BananaPlus;
 import meteordevelopment.meteorclient.events.world.TickEvent;

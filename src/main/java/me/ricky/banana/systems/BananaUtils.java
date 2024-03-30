@@ -1,6 +1,6 @@
 package me.ricky.banana.systems;
 
-import me.ricky.banana.modules.movement.Blink;
+import me.ricky.banana.modules.Blink;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;

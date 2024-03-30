@@ -1,7 +1,7 @@
 package me.ricky.banana.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.ricky.banana.modules.movement.Sprint;
+import me.ricky.banana.modules.Sprint;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;

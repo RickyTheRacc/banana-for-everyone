@@ -1,6 +1,6 @@
 package me.ricky.banana.mixin;
 
-import me.ricky.banana.modules.movement.Sprint;
+import me.ricky.banana.modules.Sprint;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

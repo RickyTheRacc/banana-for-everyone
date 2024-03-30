@@ -1,6 +1,6 @@
 package me.ricky.banana.systems;
 
-import me.ricky.banana.modules.movement.Blink;
+import me.ricky.banana.modules.Blink;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;

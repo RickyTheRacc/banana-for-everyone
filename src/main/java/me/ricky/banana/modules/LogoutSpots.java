@@ -1,4 +1,4 @@
-package me.ricky.banana.modules.render;
+package me.ricky.banana.modules;
 
 import me.ricky.banana.BananaPlus;
 import me.ricky.banana.events.JoinEvent;
