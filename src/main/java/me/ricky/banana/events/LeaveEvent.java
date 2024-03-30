@@ -9,11 +9,11 @@ public class LeaveEvent {
     private static final LeaveEvent INSTANCE = new LeaveEvent();
 
     public PlayerListEntry entry;
-    @Nullable public PlayerEntity player;
+    public PlayerEntity player;
     public boolean wasTarget;
     public int pops;
 
-    public static LeaveEvent get(PlayerListEntry entry, PlayerEntity player ,boolean wasTarget, int pops) {
+    public static LeaveEvent get(PlayerListEntry entry, @Nullable PlayerEntity player, boolean wasTarget, int pops) {
         INSTANCE.entry = entry;
         INSTANCE.player = player;
         INSTANCE.wasTarget = wasTarget;

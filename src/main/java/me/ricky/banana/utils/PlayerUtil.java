@@ -18,7 +18,6 @@ import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.entity.EntityUtils;
-import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,10 +77,11 @@ public class PlayerUtil extends BananaUtils {
         totemPops.clear();
         targets.clear();
 
+        lastPlayers.clear();
         lastEntries.clear();
-        lastEntries.addAll(getCurrentEntries());
 
-        updateLastPlayers();
+        lastPlayers.addAll(getPlayers());
+        lastEntries.addAll(getTabList());
     }
 
     @EventHandler
@@ -114,20 +114,20 @@ public class PlayerUtil extends BananaUtils {
     private static void onPostTick(TickEvent.Post event) {
         if (!Utils.canUpdate()) return;
 
-        Set<PlayerListEntry> currentEntries = getCurrentEntries();
+        Set<PlayerListEntry> currentEntries = getTabList();
 
         // Leaving players
 
         for (PlayerListEntry entry: lastEntries) {
             if (currentEntries.contains(entry)) continue;
             UUID uuid = entry.getProfile().getId();
-            if (uuid == mc.player.getUuid()) continue;
 
-            boolean wasTarget = targets.containsKey(uuid);
-            int pops = totemPops.removeInt(uuid);
             PlayerEntity player = lastPlayers.stream().filter(p ->
                 p.getUuid().equals(uuid)
             ).findFirst().orElse(null);
+
+            boolean wasTarget = targets.removeLong(uuid) != 0;
+            int pops = totemPops.removeInt(uuid);
 
             MeteorClient.EVENT_BUS.post(LeaveEvent.get(entry, player, wasTarget ,pops));
         }
@@ -136,13 +136,21 @@ public class PlayerUtil extends BananaUtils {
 
         for (PlayerListEntry entry: currentEntries) {
             if (lastEntries.contains(entry)) continue;
-            MeteorClient.EVENT_BUS.post(JoinEvent.get(entry));
+            if (currentEntries.contains(entry)) continue;
+            UUID uuid = entry.getProfile().getId();
+
+            PlayerEntity player = getPlayers().stream().filter(p ->
+                p.getUuid().equals(uuid)
+            ).findFirst().orElse(null);
+
+            MeteorClient.EVENT_BUS.post(JoinEvent.get(entry, player));
         }
 
+        lastPlayers.clear();
         lastEntries.clear();
-        lastEntries.addAll(currentEntries);
 
-        updateLastPlayers();
+        lastPlayers.addAll(getPlayers());
+        lastEntries.addAll(currentEntries);
     }
 
     @EventHandler
@@ -175,29 +183,31 @@ public class PlayerUtil extends BananaUtils {
         }
     }
 
-    private static void updateLastPlayers() {
-        lastPlayers.clear();
-
-        for (PlayerEntity player : mc.world.getPlayers()) {
-            if (EntityUtils.getGameMode(player) == null || player.getGameProfile() == null) continue;
-            String name = player.getGameProfile().getName();
-            if (name.isBlank() || !name.matches("[a-zA-Z0-9_]+")) continue;
-
-            lastPlayers.add(player);
-        }
-    }
-
-    public static Set<PlayerListEntry> getCurrentEntries() {
+    public static Set<PlayerListEntry> getTabList() {
         Set<PlayerListEntry> currentEntries = new HashSet<>(mc.getNetworkHandler().getPlayerList());
 
         // Attempt to ignore NPCs or holograms
         currentEntries.removeIf(entry -> {
-            if (entry.getGameMode() == null || entry.getProfile() == null) return true;
+            if (entry.getGameMode() == null) return true;
+            if (entry.getProfile() == null) return true;
             String name = entry.getProfile().getName();
             return name.isBlank() || !name.matches("[a-zA-Z0-9_]+");
         });
 
         return currentEntries;
+    }
+
+    public static Set<PlayerEntity> getPlayers() {
+        Set<PlayerEntity> currentPlayers = new HashSet<>(mc.world.getPlayers());
+
+        currentPlayers.removeIf(player -> {
+            if (EntityUtils.getGameMode(player) == null) return true;
+            if (player.getGameProfile() == null) return true;
+            String name = player.getGameProfile().getName();
+            return name.isBlank() || !name.matches("[a-zA-Z0-9_]+");
+        });
+
+        return currentPlayers;
     }
 
     public static int getPops(PlayerEntity player) {
