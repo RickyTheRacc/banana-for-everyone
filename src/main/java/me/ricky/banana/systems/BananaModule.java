@@ -5,6 +5,7 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.world.Dir;
+import meteordevelopment.meteorclient.utils.world.TickRate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.*;
 import org.joml.Vector3d;
@@ -46,6 +47,12 @@ public class BananaModule extends Module {
         return player.getEyePos();
     }
 
+    protected PlayerEntity player() {
+        // Basically just for damage calcs in offhand
+        Blink blink = Modules.get().get(Blink.class);
+        return blink.isActive() ? blink.realPlayer() : mc.player;
+    }
+
     // Rendering
 
     public double textScale(Vector3d pos) {
@@ -77,7 +84,8 @@ public class BananaModule extends Module {
 
     // Misc
 
-//    protected double tickPassed() {
-//        return config.tpsSync.get() ? TickRate.INSTANCE.getTickRate() / 20.0 : 1.0;
-//    }
+    protected double properTick() {
+        // Adjusts delay to the server's actual TPS
+        return TickRate.INSTANCE.getTickRate() / 20.0;
+    }
 }

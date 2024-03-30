@@ -37,4 +37,10 @@ public class BananaUtils {
         if (player == mc.player) return blink.realFeetPos();
         return player.getEyePos();
     }
+
+    protected static PlayerEntity player() {
+        // Basically just for damage calcs in offhand
+        Blink blink = Modules.get().get(Blink.class);
+        return blink.isActive() ? blink.realPlayer() : mc.player;
+    }
 }

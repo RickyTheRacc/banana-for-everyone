@@ -18,6 +18,7 @@ import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.render.WireframeEntityRenderer;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -168,7 +169,7 @@ public class Blink extends BananaModule {
 
         Breadcrumbs breadcrumbs = Modules.get().get(Breadcrumbs.class);
         if (useBreadcrumbs.get() && !breadcrumbs.isActive()) breadcrumbs.toggle();
-        if (renderStart.get()) model = new FakePlayerEntity(mc.player, "ghost", 20, false);
+        model = new FakePlayerEntity(mc.player, "ghost", 20, false);
 
         stopwatch.start();
         canceled = false;
@@ -238,6 +239,10 @@ public class Blink extends BananaModule {
     public String getInfoString() {
         double multiplier = Modules.get().get(Timer.class).getMultiplier();
         return String.format("%.3f", (float) (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) * multiplier);
+    }
+
+    public PlayerEntity realPlayer() {
+        return model;
     }
 
     public BlockPos realBlockPos() {
