@@ -10,6 +10,8 @@ import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.starscript.value.Value;
 import net.minecraft.item.Items;
 
+import static java.lang.StringTemplate.STR;
+
 public class StatsUtil extends BananaUtils {
     public static Integer kills = 0;
     public static Integer deaths = 0;
