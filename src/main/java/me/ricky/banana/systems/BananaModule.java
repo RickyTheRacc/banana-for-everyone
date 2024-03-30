@@ -81,11 +81,4 @@ public class BananaModule extends Module {
 
         return sides;
     }
-
-    // Misc
-
-    protected double properTick() {
-        // Adjusts delay to the server's actual TPS
-        return TickRate.INSTANCE.getTickRate() / 20.0;
-    }
 }
