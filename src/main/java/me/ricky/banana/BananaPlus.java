@@ -5,6 +5,7 @@ import me.ricky.banana.hud.BindsHud;
 import me.ricky.banana.hud.LogoHud;
 import me.ricky.banana.hud.PotionsHud;
 import me.ricky.banana.hud.TextPresets;
+import me.ricky.banana.modules.misc.TravelLog;
 import me.ricky.banana.modules.movement.Blink;
 import me.ricky.banana.modules.movement.Sprint;
 import me.ricky.banana.modules.render.LogoutSpots;
@@ -69,8 +70,9 @@ public class BananaPlus extends MeteorAddon {
 		// Add modules
 
 		Modules.get().add(new Blink());
-		Modules.get().add(new Sprint());
 		Modules.get().add(new LogoutSpots());
+		Modules.get().add(new Sprint());
+		Modules.get().add(new TravelLog());
 	}
 
 	@Override
