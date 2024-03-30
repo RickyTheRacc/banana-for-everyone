@@ -1,18 +1,37 @@
 package me.ricky.banana.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import me.ricky.banana.events.DeathEvent;
+import me.ricky.banana.events.PopEvent;
 import me.ricky.banana.systems.BananaUtils;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
+import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.starscript.value.Value;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 
-public class StatsUtils extends BananaUtils {
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@SuppressWarnings("unchecked")
+public class StatsUtil extends BananaUtils {
     public static Integer kills = 0;
     public static Integer deaths = 0;
     public static Integer highScore = 0;
@@ -22,17 +41,25 @@ public class StatsUtils extends BananaUtils {
     public static int crystalsPerSec;
     public static int first;
 
-    @PostInit
-    public static void init() {
-        MeteorClient.EVENT_BUS.subscribe(StatsUtils.class);
-    }
-
     @EventHandler
     private static void onGameJoin(GameJoinedEvent event) {
         kills = 0;
         deaths = 0;
         highScore = 0;
         killStreak = 0;
+    }
+
+    @EventHandler
+    private static void onPreTick(TickEvent.Pre event) {
+        if (!Utils.canUpdate() || ++ticksPassed % 21 != 1) return;
+        int crystals = InvUtils.find(Items.END_CRYSTAL).count();
+
+        if (ticksPassed == 1) {
+            first = crystals;
+        } else if (ticksPassed == 21) {
+            crystalsPerSec = Math.max(0, -(crystals - first));
+            ticksPassed = 0;
+        }
     }
 
     @EventHandler
@@ -44,20 +71,6 @@ public class StatsUtils extends BananaUtils {
         } else if (event.player == mc.player) {
             deaths++;
             killStreak = 0;
-        }
-    }
-
-    @EventHandler
-    private static void onPreTick(TickEvent.Pre event) {
-        if (!Utils.canUpdate() || ++ticksPassed % 21 != 1) return;
-
-        int crystals = InvUtils.find(Items.END_CRYSTAL).count();
-
-        if (ticksPassed == 1) {
-            first = crystals;
-        } else if (ticksPassed == 21) {
-            crystalsPerSec = Math.max(0, -(crystals - first));
-            ticksPassed = 0;
         }
     }
 

@@ -9,7 +9,7 @@ import me.ricky.banana.modules.movement.Blink;
 import me.ricky.banana.modules.movement.Sprint;
 import me.ricky.banana.modules.render.LogoutSpots;
 import me.ricky.banana.systems.BananaTab;
-import me.ricky.banana.utils.StatsUtils;
+import me.ricky.banana.utils.StatsUtil;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
@@ -51,12 +51,12 @@ public class BananaPlus extends MeteorAddon {
 		// Starscript
 
 		MeteorStarscript.ss.set("banana", new ValueMap()
-			.set("kills", StatsUtils::getKills)
-			.set("deaths", StatsUtils::getDeaths)
-			.set("kdr", StatsUtils::getKDR)
-			.set("killstreak", StatsUtils::getKillstreak)
-			.set("highscore", StatsUtils::getHighscore)
-			.set("crystalsps", StatsUtils::getCrystalsPs)
+			.set("kills", StatsUtil::getKills)
+			.set("deaths", StatsUtil::getDeaths)
+			.set("kdr", StatsUtil::getKDR)
+			.set("killstreak", StatsUtil::getKillstreak)
+			.set("highscore", StatsUtil::getHighscore)
+			.set("crystalsps", StatsUtil::getCrystalsPs)
 		);
 
 		// Add hud elements
