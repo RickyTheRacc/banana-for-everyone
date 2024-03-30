@@ -2,7 +2,7 @@ package me.ricky.banana.modules;
 
 import me.ricky.banana.BananaPlus;
 import me.ricky.banana.systems.BananaModule;
-import me.ricky.banana.utils.PlayerUtil;
+import me.ricky.banana.utils.ServerUtil;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -11,7 +11,6 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
@@ -90,7 +89,7 @@ public class ArmorAlerts extends BananaModule {
     public void onPostTick(TickEvent.Post event) {
         shouldPlaySound = false;
 
-        for (PlayerEntity player: PlayerUtil.getPlayers()) {
+        for (PlayerEntity player: ServerUtil.getPlayers()) {
             if (Friends.get().isFriend(player)) continue;
             if (!notifySelf.get() && player == mc.player) continue;
             if (!notifyEnemies.get() && !Friends.get().isFriend(player)) continue;
