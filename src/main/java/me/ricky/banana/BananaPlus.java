@@ -5,10 +5,7 @@ import me.ricky.banana.hud.BindsHud;
 import me.ricky.banana.hud.LogoHud;
 import me.ricky.banana.hud.PotionsHud;
 import me.ricky.banana.hud.TextPresets;
-import me.ricky.banana.modules.TravelLog;
-import me.ricky.banana.modules.Blink;
-import me.ricky.banana.modules.Sprint;
-import me.ricky.banana.modules.LogoutSpots;
+import me.ricky.banana.modules.*;
 import me.ricky.banana.systems.BananaTab;
 import me.ricky.banana.utils.StatsUtil;
 import meteordevelopment.meteorclient.addons.GithubRepo;
@@ -69,6 +66,7 @@ public class BananaPlus extends MeteorAddon {
 
 		// Add modules
 
+		Modules.get().add(new ArmorAlerts());
 		Modules.get().add(new Blink());
 		Modules.get().add(new LogoutSpots());
 		Modules.get().add(new Sprint());
