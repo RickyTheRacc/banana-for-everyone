@@ -4,7 +4,7 @@
   "version": "${version}",
   "id": "banana-plus",
   "name": "Banana Plus",
-  "description": "This addon will never die!",
+  "description": "Epic combat mod for a dead game",
   "authors": ["RickyTheRacc"],
   "icon": "assets/bananaplus/logo.png",
   "entrypoints": {
