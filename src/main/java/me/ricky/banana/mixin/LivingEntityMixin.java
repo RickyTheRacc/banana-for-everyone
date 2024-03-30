@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
+public abstract class LivingEntityMixin {
     // This is actually correct, MCdev just doesn't know what it's talking about
     @ModifyVariable(method = "jump", at = @At("STORE"))
     private float setJumpYaw(float original) {
