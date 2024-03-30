@@ -12,6 +12,7 @@ import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.friends.Friends;
+import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.render.NametagUtils;
@@ -120,7 +121,7 @@ public class LogoutSpots extends Module {
     );
 
     public LogoutSpots() {
-        super(BananaPlus.CATEGORY, "logout-spots", "Shows where players logged out.");
+        super(Categories.Render, "logout-spots", "Shows where players logged out.");
     }
 
     private final List<LogoutSpot> logoutSpots = new ArrayList<>();

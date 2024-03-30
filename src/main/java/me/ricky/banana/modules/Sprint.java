@@ -5,6 +5,7 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 
@@ -42,7 +43,7 @@ public class Sprint extends Module {
     );
 
     public Sprint() {
-        super(BananaPlus.CATEGORY, "sprint", "Automatically sprints.");
+        super(Categories.Movement, "sprint", "Automatically sprints.");
     }
 
     @EventHandler(priority = 500)

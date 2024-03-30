@@ -10,6 +10,7 @@ import meteordevelopment.meteorclient.mixininterface.IBox;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
+import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.render.Breadcrumbs;
 import meteordevelopment.meteorclient.systems.modules.world.Timer;
@@ -121,7 +122,7 @@ public class Blink extends BananaModule {
     );
 
     public Blink() {
-        super(BananaPlus.CATEGORY, "blink", "Cancel movement packets to move in the blink of an eye.");
+        super(Categories.Render, "blink", "Cancel movement packets to move in the blink of an eye.");
     }
 
     private final List<PlayerMoveC2SPacket> packets = new ArrayList<>();

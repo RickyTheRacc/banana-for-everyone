@@ -200,6 +200,7 @@ public class PlayerUtil extends BananaUtils {
     public static Set<PlayerEntity> getPlayers() {
         Set<PlayerEntity> currentPlayers = new HashSet<>(mc.world.getPlayers());
 
+        // Attempt to ignore NPCs or holograms
         currentPlayers.removeIf(player -> {
             if (EntityUtils.getGameMode(player) == null) return true;
             if (player.getGameProfile() == null) return true;

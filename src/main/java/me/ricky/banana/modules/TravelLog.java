@@ -56,6 +56,6 @@ public class TravelLog extends Module {
 
         toggle();
 
-        mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(Text.literal("Arrived near target destination.")));
+        mc.getNetworkHandler().onDisconnect(new DisconnectS2CPacket(Text.literal("Arrived near target destination.")));
     }
 }
