@@ -44,12 +44,16 @@ tasks {
 
     withType<JavaCompile> {
         options.encoding = "UTF-8"
-        options.release = 17
+        options.release = 21
     }
 
     java {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    compileJava {
+        options.compilerArgs.addLast("--enable-preview")
     }
 }
 
