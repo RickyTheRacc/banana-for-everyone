@@ -14,6 +14,7 @@ public class TextPresets {
         addPreset("Highscore", "Highscore: #1{banana.highscore}");
         addPreset("Killstreak", "Killstreak: #1{banana.killstreak}");
         addPreset("Crystals/s", "Crystals/s: #1{banana.crystalsps}");
+        addPreset("Ping", "Ping: #1{banana.ping}");
     }
 
     private static TextHud create() {

@@ -1,10 +1,7 @@
 package me.ricky.banana;
 
 import com.mojang.logging.LogUtils;
-import me.ricky.banana.hud.BindsHud;
-import me.ricky.banana.hud.LogoHud;
-import me.ricky.banana.hud.PotionsHud;
-import me.ricky.banana.hud.TextPresets;
+import me.ricky.banana.hud.*;
 import me.ricky.banana.modules.*;
 import me.ricky.banana.systems.BananaTab;
 import me.ricky.banana.utils.StatsUtil;
@@ -55,6 +52,7 @@ public class BananaPlus extends MeteorAddon {
 			.set("killstreak", StatsUtil::getKillstreak)
 			.set("highscore", StatsUtil::getHighscore)
 			.set("crystalsps", StatsUtil::getCrystalsPs)
+			.set("ping", StatsUtil::getPing)
 		);
 
 		// Add hud elements
