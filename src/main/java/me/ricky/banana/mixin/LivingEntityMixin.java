@@ -1,4 +1,4 @@
-package me.ricky.banana.mixin.minecraft;
+package me.ricky.banana.mixin;
 
 import me.ricky.banana.modules.movement.Sprint;
 import meteordevelopment.meteorclient.systems.modules.Modules;

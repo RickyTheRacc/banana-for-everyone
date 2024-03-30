@@ -12,12 +12,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+
 
 @Mixin(value = AutoRespawn.class, remap = false)
 public abstract class AutoRespawnMixin extends Module{
-    @Unique private Setting<Boolean> autoRekit;
+    @Unique private Setting<Boolean> autoSend;
     @Unique private Setting<Boolean> chatInfo;
-    @Unique private Setting<String> kitName;
+    @Unique private Setting<List<String>> messages;
 
     public AutoRespawnMixin() {
         super(Categories.Player, "auto-respawn", "Automatically respawns after death.");
@@ -29,9 +31,9 @@ public abstract class AutoRespawnMixin extends Module{
 
         // General
 
-        autoRekit = sgGeneral.add(new BoolSetting.Builder()
-            .name("rekit")
-            .description("Whether to automatically get a kit after dying.")
+        autoSend = sgGeneral.add(new BoolSetting.Builder()
+            .name("auto-send")
+            .description("Send messages after you die.")
             .defaultValue(false)
             .build()
         );
@@ -40,24 +42,23 @@ public abstract class AutoRespawnMixin extends Module{
             .name("chat-info")
             .description("Whether to send info about rekitting.")
             .defaultValue(false)
-            .visible(autoRekit::get)
+            .visible(autoSend::get)
             .build()
         );
 
-        kitName= sgGeneral.add(new StringSetting.Builder()
-            .name("kit-name")
-            .description("The name of your kit.")
-            .defaultValue("")
-            .visible(autoRekit::get)
+        messages = sgGeneral.add(new StringListSetting.Builder()
+            .name("messages")
+            .description("The messages to send after you die.")
+            .visible(autoSend::get)
             .build()
         );
     }
 
     @Inject(method = "onOpenScreenEvent", at = @At("TAIL"))
     private void sendRekitMessage(OpenScreenEvent event, CallbackInfo ci) {
-        if (autoRekit.get()) {
-            if (chatInfo.get()) info("Rekitting with kit " + kitName.get() + ".");
-            ChatUtils.sendPlayerMsg("/kit " + kitName.get());
+        if (autoSend.get()) {
+            if (chatInfo.get()) info(STR."Rekitting with kit \{messages.get()}.");
+            ChatUtils.sendPlayerMsg(STR."/kit \{messages.get()}");
         }
     }
 }

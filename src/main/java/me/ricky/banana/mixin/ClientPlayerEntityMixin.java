@@ -1,4 +1,4 @@
-package me.ricky.banana.mixin.minecraft;
+package me.ricky.banana.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import me.ricky.banana.modules.movement.Sprint;

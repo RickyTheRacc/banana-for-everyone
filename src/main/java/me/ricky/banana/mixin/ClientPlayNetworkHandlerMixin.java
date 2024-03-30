@@ -1,4 +1,4 @@
-package me.ricky.banana.mixin.minecraft;
+package me.ricky.banana.mixin;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.slf4j.Logger;
