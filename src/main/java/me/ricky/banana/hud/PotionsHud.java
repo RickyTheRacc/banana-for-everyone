@@ -158,7 +158,7 @@ public class PotionsHud extends HudElement {
         String[] letters = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
 
         public CountedEffect(HudRenderer renderer, StatusEffectInstance effect) {
-            name = Names.get(effect.getEffectType()) + " ";
+            name = STR."\{Names.get(effect.getEffectType())} ";
             if (roman.get()) {
                 int a = effect.getAmplifier() + 1;
                 StringBuilder roman = new StringBuilder();
@@ -168,10 +168,10 @@ public class PotionsHud extends HudElement {
                         roman.append(letters[i]);
                     }
                 }
-                name += roman + " ";
-            } else name += effect.getAmplifier() + 1 + " ";
+                name += STR."\{roman} ";
+            } else name += STR."\{effect.getAmplifier() + 1} ";
 
-            time = "(" + StatusEffectUtil.getDurationText(effect, 1, 20).getString() + ")";
+            time = STR."(\{StatusEffectUtil.getDurationText(effect, 1, 20).getString()})";
 
             width = renderer.textWidth(name + time);
 
