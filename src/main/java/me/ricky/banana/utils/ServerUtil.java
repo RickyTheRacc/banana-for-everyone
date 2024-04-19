@@ -20,13 +20,14 @@ import net.minecraft.network.packet.c2s.play.ClientStatusC2SPacket;
 import net.minecraft.network.packet.s2c.play.StatisticsS2CPacket;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class ServerUtil extends BananaUtils {
     private static final Set<PlayerListEntry> lastEntries = new HashSet<>();
     private static final Set<PlayerEntity> lastPlayers = new HashSet<>();
 
-    public static final Queue<Integer> pings = new LinkedList<>();
+    public static final Queue<Integer> pings = new ConcurrentLinkedQueue<>();
     private static final Stopwatch timer = Stopwatch.createUnstarted();
     private static boolean checking;
     private static double pingDelay;
@@ -128,7 +129,7 @@ public class ServerUtil extends BananaUtils {
 
     public static int getPing() {
         if (!Utils.canUpdate() || mc.isInSingleplayer()) return 0;
-        if (pings.isEmpty()) return PlayerUtils.getPing();
+        if (pings.size() <= 10) return PlayerUtils.getPing();
         return pings.stream().mapToInt(Integer::intValue).sum() / pings.size();
     }
 
