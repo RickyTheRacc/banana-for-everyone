@@ -62,7 +62,7 @@ public class XPThrower extends Module {
         .build()
     );
 
-    private final Setting<Boolean> noGapSwitch = sgSafety.add(new BoolSetting.Builder()
+    private final Setting<Boolean> noGapSwitch = sgThrowing.add(new BoolSetting.Builder()
         .name("no-gap-switch")
         .description("Whether to switch to XP if you're holding a gap.")
         .defaultValue(true)
