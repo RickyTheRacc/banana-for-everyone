@@ -38,14 +38,6 @@ public abstract class AutoRespawnMixin extends Module{
             .build()
         );
 
-        chatInfo = sgGeneral.add(new BoolSetting.Builder()
-            .name("chat-info")
-            .description("Whether to send info about rekitting.")
-            .defaultValue(false)
-            .visible(autoSend::get)
-            .build()
-        );
-
         messages = sgGeneral.add(new StringListSetting.Builder()
             .name("messages")
             .description("The messages to send after you die.")
@@ -56,9 +48,6 @@ public abstract class AutoRespawnMixin extends Module{
 
     @Inject(method = "onOpenScreenEvent", at = @At("TAIL"))
     private void sendRekitMessage(OpenScreenEvent event, CallbackInfo ci) {
-        if (autoSend.get()) {
-            if (chatInfo.get()) info(STR."Rekitting with kit \{messages.get()}.");
-            ChatUtils.sendPlayerMsg(STR."/kit \{messages.get()}");
-        }
+        if (autoSend.get()) messages.get().forEach(ChatUtils::sendPlayerMsg);
     }
 }

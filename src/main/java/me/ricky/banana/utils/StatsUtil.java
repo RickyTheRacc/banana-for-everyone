@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static java.lang.StringTemplate.STR;
-
 @SuppressWarnings("unchecked")
 public class StatsUtil extends BananaUtils {
     private static final ArrayList<Class<? extends Module>> singleTargets = new ArrayList<>();
@@ -41,10 +39,10 @@ public class StatsUtil extends BananaUtils {
     public static final Object2LongMap<UUID> targets = new Object2LongOpenHashMap<>();
     public static final Object2IntMap<UUID> totemPops = new Object2IntOpenHashMap<>();
 
-    public static Integer kills = 0;
-    public static Integer deaths = 0;
-    public static Integer highScore = 0;
-    public static Integer killStreak = 0;
+    public static int kills = 0;
+    public static int deaths = 0;
+    public static int highScore = 0;
+    public static int killStreak = 0;
 
     private static double countDelay;
     public static int crystalsPerSec;
@@ -188,7 +186,7 @@ public class StatsUtil extends BananaUtils {
     }
 
     public static Value getKDR() {
-        if (deaths <= 0) return Value.string(STR."\{kills}.00");
+        if (deaths <= 0) return Value.string(kills + ".00");
         return Value.string(String.format("%.2f", (double) kills / deaths));
     }
 

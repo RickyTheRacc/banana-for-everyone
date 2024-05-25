@@ -103,7 +103,7 @@ public class ArmorAlerts extends BananaModule {
                     case 1 -> chestplates;
                     case 2 -> leggings;
                     case 3 -> boots;
-                    default -> throw new IllegalStateException(STR."Unexpected value: \{i}");
+                    default -> throw new IllegalStateException(String.format("Unexpected value: %d", i));
                 };
 
                 if (repaired) armorList.remove(player);
@@ -126,7 +126,8 @@ public class ArmorAlerts extends BananaModule {
     }
 
     private void notify(Item item, PlayerEntity player) {
-        String playerName = (player == mc.player) ? "Your " : STR."\{player.getName().getString()}'s ";
+
+        String playerName = (player == mc.player) ? "Your " : player.getName().getString() + "'s ";
         String itemName = item.getName().getString().toLowerCase();
 
         if ((item instanceof ArmorItem && item != Items.TURTLE_HELMET) || item instanceof ToolItem) {
@@ -134,7 +135,7 @@ public class ArmorAlerts extends BananaModule {
             itemName = nameArray[nameArray.length - 1];
         }
 
-        String infoText = STR."\{playerName}\{itemName}\{(itemName.endsWith("s")) ? " are " : " is "}low!";
+        String infoText = playerName + itemName + ((itemName.endsWith("s")) ? " are " : " is ") + "low!";
         warning(infoText);
     }
 }

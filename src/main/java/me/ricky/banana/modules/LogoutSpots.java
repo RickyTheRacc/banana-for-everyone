@@ -1,6 +1,5 @@
 package me.ricky.banana.modules;
 
-import me.ricky.banana.BananaPlus;
 import me.ricky.banana.events.JoinEvent;
 import me.ricky.banana.events.LeaveEvent;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -224,7 +223,7 @@ public class LogoutSpots extends Module {
             NametagUtils.begin(pos);
 
             // Render background
-            double i = text.getWidth(logoutSpot.name) / 2.0 + text.getWidth(STR." \{logoutSpot.health}") / 2.0;
+            double i = text.getWidth(logoutSpot.name) / 2.0 + text.getWidth(" " + logoutSpot.health) / 2.0;
             Renderer2D.COLOR.begin();
             Renderer2D.COLOR.quad(-i, 0, i * 2, text.getHeight(), nameBackgroundColor.get());
             Renderer2D.COLOR.render(null);
@@ -232,7 +231,7 @@ public class LogoutSpots extends Module {
             // Render name and health texts
             text.beginBig();
             double hX = text.render(logoutSpot.name, -i, 0, nameColor.get());
-            text.render(STR." \{logoutSpot.health}", hX, 0, logoutSpot.color);
+            text.render(" " + logoutSpot.health, hX, 0, logoutSpot.color);
             text.end();
 
             NametagUtils.end();
