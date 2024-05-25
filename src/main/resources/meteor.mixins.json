@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "me.ricky.banana.mixin.meteor",
+  "compatibilityLevel": "JAVA_16",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "AutoRespawnMixin",
+    "FreecamMixin",
+    "MeteorClientMixin",
+    "ModulesMixin",
+    "StringListSettingMixin",
+    "SystemsMixin",
+    "ZoomMixin"
+  ]
+}

@@ -1,24 +1,19 @@
 {
   "schemaVersion": 1,
-  "id": "bananaplus",
-  "version": "${version}",
-  "name": "Banana+",
-  "description": "Based PVP addon for Meteor Client.",
-  "authors": [
-    "RickyTheRacc"
-  ],
-  "contact": {
-    "repo": "https://github.com/Bennooo/banana-for-everyone"
-  },
-  "icon": "assets/logo1.png",
   "environment": "client",
+  "version": "${version}",
+  "id": "banana-plus",
+  "name": "Banana Plus",
+  "description": "Epic combat mod for a dead game",
+  "authors": ["RickyTheRacc"],
+  "icon": "assets/bananaplus/logo.png",
   "entrypoints": {
     "meteor": [
-      "bananaplus.BananaPlus"
+      "me.ricky.banana.BananaPlus"
     ]
   },
   "mixins": [
-    "meteorclient.mixins.json",
+    "meteor.mixins.json",
     "minecraft.mixins.json"
   ],
   "accessWidener": "banana.accesswidener",
@@ -26,12 +21,8 @@
     "meteor-client:color": "255,193,0"
   },
   "depends": {
-    "java": ">=17",
-    "minecraft": ">=1.19.1",
-    "meteor-client": "*"
-  },
-  "breaks": {
-    "bedtrap": "*",
-    "splashhack": "*"
+    "java": ">=21",
+    "minecraft": ">=1.20.3",
+    "meteor-client": ">=0.5.5"
   }
 }
