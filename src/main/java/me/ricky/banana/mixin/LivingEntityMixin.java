@@ -12,18 +12,17 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    // This is actually correct, MCdev just doesn't know what it's talking about
-    @ModifyVariable(method = "jump", at = @At("STORE"))
+    @ModifyVariable(method = "jump", name = "g", ordinal = 1, at = @At("STORE"))
     private float setJumpYaw(float original) {
-        return getJumpYaw();
+        Sprint sprint = Modules.get().get(Sprint.class);
+        return sprint.isActive() ? getJumpYaw() : original;
     }
 
     @Unique
     private float getJumpYaw() {
         float yaw = mc.player.getYaw();
 
-        Sprint sprint = Modules.get().get(Sprint.class);
-        if (sprint.isActive() && sprint.allDirections.get()) {
+        if (Modules.get().get(Sprint.class).allDirections.get()) {
             float forwardMovement = mc.player.input.movementForward;
             float sidewaysMovement = mc.player.input.movementSideways;
 

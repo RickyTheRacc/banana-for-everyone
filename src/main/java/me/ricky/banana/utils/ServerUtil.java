@@ -48,8 +48,11 @@ public class ServerUtil extends BananaUtils {
         pingDelay = 40.0;
         checking = false;
         pings.clear();
-        timer.stop();
-        timer.reset();
+
+        if (timer.isRunning()) {
+            timer.stop();
+            timer.reset();
+        }
     }
 
     @EventHandler

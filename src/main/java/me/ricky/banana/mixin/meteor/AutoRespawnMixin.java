@@ -18,7 +18,6 @@ import java.util.List;
 @Mixin(value = AutoRespawn.class, remap = false)
 public abstract class AutoRespawnMixin extends Module{
     @Unique private Setting<Boolean> autoSend;
-    @Unique private Setting<Boolean> chatInfo;
     @Unique private Setting<List<String>> messages;
 
     public AutoRespawnMixin() {

@@ -22,7 +22,7 @@
   },
   "depends": {
     "java": ">=21",
-    "minecraft": ">=1.20.3",
-    "meteor-client": ">=0.5.5"
+    "minecraft": ">=1.20.6",
+    "meteor-client": ">0.5.6"
   }
 }

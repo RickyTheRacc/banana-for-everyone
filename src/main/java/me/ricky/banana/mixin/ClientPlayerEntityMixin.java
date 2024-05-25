@@ -29,6 +29,8 @@ public abstract class ClientPlayerEntityMixin extends Entity {
         return bl8;
     }
 
+    // The local here does actually exist, MCdev is just being dumb
+
     @ModifyVariable(method = "tickMovement", at = @At("STORE"), name = "bl9")
     private boolean shouldPlayerStopSprinting(boolean bl9, @Local(ordinal = 4) boolean bl8) {
         Sprint sprint = Modules.get().get(Sprint.class);
