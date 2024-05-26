@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/RickyTheRacc/banana-for-everyone/main/src/main/resources/assets/logo1.png" alt="banana+-logo" width="35%"/>
+    <img src="https://raw.githubusercontent.com/RickyTheRacc/banana-for-everyone/main/src/main/resources/assets/bananaplus/logo.png" alt="banana+-logo" width="35%"/>
 </p>
 
 <h1 align="center">Banana+</h1>
@@ -17,7 +17,7 @@
 <p>
 Issues will not be open on this project and PRs will not be merged unless they are of exceptional quality. I have rarely
 if ever seen an issue opened that doesn't describe a bug I'm already patching, so be content with the knowledge that bugs
-will be fixed as soon as they are caught.
+will be fixed as soon as they are caught. Or you could always fix it yourself and fork it :3
 </p>
 
 <h2>Credits</h2>
