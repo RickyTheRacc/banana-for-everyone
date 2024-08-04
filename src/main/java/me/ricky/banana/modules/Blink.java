@@ -122,7 +122,7 @@ public class Blink extends BananaModule {
     );
 
     public Blink() {
-        super(Categories.Render, "blink", "Cancel movement packets to move in the blink of an eye.");
+        super(BananaPlus.CATEGORY, "b+-blink", "Cancel movement packets to move in the blink of an eye.");
     }
 
     private final List<PlayerMoveC2SPacket> packets = new ArrayList<>();

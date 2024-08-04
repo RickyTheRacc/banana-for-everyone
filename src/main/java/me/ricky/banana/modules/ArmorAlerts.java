@@ -127,7 +127,6 @@ public class ArmorAlerts extends BananaModule {
     }
 
     private void notify(Item item, PlayerEntity player) {
-
         String playerName = (player == mc.player) ? "Your " : player.getName().getString() + "'s ";
         String itemName = item.getName().getString().toLowerCase();
 
@@ -136,7 +135,6 @@ public class ArmorAlerts extends BananaModule {
             itemName = nameArray[nameArray.length - 1];
         }
 
-        String infoText = playerName + itemName + ((itemName.endsWith("s")) ? " are " : " is ") + "low!";
-        warning(infoText);
+        warning(playerName + itemName + ((itemName.endsWith("s")) ? " are " : " is ") + "low!");
     }
 }

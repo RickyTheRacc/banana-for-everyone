@@ -7,7 +7,6 @@ import me.ricky.banana.utils.CombatUtil;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.world.InfinityMiner;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
@@ -16,14 +15,13 @@ import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.meteorclient.utils.world.TickRate;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
-import net.minecraft.world.tick.Tick;
 
-public class XPThrower extends Module {
+@SuppressWarnings("ConstantConditions")
+public class ExpThrower extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgThrowing = settings.createGroup("Throwing");
     private final SettingGroup sgSafety = settings.createGroup("Safety");
@@ -117,8 +115,8 @@ public class XPThrower extends Module {
         .build()
     );
 
-    public XPThrower() {
-        super(BananaPlus.CATEGORY, "XP-thrower", "Throw XP bottles to repair your armor and tools.");
+    public ExpThrower() {
+        super(BananaPlus.CATEGORY, "b+-exp-thrower", "Throw EXP bottles to repair your armor and tools.");
     }
 
     private double delay = 0.0;

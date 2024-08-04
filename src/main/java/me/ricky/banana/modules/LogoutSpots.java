@@ -1,5 +1,6 @@
 package me.ricky.banana.modules;
 
+import me.ricky.banana.BananaPlus;
 import me.ricky.banana.events.JoinEvent;
 import me.ricky.banana.events.LeaveEvent;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("ConstantConditions")
 public class LogoutSpots extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
@@ -120,7 +122,7 @@ public class LogoutSpots extends Module {
     );
 
     public LogoutSpots() {
-        super(Categories.Render, "logout-spots", "Shows where players logged out.");
+        super(BananaPlus.CATEGORY, "b+-logout-spots", "Shows where players logged out.");
     }
 
     private final List<LogoutSpot> logoutSpots = new ArrayList<>();

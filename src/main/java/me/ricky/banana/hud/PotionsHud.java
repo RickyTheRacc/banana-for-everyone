@@ -3,6 +3,7 @@ package me.ricky.banana.hud;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.*;
 import meteordevelopment.meteorclient.systems.hud.elements.TextHud;
+import meteordevelopment.meteorclient.systems.modules.player.PotionSpoof;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.Names;
 import meteordevelopment.meteorclient.utils.render.color.Color;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
+@SuppressWarnings("ConstantConditions")
 public class PotionsHud extends HudElement {
     public static final HudElementInfo<PotionsHud> INFO = new HudElementInfo<>(
         Hud.GROUP, "potion-timers", "Displays active potion effects with timers.", PotionsHud::new
@@ -136,8 +138,8 @@ public class PotionsHud extends HudElement {
         effects.clear();
 
         for (StatusEffectInstance effect : mc.player.getStatusEffects()) {
-            if (potions.get().contains(effect.getEffectType()) && filterMode.get() == FilterMode.Blacklist) continue;
-            else if (!potions.get().contains(effect.getEffectType()) && filterMode.get() == FilterMode.Whitelist) continue;
+            if (potions.get().contains(effect.getEffectType().value()) && filterMode.get() == FilterMode.Blacklist) continue;
+            else if (!potions.get().contains(effect.getEffectType().value()) && filterMode.get() == FilterMode.Whitelist) continue;
 
             effects.add(new CountedEffect(renderer, effect));
         }

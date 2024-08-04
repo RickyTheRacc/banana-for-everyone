@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
+@SuppressWarnings("ConstantConditions")
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
     @Unique private final Sprint sprint = Modules.get().get(Sprint.class);

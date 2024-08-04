@@ -5,7 +5,6 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.world.Dir;
-import meteordevelopment.meteorclient.utils.world.TickRate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.*;
 import org.joml.Vector3d;

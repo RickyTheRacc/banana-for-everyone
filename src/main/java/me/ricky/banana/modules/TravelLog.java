@@ -13,6 +13,7 @@ import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 import net.minecraft.text.Text;
 import org.joml.Vector3d;
 
+@SuppressWarnings("ConstantConditions")
 public class TravelLog extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 

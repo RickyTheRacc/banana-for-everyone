@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("ConstantConditions")
 public class ServerUtil extends BananaUtils {
     private static final Set<PlayerListEntry> lastEntries = new HashSet<>();
     private static final Set<PlayerEntity> lastPlayers = new HashSet<>();

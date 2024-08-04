@@ -1,5 +1,6 @@
 package me.ricky.banana.modules;
 
+import me.ricky.banana.BananaPlus;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixininterface.IPlayerInteractEntityC2SPacket;
@@ -14,6 +15,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 
+@SuppressWarnings("ConstantConditions")
 public class Sprint extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
@@ -57,7 +59,7 @@ public class Sprint extends Module {
     private final GUIMove guiMove = Modules.get().get(GUIMove.class);
 
     public Sprint() {
-        super(Categories.Movement, "sprint-2", "Automatically sprints.");
+        super(BananaPlus.CATEGORY, "b+-sprint", "Automatically sprints.");
     }
 
     @EventHandler(priority = 500)

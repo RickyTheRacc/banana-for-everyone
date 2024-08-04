@@ -12,6 +12,7 @@ import net.minecraft.util.math.Box;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class CombatUtil extends BananaUtils {
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
 
