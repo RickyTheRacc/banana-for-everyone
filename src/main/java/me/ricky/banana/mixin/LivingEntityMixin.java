@@ -13,15 +13,15 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 @SuppressWarnings("ConstantConditions")
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Unique private final Sprint sprint = Modules.get().get(Sprint.class);
+    @Unique private Sprint sprint;
 
     @ModifyVariable(method = "jump", name = "g", ordinal = 1, at = @At("STORE"))
     private float setJumpYaw(float original) {
-        if (!sprint.isActive()) return original;
+        if (!getSprint().isActive()) return original;
 
         float yaw = mc.player.getYaw();
 
-        if (sprint.allDirections.get()) {
+        if (getSprint().allDirections.get()) {
             float forwardMovement = mc.player.input.movementForward;
             float sidewaysMovement = mc.player.input.movementSideways;
 
@@ -31,4 +31,11 @@ public abstract class LivingEntityMixin {
 
         return (float) Math.toRadians(yaw);
     }
+
+    @Unique
+    private Sprint getSprint() {
+        if (sprint == null) sprint = Modules.get().get(Sprint.class);
+        return sprint;
+    }
+
 }

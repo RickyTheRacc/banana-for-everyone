@@ -18,7 +18,7 @@ public abstract class ClientPlayerEntityMixin extends Entity {
     @Shadow protected abstract boolean canSprint();
     @Shadow public abstract boolean isSubmergedInWater();
 
-    @Unique private final Sprint sprint = Modules.get().get(Sprint.class);
+    @Unique private Sprint sprint;
 
     public ClientPlayerEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -26,7 +26,7 @@ public abstract class ClientPlayerEntityMixin extends Entity {
 
     @ModifyVariable(method = "tickMovement", at = @At("STORE"), name = "bl8")
     private boolean canPlayerSprint(boolean bl8) {
-        if (sprint.isActive()) return !sprint.shouldAutoSprint() || !this.canSprint();
+        if (getSprint().isActive()) return !getSprint().shouldAutoSprint() || !this.canSprint();
 
         return bl8;
     }
@@ -35,8 +35,14 @@ public abstract class ClientPlayerEntityMixin extends Entity {
 
     @ModifyVariable(method = "tickMovement", at = @At("STORE"), name = "bl9")
     private boolean shouldPlayerStopSprinting(boolean bl9, @Local(ordinal = 4) boolean bl8) {
-        if (sprint.isActive() && sprint.preventStop.get()) return bl8 || this.isTouchingWater() && this.isSubmergedInWater();
+        if (getSprint().isActive() && getSprint().preventStop.get()) return bl8 || this.isTouchingWater() && this.isSubmergedInWater();
 
         return bl9;
+    }
+
+    @Unique
+    private Sprint getSprint() {
+        if (sprint == null) sprint = Modules.get().get(Sprint.class);
+        return sprint;
     }
 }
