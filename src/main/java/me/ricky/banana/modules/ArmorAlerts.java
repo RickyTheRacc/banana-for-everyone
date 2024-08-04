@@ -12,7 +12,6 @@ import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -23,8 +22,6 @@ import java.util.Set;
 
 public class ArmorAlerts extends BananaModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
-
-    // General
 
     private final Setting<Integer> threshold = sgGeneral.add(new IntSetting.Builder()
         .name("threshold")
@@ -66,16 +63,16 @@ public class ArmorAlerts extends BananaModule {
         .build()
     );
 
-    public ArmorAlerts() {
-        super(BananaPlus.CATEGORY, "armor-alerts", "Notifies you when your armor is low.");
-    }
-
     private final Set<PlayerEntity> helmets = new HashSet<>();
     private final Set<PlayerEntity> chestplates = new HashSet<>();
     private final Set<PlayerEntity> leggings = new HashSet<>();
     private final Set<PlayerEntity> boots = new HashSet<>();
 
     private boolean shouldPlaySound = false;
+
+    public ArmorAlerts() {
+        super(BananaPlus.CATEGORY, "armor-alerts", "Notifies you when your armor is low.");
+    }
 
     @Override
     public void onActivate() {

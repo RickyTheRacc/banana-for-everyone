@@ -121,16 +121,16 @@ public class LogoutSpots extends Module {
         .build()
     );
 
-    public LogoutSpots() {
-        super(BananaPlus.CATEGORY, "b+-logout-spots", "Shows where players logged out.");
-    }
-
     private final List<LogoutSpot> logoutSpots = new ArrayList<>();
 
     private static final Color GREEN = new Color(25, 225, 25);
     private static final Color ORANGE = new Color(225, 105, 25);
     private static final Color RED = new Color(225, 25, 25);
     private static final Vector3d pos = new Vector3d();
+
+    public LogoutSpots() {
+        super(BananaPlus.CATEGORY, "b+-logout-spots", "Shows where players logged out.");
+    }
 
     @Override
     public void onDeactivate() {

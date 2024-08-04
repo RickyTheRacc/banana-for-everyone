@@ -115,11 +115,11 @@ public class ExpThrower extends Module {
         .build()
     );
 
+    private double delay = 0.0;
+
     public ExpThrower() {
         super(BananaPlus.CATEGORY, "b+-exp-thrower", "Throw EXP bottles to repair your armor and tools.");
     }
-
-    private double delay = 0.0;
 
     @Override
     public void onActivate() {

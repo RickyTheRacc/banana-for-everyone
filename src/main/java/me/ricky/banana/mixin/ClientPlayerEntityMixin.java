@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends Entity {
-    public ClientPlayerEntityMixin(EntityType<?> type, World world) {
-        super(type, world);
-    }
+    @Shadow protected abstract boolean canSprint();
+    @Shadow public abstract boolean isSubmergedInWater();
 
     @Unique private final Sprint sprint = Modules.get().get(Sprint.class);
 
-    @Shadow protected abstract boolean canSprint();
-    @Shadow public abstract boolean isSubmergedInWater();
+    public ClientPlayerEntityMixin(EntityType<?> type, World world) {
+        super(type, world);
+    }
 
     @ModifyVariable(method = "tickMovement", at = @At("STORE"), name = "bl8")
     private boolean canPlayerSprint(boolean bl8) {

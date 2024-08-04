@@ -121,10 +121,6 @@ public class Blink extends BananaModule {
         .build()
     );
 
-    public Blink() {
-        super(BananaPlus.CATEGORY, "b+-blink", "Cancel movement packets to move in the blink of an eye.");
-    }
-
     private final List<PlayerMoveC2SPacket> packets = new ArrayList<>();
     public final Stopwatch stopwatch = Stopwatch.createUnstarted();
     private FakePlayerEntity model;
@@ -135,6 +131,10 @@ public class Blink extends BananaModule {
     private final Box hitbox = new Box(BlockPos.ORIGIN);
     private final Vec3d eyePos = new Vec3d(0, 0, 0);
     private final Vec3d feetPos = new Vec3d(0, 0, 0);
+
+    public Blink() {
+        super(BananaPlus.CATEGORY, "b+-blink", "Cancel movement packets to move in the blink of an eye.");
+    }
 
     @Override
     public void onActivate() {
