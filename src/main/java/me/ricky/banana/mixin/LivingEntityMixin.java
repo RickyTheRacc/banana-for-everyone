@@ -12,17 +12,15 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+    @Unique private final Sprint sprint = Modules.get().get(Sprint.class);
+
     @ModifyVariable(method = "jump", name = "g", ordinal = 1, at = @At("STORE"))
     private float setJumpYaw(float original) {
-        Sprint sprint = Modules.get().get(Sprint.class);
-        return sprint.isActive() ? getJumpYaw() : original;
-    }
+        if (!sprint.isActive()) return original;
 
-    @Unique
-    private float getJumpYaw() {
         float yaw = mc.player.getYaw();
 
-        if (Modules.get().get(Sprint.class).allDirections.get()) {
+        if (sprint.allDirections.get()) {
             float forwardMovement = mc.player.input.movementForward;
             float sidewaysMovement = mc.player.input.movementSideways;
 
