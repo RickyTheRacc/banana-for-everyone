@@ -7,6 +7,8 @@ import me.ricky.banana.utils.CombatUtil;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.world.InfinityMiner;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
@@ -175,7 +177,8 @@ public class XPThrower extends Module {
     private boolean isRepaired() {
         for (int i = 0; i < 4; i++) {
             ItemStack stack = mc.player.getInventory().getArmorStack(i);
-            if (stack.getMaxDamage() <= 0 || EnchantmentHelper.getLevel(Enchantments.MENDING, stack) == 0) continue;
+
+            if (stack.getMaxDamage() <= 0 || !Utils.hasEnchantment(stack, Enchantments.MENDING)) continue;
             if (((double) (stack.getMaxDamage() - stack.getDamage()) / stack.getMaxDamage()) * 100 <= threshold.get()) return false;
         }
 

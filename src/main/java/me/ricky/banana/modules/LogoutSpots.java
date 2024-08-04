@@ -256,7 +256,7 @@ public class LogoutSpots extends Module {
         public LogoutSpot(PlayerEntity player) {
             dimension = PlayerUtils.getDimension();
             this.player = player;
-            tickDelta = MeteorClient.mc.getTickDelta();
+            tickDelta = MeteorClient.mc.getRenderTickCounter().getTickDelta(false);
 
             uuid = player.getUuid();
             name = player.getName().getString();

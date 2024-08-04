@@ -9,6 +9,7 @@ import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.friends.Friends;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -121,7 +122,7 @@ public class ArmorAlerts extends BananaModule {
     }
 
     private boolean isRepaired(ItemStack stack) {
-        if (stack.getMaxDamage() <= 0 || EnchantmentHelper.getLevel(Enchantments.MENDING, stack) == 0) return true;
+        if (stack.getMaxDamage() <= 0 || !Utils.hasEnchantment(stack, Enchantments.MENDING)) return true;
         return ((double) (stack.getMaxDamage() - stack.getDamage()) / stack.getMaxDamage()) * 100 > threshold.get();
     }
 
