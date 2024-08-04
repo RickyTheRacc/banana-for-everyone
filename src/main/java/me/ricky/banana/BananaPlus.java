@@ -66,10 +66,10 @@ public class BananaPlus extends MeteorAddon {
 
 		Modules.get().add(new ArmorAlerts());
 		Modules.get().add(new Blink());
+		Modules.get().add(new ExpThrower());
 		Modules.get().add(new LogoutSpots());
 		Modules.get().add(new Sprint());
 		Modules.get().add(new TravelLog());
-		Modules.get().add(new ExpThrower());
 	}
 
 	@Override
