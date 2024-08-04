@@ -84,6 +84,6 @@ public class BananaPlus extends MeteorAddon {
 
 	@Override
 	public GithubRepo getRepo() {
-		return new GithubRepo("RickyTheRacc", "banana-for-everyone", "main");
+		return new GithubRepo("RickyTheRacc", "banana-for-everyone", "main", null);
 	}
 }
