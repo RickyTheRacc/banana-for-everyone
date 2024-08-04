@@ -16,6 +16,10 @@ repositories {
     maven("https://maven.meteordev.org/snapshots") {
         name = "Meteor Snapshots"
     }
+
+    maven("https://maven.bawnorton.com/releases") {
+        name = "Mixin Squared"
+    }
 }
 
 dependencies {
@@ -25,7 +29,12 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 
     // Meteor
-    modImplementation("meteordevelopment:meteor-client:${project.property("meteor_version")}")
+    modImplementation("meteordevelopment:meteor-client:${property("meteor_version")}")
+
+    // MixinSquared
+    include(implementation(
+        annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-fabric:${property("mixinsquared_version")}")!!
+    )!!)
 }
 
 tasks {
