@@ -18,8 +18,6 @@ public class BindsHud extends HudElement {
     );
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    // General
-
     private final Setting<Sort> sortMode = sgGeneral.add(new EnumSetting.Builder<Sort>()
         .name("sort-mode")
         .description("How to sort active modules.")
@@ -95,10 +93,6 @@ public class BindsHud extends HudElement {
         .build()
     );
 
-    public BindsHud() {
-        super(INFO);
-    }
-
     private final List<Module> modules = new ArrayList<>();
 
     private final Color rainbow = new Color(255, 255, 255);
@@ -107,6 +101,10 @@ public class BindsHud extends HudElement {
     private double prevX;
     private double prevTextLength;
     private Color prevColor = new Color();
+
+    public BindsHud() {
+        super(INFO);
+    }
 
     @Override
     public void tick(HudRenderer renderer) {

@@ -144,7 +144,6 @@ public class PotionsHud extends HudElement {
         } else effects.sort(Comparator.comparing(effect -> -effect.width));
     }
 
-
     private class CountedEffect {
         public String name;
         public String time;
