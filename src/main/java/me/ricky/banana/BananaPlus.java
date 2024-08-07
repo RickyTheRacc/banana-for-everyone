@@ -65,6 +65,7 @@ public class BananaPlus extends MeteorAddon {
 		// Add modules
 
 		Modules.get().add(new ArmorAlerts());
+		Modules.get().add(new AutoDrop());
 		Modules.get().add(new AutoSort());
 		Modules.get().add(new Blink());
 		Modules.get().add(new ExpThrower());
