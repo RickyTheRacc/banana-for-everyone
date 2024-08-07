@@ -2,6 +2,7 @@ package me.ricky.banana.hud;
 
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.*;
+import meteordevelopment.meteorclient.systems.hud.elements.PotionTimersHud;
 import meteordevelopment.meteorclient.systems.hud.elements.TextHud;
 import meteordevelopment.meteorclient.systems.modules.player.PotionSpoof;
 import meteordevelopment.meteorclient.utils.Utils;
@@ -23,8 +24,6 @@ public class PotionsHud extends HudElement {
         Hud.GROUP, "potion-timers", "Displays active potion effects with timers.", PotionsHud::new
     );
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
-
-    // General
 
     private final Setting<FilterMode> filterMode = sgGeneral.add(new EnumSetting.Builder<FilterMode>()
         .name("filter-mode")
@@ -74,19 +73,14 @@ public class PotionsHud extends HudElement {
         .build()
     );
 
+    private final List<CountedEffect> effects = new ArrayList<>();
 
     public PotionsHud() {
         super(INFO);
     }
 
-
-    private final List<CountedEffect> effects = new ArrayList<>();
-
-
     @Override
     public void tick(HudRenderer renderer) {
-        if (!Utils.canUpdate()) return;
-
         updateEffects(renderer);
 
         double width = 0;
@@ -110,32 +104,33 @@ public class PotionsHud extends HudElement {
 
     @Override
     public void render(HudRenderer renderer) {
-        if (!Utils.canUpdate()) return;
-
         updateEffects(renderer);
 
         if (effects.isEmpty() && isInEditor()) {
             renderer.text("Potion Timers (0:00)", x, this.y, TextHud.getSectionColor(0), shadow.get());
-        } else {
-            double y = this.y;
-            double i = 0;
+            return;
+        }
 
-            for (CountedEffect effect : effects) {
-                double lineWidth = renderer.textWidth(effect.name + effect.time);
+        double y = this.y;
+        double i = 0;
 
-                double x = this.x + alignX(lineWidth, alignment.get());
-                x = renderer.text(effect.name, x, y, (vanilla.get()) ? effect.vanillaColor : TextHud.getSectionColor(0), shadow.get());
-                renderer.text(effect.time, x, y, (vanilla.get()) ? effect.vanillaColor : TextHud.getSectionColor(1), shadow.get());
+        for (CountedEffect effect : effects) {
+            double lineWidth = renderer.textWidth(effect.name + effect.time);
 
-                y += renderer.textHeight(shadow.get());
-                if (i > 0) y += 2;
-                i++;
-            }
+            double x = this.x + alignX(lineWidth, alignment.get());
+            x = renderer.text(effect.name, x, y, (vanilla.get()) ? effect.vanillaColor : TextHud.getSectionColor(0), shadow.get());
+            renderer.text(effect.time, x, y, (vanilla.get()) ? effect.vanillaColor : TextHud.getSectionColor(1), shadow.get());
+
+            y += renderer.textHeight(shadow.get());
+            if (i > 0) y += 2;
+            i++;
         }
     }
 
     private void updateEffects(HudRenderer renderer) {
         effects.clear();
+
+        if (!Utils.canUpdate()) return;
 
         for (StatusEffectInstance effect : mc.player.getStatusEffects()) {
             if (potions.get().contains(effect.getEffectType().value()) && filterMode.get() == FilterMode.Blacklist) continue;
@@ -160,7 +155,7 @@ public class PotionsHud extends HudElement {
         String[] letters = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
 
         public CountedEffect(HudRenderer renderer, StatusEffectInstance effect) {
-            name = Names.get((StatusEffect) effect.getEffectType()) + " ";
+            name = Names.get(effect.getEffectType().value()) + " ";
 
             if (roman.get()) {
                 int a = effect.getAmplifier() + 1;
@@ -179,7 +174,7 @@ public class PotionsHud extends HudElement {
             width = renderer.textWidth(name + time);
 
             if (vanilla.get()) {
-                int c = ((StatusEffect) effect.getEffectType()).getColor();
+                int c = effect.getEffectType().value().getColor();
                 vanillaColor.r = Color.toRGBAR(c);
                 vanillaColor.g = Color.toRGBAG(c);
                 vanillaColor.b = Color.toRGBAB(c);
