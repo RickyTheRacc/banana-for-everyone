@@ -11,7 +11,6 @@ import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.Rotations;
-import meteordevelopment.meteorclient.utils.player.SlotUtils;
 import meteordevelopment.meteorclient.utils.render.PeekScreen;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -19,8 +18,6 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.collection.DefaultedList;
 
 import java.util.HashSet;
 import java.util.List;
@@ -133,8 +130,6 @@ public class AutoDrop extends Module {
         float oppositeYaw = (mc.player.getYaw(tickDelta) + 180.0F) % 360.0F;
         if (oppositeYaw > 180) oppositeYaw -= 360.0F;
 
-        Rotations.rotate(oppositeYaw, mc.player.getPitch(tickDelta), () -> {
-            slotIds.forEach(id -> InvUtils.drop().slotId(id));
-        });
+        Rotations.rotate(oppositeYaw, -45.0F, () -> slotIds.forEach(id -> InvUtils.drop().slotId(id)));
     }
 }
