@@ -1,7 +1,7 @@
 package me.ricky.bananaplus.utils;
 
 import me.ricky.bananaplus.enums.BlockType;
-import me.ricky.bananaplus.systems.BananaUtils;
+import me.ricky.bananaplus.systems.BananaUtil;
 import meteordevelopment.meteorclient.mixin.AbstractBlockAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class CombatUtil extends BananaUtils {
+public class CombatUtil extends BananaUtil {
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
 
     public static boolean isSurrounded(PlayerEntity player, BlockType type) {

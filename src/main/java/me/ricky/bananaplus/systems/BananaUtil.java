@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
-public class BananaUtils {
+public class BananaUtil {
     protected static MinecraftClient mc = MinecraftClient.getInstance();
     protected static BananaSystem config = BananaSystem.get();
 

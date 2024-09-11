@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import me.ricky.bananaplus.events.DeathEvent;
 import me.ricky.bananaplus.events.PopEvent;
-import me.ricky.bananaplus.systems.BananaUtils;
+import me.ricky.bananaplus.systems.BananaUtil;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings("unchecked")
-public class StatsUtil extends BananaUtils {
+public class StatsUtil extends BananaUtil {
     private static final ArrayList<Class<? extends Module>> singleTargets = new ArrayList<>();
     private static final ArrayList<Class<? extends Module>> multiTargets = new ArrayList<>();
 

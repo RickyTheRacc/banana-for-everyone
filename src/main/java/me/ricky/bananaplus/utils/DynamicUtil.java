@@ -1,6 +1,6 @@
 package me.ricky.bananaplus.utils;
 
-import me.ricky.bananaplus.systems.BananaUtils;
+import me.ricky.bananaplus.systems.BananaUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -8,7 +8,7 @@ import net.minecraft.util.math.Box;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DynamicUtil extends BananaUtils {
+public class DynamicUtil extends BananaUtil {
     private static final Set<BlockPos> posSet = new HashSet<>();
     private static Box testBox = new Box(BlockPos.ORIGIN);
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();

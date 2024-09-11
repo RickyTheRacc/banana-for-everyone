@@ -3,7 +3,7 @@ package me.ricky.bananaplus.utils;
 import com.google.common.base.Stopwatch;
 import me.ricky.bananaplus.events.JoinEvent;
 import me.ricky.bananaplus.events.LeaveEvent;
-import me.ricky.bananaplus.systems.BananaUtils;
+import me.ricky.bananaplus.systems.BananaUtil;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("ConstantConditions")
-public class ServerUtil extends BananaUtils {
+public class ServerUtil extends BananaUtil {
     private static final Set<PlayerListEntry> lastEntries = new HashSet<>();
     private static final Set<PlayerEntity> lastPlayers = new HashSet<>();
 
