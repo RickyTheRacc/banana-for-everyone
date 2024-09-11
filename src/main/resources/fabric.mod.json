@@ -6,7 +6,7 @@
   "name": "Banana Plus",
   "description": "Epic combat mod for a dead game",
   "authors": ["RickyTheRacc"],
-  "icon": "assets/bananaplus/logo.png",
+  "icon": "icon.png",
   "entrypoints": {
     "meteor": [
       "me.ricky.banana.BananaPlus"

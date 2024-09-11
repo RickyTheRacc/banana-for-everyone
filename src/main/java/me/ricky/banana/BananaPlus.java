@@ -12,11 +12,13 @@ import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.misc.BetterChat;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
 import meteordevelopment.meteorclient.utils.misc.Version;
 import meteordevelopment.starscript.value.ValueMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 
 public class BananaPlus extends MeteorAddon {
@@ -40,11 +42,9 @@ public class BananaPlus extends MeteorAddon {
 		LOG.info("Initializing...");
 
 		// Add system tab
-
 		Tabs.get().add(2, new BananaTab());
 
 		// Starscript
-
 		MeteorStarscript.ss.set("banana", new ValueMap()
 			.set("kills", StatsUtil::getKills)
 			.set("deaths", StatsUtil::getDeaths)
@@ -56,14 +56,12 @@ public class BananaPlus extends MeteorAddon {
 		);
 
 		// Add hud elements
-
 		Hud.get().register(BindsHud.INFO);
 		Hud.get().register(LogoHud.INFO);
 		Hud.get().register(PotionsHud.INFO);
 		Hud.get().register(TextPresets.INFO);
 
 		// Add modules
-
 		Modules.get().add(new ArmorAlerts());
 		Modules.get().add(new AutoDrop());
 		Modules.get().add(new AutoSort());
@@ -87,5 +85,9 @@ public class BananaPlus extends MeteorAddon {
 	@Override
 	public GithubRepo getRepo() {
 		return new GithubRepo("RickyTheRacc", "banana-for-everyone", "main", null);
+	}
+
+	public static Identifier identifier(String path) {
+		return Identifier.of("bananaplus", path);
 	}
 }

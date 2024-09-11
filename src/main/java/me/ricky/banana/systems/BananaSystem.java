@@ -4,6 +4,7 @@ import me.ricky.banana.BananaPlus;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
+import meteordevelopment.meteorclient.systems.modules.misc.BetterChat;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import net.minecraft.nbt.NbtCompound;
@@ -19,19 +20,11 @@ public class BananaSystem extends System<BananaSystem> {
 
     // Prefix
 
-    public final Setting<String> prefix = sgPrefix.add(new StringSetting.Builder()
-        .name("banana+-prefix")
-        .description("What prefix to use for Banana+ modules.")
-        .defaultValue("Banana+")
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
-        .build()
-    );
-
     public final Setting<SettingColor> prefixColor = sgPrefix.add(new ColorSetting.Builder()
         .name("prefix-color")
         .description("Color display for the prefix.")
         .defaultValue(new SettingColor(255, 193, 0, 255))
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
+        .onChanged(prefix -> updateChatResources())
         .build()
     );
 
@@ -39,7 +32,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("prefix-format")
         .description("What type of minecraft formatting should be applied to the prefix.")
         .defaultValue(Format.Normal)
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
+        .onChanged(prefix -> updateChatResources())
         .build()
     );
 
@@ -47,7 +40,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("format-brackets")
         .description("Whether the formatting should apply to the brackets as well.")
         .visible(() -> prefixFormat.get() != Format.Normal)
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
+        .onChanged(prefix -> updateChatResources())
         .defaultValue(true)
         .build()
     );
@@ -56,7 +49,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("left-bracket")
         .description("What to be displayed as left bracket for the prefix.")
         .defaultValue("[")
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
+        .onChanged(prefix -> updateChatResources())
         .build()
     );
 
@@ -64,7 +57,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("right-bracket")
         .description("What to be displayed as right bracket for the prefix.")
         .defaultValue("]")
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
+        .onChanged(prefix -> updateChatResources())
         .build()
     );
 
@@ -72,7 +65,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("left-color")
         .description("Color display for the left bracket.")
         .defaultValue(new SettingColor(150, 150, 150, 255))
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
+        .onChanged(prefix -> updateChatResources())
         .build()
     );
 
@@ -80,7 +73,7 @@ public class BananaSystem extends System<BananaSystem> {
         .name("right-color")
         .description("Color display for the right bracket.")
         .defaultValue(new SettingColor(150, 150, 150, 255))
-        .onChanged(p -> ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix))
+        .onChanged(prefix -> updateChatResources())
         .build()
     );
 
@@ -120,7 +113,7 @@ public class BananaSystem extends System<BananaSystem> {
 
     public BananaSystem() {
         super("banana+");
-        ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix);
+        updateChatResources();
     }
 
     public static BananaSystem get() {
@@ -146,7 +139,7 @@ public class BananaSystem extends System<BananaSystem> {
     // Utils
 
     public Text getPrefix() {
-        MutableText logo = Text.literal(prefix.get()).formatted(prefixFormat.get().formatting);
+        MutableText logo = Text.literal("Banana").formatted(prefixFormat.get().formatting);
         MutableText left = Text.literal(leftBracket.get());
         MutableText right = Text.literal(rightBracket.get());
 
@@ -160,6 +153,11 @@ public class BananaSystem extends System<BananaSystem> {
         right = right.withColor(rightColor.get().getPacked());
 
         return Text.empty().append(left).append(logo).append(right).append(" ");
+    }
+
+    private void updateChatResources() {
+        ChatUtils.registerCustomPrefix("me.ricky.banana", this::getPrefix);
+        BetterChat.registerCustomHead(getPrefix().getString(), BananaPlus.identifier("icon.png"));
     }
 
     public enum Format {

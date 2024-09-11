@@ -38,7 +38,7 @@ public class LogoHud extends HudElement {
 
     @Override
     public void render(HudRenderer renderer) {
-        GL.bindTexture(new Identifier("bananaplus", "logo.png"));
+        GL.bindTexture(new Identifier("bananaplus", "icon.png"));
 
         Renderer2D.TEXTURE.begin();
         Renderer2D.TEXTURE.texQuad(
