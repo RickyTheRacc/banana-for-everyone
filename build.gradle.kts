@@ -63,5 +63,5 @@ tasks {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/banana.accesswidener")
+    accessWidenerPath = file("src/main/resources/bananaplus.accesswidener")
 }

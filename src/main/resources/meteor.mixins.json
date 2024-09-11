@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "me.ricky.banana.mixin.meteor",
+  "package": "me.ricky.bananaplus.mixin.meteor",
   "compatibilityLevel": "JAVA_16",
   "injectors": {
     "defaultRequire": 1

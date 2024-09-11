@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "me.ricky.banana.mixin",
+  "package": "me.ricky.bananaplus.mixin",
   "compatibilityLevel": "JAVA_16",
   "injectors": {
     "defaultRequire": 1

@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "environment": "client",
   "version": "${version}",
-  "id": "banana-plus",
+  "id": "bananaplus",
   "name": "Banana Plus",
   "description": "Epic combat mod for a dead game",
   "authors": ["RickyTheRacc"],
-  "icon": "icon.png",
+  "icon": "assets/bananaplus/icon.png",
   "entrypoints": {
     "meteor": [
       "me.ricky.banana.BananaPlus"
@@ -16,7 +16,7 @@
     "meteor.mixins.json",
     "minecraft.mixins.json"
   ],
-  "accessWidener": "banana.accesswidener",
+  "accessWidener": "bananaplus.accesswidener",
   "custom": {
     "meteor-client:color": "255,193,0"
   },
