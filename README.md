@@ -1,23 +1,26 @@
-<p align="center">
-    <img src="https://raw.githubusercontent.com/RickyTheRacc/banana-for-everyone/main/src/main/resources/assets/bananaplus/logo.png" alt="banana+-logo" width="35%"/>
-</p>
-
-<h1 align="center">Banana+</h1>
-<p align="center"><i>Sometimes maintained by RickyTheRacc</i></p>
+<div align="center">
+    <img align src="https://raw.githubusercontent.com/RickyTheRacc/banana-for-everyone/main/src/main/resources/assets/bananaplus/logo.png" alt="banana+-logo" width="256px"/>
+    <h1 align="center">Banana Plus</h1>
+    <img src="https://img.shields.io/badge/Author-RickyTheRacc-gold" alt="Verified Addon: No">
+    <img src="https://img.shields.io/badge/Verified_Addon-No-gold" alt="Verified Addon: No">
+    <img src="https://img.shields.io/badge/Version-2.2.0-gold" alt="Version: 2.2.0">
+    <img src="https://img.shields.io/badge/MC_Version-1.21.1-gold" alt="MC Version: 1.21.1">
+</div>
 
 <h2>How to Use:</h2>
 <ul>
-    <li>Download and open with GitHub Desktop</li>
-    <li>Open the project through IntelliJ</li>
+    <li>Clone this repo using your Git client of choice</li>
+    <li>Open the folder as a project using Intellij</li>
     <li>Run the gradle build task and wait</li>
-    <li>Use the jar from the build/libs folder</li>
+    <li>Use the jar from the newly created build/libs folder</li>
 </ul>
 
-<h2>Issues</h2> 
+<h2>Issues and PRs</h2> 
 <p>
-Issues will not be open on this project and PRs will not be merged unless they are of exceptional quality. I have rarely
-if ever seen an issue opened that doesn't describe a bug I'm already patching, so be content with the knowledge that bugs
-will be fixed as soon as they are caught. Or you could always fix it yourself and fork it :3
+Issues are not open on this project and PRs are unlikely to be merged unless they are of exceptional quality.
+Part of the appeal of this project for me is that it's something I can put on a resume, so I want as much of 
+the work as possible here to be my own. If you know me personally, feel free to reach out with any issues or 
+suggestions you may have though!
 </p>
 
 <h2>Credits</h2>
