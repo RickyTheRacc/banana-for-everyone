@@ -33,6 +33,8 @@ import java.util.UUID;
 
 @SuppressWarnings("unchecked")
 public class StatsUtil extends BananaUtil {
+    private StatsUtil() {}
+
     private static final ArrayList<Class<? extends Module>> singleTargets = new ArrayList<>();
     private static final ArrayList<Class<? extends Module>> multiTargets = new ArrayList<>();
 

@@ -14,6 +14,8 @@ import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class CombatUtil extends BananaUtil {
+    private CombatUtil() {}
+
     private static final BlockPos.Mutable testPos = new BlockPos.Mutable();
 
     public static boolean isSurrounded(PlayerEntity player, BlockType type) {

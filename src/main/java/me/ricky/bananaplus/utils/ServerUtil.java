@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("ConstantConditions")
 public class ServerUtil extends BananaUtil {
+    private ServerUtil() {}
+
     private static final Set<PlayerListEntry> lastEntries = new HashSet<>();
     private static final Set<PlayerEntity> lastPlayers = new HashSet<>();
 
@@ -132,8 +134,8 @@ public class ServerUtil extends BananaUtil {
     }
 
     public static int getPing() {
-        if (!Utils.canUpdate() || mc.isInSingleplayer()) return 0;
-        if (pings.size() <= 10) return PlayerUtils.getPing();
+        if (!Utils.canUpdate()) return -1;
+        if (mc.isInSingleplayer()) return -2;
         return pings.stream().mapToInt(Integer::intValue).sum() / pings.size();
     }
 
