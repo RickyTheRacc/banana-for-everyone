@@ -29,11 +29,11 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 
     // Meteor
-    modImplementation("meteordevelopment:meteor-client:${property("meteor_version")}")
+    modImplementation("meteordevelopment:meteor-client:${project.property("meteor_version")}")
 
     // MixinSquared
     include(implementation(
-        annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-fabric:${property("mixinsquared_version")}")!!
+        annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-fabric:${project.property("mixinsquared_version")}")!!
     )!!)
 }
 
