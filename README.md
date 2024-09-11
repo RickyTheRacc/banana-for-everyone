@@ -1,5 +1,5 @@
 <div align="center">
-    <img align src="https://raw.githubusercontent.com/RickyTheRacc/banana-for-everyone/main/src/main/resources/assets/bananaplus/logo.png" alt="banana+-logo" width="256px"/>
+    <img align src="https://raw.githubusercontent.com/RickyTheRacc/banana-for-everyone/main/src/main/resources/assets/bananaplus/icon.png" alt="banana+-logo" width="256px"/>
     <h1 align="center">Banana Plus</h1>
     <img src="https://img.shields.io/badge/Author-RickyTheRacc-gold" alt="Verified Addon: No">
     <img src="https://img.shields.io/badge/Verified_Addon-No-gold" alt="Verified Addon: No">
