@@ -9,7 +9,7 @@
   "icon": "assets/bananaplus/icon.png",
   "entrypoints": {
     "meteor": [
-      "me.ricky.banana.BananaPlus"
+      "me.ricky.bananaplus.BananaPlus"
     ]
   },
   "mixins": [
@@ -22,7 +22,7 @@
   },
   "depends": {
     "java": ">=21",
-    "minecraft": ">=1.21",
+    "minecraft": ">=1.21.1",
     "meteor-client": ">=0.5.7"
   }
 }

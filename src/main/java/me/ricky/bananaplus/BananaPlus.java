@@ -78,7 +78,7 @@ public class BananaPlus extends MeteorAddon {
 
 	@Override
 	public String getPackage() {
-		return "me.ricky.banana";
+		return "me.ricky.bananaplus";
 	}
 
 	@Override
